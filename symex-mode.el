@@ -63,6 +63,25 @@
 ;;; CONFIGURATION ;;;
 ;;;;;;;;;;;;;;;;;;;;;
 
+(defgroup symex-mode nil
+  "A language for editing symbolic expressions."
+  :group 'tools)
+
+(defcustom symex-highlight-p nil
+  "Whether selected symexs should be highlighted."
+  :type 'boolean
+  :group 'symex-mode)
+
+(defcustom symex-refocus-p t
+  "Whether selected symexs should be highlighted."
+  :type 'boolean
+  :group 'symex-mode)
+
+(defcustom symex-smooth-scroll-p nil
+  "Whether selected symexs should be highlighted."
+  :type 'boolean
+  :group 'symex-mode)
+
 ;; use paredit balancing behavior in insert mode
 (define-key
   evil-insert-state-map
@@ -88,10 +107,6 @@
   evil-insert-state-map
   (kbd "<backspace>")
   'paredit-backward-delete)
-
-(setq symex-highlight-p nil)
-(setq symex-refocus-p t)
-(setq symex-smooth-scroll-p nil)
 
 (defhydra hydra-symex (:idle 1.0
                        :columns 5
