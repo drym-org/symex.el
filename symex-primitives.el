@@ -104,7 +104,6 @@
       (when (= original-location current-location)
         ;; happens at end of buffer
         (setq result 0)))
-    (symex-refocus)
     result))
 
 (defun symex-forward (&optional count)
@@ -136,7 +135,6 @@
     (dotimes (i count)
       (let ((res (symex--backward-one)))
         (setq result (+ res result))))
-    (symex-refocus)
     (when (> result 0)
       (symex-make-move (- result) 0))))
 

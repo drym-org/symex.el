@@ -11,7 +11,6 @@
          (symex-make-circuit
           move-go-backward)))
     (symex-execute-traversal traversal))
-  (symex-refocus)
   (point))
 
 (defun symex-goto-last ()
@@ -21,7 +20,6 @@
          (symex-make-circuit
           move-go-forward)))
     (symex-execute-traversal traversal))
-  (symex-refocus)
   (point))
 
 (defun symex-goto-outermost ()
@@ -31,7 +29,6 @@
          (symex-make-circuit
           move-go-out)))
     (symex-execute-traversal traversal))
-  (symex-refocus)
   (point))
 
 (defun symex-goto-innermost ()
@@ -46,7 +43,6 @@
              move-go-forward)
             move-go-in)))))
     (symex-execute-traversal traversal))
-  (symex-refocus)
   (point))
 
 ;; TODO: is there a way to "monadically" build the tree data structure

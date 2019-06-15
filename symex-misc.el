@@ -123,4 +123,25 @@
             (sit-for 0.0001))
         (recenter window-focus-line-number)))))
 
+(defun symex-navigation-advice (orig-fn &rest args)
+  "Things to do as part of / alongside symex navigations."
+  (interactive)
+  (let ((result (apply orig-fn args)))
+    (when symex-refocus-p
+      (symex-refocus symex-smooth-scroll-p))
+    (when symex-highlight-p
+      (mark-sexp))
+    result))
+
+(advice-add 'symex-go-forward :around 'symex-navigation-advice)
+(advice-add 'symex-go-backward :around 'symex-navigation-advice)
+(advice-add 'symex-go-in :around 'symex-navigation-advice)
+(advice-add 'symex-go-out :around 'symex-navigation-advice)
+(advice-add 'symex-goto-first :around 'symex-navigation-advice)
+(advice-add 'symex-goto-last :around 'symex-navigation-advice)
+(advice-add 'symex-goto-outermost :around 'symex-navigation-advice)
+(advice-add 'symex-goto-innermost :around 'symex-navigation-advice)
+(advice-add 'symex-traverse-forward :around 'symex-navigation-advice)
+(advice-add 'symex-traverse-backward :around 'symex-navigation-advice)
+
 (provide 'symex-misc)

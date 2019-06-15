@@ -89,6 +89,9 @@
   (kbd "<backspace>")
   'paredit-backward-delete)
 
+(setq symex-highlight-p nil)
+(setq symex-refocus-p t)
+(setq symex-smooth-scroll-p nil)
 
 (defhydra hydra-symex (:idle 1.0
                        :columns 5
