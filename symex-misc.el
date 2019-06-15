@@ -89,7 +89,6 @@
          (beginning-of-thing 'sexp))
         (t (if-stuck (symex-go-backward)
                      (symex-go-forward))))
-  (symex-refocus)
   (point))
 
 (defun symex-refocus (&optional smooth-scroll)
@@ -123,25 +122,31 @@
             (sit-for 0.0001))
         (recenter window-focus-line-number)))))
 
-(defun symex-navigation-advice (orig-fn &rest args)
-  "Things to do as part of / alongside symex navigations."
+(defun symex--selection-side-effects ()
+  "Things to do as part of symex selection, e.g. after navigations."
+  (interactive)
+  (when symex-refocus-p
+    (symex-refocus symex-smooth-scroll-p))
+  (when symex-highlight-p
+    (mark-sexp)))
+
+(defun symex-selection-advice (orig-fn &rest args)
+  "Attach symex selection side effects to functions that select symexes."
   (interactive)
   (let ((result (apply orig-fn args)))
-    (when symex-refocus-p
-      (symex-refocus symex-smooth-scroll-p))
-    (when symex-highlight-p
-      (mark-sexp))
+    (symex--selection-side-effects)
     result))
 
-(advice-add 'symex-go-forward :around 'symex-navigation-advice)
-(advice-add 'symex-go-backward :around 'symex-navigation-advice)
-(advice-add 'symex-go-in :around 'symex-navigation-advice)
-(advice-add 'symex-go-out :around 'symex-navigation-advice)
-(advice-add 'symex-goto-first :around 'symex-navigation-advice)
-(advice-add 'symex-goto-last :around 'symex-navigation-advice)
-(advice-add 'symex-goto-outermost :around 'symex-navigation-advice)
-(advice-add 'symex-goto-innermost :around 'symex-navigation-advice)
-(advice-add 'symex-traverse-forward :around 'symex-navigation-advice)
-(advice-add 'symex-traverse-backward :around 'symex-navigation-advice)
+(advice-add 'symex-go-forward :around 'symex-selection-advice)
+(advice-add 'symex-go-backward :around 'symex-selection-advice)
+(advice-add 'symex-go-in :around 'symex-selection-advice)
+(advice-add 'symex-go-out :around 'symex-selection-advice)
+(advice-add 'symex-goto-first :around 'symex-selection-advice)
+(advice-add 'symex-goto-last :around 'symex-selection-advice)
+(advice-add 'symex-goto-outermost :around 'symex-selection-advice)
+(advice-add 'symex-goto-innermost :around 'symex-selection-advice)
+(advice-add 'symex-traverse-forward :around 'symex-selection-advice)
+(advice-add 'symex-traverse-backward :around 'symex-selection-advice)
+(advice-add 'symex-select-nearest :around 'symex-selection-advice)
 
 (provide 'symex-misc)

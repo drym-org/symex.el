@@ -97,7 +97,8 @@
                        :columns 5
                        :color pink
                        :body-pre (progn (symex-select-nearest)
-                                        (evil-symex-state)))
+                                        (evil-symex-state))
+                       :post (deactivate-mark))
   "Symex mode"
   ("(" (lambda ()
          (interactive)
