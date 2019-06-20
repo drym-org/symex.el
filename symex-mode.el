@@ -73,12 +73,13 @@
   :group 'symex-mode)
 
 (defcustom symex-refocus-p t
-  "Whether selected symexs should be highlighted."
+  "Whether to refocus on the selected symexs when it's close
+to the edge of the screen."
   :type 'boolean
   :group 'symex-mode)
 
 (defcustom symex-smooth-scroll-p nil
-  "Whether selected symexs should be highlighted."
+  "Whether refocusing should happen smoothly or abruptly."
   :type 'boolean
   :group 'symex-mode)
 
