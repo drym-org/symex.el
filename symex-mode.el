@@ -84,30 +84,232 @@ to the edge of the screen."
   :group 'symex-mode)
 
 ;; use paredit balancing behavior in insert mode
-(define-key
-  evil-insert-state-map
-  (kbd "\(")
-  'paredit-open-round)
+;; in all lisp modes
 
-(define-key
-  evil-insert-state-map
-  (kbd "\)")
-  'paredit-close-round)
+;; (defvar lisp-modes (append elisp-modes
+;;                            racket-modes
+;;                            (list 'scheme-mode)))
 
-(define-key
-  evil-insert-state-map
-  (kbd "\[")
-  'paredit-open-square)
+;; TODO: get this to work so we don't have to duplicate the key
+;; definitions across all lisp modes
+;; (dolist (mode-name lisp-modes)
+;;   (let ((mode-map (intern (concat (symbol-name mode-name)
+;;                                   "-map"))))
+;;     (evil-define-key
+;;       'insert
+;;       mode-map
+;;       (kbd "\(")
+;;       'paredit-open-round)
 
-(define-key
-  evil-insert-state-map
-  (kbd "\]")
-  'paredit-close-square)
+;;     (evil-define-key
+;;       'insert
+;;       mode-map
+;;       (kbd "\)")
+;;       'paredit-close-round)
 
-(define-key
-  evil-insert-state-map
-  (kbd "<backspace>")
-  'paredit-backward-delete)
+;;     (evil-define-key
+;;       'insert
+;;       mode-map
+;;       (kbd "\[")
+;;       'paredit-open-square)
+
+;;     (evil-define-key
+;;       'insert
+;;       mode-map
+;;       (kbd "\]")
+;;       'paredit-close-square)
+
+;;     (evil-define-key
+;;       'insert
+;;       mode-map
+;;       (kbd "<backspace>")
+;;       'paredit-backward-delete)))
+
+;; lisp interaction mode
+(evil-define-key
+    'insert
+    lisp-interaction-mode-map
+    (kbd "\(")
+    'paredit-open-round)
+
+(evil-define-key
+    'insert
+    lisp-interaction-mode-map
+    (kbd "\)")
+    'paredit-close-round)
+
+(evil-define-key
+    'insert
+    lisp-interaction-mode-map
+    (kbd "\[")
+    'paredit-open-square)
+
+(evil-define-key
+    'insert
+    lisp-interaction-mode-map
+    (kbd "\]")
+    'paredit-close-square)
+
+(evil-define-key
+    'insert
+    lisp-interaction-mode-map
+    (kbd "<backspace>")
+    'paredit-backward-delete)
+
+;; emacs lisp mode
+(evil-define-key
+    'insert
+    emacs-lisp-mode-map
+    (kbd "\(")
+    'paredit-open-round)
+
+(evil-define-key
+    'insert
+    emacs-lisp-mode-map
+    (kbd "\)")
+    'paredit-close-round)
+
+(evil-define-key
+    'insert
+    emacs-lisp-mode-map
+    (kbd "\[")
+    'paredit-open-square)
+
+(evil-define-key
+    'insert
+    emacs-lisp-mode-map
+    (kbd "\]")
+    'paredit-close-square)
+
+(evil-define-key
+    'insert
+    emacs-lisp-mode-map
+    (kbd "<backspace>")
+    'paredit-backward-delete)
+
+;; inferior emacs lisp mode
+(evil-define-key
+    'insert
+    inferior-emacs-lisp-mode-map
+    (kbd "\(")
+    'paredit-open-round)
+
+(evil-define-key
+    'insert
+    inferior-emacs-lisp-mode-map
+    (kbd "\)")
+    'paredit-close-round)
+
+(evil-define-key
+    'insert
+    inferior-emacs-lisp-mode-map
+    (kbd "\[")
+    'paredit-open-square)
+
+(evil-define-key
+    'insert
+    inferior-emacs-lisp-mode-map
+    (kbd "\]")
+    'paredit-close-square)
+
+(evil-define-key
+    'insert
+    inferior-emacs-lisp-mode-map
+    (kbd "<backspace>")
+    'paredit-backward-delete)
+
+;; racket mode
+(evil-define-key
+    'insert
+    racket-mode-map
+    (kbd "\(")
+    'paredit-open-round)
+
+(evil-define-key
+    'insert
+    racket-mode-map
+    (kbd "\)")
+    'paredit-close-round)
+
+(evil-define-key
+    'insert
+    racket-mode-map
+    (kbd "\[")
+    'paredit-open-square)
+
+(evil-define-key
+    'insert
+    racket-mode-map
+    (kbd "\]")
+    'paredit-close-square)
+
+(evil-define-key
+    'insert
+    racket-mode-map
+    (kbd "<backspace>")
+    'paredit-backward-delete)
+
+;; racket repl mode
+(evil-define-key
+    'insert
+    racket-repl-mode-map
+    (kbd "\(")
+    'paredit-open-round)
+
+(evil-define-key
+    'insert
+    racket-repl-mode-map
+    (kbd "\)")
+    'paredit-close-round)
+
+(evil-define-key
+    'insert
+    racket-repl-mode-map
+    (kbd "\[")
+    'paredit-open-square)
+
+(evil-define-key
+    'insert
+    racket-repl-mode-map
+    (kbd "\]")
+    'paredit-close-square)
+
+(evil-define-key
+    'insert
+    racket-repl-mode-map
+    (kbd "<backspace>")
+    'paredit-backward-delete)
+
+;; scheme mode
+(evil-define-key
+    'insert
+    scheme-mode-map
+    (kbd "\(")
+    'paredit-open-round)
+
+(evil-define-key
+    'insert
+    scheme-mode-map
+    (kbd "\)")
+    'paredit-close-round)
+
+(evil-define-key
+    'insert
+    scheme-mode-map
+    (kbd "\[")
+    'paredit-open-square)
+
+(evil-define-key
+    'insert
+    scheme-mode-map
+    (kbd "\]")
+    'paredit-close-square)
+
+(evil-define-key
+    'insert
+    scheme-mode-map
+    (kbd "<backspace>")
+    'paredit-backward-delete)
 
 (defhydra hydra-symex (:idle 1.0
                        :columns 5
