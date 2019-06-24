@@ -274,6 +274,11 @@
       (symex-shift-forward)
       (symex-go-backward))))
 
+(defun symex-change-delimiter ()
+  "Change delimiter enclosing current symex, e.g. round -> square brackets"
+  (interactive)
+  (evil-surround-change (following-char)))
+
 (defun symex-tidy ()
   "Auto-indent symex and fix any whitespace."
   (interactive)

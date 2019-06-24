@@ -125,6 +125,11 @@ to the edge of the screen."
 ;;       (kbd "<backspace>")
 ;;       'paredit-backward-delete)))
 
+;; this doesn't work either...
+;; (let ((mode-map (if (boundp mode-map-name)
+;;                     (symbol-value mode-map-name)
+;;                   (make-sparse-keymap))))
+
 ;; lisp interaction mode
 (evil-define-key
     'insert
@@ -351,6 +356,7 @@ to the edge of the screen."
   ("x" symex-delete "delete")
   ("c" symex-change "change" :exit t)
   ("s" symex-replace "replace" :exit t)
+  ("S" symex-change-delimiter "change surrounding delimiter")
   ("H" symex-shift-backward "move backward")
   ("L" symex-shift-forward "move forward")
   ("K" paredit-raise-sexp "raise")
