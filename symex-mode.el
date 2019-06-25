@@ -57,13 +57,12 @@
   :group 'tools)
 
 (defcustom symex-highlight-p nil
-  "Whether selected symexs should be highlighted."
+  "Whether selected symexes should be highlighted."
   :type 'boolean
   :group 'symex)
 
 (defcustom symex-refocus-p t
-  "Whether to refocus on the selected symexs when it's close
-to the edge of the screen."
+  "Whether to refocus on the selected symex when it's close to the edge of the screen."
   :type 'boolean
   :group 'symex)
 

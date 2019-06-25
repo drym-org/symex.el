@@ -29,7 +29,8 @@
 (defun execute-tree-move (move &optional computation)
   "Execute the specified MOVE at the current point location in the tree.
 
-Evaluates to the actual move executed or nil if no move was executed."
+Evaluates to the actual move executed or nil if no move was executed.
+Optional argument COMPUTATION currently unused."
   (let ((move-x (symex--move-x move))
         (move-y (symex--move-y move)))
     (cond ((> move-x 0)
@@ -45,7 +46,8 @@ Evaluates to the actual move executed or nil if no move was executed."
   "Execute the MOVE as a traversal.
 
 This returns a list of moves (singleton, in this case) rather than the
-executed move itself.  TODO: not sure this is needed anymore."
+executed move itself.  TODO: not sure this is needed anymore.
+Optional argument COMPUTATION currently unused."
   (let ((executed-move (execute-tree-move move computation)))
     (when executed-move
       (list executed-move))))
