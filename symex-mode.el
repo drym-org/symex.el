@@ -470,9 +470,6 @@ to the edge of the screen."
   ("<return>" symex-mode-enter-lower "enter lower level" :exit t)
   ("<escape>" symex-mode-escape-higher "escape to higher level" :exit t))
 
-(global-set-key (kbd "s-y") 'hydra-symex/body)  ; since y looks like inverted lambda
-(global-set-key (kbd "s-;") 'hydra-symex/body)  ; since y is hard to reach
-
 
 (provide 'symex-mode)
 ;;; symex-mode.el ends here
