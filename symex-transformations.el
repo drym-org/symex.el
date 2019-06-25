@@ -1,11 +1,37 @@
-;;; -*- lexical-binding: t -*-
+;;; symex-transformations.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+;;
+;; Standard mutative operations to be performed on symexes.
+;;
+
+;;; Code:
+
+
+(require 'paredit)
+(require 'lispy)
+(require 'evil)
+(require 'smartparens)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TRANSFORMATIONS ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun symex-delete ()
-  "Delete symex"
+  "Delete symex."
   (interactive)
   (sp-kill-sexp nil)
   (cond ((or (current-line-empty-p)  ; ^<>$
@@ -27,13 +53,13 @@
   (symex-tidy))
 
 (defun symex-change ()
-  "Change symex"
+  "Change symex."
   (interactive)
   (kill-sexp 1)
   (evil-insert-state))
 
 (defun symex-replace ()
-  "Replace contents of symex"
+  "Replace contents of symex."
   (interactive)
   (let ((move (symex-go-in)))
     (if move
@@ -42,7 +68,7 @@
       (evil-insert-state))))
 
 (defun symex-spit-backward ()
-  "Spit backward"
+  "Spit backward."
   (interactive)
   (when (and (lispy-left-p)
              (not (symex-empty-list-p)))
@@ -56,7 +82,7 @@
       (symex-go-out))))
 
 (defun symex-spit-forward ()
-  "Spit forward"
+  "Spit forward."
   (interactive)
   (when (and (lispy-left-p)
              (not (symex-empty-list-p)))
@@ -69,7 +95,7 @@
       (re-search-backward lispy-left))))
 
 (defun symex-slurp-backward ()
-  "Slurp from behind"
+  "Slurp from behind."
   (interactive)
   (when (lispy-left-p)
     (if (symex-empty-list-p)
@@ -80,7 +106,7 @@
     (symex-go-out)))
 
 (defun symex-slurp-forward ()
-  "Slurp from the front"
+  "Slurp from the front."
   (interactive)
   (when (lispy-left-p)
     (save-excursion
@@ -97,7 +123,10 @@
     (paredit-join-sexps)))
 
 (defun symex-join-lines (&optional backwards)
-  "Join lines inside symex."
+  "Join lines inside symex.
+
+If BACKWARDS is true, then joins current symex to previous one, otherwise,
+by default, joins next symex to current one."
   (interactive)
   (let ((original-column (current-column)))
     (save-excursion
@@ -121,7 +150,7 @@
   (lispy-new-copy))
 
 (defun symex-paste-before ()
-  "Paste before symex"
+  "Paste before symex."
   (interactive)
   (let ((extra-to-append
          (cond ((or (and (point-at-indentation-p)
@@ -140,7 +169,7 @@
         (symex-tidy)))))
 
 (defun symex-paste-after ()
-  "Paste after symex"
+  "Paste after symex."
   (interactive)
   (let ((extra-to-prepend
          (cond ((or (and (point-at-indentation-p)
@@ -161,14 +190,14 @@
       (symex-go-forward))))
 
 (defun symex-open-line-after ()
-  "Open new line after symex"
+  "Open new line after symex."
   (interactive)
   (forward-sexp)
   (newline-and-indent)
   (evil-insert-state))
 
 (defun symex-open-line-before ()
-  "Open new line before symex"
+  "Open new line before symex."
   (interactive)
   (newline-and-indent)
   (evil-previous-line)
@@ -204,7 +233,9 @@
            (evil-insert 1 nil nil))))
 
 (defun symex-create (type)
-  "Create new symex (list)."
+  "Create new symex (list).
+
+New list delimiters are determined by the TYPE."
   (interactive)
   (save-excursion
     (cond ((equal type 'round)
@@ -230,25 +261,25 @@
   (paredit-splice-sexp-killing-backward))
 
 (defun symex-wrap-round ()
-  "Wrap with ()"
+  "Wrap with ()."
   (interactive)
   (paredit-wrap-round)
   (symex-go-out))
 
 (defun symex-wrap-square ()
-  "Wrap with []"
+  "Wrap with []."
   (interactive)
   (paredit-wrap-square)
   (symex-go-out))
 
 (defun symex-wrap-curly ()
-  "Wrap with {}"
+  "Wrap with {}."
   (interactive)
   (paredit-wrap-curly)
   (evil-find-char-backward nil 123))
 
 (defun symex-wrap-angled ()
-  "Wrap with <>"
+  "Wrap with <>."
   (interactive)
   (paredit-wrap-angled)
   (evil-find-char-backward nil 60))
@@ -277,7 +308,7 @@
       (symex-go-backward))))
 
 (defun symex-change-delimiter ()
-  "Change delimiter enclosing current symex, e.g. round -> square brackets"
+  "Change delimiter enclosing current symex, e.g. round -> square brackets."
   (interactive)
   (evil-surround-change (following-char)))
 
@@ -296,4 +327,6 @@
                      2)))
   (symex-select-nearest))
 
+
 (provide 'symex-transformations)
+;;; symex-transformations.el ends here

@@ -3,6 +3,7 @@
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/countvajhula/symex-mode
 ;; Version: 0.1
+;; Package-Requires ((cl-lib "1.0") (lispy "0.26.0) (paredit "24") (evil-cleverparens "20170718.413") (dash-functional "2.15.0") (evil "20180914.1216") (smartparens "20181007.1501"))
 ;; Keywords: lisp, evil
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -406,6 +407,7 @@ to the edge of the screen."
 
 (global-set-key (kbd "s-y") 'hydra-symex/body)  ; since y looks like inverted lambda
 (global-set-key (kbd "s-;") 'hydra-symex/body)  ; since y is hard to reach
+
 
 (provide 'symex-mode)
 ;;; symex-mode.el ends here

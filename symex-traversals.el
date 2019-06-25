@@ -1,11 +1,35 @@
-;;; -*- lexical-binding: t -*-
+;;; symex-traversals.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+;;
+;; Common traversals for symexes.
+;;
+
+;;; Code:
+
+
+(require 'symex-data)
+(require 'symex-primitives)
 
 ;;;;;;;;;;;;;;;;;;
 ;;; TRAVERSALS ;;;
 ;;;;;;;;;;;;;;;;;;
 
 (defun symex-goto-first ()
-  "Select first symex at present level"
+  "Select first symex at present level."
   (interactive)
   (let ((traversal
          (symex-make-circuit
@@ -14,7 +38,7 @@
   (point))
 
 (defun symex-goto-last ()
-  "Select last symex at present level"
+  "Select last symex at present level."
   (interactive)
   (let ((traversal
          (symex-make-circuit
@@ -52,7 +76,7 @@
 (defun symex-traverse-forward (&optional flow)
   "Traverse symex as a tree, using pre-order traversal.
 
-If FLOW is true, continue from one tree to another. Otherwise, stop at end of
+If FLOW is true, continue from one tree to another.  Otherwise, stop at end of
 current rooted tree."
   (interactive)
   (let ((exit-until-root
@@ -82,7 +106,7 @@ current rooted tree."
 (defun symex-traverse-backward (&optional flow)
   "Traverse symex as a tree, using converse post-order traversal.
 
-If FLOW is true, continue from one tree to another. Otherwise, stop at root of
+If FLOW is true, continue from one tree to another.  Otherwise, stop at root of
 current tree."
   (interactive)
   (let* ((postorder-in
@@ -111,30 +135,8 @@ current tree."
         (message "%s" result)
         result))))
 
-(defun symex-traverse-subtree ()
-  "Traverse symex subtree indicated by point, and return a data structure
-representing the tree.
-
-Representation:
-    Node:
-    - (value, point location)
-    - left
-    - right "
-  (interactive)
-  )
-
 (defun symex-switch-branch-backward ()
   "Switch branch backward."
-  (interactive)
-  (let ((index (symex-index))
-        (closest-index -1)
-        (best-branch-position (point)))
-    (symex-goto-outermost)
-    (symex-traverse-forward)
-  (save-excursion)))
-
-(defun symex-switch-branch-backward ()
-  "Switch branch backward"
   (interactive)
   (let ((index (symex-index))
         (closest-index -1)
@@ -158,7 +160,7 @@ Representation:
   (switch-backward))
 
 (defun symex-switch-branch-forward ()
-  "Switch branch forward"
+  "Switch branch forward."
   (interactive)
   (let ((index (symex-index)))
     (symex-go-out)
@@ -166,4 +168,6 @@ Representation:
     (symex-go-in)
     (symex-go-forward index)))
 
+
 (provide 'symex-traversals)
+;;; symex-traversals.el ends here

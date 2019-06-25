@@ -1,11 +1,32 @@
-;;; -*- lexical-binding: t -*-
+;;; symex-misc.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+;;
+;; Miscellaneous Lisp editing-related features
+;;
+
+;;; Code:
+
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;;; MISCELLANEOUS ;;;
 ;;;;;;;;;;;;;;;;;;;;;
 
 (defun symex-evaluate ()
-  "Evaluate Symex"
+  "Evaluate Symex."
   (interactive)
   (save-excursion
     (forward-sexp)  ; selected symexes will have the cursor on the starting paren
@@ -18,7 +39,7 @@
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-evaluate-definition ()
-  "Evaluate top-level definition"
+  "Evaluate entire containing symex definition."
   (interactive)
   (cond ((equal major-mode 'racket-mode)
          (racket-send-definition nil))
@@ -73,7 +94,7 @@
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
 (defun symex-select-nearest ()
-  "Select symex nearest to point"
+  "Select symex nearest to point."
   (interactive)
   (cond ((and (not (eobp))
               (save-excursion (forward-char) (lispy-right-p)))  ; |)
@@ -92,7 +113,9 @@
   (point))
 
 (defun symex-refocus (&optional smooth-scroll)
-  "Move screen to put symex in convenient part of the view."
+  "Move screen to put symex in convenient part of the view.
+
+If SMOOTH-SCROLL is set, then scroll the view gently to aid in visual tracking."
   (interactive)
   ;; Note: window-text-height is not robust to zooming
   (let* ((window-focus-line-number (/ (window-text-height)
@@ -112,7 +135,7 @@
                window-current-line-number
                window-lower-view-bound)
       (if smooth-scroll
-          (dotimes (i (/ (abs window-scroll-delta)
+          (dotimes (_ (/ (abs window-scroll-delta)
                          3))
             (condition-case nil
                 (evil-scroll-line-down (if (> window-scroll-delta 0)
@@ -131,7 +154,11 @@
     (mark-sexp)))
 
 (defun symex-selection-advice (orig-fn &rest args)
-  "Attach symex selection side effects to functions that select symexes."
+  "Attach symex selection side effects to a given function.
+
+ORIG-FN could be any function that results in a symex being selected.
+ARGS are the arguments that were passed to ORIG-FN (as any advice function
+is expected to handle in Emacs)."
   (interactive)
   (let ((result (apply orig-fn args)))
     (symex--selection-side-effects)
@@ -149,4 +176,6 @@
 (advice-add 'symex-traverse-backward :around 'symex-selection-advice)
 (advice-add 'symex-select-nearest :around 'symex-selection-advice)
 
+
 (provide 'symex-misc)
+;;; symex-misc.el ends here

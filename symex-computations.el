@@ -1,11 +1,34 @@
-;;; -*- lexical-binding: t -*-
+;;; symex-computations.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+;;
+;; Standard computations that can be performed as part of traversing symexes.
+;;
+
+;;; Code:
+
+
+(require 'symex-data)
 
 ;;;;;;;;;;;;;;;;;;;;
 ;;; COMPUTATIONS ;;;
 ;;;;;;;;;;;;;;;;;;;;
 
 (defun symex--type-integer (obj)
-  "Convert an object to the integer type."
+  "Convert an object OBJ to the integer type."
   (cond ((integerp obj)
          obj)
         ((stringp obj)
@@ -15,7 +38,7 @@
         (t (error "Unexpected type %s in integer type conversion!" obj))))
 
 (defun symex--type-list (obj)
-  "Convert an object to the list type."
+  "Convert an object OBJ to the list type."
   (cond ((is-traversal? obj)
          (list obj))
         ((listp obj)
@@ -61,35 +84,39 @@ computation (each of the 'expressed' type) to yield the final result
         act))
 
 (defun symex--computation-components (computation)
-  "The components of the computation."
+  "The components of the COMPUTATION."
   (nth 1 computation))
 
 (defun symex--computation-perceive (computation)
-  "The perception procedure of the computation."
+  "The perception procedure of the COMPUTATION."
   (nth 2 computation))
 
 (defun symex--computation-select (computation)
-  "The selection procedure of the computation."
+  "The selection procedure of the COMPUTATION."
   (nth 3 computation))
 
 (defun symex--computation-filter (computation)
-  "The filtration/redaction procedure of the computation."
+  "The filtration/redaction procedure of the COMPUTATION."
   (nth 4 computation))
 
 (defun symex--computation-decide (computation)
-  "The decision procedure of the computation."
+  "The decision procedure of the COMPUTATION."
   (nth 5 computation))
 
 (defun symex--computation-express (computation)
-  "The expression procedure of the computation."
+  "The expression procedure of the COMPUTATION."
   (nth 6 computation))
 
 (defun symex--computation-act (computation)
-  "The act procedure of the computation."
+  "The act procedure of the COMPUTATION."
   (nth 7 computation))
 
 (defun symex--ruminate (computation components input)
-  "Helper to process input in nested computations."
+  "Helper to process input in nested computations.
+
+COMPUTATION - the computation
+COMPONENTS - the components of the computation
+INPUT - the input."
   (let ((current (car components))
         (remaining (cdr components)))
     (if current
@@ -107,7 +134,7 @@ computation (each of the 'expressed' type) to yield the final result
                                   input)))
     (let ((components (symex--computation-components computation)))
       (funcall (symex--computation-express computation)
-               (symex--ruminate components perceived-input)))))
+               (symex--ruminate computation components perceived-input)))))
 
 (defconst computation-default
   ;; each result is wrapped in a list
@@ -116,7 +143,7 @@ computation (each of the 'expressed' type) to yield the final result
                           :act #'append))
 
 (defun symex--traversal-account (obj)
-  "Represents the result of a traversal as a traversal."
+  "Represents the result OBJ of a traversal as a traversal."
   (cond ((is-traversal? obj)
          obj)
         (t (apply #'symex-make-maneuver obj))))
@@ -130,7 +157,7 @@ computation (each of the 'expressed' type) to yield the final result
 ;;                           :f-from-aggregation #'car))
 
 (defun symex--simplify-maneuver-phases (phases)
-  "Helper to flatten maneuver to moves."
+  "Helper to flatten maneuver PHASES to moves."
   (when phases
     (let ((phase (car phases))
           (remaining-phases (cdr phases)))
@@ -142,7 +169,7 @@ computation (each of the 'expressed' type) to yield the final result
                 (symex--simplify-maneuver-phases remaining-phases))))))
 
 (defun symex--simplify-maneuver (maneuver)
-  "Reduce a complex maneuver to a flat maneuver whose phases are moves."
+  "Reduce a complex MANEUVER to a flat maneuver whose phases are moves."
   (let ((phases (symex--maneuver-phases maneuver)))
     (let* ((simplified-phases (symex--simplify-maneuver-phases phases))
            (maneuver-length (length simplified-phases)))
@@ -153,7 +180,7 @@ computation (each of the 'expressed' type) to yield the final result
              (apply #'symex-make-maneuver simplified-phases))))))
 
 (defun symex--interpret-simple-traversal (traversal)
-  "Interpret a traversal as a single, flat maneuver or move."
+  "Interpret a TRAVERSAL as a single, flat maneuver or move."
   (cond ((is-maneuver? traversal)
          (symex--simplify-maneuver traversal))
         ((is-move? traversal)
@@ -172,14 +199,14 @@ computation (each of the 'expressed' type) to yield the final result
 (defun symex--streamline-to-maneuver (maneuver-or-move)
   "Streamline traversal to a representation as a maneuver.
 
-If the argument is a maneuver, leave as is.
+If MANEUVER-OR-MOVE is a maneuver, leave as is.
 If it is a move, convert to the equivalent maneuver (via simple casting)."
   (if (is-move? maneuver-or-move)
       (symex-make-maneuver maneuver-or-move)
     maneuver-or-move))
 
 (defun my-add-numbers (&rest numbers)
-  "Sum numbers."
+  "Sum NUMBERS."
   (apply #'+ numbers))
 
 ;; (defconst computation-length
@@ -197,4 +224,6 @@ If it is a move, convert to the equivalent maneuver (via simple casting)."
 ;;                           :reduce #'my-add-numbers
 ;;                           :f-from-aggregation #'car))
 
+
 (provide 'symex-computations)
+;;; symex-computations.el ends here

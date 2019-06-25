@@ -1,4 +1,26 @@
-;;; -*- lexical-binding: t -*-
+;;; symex-evaluator.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+;;
+;; An interpreter to execute symex traversals.
+;;
+
+;;; Code:
+
+(require 'symex-data)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; EVALUATION AND EXECUTION ;;;
@@ -20,8 +42,10 @@ Evaluates to the actual move executed or nil if no move was executed."
            (symex-exit (abs move-y))))))
 
 (defun symex-execute-move (move &optional computation)
-  "Execute the move as a traversal, i.e. such that it returns a list
-of moves (singleton, in this case) rather than the executed move itself."
+  "Execute the MOVE as a traversal.
+
+This returns a list of moves (singleton, in this case) rather than the
+executed move itself.  TODO: not sure this is needed anymore."
   (let ((executed-move (execute-tree-move move computation)))
     (when executed-move
       (list executed-move))))
@@ -47,8 +71,9 @@ of moves (singleton, in this case) rather than the executed move itself."
   (execute-tree-move (symex-make-move 0 (- count))))
 
 (defun symex--compute-results (a b computation)
-  "Combine component computed results A and B into an aggregate result,
-according to the specified COMPUTATION."
+  "Combine component computed results A and B into an aggregate result.
+
+The aggregate result is constructed according to the specified COMPUTATION."
   ;; TODO: ruminate here
   ;; a and b should each have as many elements as the number of components
   ;; in the computation
@@ -61,10 +86,10 @@ according to the specified COMPUTATION."
   "Attempt to execute a given MANEUVER.
 
 Attempts the maneuver in the order of its phases, accepting partial completion
-of phases. If any phase fails entirely, then the maneuver it is part of is
+of phases.  If any phase fails entirely, then the maneuver it is part of is
 terminated at that step.
 
-Evaluates to the maneuver actually executed."
+Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((phases (symex--maneuver-phases maneuver)))
     (when phases
       (let ((current-phase (car phases))
@@ -80,9 +105,11 @@ Evaluates to the maneuver actually executed."
                                       computation))))))))
 
 (defun symex-execute-circuit (circuit computation)
-  "Execute a circuit.
+  "Execute a CIRCUIT.
 
-This repeats some traversal as specified."
+This repeats some traversal as specified.
+
+Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((traversal (symex--circuit-traversal circuit))
         (times (symex--circuit-times circuit)))
     (when (or (not times)  ; loop indefinitely
@@ -107,7 +134,9 @@ This repeats some traversal as specified."
 Apply a reorientation and then attempt the traversal.
 
 If the traversal fails, then the reorientation is attempted as many times as
-necessary until either it succeeds, or the reorientation fails."
+necessary until either it succeeds, or the reorientation fails.
+
+Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((reorientation (symex--detour-reorientation detour))
         (traversal (symex--detour-traversal detour)))
     (let ((executed-reorientation (symex-execute-traversal reorientation)))
@@ -127,7 +156,7 @@ necessary until either it succeeds, or the reorientation fails."
 The traversal is only executed if PRE-CONDITION holds, and is reversed if
 POST-CONDITION does not hold after the provisional execution of the traversal.
 
-Evaluates to the maneuver actually executed."
+Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((traversal (symex--precaution-traversal precaution))
         (pre-condition (symex--precaution-pre-condition precaution))
         (post-condition (symex--precaution-post-condition precaution)))
@@ -138,10 +167,12 @@ Evaluates to the maneuver actually executed."
           executed-traversal)))))
 
 (defun symex-execute-protocol (protocol computation)
-  "Given a protocol including a set of options, attempt to execute them
+  "Attempt to execute a given PROTOCOL.
+
+Given a protocol including a set of options, attempt to execute them
 in order until one succeeds.
 
-Evaluates to the maneuver actually executed."
+Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((options (symex--protocol-options protocol)))
     (when options
       (let ((option (car options))
@@ -155,7 +186,9 @@ Evaluates to the maneuver actually executed."
                                      computation)))))))
 
 (defun symex-execute-traversal (traversal &optional computation)
-  "Execute a tree traversal."
+  "Execute a tree TRAVERSAL.
+
+Evaluates to a COMPUTATION on the traversal actually executed."
   (let ((computation (if computation
                          computation
                        computation-default)))
@@ -185,4 +218,6 @@ Evaluates to the maneuver actually executed."
           (goto-char original-location))
         result))))
 
+
 (provide 'symex-evaluator)
+;;; symex-evaluator.el ends here
