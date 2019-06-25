@@ -52,25 +52,25 @@
 ;;; CONFIGURATION ;;;
 ;;;;;;;;;;;;;;;;;;;;;
 
-(defgroup symex-mode nil
+(defgroup symex nil
   "A language for editing symbolic expressions."
   :group 'tools)
 
 (defcustom symex-highlight-p nil
   "Whether selected symexs should be highlighted."
   :type 'boolean
-  :group 'symex-mode)
+  :group 'symex)
 
 (defcustom symex-refocus-p t
   "Whether to refocus on the selected symexs when it's close
 to the edge of the screen."
   :type 'boolean
-  :group 'symex-mode)
+  :group 'symex)
 
 (defcustom symex-smooth-scroll-p nil
   "Whether refocusing should happen smoothly or abruptly."
   :type 'boolean
-  :group 'symex-mode)
+  :group 'symex)
 
 ;; use paredit balancing behavior in insert mode
 ;; in all lisp modes
