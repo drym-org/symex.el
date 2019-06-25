@@ -37,14 +37,6 @@
 
 ;;; Code:
 
-;;; TODO: consider using S for dragging and C for movement (and then across all modes)
-;;; TODO: move back/forward through tree "at same level" without going up or down (i.e. switch branches, ideally preserving position index within branch)
-;;; TODO: traverse tree with side effect (traversal-method, side-effect-fn), to use for "indent forward" on paste
-;;; TODO: incorporate more clear tree-related terminology
-;;; TODO: C-j to move in greedily, going forward
-;;; TODO: handle "contracts" of each abstraction level, and where conditions should go, rename functions for clarity. legitimate detours vs conditional itineraries, vs conditional motions
-;;; TODO: take a symex and bring it out and before/after as a peer of the parent
-;;; TODO: my-tidy-symex has edge cases in indenting from evil-cp-a-form, where symex begins with : (keyword arg) or #'
 (require 'lispy)
 (require 'paredit)
 (require 'evil-cleverparens)  ;; really only need cp-textobjects here
