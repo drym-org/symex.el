@@ -116,7 +116,13 @@ to the edge of the screen."
 ;;       'insert
 ;;       mode-map
 ;;       (kbd "<backspace>")
-;;       'paredit-backward-delete)))
+;;       'paredit-backward-delete)
+
+;;     (evil-define-key
+;;       'insert
+;;       lisp-interaction-mode-map
+;;       (kbd "\"")
+;;       'paredit-doublequote)))
 
 ;; this doesn't work either...
 ;; (let ((mode-map (if (boundp mode-map-name)
@@ -154,6 +160,12 @@ to the edge of the screen."
     (kbd "<backspace>")
     'paredit-backward-delete)
 
+(evil-define-key
+    'insert
+    lisp-interaction-mode-map
+    (kbd "\"")
+    'paredit-doublequote)
+
 ;; emacs lisp mode
 (evil-define-key
     'insert
@@ -184,6 +196,12 @@ to the edge of the screen."
     emacs-lisp-mode-map
     (kbd "<backspace>")
     'paredit-backward-delete)
+
+(evil-define-key
+    'insert
+    emacs-lisp-mode-map
+    (kbd "\"")
+    'paredit-doublequote)
 
 ;; inferior emacs lisp mode
 (evil-define-key
@@ -216,6 +234,12 @@ to the edge of the screen."
     (kbd "<backspace>")
     'paredit-backward-delete)
 
+(evil-define-key
+    'insert
+    inferior-emacs-lisp-mode-map
+    (kbd "\"")
+    'paredit-doublequote)
+
 ;; racket mode
 (evil-define-key
     'insert
@@ -246,6 +270,12 @@ to the edge of the screen."
     racket-mode-map
     (kbd "<backspace>")
     'paredit-backward-delete)
+
+(evil-define-key
+    'insert
+    racket-mode-map
+    (kbd "\"")
+    'paredit-doublequote)
 
 ;; racket repl mode
 (evil-define-key
@@ -278,6 +308,12 @@ to the edge of the screen."
     (kbd "<backspace>")
     'paredit-backward-delete)
 
+(evil-define-key
+    'insert
+    racket-repl-mode-map
+    (kbd "\"")
+    'paredit-doublequote)
+
 ;; scheme mode
 (evil-define-key
     'insert
@@ -308,6 +344,12 @@ to the edge of the screen."
     scheme-mode-map
     (kbd "<backspace>")
     'paredit-backward-delete)
+
+(evil-define-key
+    'insert
+    scheme-mode-map
+    (kbd "\"")
+    'paredit-doublequote)
 
 (defhydra hydra-symex (:idle 1.0
                        :columns 5
