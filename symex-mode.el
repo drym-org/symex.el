@@ -351,6 +351,29 @@ to the edge of the screen."
     (kbd "\"")
     'paredit-doublequote)
 
+(defun symex-mode-escape-higher ()
+  "Exit symex mode via an 'escape'."
+  (interactive)
+  (cond ((and (boundp 'epistemic-mode)
+              epistemic-mode)
+         (eem-enter-higher-level))
+        ((and (boundp 'evil-mode)
+              evil-mode)
+         (evil-normal-state))
+        (t (evil-emacs-state))))
+
+(defun symex-mode-enter-lower ()
+  "Exit symex mode via an 'enter'."
+  (interactive)
+  (cond ((and (boundp 'epistemic-mode)
+              epistemic-mode)
+         (eem-enter-lower-level))
+        ((and (boundp 'evil-mode)
+              evil-mode)
+         (evil-insert-state))
+        (t (evil-emacs-state))))
+
+
 (defhydra hydra-symex (:idle 1.0
                        :columns 5
                        :color pink
@@ -444,8 +467,8 @@ to the edge of the screen."
   ("C-v" evil-visual-block nil :exit t)
   ;; standard exits
   ("?" symex-describe "info")
-  ("<return>" eem-enter-lower-level "enter lower level" :exit t)
-  ("<escape>" eem-enter-higher-level "escape to higher level" :exit t))
+  ("<return>" symex-mode-enter-lower "enter lower level" :exit t)
+  ("<escape>" symex-mode-escape-higher "escape to higher level" :exit t))
 
 (global-set-key (kbd "s-y") 'hydra-symex/body)  ; since y looks like inverted lambda
 (global-set-key (kbd "s-;") 'hydra-symex/body)  ; since y is hard to reach
