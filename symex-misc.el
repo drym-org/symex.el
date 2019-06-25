@@ -31,22 +31,22 @@
   (save-excursion
     (forward-sexp)  ; selected symexes will have the cursor on the starting paren
     (cond ((equal major-mode 'racket-mode)
-           (my-racket-eval-symex))
+           (symex-eval-racket))
           ((member major-mode elisp-modes)
-           (my-elisp-eval-symex))
+           (symex-eval-elisp))
           ((equal major-mode 'scheme-mode)
-           (my-scheme-eval-symex))
+           (symex-eval-scheme))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-evaluate-definition ()
   "Evaluate entire containing symex definition."
   (interactive)
   (cond ((equal major-mode 'racket-mode)
-         (racket-send-definition nil))
+         (symex-eval-definition-racket))
         ((member major-mode elisp-modes)
-         (eval-defun nil))
+         (symex-eval-definition-elisp))
         ((equal major-mode 'scheme-mode)
-         (geiser-eval-definition nil))
+         (symex-eval-definition-scheme))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
 (defun symex-evaluate-pretty ()
@@ -55,11 +55,11 @@
   (save-excursion
     (forward-sexp)  ; selected symexes will have the cursor on the starting paren
     (cond ((equal major-mode 'racket-mode)
-           (my-racket-eval-symex-pretty))
+           (symex-eval-pretty-racket))
           ((member major-mode elisp-modes)
-           (my-elisp-eval-symex))
+           (symex-eval-pretty-elisp))
           ((equal major-mode 'scheme-mode)
-           (my-scheme-eval-symex))
+           (symex-eval-pretty-scheme))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-eval-print ()
@@ -75,22 +75,22 @@
   (save-excursion
     (forward-sexp)  ; selected symexes will have the cursor on the starting paren
     (cond ((equal major-mode 'racket-mode)
-           (my-racket-describe-symbol))
+           (symex-describe-symbol-racket))
           ((member major-mode elisp-modes)
-           (my-elisp-describe-symbol))
+           (symex-describe-symbol-elisp))
           ((equal major-mode 'scheme-mode)
-           (my-scheme-describe-symbol))
+           (symex-describe-symbol-scheme))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-repl ()
   "Go to REPL."
   (interactive)
   (cond ((equal major-mode 'racket-mode)
-         (racket-repl))
+         (symex-repl-racket))
         ((member major-mode elisp-modes)
-         (my-lisp-repl))
+         (symex-repl-elisp))
         ((equal major-mode 'scheme-mode)
-         (geiser-mode-switch-to-repl))
+         (symex-repl-scheme))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
 (defun symex-select-nearest ()
