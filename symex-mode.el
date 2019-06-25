@@ -6,18 +6,14 @@
 ;; Package-Requires ((cl-lib "1.0") (lispy "0.26.0) (paredit "24") (evil-cleverparens "20170718.413") (dash-functional "2.15.0") (evil "20180914.1216") (smartparens "20181007.1501"))
 ;; Keywords: lisp, evil
 
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;; This program is "part of the world," in the sense described at
+;; http://drym.org.  From your perspective, this is no different than
+;; MIT or BSD or other such "liberal" licenses that you may be
+;; familiar with, that is to say, you are free to do whatever you like
+;; with this program.  It is much more than BSD or MIT, however, in
+;; that it isn't a license at all but an idea about the world and how
+;; economic systems could be set up so that everyone wins.  Learn more
+;; at drym.org.
 
 ;;; Commentary:
 ;;
