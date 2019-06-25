@@ -21,6 +21,9 @@
 ;;; Code:
 
 
+(require 'evil)
+
+
 (defun symex-eval-elisp ()
   "Eval Elisp symex."
   (interactive)
@@ -43,7 +46,7 @@
 (defun symex-repl-elisp ()
   "Enter elisp REPL, context-aware.
 
-If there is only one window, open REPL in a new window. Otherwise
+If there is only one window, open REPL in a new window.  Otherwise
 open in current window."
   (interactive)
   (when (= (length (window-list))

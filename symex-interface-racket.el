@@ -21,10 +21,13 @@
 ;;; Code:
 
 
+(require 'racket-mode)
+
+
 (defun symex-eval-racket ()
   "Eval last sexp.
 
-Accounts for different point location in evil vs emacs mode."
+Accounts for different point location in evil vs Emacs mode."
   (interactive)
   (save-excursion
     (when (equal evil-state 'normal)
@@ -49,7 +52,7 @@ Accounts for different point location in evil vs emacs mode."
     (racket--send-to-repl pretty-code)))
 
 (defun symex-describe-symbol-racket ()
-  "Describe symbol at point"
+  "Describe symbol at point."
   (interactive)
   (racket-describe nil))
 

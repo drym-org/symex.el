@@ -21,8 +21,11 @@
 ;;; Code:
 
 
+(require 'geiser-mode)
+
+
 (defun symex-eval-scheme ()
-  "Eval Scheme symex"
+  "Eval Scheme symex."
   (interactive)
   (geiser-eval-last-sexp nil))
 
@@ -36,7 +39,7 @@
   (symex-eval-scheme))
 
 (defun symex-describe-symbol-scheme ()
-  "Describe symbol at point"
+  "Describe symbol at point."
   (interactive)
   (geiser-doc-symbol-at-point))
 
