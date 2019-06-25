@@ -466,5 +466,12 @@
   ("<escape>" symex-mode-escape-higher "escape to higher level" :exit t))
 
 
+;;;###autoload
+(defun symex-mode ()
+  "Enter symex mode."
+  (interactive)
+  (hydra-symex/body))
+
+
 (provide 'symex-mode)
 ;;; symex-mode.el ends here
