@@ -48,4 +48,5 @@
   (geiser-mode-switch-to-repl))
 
 
+(provide 'symex-interface-scheme)
 ;;; symex-interface-scheme.el ends here

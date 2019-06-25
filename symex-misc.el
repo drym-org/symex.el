@@ -21,6 +21,15 @@
 ;;; Code:
 
 
+(require 'lispy)
+(require 'evil)
+(require 'symex-primitives)
+(require 'symex-evaluator)
+(require 'symex-interface-elisp)
+(require 'symex-interface-racket)
+(require 'symex-interface-scheme)
+
+
 ;;;;;;;;;;;;;;;;;;;;;
 ;;; MISCELLANEOUS ;;;
 ;;;;;;;;;;;;;;;;;;;;;

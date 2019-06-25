@@ -56,4 +56,5 @@ open in current window."
   (ielm))
 
 
+(provide 'symex-interface-elisp)
 ;;; symex-interface-elisp.el ends here

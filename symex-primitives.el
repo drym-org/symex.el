@@ -28,7 +28,6 @@
 (require 'lispy)
 (require 'paredit)
 (require 'symex-evaluator)
-(require 'symex-misc)
 
 ;;;;;;;;;;;;;;;;;;
 ;;; PRIMITIVES ;;;
@@ -96,20 +95,6 @@
     (and (lispy-left-p)
          (progn (forward-char 2) ;; need to go forward by 2 for some reason
                 (lispy-right-p)))))
-
-(defun symex-index ()  ; TODO: may be better framed as a computation
-  "Get relative (from start of containing symex) index of current symex."
-  (interactive)
-  (save-excursion
-    (symex-select-nearest)
-    (let ((original-location (point)))
-      (let ((current-location (symex-goto-first))
-            (result 0))
-        (while (< current-location original-location)
-          (symex-go-forward)
-          (setq current-location (point))
-          (setq result (1+ result)))
-        result))))
 
 (defun symex--forward-one ()
   "Forward one symex."

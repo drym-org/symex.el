@@ -61,4 +61,5 @@ Accounts for different point location in evil vs Emacs mode."
   (racket-repl))
 
 
+(provide 'symex-interface-racket)
 ;;; symex-interface-racket.el ends here
