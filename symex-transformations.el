@@ -123,40 +123,42 @@
 (defun symex-paste-before ()
   "Paste before symex"
   (interactive)
-  (cond ((or (and (point-at-indentation-p)
-                  (not (bolp)))
-             (save-excursion (forward-sexp)
-                             (eolp)))
-         (setq extra-to-append "\n"))
-        (t (setq extra-to-append " ")))
-  (with-undo-collapse
-    (save-excursion
+  (let ((extra-to-append
+         (cond ((or (and (point-at-indentation-p)
+                         (not (bolp)))
+                    (save-excursion (forward-sexp)
+                                    (eolp)))
+                "\n")
+               (t " "))))
+    (with-undo-collapse
       (save-excursion
-        (evil-paste-before nil nil)
-        (forward-char)
-        (insert extra-to-append))
-      (symex-go-forward)
-      (symex-tidy))))
+        (save-excursion
+          (evil-paste-before nil nil)
+          (forward-char)
+          (insert extra-to-append))
+        (symex-go-forward)
+        (symex-tidy)))))
 
 (defun symex-paste-after ()
   "Paste after symex"
   (interactive)
-  (cond ((or (and (point-at-indentation-p)
-                  (not (bolp)))
-             (save-excursion (forward-sexp)
-                             (eolp)))
-         (setq extra-to-prepend "\n"))
-        (t (setq extra-to-prepend " ")))
-  (with-undo-collapse
-    (save-excursion
+  (let ((extra-to-prepend
+         (cond ((or (and (point-at-indentation-p)
+                         (not (bolp)))
+                    (save-excursion (forward-sexp)
+                                    (eolp)))
+                "\n")
+               (t " "))))
+    (with-undo-collapse
       (save-excursion
-        (forward-sexp)
-        (insert extra-to-prepend)
-        (evil-paste-before nil nil)
-        (forward-char))
-      (symex-go-forward)
-      (symex-tidy))
-    (symex-go-forward)))
+        (save-excursion
+          (forward-sexp)
+          (insert extra-to-prepend)
+          (evil-paste-before nil nil)
+          (forward-char))
+        (symex-go-forward)
+        (symex-tidy))
+      (symex-go-forward))))
 
 (defun symex-open-line-after ()
   "Open new line after symex"
