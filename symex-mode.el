@@ -460,6 +460,7 @@
   ("M-k" symex-goto-outermost "go to outermost")
   ("M-j" symex-goto-innermost "go to innermost")
   ("=" symex-tidy "tidy/indent")
+  ("TAB" symex-tidy "tidy/indent")
   ("A" symex-append-after "append after symex" :exit t)
   ("a" symex-insert-at-end "append inside symex" :exit t)
   ("i" symex-insert-at-beginning "insert inside symex" :exit t)
@@ -477,7 +478,9 @@
   ;; standard exits
   ("?" symex-describe "info")
   ("<return>" symex-mode-enter-lower "enter lower level" :exit t)
+  ("C-k" symex-mode-enter-lower "enter lower level" :exit t)
   ("<escape>" symex-mode-escape-higher "escape to higher level" :exit t))
+  ("C-g" symex-mode-escape-higher "escape to higher level" :exit t))
 
 
 ;;;###autoload
