@@ -75,8 +75,7 @@
 (evil-define-state symex
   "Symex state."
   :tag " <λ> "
-  :message "-- SYMEX --"
-  :enable (normal))
+  :message "-- SYMEX --")
 
 (defvar symex-elisp-modes (list 'lisp-interaction-mode
                                 'emacs-lisp-mode
