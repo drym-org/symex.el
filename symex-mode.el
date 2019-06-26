@@ -77,16 +77,16 @@
   :message "-- SYMEX --"
   :enable (normal))
 
-(defvar elisp-modes (list 'lisp-interaction-mode
-                          'emacs-lisp-mode
-                          'inferior-emacs-lisp-mode))
+(defvar symex-elisp-modes (list 'lisp-interaction-mode
+                                'emacs-lisp-mode
+                                'inferior-emacs-lisp-mode))
 
-(defvar racket-modes (list 'racket-mode
-                           'racket-repl-mode))
+(defvar symex-racket-modes (list 'racket-mode
+                                 'racket-repl-mode))
 
-(defvar lisp-modes (append elisp-modes
-                           racket-modes
-                           (list 'scheme-mode)))
+(defvar symex-lisp-modes (append elisp-modes
+                                 racket-modes
+                                 (list 'scheme-mode)))
 
 ;; use paredit balancing behavior in insert mode
 ;; in all lisp modes

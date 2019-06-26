@@ -39,9 +39,9 @@
   (interactive)
   (save-excursion
     (forward-sexp)  ; selected symexes will have the cursor on the starting paren
-    (cond ((member major-mode racket-modes)
+    (cond ((member major-mode symex-racket-modes)
            (symex-eval-racket))
-          ((member major-mode elisp-modes)
+          ((member major-mode symex-elisp-modes)
            (symex-eval-elisp))
           ((equal major-mode 'scheme-mode)
            (symex-eval-scheme))
@@ -50,9 +50,9 @@
 (defun symex-evaluate-definition ()
   "Evaluate entire containing symex definition."
   (interactive)
-  (cond ((member major-mode racket-modes)
+  (cond ((member major-mode symex-racket-modes)
          (symex-eval-definition-racket))
-        ((member major-mode elisp-modes)
+        ((member major-mode symex-elisp-modes)
          (symex-eval-definition-elisp))
         ((equal major-mode 'scheme-mode)
          (symex-eval-definition-scheme))
@@ -63,9 +63,9 @@
   (interactive)
   (save-excursion
     (forward-sexp)  ; selected symexes will have the cursor on the starting paren
-    (cond ((member major-mode racket-modes)
+    (cond ((member major-mode symex-racket-modes)
            (symex-eval-pretty-racket))
-          ((member major-mode elisp-modes)
+          ((member major-mode symex-elisp-modes)
            (symex-eval-pretty-elisp))
           ((equal major-mode 'scheme-mode)
            (symex-eval-pretty-scheme))
@@ -83,9 +83,9 @@
   (interactive)
   (save-excursion
     (forward-sexp)  ; selected symexes will have the cursor on the starting paren
-    (cond ((member major-mode racket-modes)
+    (cond ((member major-mode symex-racket-modes)
            (symex-describe-symbol-racket))
-          ((member major-mode elisp-modes)
+          ((member major-mode symex-elisp-modes)
            (symex-describe-symbol-elisp))
           ((equal major-mode 'scheme-mode)
            (symex-describe-symbol-scheme))
@@ -94,9 +94,9 @@
 (defun symex-repl ()
   "Go to REPL."
   (interactive)
-  (cond ((member major-mode racket-modes)
+  (cond ((member major-mode symex-racket-modes)
          (symex-repl-racket))
-        ((member major-mode elisp-modes)
+        ((member major-mode symex-elisp-modes)
          (symex-repl-elisp))
         ((equal major-mode 'scheme-mode)
          (symex-repl-scheme))
