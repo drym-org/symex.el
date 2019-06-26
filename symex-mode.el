@@ -77,12 +77,19 @@
   :message "-- SYMEX --"
   :enable (normal))
 
+(defvar elisp-modes (list 'lisp-interaction-mode
+                          'emacs-lisp-mode
+                          'inferior-emacs-lisp-mode))
+
+(defvar racket-modes (list 'racket-mode
+                           'racket-repl-mode))
+
+(defvar lisp-modes (append elisp-modes
+                           racket-modes
+                           (list 'scheme-mode)))
+
 ;; use paredit balancing behavior in insert mode
 ;; in all lisp modes
-
-;; (defvar lisp-modes (append elisp-modes
-;;                            racket-modes
-;;                            (list 'scheme-mode)))
 
 ;; TODO: get this to work so we don't have to duplicate the key
 ;; definitions across all lisp modes

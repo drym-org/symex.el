@@ -39,7 +39,7 @@
   (interactive)
   (save-excursion
     (forward-sexp)  ; selected symexes will have the cursor on the starting paren
-    (cond ((equal major-mode 'racket-mode)
+    (cond ((member major-mode racket-modes)
            (symex-eval-racket))
           ((member major-mode elisp-modes)
            (symex-eval-elisp))
@@ -50,7 +50,7 @@
 (defun symex-evaluate-definition ()
   "Evaluate entire containing symex definition."
   (interactive)
-  (cond ((equal major-mode 'racket-mode)
+  (cond ((member major-mode racket-modes)
          (symex-eval-definition-racket))
         ((member major-mode elisp-modes)
          (symex-eval-definition-elisp))
@@ -63,7 +63,7 @@
   (interactive)
   (save-excursion
     (forward-sexp)  ; selected symexes will have the cursor on the starting paren
-    (cond ((equal major-mode 'racket-mode)
+    (cond ((member major-mode racket-modes)
            (symex-eval-pretty-racket))
           ((member major-mode elisp-modes)
            (symex-eval-pretty-elisp))
@@ -83,7 +83,7 @@
   (interactive)
   (save-excursion
     (forward-sexp)  ; selected symexes will have the cursor on the starting paren
-    (cond ((equal major-mode 'racket-mode)
+    (cond ((member major-mode racket-modes)
            (symex-describe-symbol-racket))
           ((member major-mode elisp-modes)
            (symex-describe-symbol-elisp))
@@ -94,7 +94,7 @@
 (defun symex-repl ()
   "Go to REPL."
   (interactive)
-  (cond ((equal major-mode 'racket-mode)
+  (cond ((member major-mode racket-modes)
          (symex-repl-racket))
         ((member major-mode elisp-modes)
          (symex-repl-elisp))
