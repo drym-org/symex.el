@@ -172,8 +172,8 @@ current tree."
                                          (> current-index
                                             closest-index))
                                 (setq closest-index current-index)
-                                (setq best-branch-position (point)))))))))
-  (switch-backward))
+                                (setq best-branch-position (point))))))))
+    (switch-backward)))
 
 (defun symex-switch-branch-forward ()
   "Switch branch forward."

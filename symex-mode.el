@@ -479,7 +479,7 @@
   ("?" symex-describe "info")
   ("<return>" symex-mode-enter-lower "enter lower level" :exit t)
   ("C-k" symex-mode-enter-lower "enter lower level" :exit t)
-  ("<escape>" symex-mode-escape-higher "escape to higher level" :exit t))
+  ("<escape>" symex-mode-escape-higher "escape to higher level" :exit t)
   ("C-g" symex-mode-escape-higher "escape to higher level" :exit t))
 
 
