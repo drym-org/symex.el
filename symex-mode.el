@@ -71,6 +71,12 @@
   :type 'boolean
   :group 'symex)
 
+(evil-define-state symex
+  "Symex state."
+  :tag " <λ> "
+  :message "-- SYMEX --"
+  :enable (normal))
+
 ;; use paredit balancing behavior in insert mode
 ;; in all lisp modes
 
