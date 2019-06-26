@@ -84,8 +84,8 @@
 (defvar symex-racket-modes (list 'racket-mode
                                  'racket-repl-mode))
 
-(defvar symex-lisp-modes (append elisp-modes
-                                 racket-modes
+(defvar symex-lisp-modes (append symex-elisp-modes
+                                 symex-racket-modes
                                  (list 'scheme-mode)))
 
 ;; use paredit balancing behavior in insert mode
