@@ -38,6 +38,11 @@
   (interactive)
   (symex-eval-scheme))
 
+(defun symex-eval-print-scheme ()
+  "Eval symex and print result in buffer."
+  (interactive)
+  nil)
+
 (defun symex-describe-symbol-scheme ()
   "Describe symbol at point."
   (interactive)

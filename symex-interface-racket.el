@@ -51,6 +51,11 @@ Accounts for different point location in evil vs Emacs mode."
                                   [else result]))"))))
     (racket--send-to-repl pretty-code)))
 
+(defun symex-eval-print-racket ()
+  "Eval symex and print result in buffer."
+  (interactive)
+  nil)
+
 (defun symex-describe-symbol-racket ()
   "Describe symbol at point."
   (interactive)

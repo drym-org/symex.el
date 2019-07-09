@@ -76,7 +76,13 @@
   (interactive)
   (save-excursion
     (forward-sexp)
-    (eval-print-last-sexp)))
+    (cond ((member major-mode symex-racket-modes)
+           (symex-eval-print-racket))
+          ((member major-mode symex-elisp-modes)
+           (symex-eval-print-elisp))
+          ((equal major-mode 'scheme-mode)
+           (symex-eval-print-scheme))
+          (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-describe ()
   "Lookup doc on symex."
