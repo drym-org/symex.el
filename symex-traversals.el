@@ -75,18 +75,10 @@
 ;; (or ideally, do an arbitrary structural computation) as part of this traversal?
 ;; key is, it has to be inferrable from inputs and outputs alone, i.e. specifically
 ;; from the result of invocation of e.g. forward-symex
-(defun symex-traverse-forward (&optional flow)
-  "Traverse symex as a tree, using pre-order traversal.
-
-If FLOW is true, continue from one tree to another.  Otherwise, stop at end of
-current rooted tree."
+(defun symex-traverse-forward ()
+  "Traverse symex as a tree, using pre-order traversal."
   (interactive)
-  (let ((exit-until-root
-         (symex-make-precaution
-          move-go-out
-          :post-condition (lambda ()
-                            (not (point-at-root-symex?)))))
-        (exit-until-end-of-buffer
+  (let ((exit-until-end-of-buffer
          (symex-make-precaution
           move-go-out
           :post-condition (lambda ()
@@ -97,19 +89,34 @@ current rooted tree."
              move-go-in
              move-go-forward)
             (symex-make-detour
-             (if flow
-                 exit-until-end-of-buffer
-               exit-until-root)
+             exit-until-end-of-buffer
              move-go-forward))))
       (let ((result (symex-execute-traversal traversal)))
         (message "%s" result)
         result))))
 
-(defun symex-traverse-backward (&optional flow)
-  "Traverse symex as a tree, using converse post-order traversal.
+(defun symex-traverse-forward-in-tree ()
+  "Traverse symex forward using pre-order traversal, stopping at end of tree."
+  (interactive)
+  (let ((exit-until-root
+         (symex-make-precaution
+          move-go-out
+          :post-condition (lambda ()
+                            (not (point-at-root-symex?))))))
+    (let ((traversal
+           (symex-make-protocol
+            (symex-make-protocol
+             move-go-in
+             move-go-forward)
+            (symex-make-detour
+             exit-until-root
+             move-go-forward))))
+      (let ((result (symex-execute-traversal traversal)))
+        (message "%s" result)
+        result))))
 
-If FLOW is true, continue from one tree to another.  Otherwise, stop at root of
-current tree."
+(defun symex-traverse-backward ()
+  "Traverse symex as a tree, using converse post-order traversal."
   (interactive)
   (let* ((postorder-in
           (symex-make-circuit
@@ -119,7 +126,24 @@ current tree."
              move-go-forward))))
          (postorder-backwards-in
           (symex-make-maneuver move-go-backward
-                               postorder-in))
+                               postorder-in)))
+    (let* ((traversal
+            (symex-make-protocol
+             postorder-backwards-in
+             move-go-out)))
+      (let ((result (symex-execute-traversal traversal)))
+        (message "%s" result)
+        result))))
+
+(defun symex-traverse-backward-in-tree ()
+  "Traverse symex backward using post-order traversal, stopping at root of tree."
+  (interactive)
+  (let* ((postorder-in
+          (symex-make-circuit
+           (symex-make-maneuver
+            move-go-in
+            (symex-make-circuit
+             move-go-forward))))
          (postorder-backwards-in-tree
           (symex-make-precaution
            (symex-make-maneuver
@@ -129,9 +153,7 @@ current tree."
                             (not (point-at-root-symex?))))))
     (let* ((traversal
             (symex-make-protocol
-             (if flow
-                 postorder-backwards-in
-               postorder-backwards-in-tree)
+             postorder-backwards-in-tree
              move-go-out)))
       (let ((result (symex-execute-traversal traversal)))
         (message "%s" result)
