@@ -70,6 +70,16 @@
       (sp-kill-sexp nil)
       (evil-insert-state))))
 
+(defun symex-clear ()
+  "Clear contents of symex."
+  (interactive)
+  (let ((move (symex-go-in)))
+    (if move
+        (apply #'evil-delete (evil-inner-paren))  ; TODO: dispatch on paren type
+      (sp-kill-sexp nil))
+    (symex-select-nearest)
+    (symex-tidy)))
+
 (defun symex-spit-backward ()
   "Spit backward."
   (interactive)
