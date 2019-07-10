@@ -71,53 +71,33 @@
     (symex-execute-traversal traversal))
   (point))
 
-;; TODO: is there a way to "monadically" build the tree data structure
-;; (or ideally, do an arbitrary structural computation) as part of this traversal?
-;; key is, it has to be inferrable from inputs and outputs alone, i.e. specifically
-;; from the result of invocation of e.g. forward-symex
-(defun symex-traverse-forward ()
-  "Traverse symex as a tree, using pre-order traversal."
-  (interactive)
-  (let ((exit-until-end-of-buffer
-         (symex-make-precaution
-          move-go-out
-          :post-condition (lambda ()
-                            (not (point-at-final-symex?))))))
-    (let ((traversal
-           (symex-make-protocol
-            (symex-make-protocol
-             move-go-in
-             move-go-forward)
-            (symex-make-detour
-             exit-until-end-of-buffer
-             move-go-forward))))
-      (let ((result (symex-execute-traversal traversal)))
-        (message "%s" result)
-        result))))
+(defvar symex--traversal-preorder
+  (symex-make-protocol
+   (symex-make-protocol
+    move-go-in
+    move-go-forward)
+   (symex-make-detour
+    (symex-make-precaution
+     move-go-out
+     :post-condition (lambda ()
+                       (not (point-at-final-symex?))))
+    move-go-forward))
+  "Pre-order tree traversal, continuing to other trees.")
 
-(defun symex-traverse-forward-in-tree ()
-  "Traverse symex forward using pre-order traversal, stopping at end of tree."
-  (interactive)
-  (let ((exit-until-root
-         (symex-make-precaution
-          move-go-out
-          :post-condition (lambda ()
-                            (not (point-at-root-symex?))))))
-    (let ((traversal
-           (symex-make-protocol
-            (symex-make-protocol
-             move-go-in
-             move-go-forward)
-            (symex-make-detour
-             exit-until-root
-             move-go-forward))))
-      (let ((result (symex-execute-traversal traversal)))
-        (message "%s" result)
-        result))))
+(defvar symex--traversal-preorder-in-tree
+  (symex-make-protocol
+   (symex-make-protocol
+    move-go-in
+    move-go-forward)
+   (symex-make-detour
+    (symex-make-precaution
+     move-go-out
+     :post-condition (lambda ()
+                       (not (point-at-root-symex?))))
+    move-go-forward))
+  "Pre-order tree traversal.")
 
-(defun symex-traverse-backward ()
-  "Traverse symex as a tree, using converse post-order traversal."
-  (interactive)
+(defvar symex--traversal-postorder
   (let* ((postorder-in
           (symex-make-circuit
            (symex-make-maneuver
@@ -127,17 +107,11 @@
          (postorder-backwards-in
           (symex-make-maneuver move-go-backward
                                postorder-in)))
-    (let* ((traversal
-            (symex-make-protocol
-             postorder-backwards-in
-             move-go-out)))
-      (let ((result (symex-execute-traversal traversal)))
-        (message "%s" result)
-        result))))
+    (symex-make-protocol postorder-backwards-in
+                         move-go-out))
+  "Post-order tree traversal, continuing to other trees.")
 
-(defun symex-traverse-backward-in-tree ()
-  "Traverse symex backward using post-order traversal, stopping at root of tree."
-  (interactive)
+(defvar symex--traversal-postorder-in-tree
   (let* ((postorder-in
           (symex-make-circuit
            (symex-make-maneuver
@@ -151,13 +125,41 @@
             postorder-in)
            :pre-condition (lambda ()
                             (not (point-at-root-symex?))))))
-    (let* ((traversal
-            (symex-make-protocol
-             postorder-backwards-in-tree
-             move-go-out)))
-      (let ((result (symex-execute-traversal traversal)))
-        (message "%s" result)
-        result))))
+    (symex-make-protocol postorder-backwards-in-tree
+                         move-go-out))
+  "Post-order tree traversal.")
+
+(defun symex-traverse-forward ()
+  "Traverse symex as a tree, using pre-order traversal."
+  (interactive)
+  (let ((traversal symex--traversal-preorder))
+    (let ((result (symex-execute-traversal traversal)))
+      (message "%s" result)
+      result)))
+
+(defun symex-traverse-forward-in-tree ()
+  "Traverse symex forward using pre-order traversal, stopping at end of tree."
+  (interactive)
+  (let ((traversal symex--traversal-preorder-in-tree))
+    (let ((result (symex-execute-traversal traversal)))
+      (message "%s" result)
+      result)))
+
+(defun symex-traverse-backward ()
+  "Traverse symex as a tree, using converse post-order traversal."
+  (interactive)
+  (let ((traversal symex--traversal-postorder))
+    (let ((result (symex-execute-traversal traversal)))
+      (message "%s" result)
+      result)))
+
+(defun symex-traverse-backward-in-tree ()
+  "Traverse symex backward using post-order traversal, stopping at root of tree."
+  (interactive)
+  (let ((traversal symex--traversal-postorder-in-tree))
+    (let ((result (symex-execute-traversal traversal)))
+      (message "%s" result)
+      result)))
 
 (defun symex-index ()  ; TODO: may be better framed as a computation
   "Get relative (from start of containing symex) index of current symex."
