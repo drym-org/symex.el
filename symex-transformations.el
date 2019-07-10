@@ -348,6 +348,17 @@ New list delimiters are determined by the TYPE."
                      2)))
   (symex-select-nearest))
 
+(defun symex-tidy-proper ()
+  "Properly tidy things up."
+  (interactive)
+  (save-excursion
+    (symex-execute-traversal (symex-make-circuit symex--traversal-preorder-in-tree))
+    (let ((traversal (symex-make-circuit symex--traversal-postorder-in-tree)))
+      (let ((result (symex-execute-traversal traversal
+                                             nil
+                                             #'symex-tidy)))
+        (message "%s" result)
+        result))))
 
 (provide 'symex-transformations)
 ;;; symex-transformations.el ends here

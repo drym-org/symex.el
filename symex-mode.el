@@ -457,6 +457,7 @@
   ("M-j" symex-goto-innermost "go to innermost")
   ("=" symex-tidy "tidy/indent")
   ("<tab>" symex-tidy "tidy/indent")
+  ("C-=" symex-tidy-proper "tidy/indent properly")
   ("A" symex-append-after "append after symex" :exit t)
   ("a" symex-insert-at-end "append inside symex" :exit t)
   ("i" symex-insert-at-beginning "insert inside symex" :exit t)
