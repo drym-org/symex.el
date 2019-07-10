@@ -266,6 +266,14 @@ New list delimiters are determined by the TYPE."
   (newline-and-indent)
   (symex-tidy))
 
+(defun symex-append-newline ()
+  "Append newline and reindent symex."
+  (interactive)
+  (save-excursion
+    (forward-sexp)
+    (newline-and-indent)
+    (symex-tidy)))
+
 (defun symex-swallow ()
   "Swallow symex, putting its contents in the parent symex."
   (interactive)

@@ -444,6 +444,7 @@
   ("o" symex-open-line-after "open line after" :exit t)
   ("O" symex-open-line-before "open line before" :exit t)
   ("n" symex-insert-newline "newline")
+  ("C-S-o" symex-append-newline "append newline")
   ("J" symex-join-lines "join lines")
   ("N" (lambda ()
          (interactive)
