@@ -37,7 +37,7 @@
   "Delete symex."
   (interactive)
   (sp-kill-sexp nil)
-  (cond ((or (current-line-empty-p)  ; ^<>$
+  (cond ((or (symex--current-line-empty-p)  ; ^<>$
              (save-excursion (back-to-indentation)  ; ^(<>
                              (forward-char)
                              (lispy-right-p)))
@@ -145,7 +145,7 @@ by default, joins next symex to current one."
     (save-excursion
       (if backwards
           (progn (evil-previous-line)
-                 (if (current-line-empty-p)
+                 (if (symex--current-line-empty-p)
                      (evil-join (line-beginning-position)
                                 (1+ (line-beginning-position)))
                    (evil-join (line-beginning-position)
@@ -166,7 +166,7 @@ by default, joins next symex to current one."
   "Paste before symex."
   (interactive)
   (let ((extra-to-append
-         (cond ((or (and (point-at-indentation-p)
+         (cond ((or (and (symex--point-at-indentation-p)
                          (not (bolp)))
                     (save-excursion (forward-sexp)
                                     (eolp)))
@@ -185,7 +185,7 @@ by default, joins next symex to current one."
   "Paste after symex."
   (interactive)
   (let ((extra-to-prepend
-         (cond ((or (and (point-at-indentation-p)
+         (cond ((or (and (symex--point-at-indentation-p)
                          (not (bolp)))
                     (save-excursion (forward-sexp)
                                     (eolp)))

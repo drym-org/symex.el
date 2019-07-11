@@ -21,7 +21,7 @@
 ;;; Code:
 
 
-(defun current-line-empty-p ()
+(defun symex--current-line-empty-p ()
   "Check if the current line is empty.
 
 From: https://emacs.stackexchange.com/a/16793"
@@ -29,7 +29,7 @@ From: https://emacs.stackexchange.com/a/16793"
     (beginning-of-line)
     (looking-at "[[:space:]]*$")))
 
-(defun point-at-indentation-p ()
+(defun symex--point-at-indentation-p ()
   "Check if point is at the point of indentation.
 
 Point of indentation is the first non-whitespace character.
