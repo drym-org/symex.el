@@ -80,7 +80,7 @@
     (symex-make-precaution
      symex--move-go-out
      :post-condition (lambda ()
-                       (not (point-at-final-symex?))))
+                       (not (symex--point-at-final-symex-p))))
     symex--move-go-forward))
   "Pre-order tree traversal, continuing to other trees.")
 
@@ -93,7 +93,7 @@
     (symex-make-precaution
      symex--move-go-out
      :post-condition (lambda ()
-                       (not (point-at-root-symex?))))
+                       (not (symex--point-at-root-symex-p))))
     symex--move-go-forward))
   "Pre-order tree traversal.")
 
@@ -124,7 +124,7 @@
             symex--move-go-backward
             postorder-in)
            :pre-condition (lambda ()
-                            (not (point-at-root-symex?))))))
+                            (not (symex--point-at-root-symex-p))))))
     (symex-make-protocol postorder-backwards-in-tree
                          symex--move-go-out))
   "Post-order tree traversal.")
@@ -182,7 +182,7 @@
         (closest-index -1)
         (best-branch-position (point)))
     (defun switch-backward ()
-      (if (point-at-root-symex?)
+      (if (symex--point-at-root-symex-p)
           (goto-char best-branch-position)
         (symex-go-out)
         (symex-if-stuck (switch-backward)

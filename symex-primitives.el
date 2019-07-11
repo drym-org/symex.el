@@ -41,7 +41,7 @@
          ,do-what
        ,@body)))
 
-(defun point-at-root-symex? ()
+(defun symex--point-at-root-symex-p ()
   "Check if point is at a root symex."
   (interactive)
   (save-excursion
@@ -49,7 +49,7 @@
                     (symex-exit)
                     nil)))
 
-(defun point-at-first-symex? ()
+(defun symex--point-at-first-symex-p ()
   "Check if point is at the first symex at some level."
   (interactive)
   (save-excursion
@@ -57,7 +57,7 @@
                     (symex-backward)
                     nil)))
 
-(defun point-at-last-symex? ()
+(defun symex--point-at-last-symex-p ()
   "Check if point is at the last symex at some level."
   (interactive)
   (save-excursion
@@ -65,7 +65,7 @@
                     (symex-forward)
                     nil)))
 
-(defun point-at-final-symex? ()
+(defun symex--point-at-final-symex-p ()
   "Check if point is at the last symex in the buffer."
   (interactive)
   (save-excursion
@@ -75,7 +75,7 @@
                     (symex-forward)
                     nil)))
 
-(defun point-at-initial-symex? ()
+(defun symex--point-at-initial-symex-p ()
   "Check if point is at the first symex in the buffer."
   (interactive)
   (save-excursion
@@ -138,7 +138,7 @@ Go forward COUNT times, defaulting to one."
 (defun symex--backward-one ()
   "Backward one symex."
   (let ((result 0))
-    (when (not (point-at-initial-symex?))
+    (when (not (symex--point-at-initial-symex-p))
       (condition-case nil
           (progn (backward-sexp 1)
                  (setq result (1+ result)))
