@@ -172,7 +172,7 @@ by default, joins next symex to current one."
                                     (eolp)))
                 "\n")
                (t " "))))
-    (with-undo-collapse
+    (symex--with-undo-collapse
       (save-excursion
         (save-excursion
           (evil-paste-before nil nil)
@@ -191,7 +191,7 @@ by default, joins next symex to current one."
                                     (eolp)))
                 "\n")
                (t " "))))
-    (with-undo-collapse
+    (symex--with-undo-collapse
       (save-excursion
         (save-excursion
           (forward-sexp)

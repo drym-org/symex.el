@@ -41,7 +41,7 @@ From: https://stackoverflow.com/a/13313091"
 ;;; `with-undo-collapse` macro, to treat a sequence of operations
 ;;; as a single entry in the undo list.
 ;;; From: https://emacs.stackexchange.com/questions/7558/collapsing-undo-history/7560#7560
-(defun undo-collapse-begin (marker)
+(defun symex--undo-collapse-begin (marker)
   "Mark the beginning of a collapsible undo block.
 
 This must be followed with a call to undo-collapse-end with a marker
@@ -50,7 +50,7 @@ eq to this one.
 MARKER is some kind of delimiter for the undo block, TODO."
   (push marker buffer-undo-list))
 
-(defun undo-collapse-end (marker)
+(defun symex--undo-collapse-end (marker)
   "Collapse undo history until a matching marker.
 
 MARKER is some kind of delimiter for the undo block, TODO."
@@ -69,7 +69,7 @@ MARKER is some kind of delimiter for the undo block, TODO."
       ;; remove the marker
       (setf (cdr l) (cddr l))))))
 
-(defmacro with-undo-collapse (&rest body)
+(defmacro symex--with-undo-collapse (&rest body)
   "Execute BODY, then collapse any resulting undo boundaries."
   (declare (indent 0))
   (let ((marker (list 'apply 'identity nil)) ; build a fresh list
@@ -77,10 +77,10 @@ MARKER is some kind of delimiter for the undo block, TODO."
     `(let ((,buffer-var (current-buffer)))
        (unwind-protect
            (progn
-             (undo-collapse-begin ',marker)
+             (symex--undo-collapse-begin ',marker)
              ,@body)
          (with-current-buffer ,buffer-var
-           (undo-collapse-end ',marker))))))
+           (symex--undo-collapse-end ',marker))))))
 
 
 (provide 'symex-utils)
