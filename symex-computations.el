@@ -39,7 +39,7 @@
 
 (defun symex--type-list (obj)
   "Convert an object OBJ to the list type."
-  (cond ((is-traversal? obj)
+  (cond ((symex-traversal-p obj)
          (list obj))
         ((listp obj)
          obj)
@@ -144,7 +144,7 @@ INPUT - the input."
 
 (defun symex--traversal-account (obj)
   "Represents the result OBJ of a traversal as a traversal."
-  (cond ((is-traversal? obj)
+  (cond ((symex-traversal-p obj)
          obj)
         (t (apply #'symex-make-maneuver obj))))
 
@@ -161,7 +161,7 @@ INPUT - the input."
   (when phases
     (let ((phase (car phases))
           (remaining-phases (cdr phases)))
-      (let ((moves (if (is-move? phase)
+      (let ((moves (if (symex-move-p phase)
                        (list phase)
                      (let ((simplified-phase (symex--simplify-maneuver phase)))
                        (symex--maneuver-phases simplified-phase)))))
@@ -181,9 +181,9 @@ INPUT - the input."
 
 (defun symex--interpret-simple-traversal (traversal)
   "Interpret a TRAVERSAL as a single, flat maneuver or move."
-  (cond ((is-maneuver? traversal)
+  (cond ((symex-maneuver-p traversal)
          (symex--simplify-maneuver traversal))
-        ((is-move? traversal)
+        ((symex-move-p traversal)
          traversal)
         (t (error "Syntax error: unrecognized traversal type!"))))
 
@@ -201,7 +201,7 @@ INPUT - the input."
 
 If MANEUVER-OR-MOVE is a maneuver, leave as is.
 If it is a move, convert to the equivalent maneuver (via simple casting)."
-  (if (is-move? maneuver-or-move)
+  (if (symex-move-p maneuver-or-move)
       (symex-make-maneuver maneuver-or-move)
     maneuver-or-move))
 

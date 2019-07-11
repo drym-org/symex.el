@@ -209,27 +209,27 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                          side-effect
                        #'my-noop)))
     (let ((original-location (point))
-          (executed-traversal (cond ((is-maneuver? traversal)
+          (executed-traversal (cond ((symex-maneuver-p traversal)
                                      (symex-execute-maneuver traversal
                                                              computation
                                                              side-effect))
-                                    ((is-circuit? traversal)
+                                    ((symex-circuit-p traversal)
                                      (symex-execute-circuit traversal
                                                             computation
                                                             side-effect))
-                                    ((is-protocol? traversal)
+                                    ((symex-protocol-p traversal)
                                      (symex-execute-protocol traversal
                                                              computation
                                                              side-effect))
-                                    ((is-precaution? traversal)
+                                    ((symex-precaution-p traversal)
                                      (symex-execute-precaution traversal
                                                                computation
                                                                side-effect))
-                                    ((is-detour? traversal)
+                                    ((symex-detour-p traversal)
                                      (symex-execute-detour traversal
                                                            computation
                                                            side-effect))
-                                    ((is-move? traversal)
+                                    ((symex-move-p traversal)
                                      (symex-execute-move traversal
                                                          computation
                                                          side-effect))

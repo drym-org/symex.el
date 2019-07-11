@@ -42,7 +42,7 @@ forward-backward axis, and the Y or in-out axis."
   "Y (vertical) component of MOVE."
   (nth 2 move))
 
-(defun is-move? (obj)
+(defun symex-move-p (obj)
   "Check if OBJ specifies a move."
   (condition-case nil
       (equal 'move
@@ -55,7 +55,7 @@ forward-backward axis, and the Y or in-out axis."
 (defconst symex--move-go-in (symex-make-move 0 1))
 (defconst symex--move-go-out (symex-make-move 0 -1))
 
-(defun are-moves-equal? (m1 m2)
+(defun symex--are-moves-equal-p (m1 m2)
   "Check if two moves M1 and M2 are identical."
   (equal m1 m2))
 
@@ -113,7 +113,7 @@ This is the traversal that is to be executed 'with precautions'."
   "Post-condition of PRECAUTION."
   (nth 3 precaution))
 
-(defun is-precaution? (obj)
+(defun symex-precaution-p (obj)
   "Check if OBJ specifies a precaution."
   (condition-case nil
       (equal 'precaution
@@ -140,7 +140,7 @@ This is the traversal that is intended to be looped."
 This is the number of times the traversal should be repeated."
   (nth 2 circuit))
 
-(defun is-circuit? (obj)
+(defun symex-circuit-p (obj)
   "Check if OBJ specifies a circuit."
   (condition-case nil
       (equal 'circuit
@@ -158,7 +158,7 @@ This is the number of times the traversal should be repeated."
 Each phase could be any traversal."
   (nth 1 maneuver))
 
-(defun is-maneuver? (obj)
+(defun symex-maneuver-p (obj)
   "Check if OBJ specifies a maneuver."
   (condition-case nil
       (equal 'maneuver
@@ -188,7 +188,7 @@ fails as well."
   "Get the traversal component of the DETOUR."
   (nth 2 detour))
 
-(defun is-detour? (obj)
+(defun symex-detour-p (obj)
   "Check if OBJ specifies a detour."
   (condition-case nil
       (equal 'detour
@@ -206,21 +206,21 @@ An option could be either a maneuver, or a protocol itself."
   "Get the set of options that are part of the PROTOCOL."
   (nth 1 protocol))
 
-(defun is-protocol? (obj)
+(defun symex-protocol-p (obj)
   "Check if OBJ specifies a protocol."
   (condition-case nil
       (equal 'protocol
              (nth 0 obj))
     (error nil)))
 
-(defun is-traversal? (obj)
+(defun symex-traversal-p (obj)
   "Check if OBJ specifies a traversal."
-  (or (is-move? obj)
-      (is-maneuver? obj)
-      (is-circuit? obj)
-      (is-detour? obj)
-      (is-precaution? obj)
-      (is-protocol? obj)))
+  (or (symex-move-p obj)
+      (symex-maneuver-p obj)
+      (symex-circuit-p obj)
+      (symex-detour-p obj)
+      (symex-precaution-p obj)
+      (symex-protocol-p obj)))
 
 
 (provide 'symex-data)
