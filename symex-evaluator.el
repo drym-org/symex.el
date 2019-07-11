@@ -207,7 +207,7 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                        symex--computation-default))
         (side-effect (if side-effect
                          side-effect
-                       #'my-noop)))
+                       #'symex--side-effect-noop)))
     (let ((original-location (point))
           (executed-traversal (cond ((symex-maneuver-p traversal)
                                      (symex-execute-maneuver traversal

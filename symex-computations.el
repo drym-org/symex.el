@@ -142,6 +142,10 @@ INPUT - the input."
   (symex-make-computation :perceive #'symex--type-list
                           :act #'append))
 
+(defconst symex--side-effect-noop (&rest args)
+  "A null side-effect, i.e. which does nothing."
+  (interactive))
+
 (defun symex--traversal-account (obj)
   "Represents the result OBJ of a traversal as a traversal."
   (cond ((symex-traversal-p obj)
