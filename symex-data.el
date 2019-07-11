@@ -49,11 +49,11 @@ forward-backward axis, and the Y or in-out axis."
              (nth 0 obj))
     (error nil)))
 
-(defconst move-zero (symex-make-move 0 0))
-(defconst move-go-forward (symex-make-move 1 0))
-(defconst move-go-backward (symex-make-move -1 0))
-(defconst move-go-in (symex-make-move 0 1))
-(defconst move-go-out (symex-make-move 0 -1))
+(defconst symex--move-zero (symex-make-move 0 0))
+(defconst symex--move-go-forward (symex-make-move 1 0))
+(defconst symex--move-go-backward (symex-make-move -1 0))
+(defconst symex--move-go-in (symex-make-move 0 1))
+(defconst symex--move-go-out (symex-make-move 0 -1))
 
 (defun are-moves-equal? (m1 m2)
   "Check if two moves M1 and M2 are identical."
@@ -71,7 +71,7 @@ This sum indicates height and distance along the branches of the tree."
                               (symex--move-x result))
                            (+ (symex--move-y current)
                               (symex--move-y result)))))
-    move-zero))
+    symex--move-zero))
 
 (defun symex--move-length (move)
   "Compute the length of the MOVE.

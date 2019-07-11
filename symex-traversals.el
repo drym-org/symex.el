@@ -35,7 +35,7 @@
   (interactive)
   (let ((traversal
          (symex-make-circuit
-          move-go-backward)))
+          symex--move-go-backward)))
     (symex-execute-traversal traversal))
   (point))
 
@@ -44,7 +44,7 @@
   (interactive)
   (let ((traversal
          (symex-make-circuit
-          move-go-forward)))
+          symex--move-go-forward)))
     (symex-execute-traversal traversal))
   (point))
 
@@ -53,7 +53,7 @@
   (interactive)
   (let ((traversal
          (symex-make-circuit
-          move-go-out)))
+          symex--move-go-out)))
     (symex-execute-traversal traversal))
   (point))
 
@@ -62,71 +62,71 @@
   (interactive)
   (let ((traversal
          (symex-make-maneuver
-          move-go-in
+          symex--move-go-in
           (symex-make-circuit
            (symex-make-protocol
             (symex-make-circuit
-             move-go-forward)
-            move-go-in)))))
+             symex--move-go-forward)
+            symex--move-go-in)))))
     (symex-execute-traversal traversal))
   (point))
 
 (defvar symex--traversal-preorder
   (symex-make-protocol
    (symex-make-protocol
-    move-go-in
-    move-go-forward)
+    symex--move-go-in
+    symex--move-go-forward)
    (symex-make-detour
     (symex-make-precaution
-     move-go-out
+     symex--move-go-out
      :post-condition (lambda ()
                        (not (point-at-final-symex?))))
-    move-go-forward))
+    symex--move-go-forward))
   "Pre-order tree traversal, continuing to other trees.")
 
 (defvar symex--traversal-preorder-in-tree
   (symex-make-protocol
    (symex-make-protocol
-    move-go-in
-    move-go-forward)
+    symex--move-go-in
+    symex--move-go-forward)
    (symex-make-detour
     (symex-make-precaution
-     move-go-out
+     symex--move-go-out
      :post-condition (lambda ()
                        (not (point-at-root-symex?))))
-    move-go-forward))
+    symex--move-go-forward))
   "Pre-order tree traversal.")
 
 (defvar symex--traversal-postorder
   (let* ((postorder-in
           (symex-make-circuit
            (symex-make-maneuver
-            move-go-in
+            symex--move-go-in
             (symex-make-circuit
-             move-go-forward))))
+             symex--move-go-forward))))
          (postorder-backwards-in
-          (symex-make-maneuver move-go-backward
+          (symex-make-maneuver symex--move-go-backward
                                postorder-in)))
     (symex-make-protocol postorder-backwards-in
-                         move-go-out))
+                         symex--move-go-out))
   "Post-order tree traversal, continuing to other trees.")
 
 (defvar symex--traversal-postorder-in-tree
   (let* ((postorder-in
           (symex-make-circuit
            (symex-make-maneuver
-            move-go-in
+            symex--move-go-in
             (symex-make-circuit
-             move-go-forward))))
+             symex--move-go-forward))))
          (postorder-backwards-in-tree
           (symex-make-precaution
            (symex-make-maneuver
-            move-go-backward
+            symex--move-go-backward
             postorder-in)
            :pre-condition (lambda ()
                             (not (point-at-root-symex?))))))
     (symex-make-protocol postorder-backwards-in-tree
-                         move-go-out))
+                         symex--move-go-out))
   "Post-order tree traversal.")
 
 (defun symex-traverse-forward ()
