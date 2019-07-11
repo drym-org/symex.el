@@ -119,12 +119,12 @@
          (condition-case nil
              (progn (re-search-forward "[^[:space:]\n]")
                     (backward-char))
-           (error (if-stuck (symex-go-backward)
-                            (symex-go-forward)))))
+           (error (symex-if-stuck (symex-go-backward)
+                                  (symex-go-forward)))))
         ((thing-at-point 'sexp)  ; som|ething
          (beginning-of-thing 'sexp))
-        (t (if-stuck (symex-go-backward)
-                     (symex-go-forward))))
+        (t (symex-if-stuck (symex-go-backward)
+                           (symex-go-forward))))
   (point))
 
 (defun symex-refocus (&optional smooth-scroll)

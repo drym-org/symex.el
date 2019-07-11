@@ -33,7 +33,7 @@
 ;;; PRIMITIVES ;;;
 ;;;;;;;;;;;;;;;;;;
 
-(defmacro if-stuck (do-what operation &rest body)
+(defmacro symex-if-stuck (do-what operation &rest body)
   "Attempt OPERATION and if it fails, then do DO-WHAT."
   `(let ((orig-pt (point)))
      ,operation
@@ -45,35 +45,35 @@
   "Check if point is at a root symex."
   (interactive)
   (save-excursion
-    (if-stuck t
-              (symex-exit)
-              nil)))
+    (symex-if-stuck t
+                    (symex-exit)
+                    nil)))
 
 (defun point-at-first-symex? ()
   "Check if point is at the first symex at some level."
   (interactive)
   (save-excursion
-    (if-stuck t
-              (symex-backward)
-              nil)))
+    (symex-if-stuck t
+                    (symex-backward)
+                    nil)))
 
 (defun point-at-last-symex? ()
   "Check if point is at the last symex at some level."
   (interactive)
   (save-excursion
-    (if-stuck t
-              (symex-forward)
-              nil)))
+    (symex-if-stuck t
+                    (symex-forward)
+                    nil)))
 
 (defun point-at-final-symex? ()
   "Check if point is at the last symex in the buffer."
   (interactive)
   (save-excursion
-    (if-stuck (progn (if-stuck t
-                               (symex-exit)
-                               nil))
-              (symex-forward)
-              nil)))
+    (symex-if-stuck (progn (if-stuck t
+                                     (symex-exit)
+                                     nil))
+                    (symex-forward)
+                    nil)))
 
 (defun point-at-initial-symex? ()
   "Check if point is at the first symex in the buffer."

@@ -185,18 +185,18 @@
       (if (point-at-root-symex?)
           (goto-char best-branch-position)
         (symex-go-out)
-        (if-stuck (switch-backward)
-                  (symex-go-backward)
-                  (if-stuck (switch-backward)
-                            (symex-go-in)
-                            (symex-go-forward index)
-                            (let ((current-index (symex-index)))
-                              (when (and (< current-index
-                                            index)
-                                         (> current-index
-                                            closest-index))
-                                (setq closest-index current-index)
-                                (setq best-branch-position (point))))))))
+        (symex-if-stuck (switch-backward)
+                        (symex-go-backward)
+                        (symex-if-stuck (switch-backward)
+                                        (symex-go-in)
+                                        (symex-go-forward index)
+                                        (let ((current-index (symex-index)))
+                                          (when (and (< current-index
+                                                        index)
+                                                     (> current-index
+                                                        closest-index))
+                                            (setq closest-index current-index)
+                                            (setq best-branch-position (point))))))))
     (switch-backward)))
 
 (defun symex-switch-branch-forward ()
