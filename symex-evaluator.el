@@ -28,7 +28,7 @@
 ;;; EVALUATION AND EXECUTION ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun execute-tree-move (move &optional computation)
+(defun symex--execute-tree-move (move &optional computation)
   "Execute the specified MOVE at the current point location in the tree.
 
 Evaluates to the actual move executed or nil if no move was executed.
@@ -50,29 +50,29 @@ Optional argument COMPUTATION currently unused."
 This returns a list of moves (singleton, in this case) rather than the
 executed move itself.  TODO: not sure this is needed anymore.
 Optional argument COMPUTATION currently unused."
-  (let ((executed-move (execute-tree-move move computation)))
+  (let ((executed-move (symex--execute-tree-move move computation)))
     (when executed-move
       (list executed-move))))
 
 (cl-defun symex-go-forward (&optional (count 1))
   "Move forward COUNT symexes."
   (interactive)
-  (execute-tree-move (symex-make-move count 0)))
+  (symex--execute-tree-move (symex-make-move count 0)))
 
 (cl-defun symex-go-backward (&optional (count 1))
   "Move backward COUNT symexes."
   (interactive)
-  (execute-tree-move (symex-make-move (- count) 0)))
+  (symex--execute-tree-move (symex-make-move (- count) 0)))
 
 (cl-defun symex-go-in (&optional (count 1))
   "Move in COUNT symexes."
   (interactive)
-  (execute-tree-move (symex-make-move 0 count)))
+  (symex--execute-tree-move (symex-make-move 0 count)))
 
 (cl-defun symex-go-out (&optional (count 1))
   "Move out COUNT symexes."
   (interactive)
-  (execute-tree-move (symex-make-move 0 (- count))))
+  (symex--execute-tree-move (symex-make-move 0 (- count))))
 
 (defun symex--compute-results (a b computation)
   "Combine component computed results A and B into an aggregate result.
