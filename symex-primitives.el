@@ -69,9 +69,9 @@
   "Check if point is at the last symex in the buffer."
   (interactive)
   (save-excursion
-    (symex-if-stuck (progn (if-stuck t
-                                     (symex-exit)
-                                     nil))
+    (symex-if-stuck (progn (symex-if-stuck t
+                                           (symex-exit)
+                                           nil))
                     (symex-forward)
                     nil)))
 
