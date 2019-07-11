@@ -204,7 +204,7 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
 Evaluates to a COMPUTATION on the traversal actually executed."
   (let ((computation (if computation
                          computation
-                       computation-default))
+                       symex--computation-default))
         (side-effect (if side-effect
                          side-effect
                        #'my-noop)))

@@ -136,7 +136,7 @@ INPUT - the input."
       (funcall (symex--computation-express computation)
                (symex--ruminate computation components perceived-input)))))
 
-(defconst computation-default
+(defconst symex--computation-default
   ;; each result is wrapped in a list
   ;; the results are concatenated using list concatenation
   (symex-make-computation :perceive #'symex--type-list
@@ -205,7 +205,7 @@ If it is a move, convert to the equivalent maneuver (via simple casting)."
       (symex-make-maneuver maneuver-or-move)
     maneuver-or-move))
 
-(defun my-add-numbers (&rest numbers)
+(defun symex--add-numbers (&rest numbers)
   "Sum NUMBERS."
   (apply #'+ numbers))
 
@@ -221,7 +221,7 @@ If it is a move, convert to the equivalent maneuver (via simple casting)."
 ;;                                          #'symex--streamline-to-maneuver
 ;;                                          #'symex--interpret-simple-traversal
 ;;                                          #'symex--traversal-account)
-;;                           :reduce #'my-add-numbers
+;;                           :reduce #'symex--add-numbers
 ;;                           :f-from-aggregation #'car))
 
 
