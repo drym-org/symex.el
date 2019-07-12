@@ -38,17 +38,6 @@ From: https://stackoverflow.com/a/13313091"
                      (point))
      (point)))
 
-(defun symex-switch-to-scratch-buffer ()
-  "Switch to scratch buffer."
-  (interactive)
-  (switch-to-buffer-other-window "*scratch*"))  ; TODO: create in lisp interaction mode if missing
-
-(defun symex-switch-to-messages-buffer ()
-  "Switch to messages buffer while retaining focus in original window."
-  (interactive)
-  (switch-to-buffer-other-window "*Messages*")
-  (evil-window-mru))
-
 ;;; `with-undo-collapse` macro, to treat a sequence of operations
 ;;; as a single entry in the undo list.
 ;;; From: https://emacs.stackexchange.com/questions/7558/collapsing-undo-history/7560#7560

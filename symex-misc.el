@@ -108,6 +108,17 @@
          (symex-repl-scheme))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
+(defun symex-switch-to-scratch-buffer ()
+  "Switch to scratch buffer."
+  (interactive)
+  (switch-to-buffer-other-window "*scratch*"))  ; TODO: create in lisp interaction mode if missing
+
+(defun symex-switch-to-messages-buffer ()
+  "Switch to messages buffer while retaining focus in original window."
+  (interactive)
+  (switch-to-buffer-other-window "*Messages*")
+  (evil-window-mru))
+
 (defun symex-select-nearest ()
   "Select symex nearest to point."
   (interactive)
