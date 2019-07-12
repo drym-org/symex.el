@@ -49,7 +49,9 @@ Optional argument COMPUTATION currently unused."
 
 This returns a list of moves (singleton, in this case) rather than the
 executed move itself.  TODO: not sure this is needed anymore.
-Optional argument COMPUTATION currently unused."
+Optional argument COMPUTATION currently unused.
+SIDE-EFFECT is the operation to perform as part of the traversal
+\(none by default)."
   (let ((executed-move (symex--execute-tree-move move computation)))
     (when executed-move
       (list executed-move))))
@@ -93,6 +95,9 @@ Attempts the maneuver in the order of its phases, accepting partial completion
 of phases.  If any phase fails entirely, then the maneuver it is part of is
 terminated at that step.
 
+SIDE-EFFECT is the operation to perform as part of the traversal
+\(none by default).
+
 Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((phases (symex--maneuver-phases maneuver)))
     (when phases
@@ -115,6 +120,9 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
   "Execute a CIRCUIT.
 
 This repeats some traversal as specified.
+
+SIDE-EFFECT is the operation to perform as part of the traversal
+\(none by default).
 
 Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((traversal (symex--circuit-traversal circuit))
@@ -145,6 +153,9 @@ Apply a reorientation and then attempt the traversal.
 If the traversal fails, then the reorientation is attempted as many times as
 necessary until either it succeeds, or the reorientation fails.
 
+SIDE-EFFECT is the operation to perform as part of the traversal
+\(none by default).
+
 Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((reorientation (symex--detour-reorientation detour))
         (traversal (symex--detour-traversal detour)))
@@ -166,6 +177,9 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
 The traversal is only executed if PRE-CONDITION holds, and is reversed if
 POST-CONDITION does not hold after the provisional execution of the traversal.
 
+SIDE-EFFECT is the operation to perform as part of the traversal
+\(none by default).
+
 Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((traversal (symex--precaution-traversal precaution))
         (pre-condition (symex--precaution-pre-condition precaution))
@@ -182,6 +196,9 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
 
 Given a protocol including a set of options, attempt to execute them
 in order until one succeeds.
+
+SIDE-EFFECT is the operation to perform as part of the traversal
+\(none by default).
 
 Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((options (symex--protocol-options protocol)))
@@ -200,6 +217,9 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
 
 (defun symex-execute-traversal (traversal &optional computation side-effect)
   "Execute a tree TRAVERSAL.
+
+SIDE-EFFECT is the operation to perform as part of the traversal
+\(none by default).
 
 Evaluates to a COMPUTATION on the traversal actually executed."
   (let ((computation (if computation

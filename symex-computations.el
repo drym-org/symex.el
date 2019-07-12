@@ -143,7 +143,9 @@ INPUT - the input."
                           :act #'append))
 
 (defun symex--side-effect-noop (&rest args)
-  "A null side-effect, i.e. which does nothing."
+  "A null side-effect, i.e. which does nothing.
+
+Any arguments ARGS passed in are ignored."
   (interactive))
 
 (defun symex--traversal-account (obj)

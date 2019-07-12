@@ -44,7 +44,7 @@ From: https://stackoverflow.com/a/13313091"
 (defun symex--undo-collapse-begin (marker)
   "Mark the beginning of a collapsible undo block.
 
-This must be followed with a call to undo-collapse-end with a marker
+This must be followed with a call to ‘symex--undo-collapse-end’ with a marker
 eq to this one.
 
 MARKER is some kind of delimiter for the undo block, TODO."
