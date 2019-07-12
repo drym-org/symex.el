@@ -409,8 +409,6 @@
   ("f" symex-traverse-forward "flow forward")
   ("b" symex-traverse-backward "flow backward")
   ("F" symex-traverse-backward "flow backward")
-  ("C-k" symex-switch-branch-backward "switch branch backward")
-  ("C-j" symex-switch-branch-forward "switch branch forward")
   ("y" symex-yank "yank (copy)")
   ("p" symex-paste-after "paste after")
   ("P" symex-paste-before "paste before")

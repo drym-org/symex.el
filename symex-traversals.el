@@ -175,39 +175,6 @@
           (setq result (1+ result)))
         result))))
 
-(defun symex-switch-branch-backward ()
-  "Switch branch backward."
-  (interactive)
-  (let ((index (symex-index))
-        (closest-index -1)
-        (best-branch-position (point)))
-    (defun symex--switch-backward ()
-      (if (symex--point-at-root-symex-p)
-          (goto-char best-branch-position)
-        (symex-go-out)
-        (symex-if-stuck (symex--switch-backward)
-                        (symex-go-backward)
-                        (symex-if-stuck (symex--switch-backward)
-                                        (symex-go-in)
-                                        (symex-go-forward index)
-                                        (let ((current-index (symex-index)))
-                                          (when (and (< current-index
-                                                        index)
-                                                     (> current-index
-                                                        closest-index))
-                                            (setq closest-index current-index)
-                                            (setq best-branch-position (point))))))))
-    (symex--switch-backward)))
-
-(defun symex-switch-branch-forward ()
-  "Switch branch forward."
-  (interactive)
-  (let ((index (symex-index)))
-    (symex-go-out)
-    (symex-go-forward)
-    (symex-go-in)
-    (symex-go-forward index)))
-
 
 (provide 'symex-traversals)
 ;;; symex-traversals.el ends here

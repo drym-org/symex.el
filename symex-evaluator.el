@@ -33,6 +33,7 @@
 
 Evaluates to the actual move executed or nil if no move was executed.
 Optional argument COMPUTATION currently unused."
+  (ignore computation)
   (let ((move-x (symex--move-x move))
         (move-y (symex--move-y move)))
     (cond ((> move-x 0)
@@ -51,7 +52,10 @@ This returns a list of moves (singleton, in this case) rather than the
 executed move itself.  TODO: not sure this is needed anymore.
 Optional argument COMPUTATION currently unused.
 SIDE-EFFECT is the operation to perform as part of the traversal
-\(none by default)."
+\(none by default). Side-effects are performed at the traversal
+interpretation level, and since moves are the primitive level, there
+is nothing further to be done here and it is ignored."
+  (ignore side-effect)
   (let ((executed-move (symex--execute-tree-move move computation)))
     (when executed-move
       (list executed-move))))

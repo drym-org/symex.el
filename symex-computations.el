@@ -146,7 +146,8 @@ INPUT - the input."
   "A null side-effect, i.e. which does nothing.
 
 Any arguments ARGS passed in are ignored."
-  (interactive))
+  (interactive)
+  (ignore args))
 
 (defun symex--traversal-account (obj)
   "Represents the result OBJ of a traversal as a traversal."
