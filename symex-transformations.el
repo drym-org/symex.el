@@ -80,13 +80,13 @@
     (symex-select-nearest)
     (symex-tidy)))
 
-(defun symex-spit-backward ()
-  "Spit backward."
+(defun symex-emit-backward ()
+  "Emit backward."
   (interactive)
   (when (and (lispy-left-p)
              (not (symex-empty-list-p)))
     (save-excursion
-      (symex-go-in)  ; need to be inside the symex to spit and slurp
+      (symex-go-in)  ; need to be inside the symex to emit and capture
       (paredit-backward-barf-sexp 1))
     (symex-go-forward)
     (when (symex-empty-list-p)
@@ -94,38 +94,38 @@
       (re-search-forward lispy-left)
       (symex-go-out))))
 
-(defun symex-spit-forward ()
-  "Spit forward."
+(defun symex-emit-forward ()
+  "Emit forward."
   (interactive)
   (when (and (lispy-left-p)
              (not (symex-empty-list-p)))
     (save-excursion
-      (symex-go-in)  ; need to be inside the symex to spit and slurp
+      (symex-go-in)  ; need to be inside the symex to emit and capture
       (paredit-forward-barf-sexp 1))
     (when (symex-empty-list-p)
       (symex-go-forward)
       (fixup-whitespace)
       (re-search-backward lispy-left))))
 
-(defun symex-slurp-backward ()
-  "Slurp from behind."
+(defun symex-capture-backward ()
+  "Capture from behind."
   (interactive)
   (when (lispy-left-p)
     (if (symex-empty-list-p)
         (forward-char)
-      (symex-go-in))  ; need to be inside the symex to spit and slurp
+      (symex-go-in))  ; need to be inside the symex to emit and capture
     (paredit-backward-slurp-sexp 1)
     (fixup-whitespace)
     (symex-go-out)))
 
-(defun symex-slurp-forward ()
-  "Slurp from the front."
+(defun symex-capture-forward ()
+  "Capture from the front."
   (interactive)
   (when (lispy-left-p)
     (save-excursion
       (if (symex-empty-list-p)
           (forward-char)
-        (symex-go-in))  ; need to be inside the symex to spit and slurp
+        (symex-go-in))  ; need to be inside the symex to emit and capture
       (lispy-forward-slurp-sexp 1))))
 
 (defun symex-join ()
