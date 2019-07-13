@@ -142,25 +142,25 @@
 (evil-define-key
     'insert
     lisp-interaction-mode-map
-    (kbd "\(")
+    (kbd "(")
     'paredit-open-round)
 
 (evil-define-key
     'insert
     lisp-interaction-mode-map
-    (kbd "\)")
+    (kbd ")")
     'paredit-close-round)
 
 (evil-define-key
     'insert
     lisp-interaction-mode-map
-    (kbd "\[")
+    (kbd "[")
     'paredit-open-square)
 
 (evil-define-key
     'insert
     lisp-interaction-mode-map
-    (kbd "\]")
+    (kbd "]")
     'paredit-close-square)
 
 (evil-define-key
@@ -179,25 +179,25 @@
 (evil-define-key
     'insert
     emacs-lisp-mode-map
-    (kbd "\(")
+    (kbd "(")
     'paredit-open-round)
 
 (evil-define-key
     'insert
     emacs-lisp-mode-map
-    (kbd "\)")
+    (kbd ")")
     'paredit-close-round)
 
 (evil-define-key
     'insert
     emacs-lisp-mode-map
-    (kbd "\[")
+    (kbd "[")
     'paredit-open-square)
 
 (evil-define-key
     'insert
     emacs-lisp-mode-map
-    (kbd "\]")
+    (kbd "]")
     'paredit-close-square)
 
 (evil-define-key
@@ -216,25 +216,25 @@
 (evil-define-key
     'insert
     inferior-emacs-lisp-mode-map
-    (kbd "\(")
+    (kbd "(")
     'paredit-open-round)
 
 (evil-define-key
     'insert
     inferior-emacs-lisp-mode-map
-    (kbd "\)")
+    (kbd ")")
     'paredit-close-round)
 
 (evil-define-key
     'insert
     inferior-emacs-lisp-mode-map
-    (kbd "\[")
+    (kbd "[")
     'paredit-open-square)
 
 (evil-define-key
     'insert
     inferior-emacs-lisp-mode-map
-    (kbd "\]")
+    (kbd "]")
     'paredit-close-square)
 
 (evil-define-key
@@ -253,25 +253,25 @@
 (evil-define-key
     'insert
     racket-mode-map
-    (kbd "\(")
+    (kbd "(")
     'paredit-open-round)
 
 (evil-define-key
     'insert
     racket-mode-map
-    (kbd "\)")
+    (kbd ")")
     'paredit-close-round)
 
 (evil-define-key
     'insert
     racket-mode-map
-    (kbd "\[")
+    (kbd "[")
     'paredit-open-square)
 
 (evil-define-key
     'insert
     racket-mode-map
-    (kbd "\]")
+    (kbd "]")
     'paredit-close-square)
 
 (evil-define-key
@@ -290,25 +290,25 @@
 (evil-define-key
     'insert
     racket-repl-mode-map
-    (kbd "\(")
+    (kbd "(")
     'paredit-open-round)
 
 (evil-define-key
     'insert
     racket-repl-mode-map
-    (kbd "\)")
+    (kbd ")")
     'paredit-close-round)
 
 (evil-define-key
     'insert
     racket-repl-mode-map
-    (kbd "\[")
+    (kbd "[")
     'paredit-open-square)
 
 (evil-define-key
     'insert
     racket-repl-mode-map
-    (kbd "\]")
+    (kbd "]")
     'paredit-close-square)
 
 (evil-define-key
@@ -327,25 +327,25 @@
 (evil-define-key
     'insert
     scheme-mode-map
-    (kbd "\(")
+    (kbd "(")
     'paredit-open-round)
 
 (evil-define-key
     'insert
     scheme-mode-map
-    (kbd "\)")
+    (kbd ")")
     'paredit-close-round)
 
 (evil-define-key
     'insert
     scheme-mode-map
-    (kbd "\[")
+    (kbd "[")
     'paredit-open-square)
 
 (evil-define-key
     'insert
     scheme-mode-map
-    (kbd "\]")
+    (kbd "]")
     'paredit-close-square)
 
 (evil-define-key
