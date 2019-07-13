@@ -26,8 +26,7 @@
 (declare-function string-join "ext:subr-x")
 
 (defun racket--send-to-repl (code)
-  "(Keeping this here for now pending possible incorporation into racket-mode)
-Internal function to send CODE to the Racket REPL for evaluation.
+  "Internal function to send CODE to the Racket REPL for evaluation.
 
 Before sending the code (in string form), calls `racket-repl' and
 `racket--repl-forget-errors'. Also inserts a ?\n at the process

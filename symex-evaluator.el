@@ -45,17 +45,12 @@ Optional argument COMPUTATION currently unused."
           ((< move-y 0)
            (symex-exit (abs move-y))))))
 
-(defun symex-execute-move (move &optional computation side-effect)
+(defun symex-execute-move (move &optional computation)
   "Execute the MOVE as a traversal.
 
 This returns a list of moves (singleton, in this case) rather than the
 executed move itself.  TODO: not sure this is needed anymore.
-Optional argument COMPUTATION currently unused.
-SIDE-EFFECT is the operation to perform as part of the traversal
-\(none by default). Side-effects are performed at the traversal
-interpretation level, and since moves are the primitive level, there
-is nothing further to be done here and it is ignored."
-  (ignore side-effect)
+Optional argument COMPUTATION currently unused."
   (let ((executed-move (symex--execute-tree-move move computation)))
     (when executed-move
       (list executed-move))))
@@ -92,15 +87,12 @@ The aggregate result is constructed according to the specified COMPUTATION."
            a
            b))
 
-(defun symex-execute-maneuver (maneuver computation side-effect)
+(defun symex-execute-maneuver (maneuver computation)
   "Attempt to execute a given MANEUVER.
 
 Attempts the maneuver in the order of its phases, accepting partial completion
 of phases.  If any phase fails entirely, then the maneuver it is part of is
 terminated at that step.
-
-SIDE-EFFECT is the operation to perform as part of the traversal
-\(none by default).
 
 Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((phases (symex--maneuver-phases maneuver)))
@@ -108,25 +100,20 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
       (let ((current-phase (car phases))
             (remaining-phases (cdr phases)))
         (let ((executed-phase (symex-execute-traversal current-phase
-                                                       computation
-                                                       side-effect)))
+                                                       computation)))
           (when executed-phase
             (let ((executed-remaining-phases
                    (symex-execute-traversal (apply #'symex-make-maneuver
                                                    remaining-phases)
-                                            computation
-                                            side-effect)))
+                                            computation)))
               (symex--compute-results executed-phase
                                       executed-remaining-phases
                                       computation))))))))
 
-(defun symex-execute-circuit (circuit computation side-effect)
+(defun symex-execute-circuit (circuit computation)
   "Execute a CIRCUIT.
 
 This repeats some traversal as specified.
-
-SIDE-EFFECT is the operation to perform as part of the traversal
-\(none by default).
 
 Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((traversal (symex--circuit-traversal circuit))
@@ -134,8 +121,7 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
     (when (or (not times)  ; loop indefinitely
               (> times 0))
       (let ((result (symex-execute-traversal traversal
-                                             computation
-                                             side-effect)))
+                                             computation)))
         (when result
           (let ((times (if times
                            (1- times)
@@ -143,22 +129,18 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
             (let ((remaining-circuit
                    (symex-execute-traversal (symex-make-circuit traversal
                                                                 times)
-                                            computation
-                                            side-effect)))
+                                            computation)))
               (symex--compute-results result
                                       remaining-circuit
                                       computation))))))))
 
-(defun symex-execute-detour (detour computation side-effect)
+(defun symex-execute-detour (detour computation)
   "Execute the DETOUR.
 
 Apply a reorientation and then attempt the traversal.
 
 If the traversal fails, then the reorientation is attempted as many times as
 necessary until either it succeeds, or the reorientation fails.
-
-SIDE-EFFECT is the operation to perform as part of the traversal
-\(none by default).
 
 Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((reorientation (symex--detour-reorientation detour))
@@ -168,21 +150,17 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
         (let ((path (symex-make-protocol traversal
                                          detour)))
           (let ((executed-path (symex-execute-traversal path
-                                                        computation
-                                                        side-effect)))
+                                                        computation)))
             (when executed-path
               (symex--compute-results executed-reorientation
                                       executed-path
                                       computation))))))))
 
-(defun symex-execute-precaution (precaution computation side-effect)
+(defun symex-execute-precaution (precaution computation)
   "Attempt to execute a given PRECAUTION.
 
 The traversal is only executed if PRE-CONDITION holds, and is reversed if
 POST-CONDITION does not hold after the provisional execution of the traversal.
-
-SIDE-EFFECT is the operation to perform as part of the traversal
-\(none by default).
 
 Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((traversal (symex--precaution-traversal precaution))
@@ -190,19 +168,15 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
         (post-condition (symex--precaution-post-condition precaution)))
     (when (funcall pre-condition)
       (let ((executed-traversal (symex-execute-traversal traversal
-                                                         computation
-                                                         side-effect)))
+                                                         computation)))
         (when (funcall post-condition)
           executed-traversal)))))
 
-(defun symex-execute-protocol (protocol computation side-effect)
+(defun symex-execute-protocol (protocol computation)
   "Attempt to execute a given PROTOCOL.
 
 Given a protocol including a set of options, attempt to execute them
 in order until one succeeds.
-
-SIDE-EFFECT is the operation to perform as part of the traversal
-\(none by default).
 
 Evaluates to a COMPUTATION on the maneuver actually executed."
   (let ((options (symex--protocol-options protocol)))
@@ -210,14 +184,12 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
       (let ((option (car options))
             (remaining-options (cdr options)))
         (let ((executed-option (symex-execute-traversal option
-                                                        computation
-                                                        side-effect)))
+                                                        computation)))
           (if executed-option
               executed-option
             (symex-execute-traversal (apply #'symex-make-protocol
                                             remaining-options)
-                                     computation
-                                     side-effect)))))))
+                                     computation)))))))
 
 (defun symex-execute-traversal (traversal &optional computation side-effect)
   "Execute a tree TRAVERSAL.
@@ -235,28 +207,22 @@ Evaluates to a COMPUTATION on the traversal actually executed."
     (let ((original-location (point))
           (executed-traversal (cond ((symex-maneuver-p traversal)
                                      (symex-execute-maneuver traversal
-                                                             computation
-                                                             side-effect))
+                                                             computation))
                                     ((symex-circuit-p traversal)
                                      (symex-execute-circuit traversal
-                                                            computation
-                                                            side-effect))
+                                                            computation))
                                     ((symex-protocol-p traversal)
                                      (symex-execute-protocol traversal
-                                                             computation
-                                                             side-effect))
+                                                             computation))
                                     ((symex-precaution-p traversal)
                                      (symex-execute-precaution traversal
-                                                               computation
-                                                               side-effect))
+                                                               computation))
                                     ((symex-detour-p traversal)
                                      (symex-execute-detour traversal
-                                                           computation
-                                                           side-effect))
+                                                           computation))
                                     ((symex-move-p traversal)
                                      (symex-execute-move traversal
-                                                         computation
-                                                         side-effect))
+                                                         computation))
                                     (t (error "Syntax error: unrecognized traversal type!")))))
       (let ((result (funcall (symex--computation-perceive computation)
                              executed-traversal)))
