@@ -137,7 +137,7 @@ Go forward COUNT times, defaulting to one."
 (defun symex--backward-one ()
   "Backward one symex."
   (let ((result 0))
-    (when (not (symex--point-at-initial-symex-p))
+    (unless (symex--point-at-initial-symex-p)
       (condition-case nil
           (progn (backward-sexp 1)
                  (setq result (1+ result)))
