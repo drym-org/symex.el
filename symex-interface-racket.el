@@ -19,10 +19,8 @@
 
 ;;; Code:
 
-
 (require 'racket-mode)
-
-(declare-function string-join "ext:subr-x")
+(require 'subr-x)
 
 (defun racket--send-to-repl (code)
   "Internal function to send CODE to the Racket REPL for evaluation.

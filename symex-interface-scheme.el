@@ -20,12 +20,7 @@
 ;;; Code:
 
 
-(require 'geiser)
-
-(declare-function geiser-eval-last-sexp "ext:geiser-mode")
-(declare-function geiser-eval-definition "ext:geiser-mode")
-(declare-function geiser-doc-symbol-at-point "ext:geiser-mode")
-(declare-function geiser-mode-switch-to-repl "ext:geiser-mode")
+(require 'geiser-mode)
 
 
 (defun symex-eval-scheme ()
