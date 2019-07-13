@@ -469,7 +469,8 @@
   ("I" symex-insert-before "insert before symex" :exit t)
   ("w" symex-wrap "wrap with symex" :exit t)
   ("g" evil-jump-to-tag "Go to definition")
-  (";" symex-eval-print "eval + print")
+  (";" symex-comment "comment out")
+  ("C-;" symex-eval-print "eval + print")
   ;; canonical action
   ("s-;" symex-evaluate "evaluate" :exit t)
   ;; escape hatches

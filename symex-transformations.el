@@ -332,6 +332,12 @@ New list delimiters are determined by the TYPE."
   (interactive)
   (evil-surround-change (following-char)))
 
+(defun symex-comment ()
+  "Comment out symex."
+  (interactive)
+  (mark-sexp)
+  (comment-dwim nil))
+
 (defun symex-tidy ()
   "Auto-indent symex and fix any whitespace."
   (interactive)
