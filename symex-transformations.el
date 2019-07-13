@@ -352,13 +352,11 @@ New list delimiters are determined by the TYPE."
   "Properly tidy things up."
   (interactive)
   (save-excursion
-    (symex-execute-traversal (symex-make-circuit symex--traversal-preorder-in-tree))
-    (let ((traversal (symex-make-circuit symex--traversal-postorder-in-tree)))
-      (let ((result (symex-execute-traversal traversal
-                                             nil
-                                             #'symex-tidy)))
-        (message "%s" result)
-        result))))
+    (symex-execute-traversal (symex-make-circuit symex--traversal-preorder-in-tree)
+                             nil
+                             #'symex-tidy)
+    (symex--do-while-traversing #'symex-tidy
+                                symex--traversal-postorder-in-tree)))
 
 (provide 'symex-transformations)
 ;;; symex-transformations.el ends here

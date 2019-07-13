@@ -94,6 +94,16 @@
            (symex-eval-print-scheme))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
+(defun symex--do-while-traversing (operation traversal)
+  "Traverse a symex using TRAVERSAL and do OPERATION at each step."
+  (let ((result (symex-execute-traversal traversal
+                                         nil
+                                         operation)))
+    (message "%s" result)
+    (when result
+      (symex--do-while-traversing operation
+                                  traversal))))
+
 (defun symex-describe ()
   "Lookup doc on symex."
   (interactive)
