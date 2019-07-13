@@ -55,7 +55,7 @@
 
 (defgroup symex nil
   "A language for editing symbolic expressions."
-  :group 'tools)
+  :group 'lisp)
 
 (defcustom symex-highlight-p nil
   "Whether selected symexes should be highlighted."
