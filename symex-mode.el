@@ -434,6 +434,7 @@
   ("e" symex-evaluate "evaluate")
   ("E" symex-evaluate-pretty "pretty evaluate")
   ("d" symex-evaluate-definition "evaluate definition")
+  ("M-e" symex-eval-recursive "evaluate recursively")
   (":" eval-expression "eval expression")
   ("t" symex-switch-to-scratch-buffer "scratch buffer" :exit t)
   ("G" symex-switch-to-messages-buffer "messages buffer" :exit t)

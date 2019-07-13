@@ -104,6 +104,20 @@
       (symex--do-while-traversing operation
                                   traversal))))
 
+(defun symex-eval-recursive ()
+  "Evaluate a symex recursively.
+
+Start at the lowest levels and work upwards to the outermost symex,
+similarly to how the Lisp interpreter does it (when it is following
+'applicative-order evaluation')."
+  (interactive)
+  (save-excursion
+    (symex-execute-traversal (symex-make-circuit symex--traversal-preorder-in-tree)
+                             nil
+                             #'symex-evaluate)
+    (symex--do-while-traversing #'symex-evaluate
+                                symex--traversal-postorder-in-tree)))
+
 (defun symex-describe ()
   "Lookup doc on symex."
   (interactive)
