@@ -44,15 +44,18 @@
 (defun symex-evaluate ()
   "Evaluate Symex."
   (interactive)
-  (save-excursion
-    (forward-sexp)  ; selected symexes will have the cursor on the starting paren
-    (cond ((member major-mode symex-racket-modes)
-           (symex-eval-racket))
-          ((member major-mode symex-elisp-modes)
-           (symex-eval-elisp))
-          ((equal major-mode 'scheme-mode)
-           (symex-eval-scheme))
-          (t (error "Symex mode: Lisp flavor not recognized!")))))
+  (let ((original-evil-state evil-state))
+    (evil-emacs-state) ; so that which symex is meant has a standard interpretation
+    (save-excursion
+      (forward-sexp) ; selected symexes will have the cursor on the starting paren
+      (cond ((member major-mode symex-racket-modes)
+             (symex-eval-racket))
+            ((member major-mode symex-elisp-modes)
+             (symex-eval-elisp))
+            ((equal major-mode 'scheme-mode)
+             (symex-eval-scheme))
+            (t (error "Symex mode: Lisp flavor not recognized!"))))
+    (funcall (intern (concat "evil-" (symbol-name original-evil-state) "-state")))))
 
 (defun symex-evaluate-definition ()
   "Evaluate entire containing symex definition."
