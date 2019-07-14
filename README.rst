@@ -1,7 +1,7 @@
 *Symex (pron. "sym-ex", pl. symexes): A Lisp symbolic expression, which designates a computation to be performed.*
 
-symex-mode
-==========
+symex.el
+========
 An `evil <https://github.com/emacs-evil/evil>`_ way to edit Lisp symbolic expressions ("symexes") as trees in Emacs
 
 .. raw:: html
