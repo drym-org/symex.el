@@ -181,6 +181,20 @@ If SMOOTH-SCROLL is set, then scroll the view gently to aid in visual tracking."
             (sit-for 0.0001))
         (recenter window-focus-line-number)))))
 
+(defun symex-index ()  ; TODO: may be better framed as a computation
+  "Get relative (from start of containing symex) index of current symex."
+  (interactive)
+  (save-excursion
+    (symex-select-nearest)
+    (let ((original-location (point)))
+      (let ((current-location (symex-goto-first))
+            (result 0))
+        (while (< current-location original-location)
+          (symex-go-forward)
+          (setq current-location (point))
+          (setq result (1+ result)))
+        result))))
+
 (defun symex--selection-side-effects ()
   "Things to do as part of symex selection, e.g. after navigations."
   (interactive)

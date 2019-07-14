@@ -23,7 +23,6 @@
 (require 'symex-data)
 (require 'symex-primitives)
 (require 'symex-evaluator)
-(require 'symex-misc)
 
 ;;;;;;;;;;;;;;;;;;
 ;;; TRAVERSALS ;;;
@@ -159,20 +158,6 @@
     (let ((result (symex-execute-traversal traversal)))
       (message "%s" result)
       result)))
-
-(defun symex-index ()  ; TODO: may be better framed as a computation
-  "Get relative (from start of containing symex) index of current symex."
-  (interactive)
-  (save-excursion
-    (symex-select-nearest)
-    (let ((original-location (point)))
-      (let ((current-location (symex-goto-first))
-            (result 0))
-        (while (< current-location original-location)
-          (symex-go-forward)
-          (setq current-location (point))
-          (setq result (1+ result)))
-        result))))
 
 
 (provide 'symex-traversals)
