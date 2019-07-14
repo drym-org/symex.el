@@ -26,7 +26,7 @@
   "Internal function to send CODE to the Racket REPL for evaluation.
 
 Before sending the code (in string form), calls `racket-repl' and
-`racket--repl-forget-errors'. Also inserts a ?\n at the process
+`racket--repl-forget-errors'.  Also inserts a ?\n at the process
 mark so that output goes on a fresh line, not on the same line as
 the prompt.
 
