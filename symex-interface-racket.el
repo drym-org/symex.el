@@ -21,7 +21,7 @@
 (require 'racket-mode)
 (require 'subr-x)
 
-(defun racket--send-to-repl (code)
+(defun symex--racket-send-to-repl (code)
   "Internal function to send CODE to the Racket REPL for evaluation.
 
 Before sending the code (in string form), calls `racket-repl' and
@@ -67,7 +67,7 @@ Accounts for different point location in evil vs Emacs mode."
                         " (cond [(stream? result) (stream->list result)]
                                   [(sequence? result) (sequence->list result)]
                                   [else result]))"))))
-    (racket--send-to-repl pretty-code)))
+    (symex--racket-send-to-repl pretty-code)))
 
 (defun symex-eval-print-racket ()
   "Eval symex and print result in buffer."
