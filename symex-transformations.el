@@ -27,10 +27,35 @@
 (require 'smartparens)
 (require 'symex-utils)
 (require 'symex-misc)
+(require 'symex-traversals)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TRANSFORMATIONS ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun symex--do-while-traversing (operation traversal)
+  "Traverse a symex using TRAVERSAL and do OPERATION at each step."
+  (let ((result (symex-execute-traversal traversal
+                                         nil
+                                         operation)))
+    (message "%s" result)
+    (when result
+      (symex--do-while-traversing operation
+                                  traversal))))
+
+(defun symex-eval-recursive ()
+  "Evaluate a symex recursively.
+
+Start at the lowest levels and work upwards to the outermost symex,
+similarly to how the Lisp interpreter does it (when it is following
+'applicative-order evaluation')."
+  (interactive)
+  (save-excursion
+    (symex-execute-traversal (symex-make-circuit symex--traversal-preorder-in-tree)
+                             nil
+                             #'symex-evaluate)
+    (symex--do-while-traversing #'symex-evaluate
+                                symex--traversal-postorder-in-tree)))
 
 (defun symex-delete ()
   "Delete symex."

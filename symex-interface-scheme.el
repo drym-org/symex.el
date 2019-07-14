@@ -49,7 +49,7 @@
 
 (defun symex-repl-scheme ()
   "Go to REPL."
-  (geiser-mode-switch-to-repl))
+  (geiser-mode-switch-to-repl nil))
 
 
 (provide 'symex-interface-scheme)

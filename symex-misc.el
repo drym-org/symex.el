@@ -24,6 +24,7 @@
 (require 'evil)
 (require 'symex-primitives)
 (require 'symex-evaluator)
+(require 'symex-traversals)
 (require 'symex-interface-elisp)
 (require 'symex-interface-racket)
 (require 'symex-interface-scheme)
@@ -92,30 +93,6 @@
           ((equal major-mode 'scheme-mode)
            (symex-eval-print-scheme))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
-
-(defun symex--do-while-traversing (operation traversal)
-  "Traverse a symex using TRAVERSAL and do OPERATION at each step."
-  (let ((result (symex-execute-traversal traversal
-                                         nil
-                                         operation)))
-    (message "%s" result)
-    (when result
-      (symex--do-while-traversing operation
-                                  traversal))))
-
-(defun symex-eval-recursive ()
-  "Evaluate a symex recursively.
-
-Start at the lowest levels and work upwards to the outermost symex,
-similarly to how the Lisp interpreter does it (when it is following
-'applicative-order evaluation')."
-  (interactive)
-  (save-excursion
-    (symex-execute-traversal (symex-make-circuit symex--traversal-preorder-in-tree)
-                             nil
-                             #'symex-evaluate)
-    (symex--do-while-traversing #'symex-evaluate
-                                symex--traversal-postorder-in-tree)))
 
 (defun symex-describe ()
   "Lookup doc on symex."
