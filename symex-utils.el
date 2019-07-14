@@ -1,7 +1,6 @@
 ;;; symex-utils.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
 
 ;; URL: https://github.com/countvajhula/symex-mode
-;; Package-Requires: ((emacs "24.4") (cl-lib "0.6.1") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (dash-functional "2.15.0") (evil "1.2.14") (smartparens "1.11.0") (racket-mode "20181030.1345") (geiser "0.10") (evil-surround "1.0.4") (hydra "0.15.0"))
 
 ;; This program is "part of the world," in the sense described at
 ;; http://drym.org.  From your perspective, this is no different than
