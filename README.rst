@@ -20,6 +20,20 @@ At the moment, symex mode uses ``paredit``, ``lispy``, and `evil-cleverparens <h
     <img src="https://user-images.githubusercontent.com/401668/59328521-6db96280-8ca1-11e9-8b32-24574a0af676.png" alt="Screenshot" title="Screenshot"/>
   </p>
 
+Installation and Usage
+======================
+Install the package the usual way via MELPA (**pending**, see `here <https://github.com/melpa/melpa/pull/6246>`_ for status). Then add the following config to your ``init.d``:
+
+::
+
+  (global-set-key (kbd "s-;") 'symex-mode-interface)  ; or whatever keybinding you like
+  (dolist (mode-name symex-lisp-modes)
+    (let ((mode-hook (intern (concat (symbol-name mode-name)
+                                     "-hook"))))
+      (add-hook mode-hook 'symex-mode))))
+
+This provides a keybinding to load the symex editing interface, and also enables the symex minor mode in all recognized lisp modes (the minor mode is simply there to ensure that manual edits respect the tree structure, e.g. keeps parens balanced like paredit).
+
 A Note on the Name
 ==================
 A little while ago I was discussing Lisp syntax with `@apromessi <https://github.com/apromessi>`_:
