@@ -76,7 +76,7 @@
   "Symex state."
   :tag " <λ> "
   :message "-- SYMEX --"
-  :entry-hook (hydra-symex/body)
+  :entry-hook (hydra-symex/body symex--ensure-minor-mode)
   :enable (normal))
 
 (defvar symex-elisp-modes (list 'lisp-interaction-mode
@@ -90,276 +90,47 @@
                                  symex-racket-modes
                                  (list 'scheme-mode)))
 
-;; use paredit balancing behavior in insert mode
-;; in all lisp modes
+;;;###autoload
+(define-minor-mode symex-mode
+  "An evil way to edit Lisp symbolic expressions as trees."
+  :lighter " symex"
+  :keymap (let ((symex-map (make-sparse-keymap)))
+            (define-key
+              symex-map
+              (kbd "(")
+              'paredit-open-round)
 
-;; TODO: get this to work so we don't have to duplicate the key
-;; definitions across all lisp modes
-;; (dolist (mode-name lisp-modes)
-;;   (let ((mode-map (intern (concat (symbol-name mode-name)
-;;                                   "-map"))))
-;;     (evil-define-key
-;;       'insert
-;;       mode-map
-;;       (kbd "\(")
-;;       'paredit-open-round)
+            (define-key
+              symex-map
+              (kbd ")")
+              'paredit-close-round)
 
-;;     (evil-define-key
-;;       'insert
-;;       mode-map
-;;       (kbd "\)")
-;;       'paredit-close-round)
+            (define-key
+              symex-map
+              (kbd "[")
+              'paredit-open-square)
 
-;;     (evil-define-key
-;;       'insert
-;;       mode-map
-;;       (kbd "\[")
-;;       'paredit-open-square)
+            (define-key
+              symex-map
+              (kbd "]")
+              'paredit-close-square)
 
-;;     (evil-define-key
-;;       'insert
-;;       mode-map
-;;       (kbd "\]")
-;;       'paredit-close-square)
+            (define-key
+              symex-map
+              (kbd "<backspace>")
+              'paredit-backward-delete)
 
-;;     (evil-define-key
-;;       'insert
-;;       mode-map
-;;       (kbd "<backspace>")
-;;       'paredit-backward-delete)
+            (define-key
+              symex-map
+              (kbd "\"")
+              'paredit-doublequote)
 
-;;     (evil-define-key
-;;       'insert
-;;       lisp-interaction-mode-map
-;;       (kbd "\"")
-;;       'paredit-doublequote)))
+            symex-map))
 
-;; this doesn't work either...
-;; (let ((mode-map (if (boundp mode-map-name)
-;;                     (symbol-value mode-map-name)
-;;                   (make-sparse-keymap))))
-
-;; lisp interaction mode
-(evil-define-key
-    'insert
-    lisp-interaction-mode-map
-    (kbd "(")
-    'paredit-open-round)
-
-(evil-define-key
-    'insert
-    lisp-interaction-mode-map
-    (kbd ")")
-    'paredit-close-round)
-
-(evil-define-key
-    'insert
-    lisp-interaction-mode-map
-    (kbd "[")
-    'paredit-open-square)
-
-(evil-define-key
-    'insert
-    lisp-interaction-mode-map
-    (kbd "]")
-    'paredit-close-square)
-
-(evil-define-key
-    'insert
-    lisp-interaction-mode-map
-    (kbd "<backspace>")
-    'paredit-backward-delete)
-
-(evil-define-key
-    'insert
-    lisp-interaction-mode-map
-    (kbd "\"")
-    'paredit-doublequote)
-
-;; emacs lisp mode
-(evil-define-key
-    'insert
-    emacs-lisp-mode-map
-    (kbd "(")
-    'paredit-open-round)
-
-(evil-define-key
-    'insert
-    emacs-lisp-mode-map
-    (kbd ")")
-    'paredit-close-round)
-
-(evil-define-key
-    'insert
-    emacs-lisp-mode-map
-    (kbd "[")
-    'paredit-open-square)
-
-(evil-define-key
-    'insert
-    emacs-lisp-mode-map
-    (kbd "]")
-    'paredit-close-square)
-
-(evil-define-key
-    'insert
-    emacs-lisp-mode-map
-    (kbd "<backspace>")
-    'paredit-backward-delete)
-
-(evil-define-key
-    'insert
-    emacs-lisp-mode-map
-    (kbd "\"")
-    'paredit-doublequote)
-
-;; inferior emacs lisp mode
-(evil-define-key
-    'insert
-    inferior-emacs-lisp-mode-map
-    (kbd "(")
-    'paredit-open-round)
-
-(evil-define-key
-    'insert
-    inferior-emacs-lisp-mode-map
-    (kbd ")")
-    'paredit-close-round)
-
-(evil-define-key
-    'insert
-    inferior-emacs-lisp-mode-map
-    (kbd "[")
-    'paredit-open-square)
-
-(evil-define-key
-    'insert
-    inferior-emacs-lisp-mode-map
-    (kbd "]")
-    'paredit-close-square)
-
-(evil-define-key
-    'insert
-    inferior-emacs-lisp-mode-map
-    (kbd "<backspace>")
-    'paredit-backward-delete)
-
-(evil-define-key
-    'insert
-    inferior-emacs-lisp-mode-map
-    (kbd "\"")
-    'paredit-doublequote)
-
-;; racket mode
-(evil-define-key
-    'insert
-    racket-mode-map
-    (kbd "(")
-    'paredit-open-round)
-
-(evil-define-key
-    'insert
-    racket-mode-map
-    (kbd ")")
-    'paredit-close-round)
-
-(evil-define-key
-    'insert
-    racket-mode-map
-    (kbd "[")
-    'paredit-open-square)
-
-(evil-define-key
-    'insert
-    racket-mode-map
-    (kbd "]")
-    'paredit-close-square)
-
-(evil-define-key
-    'insert
-    racket-mode-map
-    (kbd "<backspace>")
-    'paredit-backward-delete)
-
-(evil-define-key
-    'insert
-    racket-mode-map
-    (kbd "\"")
-    'paredit-doublequote)
-
-;; racket repl mode
-(evil-define-key
-    'insert
-    racket-repl-mode-map
-    (kbd "(")
-    'paredit-open-round)
-
-(evil-define-key
-    'insert
-    racket-repl-mode-map
-    (kbd ")")
-    'paredit-close-round)
-
-(evil-define-key
-    'insert
-    racket-repl-mode-map
-    (kbd "[")
-    'paredit-open-square)
-
-(evil-define-key
-    'insert
-    racket-repl-mode-map
-    (kbd "]")
-    'paredit-close-square)
-
-(evil-define-key
-    'insert
-    racket-repl-mode-map
-    (kbd "<backspace>")
-    'paredit-backward-delete)
-
-(evil-define-key
-    'insert
-    racket-repl-mode-map
-    (kbd "\"")
-    'paredit-doublequote)
-
-;; scheme mode
-(evil-define-key
-    'insert
-    scheme-mode-map
-    (kbd "(")
-    'paredit-open-round)
-
-(evil-define-key
-    'insert
-    scheme-mode-map
-    (kbd ")")
-    'paredit-close-round)
-
-(evil-define-key
-    'insert
-    scheme-mode-map
-    (kbd "[")
-    'paredit-open-square)
-
-(evil-define-key
-    'insert
-    scheme-mode-map
-    (kbd "]")
-    'paredit-close-square)
-
-(evil-define-key
-    'insert
-    scheme-mode-map
-    (kbd "<backspace>")
-    'paredit-backward-delete)
-
-(evil-define-key
-    'insert
-    scheme-mode-map
-    (kbd "\"")
-    'paredit-doublequote)
+(defun symex--ensure-minor-mode ()
+  "Enable symex minor mode if it isn't already enabled."
+  (unless symex-mode
+    (symex-mode)))
 
 (defun symex-mode-escape-higher ()
   "Exit symex mode via an 'escape'."
@@ -484,13 +255,6 @@
   ("C-k" symex-mode-enter-lower "enter lower level" :exit t)
   ("<escape>" symex-mode-escape-higher "escape to higher level" :exit t)
   ("C-g" symex-mode-escape-higher "escape to higher level" :exit t))
-
-
-;;;###autoload
-(defun symex-mode ()
-  "Enter symex mode."
-  (interactive)
-  (hydra-symex/body))
 
 
 (provide 'symex-mode)
