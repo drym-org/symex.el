@@ -76,6 +76,7 @@
   "Symex state."
   :tag " <λ> "
   :message "-- SYMEX --"
+  :entry-hook (hydra-symex/body)
   :enable (normal))
 
 (defvar symex-elisp-modes (list 'lisp-interaction-mode
@@ -388,8 +389,7 @@
 (defhydra hydra-symex (:idle 1.0
                        :columns 5
                        :color pink
-                       :body-pre (progn (symex-select-nearest)
-                                        (evil-symex-state))
+                       :body-pre (symex-select-nearest)
                        :post (deactivate-mark))
   "Symex mode"
   ("(" (lambda ()
