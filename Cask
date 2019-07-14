@@ -1,7 +1,7 @@
 (source gnu)
 (source melpa)
 
-(package-file "symex-mode.el")
+(package-file "symex.el")
 
 (development
  (depends-on "f")

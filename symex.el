@@ -1,4 +1,4 @@
-;;; symex-mode.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
+;;; symex.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
 
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/countvajhula/symex-mode
@@ -267,5 +267,5 @@ features."
   (evil-symex-state))
 
 
-(provide 'symex-mode)
-;;; symex-mode.el ends here
+(provide 'symex)
+;;; symex.el ends here
