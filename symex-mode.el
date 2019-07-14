@@ -257,5 +257,15 @@
   ("C-g" symex-mode-escape-higher "escape to higher level" :exit t))
 
 
+;;;###autoload
+(defun symex-mode-interface ()
+  "The main entry point for editing symbolic expressions using symex mode.
+
+Enter the symex evil state and show a hydra menu for accessing various
+features."
+  (interactive)
+  (evil-symex-state))
+
+
 (provide 'symex-mode)
 ;;; symex-mode.el ends here
