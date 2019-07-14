@@ -158,7 +158,7 @@
 
 
 (defhydra hydra-symex (:idle 1.0
-                       :columns 5
+                       :columns 4
                        :color pink
                        :body-pre (symex-select-nearest)
                        :post (deactivate-mark))
@@ -212,7 +212,7 @@
   ("r" symex-repl "go to REPL" :exit t)
   ("|" lispy-split "split")
   ("m" symex-join "merge (join)")
-  ("\\" lispy-splice "splice (join to higher level)")
+  ("\\" lispy-splice "clip/splice")
   (")" symex-wrap-round "wrap with ()")
   ("]" symex-wrap-square "wrap with []")
   ("}" symex-wrap-curly "wrap with {}")
@@ -251,10 +251,10 @@
   ("C-v" evil-visual-block nil :exit t)
   ;; standard exits
   ("?" symex-describe "info")
-  ("<return>" symex-mode-enter-lower "enter lower level" :exit t)
-  ("C-k" symex-mode-enter-lower "enter lower level" :exit t)
-  ("<escape>" symex-mode-escape-higher "escape to higher level" :exit t)
-  ("C-g" symex-mode-escape-higher "escape to higher level" :exit t))
+  ("<return>" symex-mode-enter-lower "enter lower" :exit t)
+  ("C-k" symex-mode-enter-lower "enter lower" :exit t)
+  ("<escape>" symex-mode-escape-higher "escape higher" :exit t)
+  ("C-g" symex-mode-escape-higher "escape higher" :exit t))
 
 
 ;;;###autoload
