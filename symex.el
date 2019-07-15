@@ -122,6 +122,11 @@
 
             (define-key
               symex-map
+              (kbd "<del>")
+              'paredit-backward-delete)
+
+            (define-key
+              symex-map
               (kbd "\"")
               'paredit-doublequote)
 
