@@ -122,7 +122,7 @@
 
             (define-key
               symex-map
-              (kbd "<del>")
+              (kbd "<DEL>")
               'paredit-backward-delete)
 
             (define-key
