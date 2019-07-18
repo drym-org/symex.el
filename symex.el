@@ -161,6 +161,15 @@
          (evil-insert-state))
         (t (evil-emacs-state))))
 
+(defun symex--toggle-highlight ()
+  "Toggle highlighting of selected symex."
+  (interactive)
+  (if mark-active
+      (deactivate-mark)
+    (mark-sexp))
+  (setq symex-highlight-p
+        (not symex-highlight-p)))
+
 
 (defhydra hydra-symex (:idle 1.0
                        :columns 4
@@ -249,6 +258,8 @@
   ("C-;" symex-eval-print "eval + print")
   ;; canonical action
   ("s-;" symex-evaluate "evaluate" :exit t)
+  ;; configuration
+  ("H-h" symex--toggle-highlight "toggle highlight")
   ;; escape hatches
   ("R" evil-replace-state nil :exit t)
   ("v" evil-visual-char nil :exit t)
