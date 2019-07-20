@@ -74,7 +74,7 @@ ARGS - arguments provided in the precaution specification.  This may
 include the keyword arguments :before and :after together with
 the corresponding boolean functions."
   `(symex-make-precaution (symex-compile-traversal ,traversal)
-                          ,@(mapcar 'rewrite-precaution-component args)))
+                          ,@(mapcar 'symex--rewrite-precaution-component args)))
 
 (defmacro symex--compile-move (direction)
   "Compile a move from Symex DSL -> Lisp.
