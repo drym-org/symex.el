@@ -19,38 +19,68 @@
 ;;; Code:
 
 
-(defun expand-traversal (traversal)
-  "expand traversal"
-  `(traversal-expander ,traversal))
+(defun symex--compile-traversal-helper (traversal)
+  "Helper function to compile a TRAVERSAL.
 
-(defmacro protocol-expander (&rest options)
+This is useful for mapping a compiler macro over a list of
+traversal specifications."
+  `(symex-compile-traversal ,traversal))
+
+(defmacro symex--compile-protocol (&rest options)
+  "Compile a protocol from Symex DSL -> Lisp.
+
+OPTIONS - see underlying Lisp implementation."
   `(symex-make-protocol
-    ,@(mapcar 'expand-traversal options)))
+    ,@(mapcar 'symex--compile-traversal-helper options)))
 
-(defmacro maneuver-expander (&rest phases)
+(defmacro symex--compile-maneuver (&rest phases)
+  "Compile a maneuver from Symex DSL -> Lisp.
+
+PHASES - see underlying Lisp implementation."
   `(symex-make-maneuver
-    ,@(mapcar 'expand-traversal phases)))
+    ,@(mapcar 'symex--compile-traversal-helper phases)))
 
-(defmacro detour-expander (reorientation traversal)
-  `(symex-make-detour (traversal-expander ,reorientation)
-                      (traversal-expander ,traversal)))
+(defmacro symex--compile-detour (reorientation traversal)
+  "Compile a detour from Symex DSL -> Lisp.
 
-(defmacro circuit-expander (traversal &optional times)
-  `(symex-make-circuit (traversal-expander ,traversal)
+REORIENTATION - see underlying Lisp implementation.
+TRAVERSAL - see underlying Lisp implementation."
+  `(symex-make-detour (symex-compile-traversal ,reorientation)
+                      (symex-compile-traversal ,traversal)))
+
+(defmacro symex--compile-circuit (traversal &optional times)
+  "Compile a circuit from Symex DSL -> Lisp.
+
+TRAVERSAL - see underlying Lisp implementation.
+TIMES - see underlying Lisp implementation."
+  `(symex-make-circuit (symex-compile-traversal ,traversal)
                        ,times))
 
-(defun rewrite-precaution-component (arg)
-  "Rewrite DSL syntax to Lisp syntax."
+(defun symex--rewrite-precaution-component (arg)
+  "Rewrite DSL syntax to Lisp syntax in a protocol specification.
+
+ARG - an argument provided to the protocol definition."
   (cond ((not (symbolp arg)) arg)
         ((equal ":before" (symbol-name arg))
          ':pre-condition)
         ((equal ":after" (symbol-name arg))
          ':post-condition)))
 
-(defmacro precaution-expander (traversal &rest args)
-  `(symex-make-precaution (traversal-expander ,traversal) ,@(mapcar 'rewrite-precaution-component args)))
+(defmacro symex--compile-precaution (traversal &rest args)
+  "Compile a precaution from Symex DSL -> Lisp.
 
-(defmacro move-expander (direction)
+TRAVERSAL - see underlying Lisp implementation.
+ARGS - arguments provided in the precaution specification.  This may
+include the keyword arguments :before and :after together with
+the corresponding boolean functions."
+  `(symex-make-precaution (symex-compile-traversal ,traversal)
+                          ,@(mapcar 'rewrite-precaution-component args)))
+
+(defmacro symex--compile-move (direction)
+  "Compile a move from Symex DSL -> Lisp.
+
+DIRECTION - the direction to move in, which could be one of:
+forward, backward, in, or out."
   (cond ((equal "forward" (symbol-name direction))
          '(symex-make-move 1 0))
         ((equal "backward" (symbol-name direction))
@@ -60,24 +90,36 @@
         ((equal "out" (symbol-name direction))
          '(symex-make-move 0 -1))))
 
-(defmacro traversal-expander (traversal)
-  (cond ((not (listp traversal)) traversal)
+(defmacro symex-compile-traversal (traversal)
+  "Compile a traversal from Symex DSL -> Lisp.
+
+TRAVERSAL could be any traversal specification, e.g. a maneuver,
+a detour, a move, etc., which is specified using the Symex DSL."
+  (cond ((not (listp traversal)) traversal)  ; e.g. a variable containing a traversal
         ((equal "protocol" (symbol-name (car traversal)))
-         `(protocol-expander ,@(cdr traversal)))
+         `(symex--compile-protocol ,@(cdr traversal)))
         ((equal "maneuver" (symbol-name (car traversal)))
-         `(maneuver-expander ,@(cdr traversal)))
+         `(symex--compile-maneuver ,@(cdr traversal)))
         ((equal "detour" (symbol-name (car traversal)))
-         `(detour-expander ,@(cdr traversal)))
+         `(symex--compile-detour ,@(cdr traversal)))
         ((equal "circuit" (symbol-name (car traversal)))
-         `(circuit-expander ,@(cdr traversal)))
+         `(symex--compile-circuit ,@(cdr traversal)))
         ((equal "precaution" (symbol-name (car traversal)))
-         `(precaution-expander ,@(cdr traversal)))
+         `(symex--compile-precaution ,@(cdr traversal)))
         ((equal "move" (symbol-name (car traversal)))
-         `(move-expander ,@(cdr traversal)))))
+         `(symex--compile-move ,@(cdr traversal)))))
 
 (defmacro deftraversal (name traversal &optional docstring)
-  "Define a symex traversal."
-  `(defvar ,name (traversal-expander ,traversal) ,docstring))
+  "Define a symex traversal using the Symex DSL.
+
+NAME is the name of the traversal.  The defined traversal will be
+assigned to a variable with this name.
+TRAVERSAL is the specification of the traversal in the Symex DSL.
+This can be thought of as the 'program' written in the DSL, which
+will be compiled into Lisp and can be executed when needed.
+An optional DOCSTRING will be used as documentation for the variable
+NAME to which the traversal is assigned."
+  `(defvar ,name (symex-compile-traversal ,traversal) ,docstring))
 
 
 (provide 'symex-dsl)
