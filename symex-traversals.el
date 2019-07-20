@@ -68,30 +68,30 @@
     (symex-execute-traversal traversal))
   (point))
 
-(defvar symex--traversal-preorder
-  (symex-make-protocol
-   (symex-make-protocol
-    symex--move-go-in
-    symex--move-go-forward)
-   (symex-make-detour
-    (symex-make-precaution
-     symex--move-go-out
-     :post-condition (lambda ()
-                       (not (symex--point-at-final-symex-p))))
-    symex--move-go-forward))
+(deftraversal symex--traversal-preorder
+  (protocol
+   (protocol
+    (move in)
+    (move forward))
+   (detour
+    (precaution
+     (move out)
+     :after (lambda ()
+              (not (symex--point-at-final-symex-p))))
+    (move forward)))
   "Pre-order tree traversal, continuing to other trees.")
 
-(defvar symex--traversal-preorder-in-tree
-  (symex-make-protocol
-   (symex-make-protocol
-    symex--move-go-in
-    symex--move-go-forward)
-   (symex-make-detour
-    (symex-make-precaution
-     symex--move-go-out
-     :post-condition (lambda ()
-                       (not (symex--point-at-root-symex-p))))
-    symex--move-go-forward))
+(deftraversal symex--traversal-preorder-in-tree
+  (protocol
+   (protocol
+    (move in)
+    (move forward))
+   (detour
+    (precaution
+     (move out)
+     :after (lambda ()
+              (not (symex--point-at-root-symex-p))))
+    (move forward)))
   "Pre-order tree traversal.")
 
 (defvar symex--traversal-postorder
