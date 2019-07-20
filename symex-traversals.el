@@ -22,6 +22,7 @@
 (require 'symex-data)
 (require 'symex-primitives)
 (require 'symex-evaluator)
+(require 'symex-dsl)
 
 ;;;;;;;;;;;;;;;;;;
 ;;; TRAVERSALS ;;;
