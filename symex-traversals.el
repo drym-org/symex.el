@@ -74,56 +74,37 @@
   (point))
 
 (deftraversal symex--traversal-preorder
-  (protocol
-   (protocol
-    (move in)
-    (move forward))
-   (detour
-    (precaution
-     (move out)
-     :after (lambda ()
-              (not (symex--point-at-final-symex-p))))
-    (move forward)))
+  (protocol (protocol (move in)
+                      (move forward))
+            (detour (precaution (move out)
+                                :after (lambda ()
+                                         (not (symex--point-at-final-symex-p))))
+                    (move forward)))
   "Pre-order tree traversal, continuing to other trees.")
 
 (deftraversal symex--traversal-preorder-in-tree
-  (protocol
-   (protocol
-    (move in)
-    (move forward))
-   (detour
-    (precaution
-     (move out)
-     :after (lambda ()
-              (not (symex--point-at-root-symex-p))))
-    (move forward)))
+  (protocol (protocol (move in)
+                      (move forward))
+            (detour (precaution (move out)
+                                :after (lambda ()
+                                         (not (symex--point-at-root-symex-p))))
+                    (move forward)))
   "Pre-order tree traversal.")
 
 (deftraversal symex--traversal-postorder
-  (protocol
-   (maneuver
-    (move backward)
-    (circuit
-     (maneuver
-      (move in)
-      (circuit
-       (move forward)))))
-   (move out))
+  (protocol (maneuver (move backward)
+                      (circuit (maneuver (move in)
+                                         (circuit (move forward)))))
+            (move out))
   "Post-order tree traversal, continuing to other trees.")
 
 (deftraversal symex--traversal-postorder-in-tree
-  (protocol
-   (precaution
-    (maneuver
-     (move backward)
-     (circuit
-      (maneuver
-       (move in)
-       (circuit
-        (move forward)))))
-    :before (lambda ()
-              (not (symex--point-at-root-symex-p))))
-   (move out))
+  (protocol (precaution (maneuver (move backward)
+                                  (circuit (maneuver (move in)
+                                                     (circuit (move forward)))))
+                        :before (lambda ()
+                                  (not (symex--point-at-root-symex-p))))
+            (move out))
   "Post-order tree traversal.")
 
 (defun symex-traverse-forward ()
