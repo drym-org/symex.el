@@ -61,9 +61,9 @@ TIMES - see underlying Lisp implementation."
 
 ARG - an argument provided to the protocol definition."
   (cond ((not (symbolp arg)) arg)
-        ((equal ":before" (symbol-name arg))
+        ((equal ':before arg)
          ':pre-condition)
-        ((equal ":after" (symbol-name arg))
+        ((equal ':after arg)
          ':post-condition)))
 
 (defmacro symex--compile-precaution (traversal &rest args)
@@ -81,13 +81,13 @@ the corresponding boolean functions."
 
 DIRECTION - the direction to move in, which could be one of:
 forward, backward, in, or out."
-  (cond ((equal "forward" (symbol-name direction))
+  (cond ((equal 'forward direction)
          '(symex-make-move 1 0))
-        ((equal "backward" (symbol-name direction))
+        ((equal 'backward direction)
          '(symex-make-move -1 0))
-        ((equal "in" (symbol-name direction))
+        ((equal 'in direction)
          '(symex-make-move 0 1))
-        ((equal "out" (symbol-name direction))
+        ((equal 'out direction)
          '(symex-make-move 0 -1))))
 
 (defmacro symex-compile-traversal (traversal)
@@ -96,17 +96,17 @@ forward, backward, in, or out."
 TRAVERSAL could be any traversal specification, e.g. a maneuver,
 a detour, a move, etc., which is specified using the Symex DSL."
   (cond ((not (listp traversal)) traversal)  ; e.g. a variable containing a traversal
-        ((equal "protocol" (symbol-name (car traversal)))
+        ((equal 'protocol (car traversal))
          `(symex--compile-protocol ,@(cdr traversal)))
-        ((equal "maneuver" (symbol-name (car traversal)))
+        ((equal 'maneuver (car traversal))
          `(symex--compile-maneuver ,@(cdr traversal)))
-        ((equal "detour" (symbol-name (car traversal)))
+        ((equal 'detour (car traversal))
          `(symex--compile-detour ,@(cdr traversal)))
-        ((equal "circuit" (symbol-name (car traversal)))
+        ((equal 'circuit (car traversal))
          `(symex--compile-circuit ,@(cdr traversal)))
-        ((equal "precaution" (symbol-name (car traversal)))
+        ((equal 'precaution (car traversal))
          `(symex--compile-precaution ,@(cdr traversal)))
-        ((equal "move" (symbol-name (car traversal)))
+        ((equal 'move (car traversal))
          `(symex--compile-move ,@(cdr traversal)))))
 
 (defmacro deftraversal (name traversal &optional docstring)
