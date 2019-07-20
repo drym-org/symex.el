@@ -41,7 +41,6 @@
 
 (defun symex--point-at-root-symex-p ()
   "Check if point is at a root symex."
-  (interactive)
   (save-excursion
     (symex-if-stuck t
                     (symex-exit)
@@ -49,7 +48,6 @@
 
 (defun symex--point-at-first-symex-p ()
   "Check if point is at the first symex at some level."
-  (interactive)
   (save-excursion
     (symex-if-stuck t
                     (symex-backward)
@@ -57,7 +55,6 @@
 
 (defun symex--point-at-last-symex-p ()
   "Check if point is at the last symex at some level."
-  (interactive)
   (save-excursion
     (symex-if-stuck t
                     (symex-forward)
@@ -65,7 +62,6 @@
 
 (defun symex--point-at-final-symex-p ()
   "Check if point is at the last symex in the buffer."
-  (interactive)
   (save-excursion
     (symex-if-stuck (progn (symex-if-stuck t
                                            (symex-exit)
@@ -75,7 +71,6 @@
 
 (defun symex--point-at-initial-symex-p ()
   "Check if point is at the first symex in the buffer."
-  (interactive)
   (save-excursion
     (condition-case nil
         (progn (backward-sexp 1)
