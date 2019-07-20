@@ -221,7 +221,7 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                                     ((symex-move-p traversal)
                                      (symex-execute-move traversal
                                                          computation))
-                                    (t (error "Syntax error: unrecognized traversal type!")))))
+                                    (t (error "Syntax error '%s': unrecognized traversal type!" traversal)))))
       (let ((result (funcall (symex--computation-perceive computation)
                              executed-traversal)))
         (if result
