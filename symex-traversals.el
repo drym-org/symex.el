@@ -99,40 +99,31 @@
     (move forward)))
   "Pre-order tree traversal.")
 
-(defvar symex--traversal-postorder
-  (let* ((traverse-in
-          (symex-compile-traversal
-            (circuit
-             (maneuver
-              (move in)
-              (circuit
-               (move forward))))))
-         (traverse-backwards-and-in
-          (symex-compile-traversal
-           (maneuver (move backward)
-                     traverse-in))))
-    (symex-compile-traversal (protocol traverse-backwards-and-in
-                                       (move out))))
+(deftraversal symex--traversal-postorder
+  (protocol
+   (maneuver
+    (move backward)
+    (circuit
+     (maneuver
+      (move in)
+      (circuit
+       (move forward)))))
+   (move out))
   "Post-order tree traversal, continuing to other trees.")
 
-(defvar symex--traversal-postorder-in-tree
-  (let* ((traverse-in
-          (symex-compile-traversal
-           (circuit
-            (maneuver
-             (move in)
-             (circuit
-              (move forward))))))
-         (traverse-backwards-and-in
-          (symex-compile-traversal
-           (precaution
-            (maneuver
-             (move backward)
-             traverse-in)
-            :before (lambda ()
-                      (not (symex--point-at-root-symex-p)))))))
-    (symex-compile-traversal (protocol traverse-backwards-and-in
-                                       (move out))))
+(deftraversal symex--traversal-postorder-in-tree
+  (protocol
+   (precaution
+    (maneuver
+     (move backward)
+     (circuit
+      (maneuver
+       (move in)
+       (circuit
+        (move forward)))))
+    :before (lambda ()
+              (not (symex--point-at-root-symex-p))))
+   (move out))
   "Post-order tree traversal.")
 
 (defun symex-traverse-forward ()
