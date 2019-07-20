@@ -31,46 +31,31 @@
 (defun symex-goto-first ()
   "Select first symex at present level."
   (interactive)
-  (let ((traversal
-         (symex-compile-traversal
-          (circuit
-           (move backward)))))
-    (symex-execute-traversal traversal))
+  (symex-execute-traversal (symex-compile-traversal
+                            (circuit (move backward))))
   (point))
 
 (defun symex-goto-last ()
   "Select last symex at present level."
   (interactive)
-  (let ((traversal
-         (symex-compile-traversal
-          (circuit
-           (move forward)))))
-    (symex-execute-traversal traversal))
+  (symex-execute-traversal (symex-compile-traversal
+                            (circuit (move forward))))
   (point))
 
 (defun symex-goto-outermost ()
   "Select outermost symex."
   (interactive)
-  (let ((traversal
-         (symex-compile-traversal
-          (circuit
-           (move out)))))
-    (symex-execute-traversal traversal))
+  (symex-execute-traversal (symex-compile-traversal
+                            (circuit (move out))))
   (point))
 
 (defun symex-goto-innermost ()
   "Select innermost symex."
   (interactive)
-  (let ((traversal
-         (symex-compile-traversal
-          (maneuver
-           (move in)
-           (circuit
-            (protocol
-             (circuit
-              (move forward))
-             (move in)))))))
-    (symex-execute-traversal traversal))
+  (symex-execute-traversal (symex-compile-traversal
+                            (maneuver (move in)
+                                      (circuit (protocol (circuit (move forward))
+                                                         (move in))))))
   (point))
 
 (deftraversal symex--traversal-preorder
@@ -110,34 +95,30 @@
 (defun symex-traverse-forward ()
   "Traverse symex as a tree, using pre-order traversal."
   (interactive)
-  (let ((traversal symex--traversal-preorder))
-    (let ((result (symex-execute-traversal traversal)))
-      (message "%s" result)
-      result)))
+  (let ((result (symex-execute-traversal symex--traversal-preorder)))
+    (message "%s" result)
+    result))
 
 (defun symex-traverse-forward-in-tree ()
   "Traverse symex forward using pre-order traversal, stopping at end of tree."
   (interactive)
-  (let ((traversal symex--traversal-preorder-in-tree))
-    (let ((result (symex-execute-traversal traversal)))
-      (message "%s" result)
-      result)))
+  (let ((result (symex-execute-traversal symex--traversal-preorder-in-tree)))
+    (message "%s" result)
+    result))
 
 (defun symex-traverse-backward ()
   "Traverse symex as a tree, using converse post-order traversal."
   (interactive)
-  (let ((traversal symex--traversal-postorder))
-    (let ((result (symex-execute-traversal traversal)))
-      (message "%s" result)
-      result)))
+  (let ((result (symex-execute-traversal symex--traversal-postorder)))
+    (message "%s" result)
+    result))
 
 (defun symex-traverse-backward-in-tree ()
   "Traverse symex backward using post-order traversal, stopping at root of tree."
   (interactive)
-  (let ((traversal symex--traversal-postorder-in-tree))
-    (let ((result (symex-execute-traversal traversal)))
-      (message "%s" result)
-      result)))
+  (let ((result (symex-execute-traversal symex--traversal-postorder-in-tree)))
+    (message "%s" result)
+    result))
 
 
 (provide 'symex-traversals)
