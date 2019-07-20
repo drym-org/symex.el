@@ -32,8 +32,9 @@
   "Select first symex at present level."
   (interactive)
   (let ((traversal
-         (symex-make-circuit
-          symex--move-go-backward)))
+         (symex-compile-traversal
+          (circuit
+           (move backward)))))
     (symex-execute-traversal traversal))
   (point))
 
@@ -41,8 +42,9 @@
   "Select last symex at present level."
   (interactive)
   (let ((traversal
-         (symex-make-circuit
-          symex--move-go-forward)))
+         (symex-compile-traversal
+          (circuit
+           (move forward)))))
     (symex-execute-traversal traversal))
   (point))
 
@@ -50,8 +52,9 @@
   "Select outermost symex."
   (interactive)
   (let ((traversal
-         (symex-make-circuit
-          symex--move-go-out)))
+         (symex-compile-traversal
+          (circuit
+           (move out)))))
     (symex-execute-traversal traversal))
   (point))
 
@@ -59,13 +62,14 @@
   "Select innermost symex."
   (interactive)
   (let ((traversal
-         (symex-make-maneuver
-          symex--move-go-in
-          (symex-make-circuit
-           (symex-make-protocol
-            (symex-make-circuit
-             symex--move-go-forward)
-            symex--move-go-in)))))
+         (symex-compile-traversal
+          (maneuver
+           (move in)
+           (circuit
+            (protocol
+             (circuit
+              (move forward))
+             (move in)))))))
     (symex-execute-traversal traversal))
   (point))
 
