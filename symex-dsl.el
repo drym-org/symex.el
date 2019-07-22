@@ -24,7 +24,7 @@
 
 This is useful for mapping a compiler macro over a list of
 traversal specifications."
-  `(symex-compile-traversal ,traversal))
+  `(symex-traversal ,traversal))
 
 (defmacro symex--compile-protocol (&rest options)
   "Compile a protocol from Symex DSL -> Lisp.
@@ -45,15 +45,15 @@ PHASES - see underlying Lisp implementation."
 
 REORIENTATION - see underlying Lisp implementation.
 TRAVERSAL - see underlying Lisp implementation."
-  `(symex-make-detour (symex-compile-traversal ,reorientation)
-                      (symex-compile-traversal ,traversal)))
+  `(symex-make-detour (symex-traversal ,reorientation)
+                      (symex-traversal ,traversal)))
 
 (defmacro symex--compile-circuit (traversal &optional times)
   "Compile a circuit from Symex DSL -> Lisp.
 
 TRAVERSAL - see underlying Lisp implementation.
 TIMES - see underlying Lisp implementation."
-  `(symex-make-circuit (symex-compile-traversal ,traversal)
+  `(symex-make-circuit (symex-traversal ,traversal)
                        ,times))
 
 (defun symex--rewrite-precaution-component (arg)
@@ -75,7 +75,7 @@ TRAVERSAL - see underlying Lisp implementation.
 ARGS - arguments provided in the precaution specification.  This may
 include the keyword arguments :before and :after together with
 the corresponding boolean functions."
-  `(symex-make-precaution (symex-compile-traversal ,traversal)
+  `(symex-make-precaution (symex-traversal ,traversal)
                           ,@(mapcar 'symex--rewrite-precaution-component args)))
 
 (defmacro symex--compile-move (direction)
@@ -92,7 +92,7 @@ forward, backward, in, or out."
         ((equal 'out direction)
          '(symex-make-move 0 -1))))
 
-(defmacro symex-compile-traversal (traversal)
+(defmacro symex-traversal (traversal)
   "Compile a traversal from Symex DSL -> Lisp.
 
 TRAVERSAL could be any traversal specification, e.g. a maneuver,
@@ -121,7 +121,7 @@ This can be thought of as the 'program' written in the DSL, which
 will be compiled into Lisp and can be executed when needed.
 An optional DOCSTRING will be used as documentation for the variable
 NAME to which the traversal is assigned."
-  `(defvar ,name (symex-compile-traversal ,traversal) ,docstring))
+  `(defvar ,name (symex-traversal ,traversal) ,docstring))
 
 
 (provide 'symex-dsl)

@@ -50,7 +50,7 @@ similarly to how the Lisp interpreter does it (when it is following
 'applicative-order evaluation')."
   (interactive)
   (save-excursion
-    (symex-execute-traversal (symex-compile-traversal
+    (symex-execute-traversal (symex-traversal
                               (circuit symex--traversal-preorder-in-tree))
                              nil
                              #'symex-evaluate)
@@ -382,7 +382,7 @@ New list delimiters are determined by the TYPE."
   "Properly tidy things up."
   (interactive)
   (save-excursion
-    (symex-execute-traversal (symex-compile-traversal
+    (symex-execute-traversal (symex-traversal
                               (circuit symex--traversal-preorder-in-tree))
                              nil
                              #'symex-tidy)

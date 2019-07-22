@@ -31,28 +31,28 @@
 (defun symex-goto-first ()
   "Select first symex at present level."
   (interactive)
-  (symex-execute-traversal (symex-compile-traversal
+  (symex-execute-traversal (symex-traversal
                             (circuit (move backward))))
   (point))
 
 (defun symex-goto-last ()
   "Select last symex at present level."
   (interactive)
-  (symex-execute-traversal (symex-compile-traversal
+  (symex-execute-traversal (symex-traversal
                             (circuit (move forward))))
   (point))
 
 (defun symex-goto-outermost ()
   "Select outermost symex."
   (interactive)
-  (symex-execute-traversal (symex-compile-traversal
+  (symex-execute-traversal (symex-traversal
                             (circuit (move out))))
   (point))
 
 (defun symex-goto-innermost ()
   "Select innermost symex."
   (interactive)
-  (symex-execute-traversal (symex-compile-traversal
+  (symex-execute-traversal (symex-traversal
                             (maneuver (move in)
                                       (circuit (protocol (circuit (move forward))
                                                          (move in))))))
