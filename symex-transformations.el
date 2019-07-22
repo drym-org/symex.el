@@ -27,6 +27,7 @@
 (require 'symex-utils)
 (require 'symex-misc)
 (require 'symex-traversals)
+(require 'symex-interop)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TRANSFORMATIONS ;;;
@@ -83,7 +84,7 @@ similarly to how the Lisp interpreter does it (when it is following
   "Change symex."
   (interactive)
   (kill-sexp 1)
-  (evil-insert-state))
+  (symex-enter-lowest))
 
 (defun symex-replace ()
   "Replace contents of symex."
@@ -92,7 +93,7 @@ similarly to how the Lisp interpreter does it (when it is following
     (if move
         (apply #'evil-change (evil-inner-paren))  ; TODO: dispatch on paren type
       (sp-kill-sexp nil)
-      (evil-insert-state))))
+      (symex-enter-lowest))))
 
 (defun symex-clear ()
   "Clear contents of symex."
@@ -231,7 +232,7 @@ by default, joins next symex to current one."
   (interactive)
   (forward-sexp)
   (newline-and-indent)
-  (evil-insert-state))
+  (symex-enter-lowest))
 
 (defun symex-open-line-before ()
   "Open new line before symex."
@@ -240,26 +241,26 @@ by default, joins next symex to current one."
   (evil-previous-line)
   (indent-according-to-mode)
   (evil-move-end-of-line)
-  (evil-insert-state))
+  (symex-enter-lowest))
 
 (defun symex-append-after ()
   "Append after symex (instead of vim's default of line)."
   (interactive)
   (forward-sexp)  ; selected symexes will have the cursor on the starting paren
-  (evil-insert-state))
+  (symex-enter-lowest))
 
 (defun symex-insert-before ()
   "Insert before symex (instead of vim's default at the start of line)."
   (interactive)
-  (evil-insert-state))
+  (symex-enter-lowest))
 
 (defun symex-insert-at-beginning ()
   "Insert at beginning of symex."
   (interactive)
   (if (lispy-left-p)
       (progn (forward-char)
-             (evil-insert-state))
-    (evil-insert-state)))
+             (symex-enter-lowest))
+    (symex-enter-lowest)))
 
 (defun symex-insert-at-end ()
   "Insert at end of symex."
@@ -267,9 +268,9 @@ by default, joins next symex to current one."
   (if (lispy-left-p)
       (progn (forward-sexp)
              (backward-char)
-             (evil-insert-state))
+             (symex-enter-lowest))
     (progn (forward-sexp)
-           (evil-insert-state))))
+           (symex-enter-lowest))))
 
 (defun symex-create (type)
   "Create new symex (list).

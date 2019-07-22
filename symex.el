@@ -34,6 +34,7 @@
 
 ;;; Code:
 
+(require 'evil)
 (require 'lispy)
 (require 'paredit)
 (require 'evil-cleverparens)  ;; really only need cp-textobjects here
@@ -48,6 +49,7 @@
 (require 'symex-traversals)
 (require 'symex-transformations)
 (require 'symex-misc)
+(require 'symex-interop)
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;;; CONFIGURATION ;;;
@@ -136,30 +138,6 @@
   "Enable symex minor mode if it isn't already enabled."
   (unless symex-mode
     (symex-mode)))
-
-(defun symex-mode-escape-higher ()
-  "Exit symex mode via an 'escape'."
-  (interactive)
-  (cond ((and (boundp 'epistemic-mode)
-              epistemic-mode)
-         (when (fboundp 'eem-enter-higher-level)
-            (eem-enter-higher-level)))
-        ((and (boundp 'evil-mode)
-              evil-mode)
-         (evil-normal-state))
-        (t (evil-emacs-state))))
-
-(defun symex-mode-enter-lower ()
-  "Exit symex mode via an 'enter'."
-  (interactive)
-  (cond ((and (boundp 'epistemic-mode)
-              epistemic-mode)
-         (when (fboundp 'eem-enter-lower-level)
-           (eem-enter-lower-level)))
-        ((and (boundp 'evil-mode)
-              evil-mode)
-         (evil-insert-state))
-        (t (evil-emacs-state))))
 
 (defun symex--toggle-highlight ()
   "Toggle highlighting of selected symex."
@@ -267,10 +245,10 @@
   ("C-v" evil-visual-block nil :exit t)
   ;; standard exits
   ("?" symex-describe "info")
-  ("<return>" symex-mode-enter-lower "enter lower" :exit t)
-  ("C-k" symex-mode-enter-lower "enter lower" :exit t)
-  ("<escape>" symex-mode-escape-higher "escape higher" :exit t)
-  ("C-g" symex-mode-escape-higher "escape higher" :exit t))
+  ("<return>" symex-enter-lower "enter lower" :exit t)
+  ("C-k" symex-enter-lower "enter lower" :exit t)
+  ("<escape>" symex-escape-higher "escape higher" :exit t)
+  ("C-g" symex-escape-higher "escape higher" :exit t))
 
 
 ;;;###autoload
