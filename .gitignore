@@ -5,3 +5,4 @@
 # Build
 .cask
 *.elc
+dist
