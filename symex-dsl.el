@@ -61,9 +61,11 @@ TIMES - see underlying Lisp implementation."
 
 ARG - an argument provided to the protocol definition."
   (cond ((not (symbolp arg)) arg)
-        ((equal ':before arg)
+        ((or (equal ':before arg)
+             (equal ':beforehand arg))
          ':pre-condition)
-        ((equal ':after arg)
+        ((or (equal ':after arg)
+             (equal ':afterwards arg))
          ':post-condition)))
 
 (defmacro symex--compile-precaution (traversal &rest args)

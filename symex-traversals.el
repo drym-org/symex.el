@@ -62,8 +62,8 @@
   (protocol (protocol (move in)
                       (move forward))
             (detour (precaution (move out)
-                                :after (lambda ()
-                                         (not (symex--point-at-final-symex-p))))
+                                :afterwards (lambda ()
+                                              (not (symex--point-at-final-symex-p))))
                     (move forward)))
   "Pre-order tree traversal, continuing to other trees.")
 
@@ -71,8 +71,8 @@
   (protocol (protocol (move in)
                       (move forward))
             (detour (precaution (move out)
-                                :after (lambda ()
-                                         (not (symex--point-at-root-symex-p))))
+                                :afterwards (lambda ()
+                                              (not (symex--point-at-root-symex-p))))
                     (move forward)))
   "Pre-order tree traversal.")
 
@@ -87,8 +87,8 @@
   (protocol (precaution (maneuver (move backward)
                                   (circuit (maneuver (move in)
                                                      (circuit (move forward)))))
-                        :before (lambda ()
-                                  (not (symex--point-at-root-symex-p))))
+                        :beforehand (lambda ()
+                                      (not (symex--point-at-root-symex-p))))
             (move out))
   "Post-order tree traversal.")
 
