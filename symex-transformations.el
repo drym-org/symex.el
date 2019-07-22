@@ -23,6 +23,7 @@
 (require 'lispy)
 (require 'evil)
 (require 'evil-surround)
+(require 'evil-cleverparens)
 (require 'smartparens)
 (require 'symex-utils)
 (require 'symex-misc)
