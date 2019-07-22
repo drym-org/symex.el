@@ -239,25 +239,27 @@ by default, joins next symex to current one."
   (newline-and-indent)
   (evil-previous-line)
   (indent-according-to-mode)
-  (evil-append-line 1))
+  (evil-move-end-of-line)
+  (evil-insert-state))
 
 (defun symex-append-after ()
   "Append after symex (instead of vim's default of line)."
   (interactive)
   (forward-sexp)  ; selected symexes will have the cursor on the starting paren
-  (evil-insert 1 nil nil))
+  (evil-insert-state))
 
 (defun symex-insert-before ()
   "Insert before symex (instead of vim's default at the start of line)."
   (interactive)
-  (evil-insert 1 nil nil))
+  (evil-insert-state))
 
 (defun symex-insert-at-beginning ()
   "Insert at beginning of symex."
   (interactive)
   (if (lispy-left-p)
-      (evil-append 1 nil)
-    (evil-insert 1 nil nil)))
+      (progn (forward-char)
+             (evil-insert-state))
+    (evil-insert-state)))
 
 (defun symex-insert-at-end ()
   "Insert at end of symex."
@@ -265,9 +267,9 @@ by default, joins next symex to current one."
   (if (lispy-left-p)
       (progn (forward-sexp)
              (backward-char)
-             (evil-insert 1 nil nil))
+             (evil-insert-state))
     (progn (forward-sexp)
-           (evil-insert 1 nil nil))))
+           (evil-insert-state))))
 
 (defun symex-create (type)
   "Create new symex (list).
