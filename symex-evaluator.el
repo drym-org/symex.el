@@ -30,18 +30,24 @@
   "Execute the specified MOVE at the current point location in the tree.
 
 Evaluates to the actual move executed or nil if no move was executed.
-Optional argument COMPUTATION currently unused."
+Optional argument COMPUTATION currently unused.
+
+This interface is an 'abstraction barrier' to keep the details of the
+elementary navigation of symexes as a black box.  The implementation
+of these elementary operations could be changed in the future (e.g. to
+incorporate an explicit AST representation for greater precision) without
+requiring changes to higher-level code that uses the present interface."
   (ignore computation)
   (let ((move-x (symex--move-x move))
         (move-y (symex--move-y move)))
     (cond ((> move-x 0)
-           (symex-forward move-x))
+           (symex--forward move-x))
           ((< move-x 0)
-           (symex-backward (abs move-x)))
+           (symex--backward (abs move-x)))
           ((> move-y 0)
-           (symex-enter move-y))
+           (symex--enter move-y))
           ((< move-y 0)
-           (symex-exit (abs move-y))))))
+           (symex--exit (abs move-y))))))
 
 (defun symex-execute-move (move &optional computation)
   "Execute the MOVE as a traversal.

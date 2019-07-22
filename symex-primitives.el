@@ -43,30 +43,30 @@
   "Check if point is at a root symex."
   (save-excursion
     (symex-if-stuck t
-                    (symex-exit)
+                    (symex--exit)
                     nil)))
 
 (defun symex--point-at-first-symex-p ()
   "Check if point is at the first symex at some level."
   (save-excursion
     (symex-if-stuck t
-                    (symex-backward)
+                    (symex--backward)
                     nil)))
 
 (defun symex--point-at-last-symex-p ()
   "Check if point is at the last symex at some level."
   (save-excursion
     (symex-if-stuck t
-                    (symex-forward)
+                    (symex--forward)
                     nil)))
 
 (defun symex--point-at-final-symex-p ()
   "Check if point is at the last symex in the buffer."
   (save-excursion
     (symex-if-stuck (progn (symex-if-stuck t
-                                           (symex-exit)
+                                           (symex--exit)
                                            nil))
-                    (symex-forward)
+                    (symex--forward)
                     nil)))
 
 (defun symex--point-at-initial-symex-p ()
@@ -115,10 +115,16 @@
         (setq result 0)))
     result))
 
-(defun symex-forward (&optional count)
+(defun symex--forward (&optional count)
   "Forward symex.
 
-Go forward COUNT times, defaulting to one."
+Go forward COUNT times, defaulting to one.
+
+This is a primitive operation that is provided below the public
+abstraction level of symex.el.  It currently uses built-in Emacs
+commands and third party tools like paredit to perform its function.
+This procedure is not to be used except in the low-level internals
+of symex mode (use the public `symex-go-forward` instead)."
   (interactive)
   (let ((count (or count 1))
         (result 0))
@@ -138,10 +144,16 @@ Go forward COUNT times, defaulting to one."
         (error nil)))
     result))
 
-(defun symex-backward (&optional count)
+(defun symex--backward (&optional count)
   "Backward symex.
 
-Go backward COUNT times, defaulting to one."
+Go backward COUNT times, defaulting to one.
+
+This is a primitive operation that is provided below the public
+abstraction level of symex.el.  It currently uses built-in Emacs
+commands and third party tools like paredit to perform its function.
+This procedure is not to be used except in the low-level internals
+of symex mode (use the public `symex-go-backward` instead)."
   (interactive)
   (let ((count (or count 1))
         (result 0))
@@ -162,10 +174,16 @@ Go backward COUNT times, defaulting to one."
           (t (setq result 0)))
     result))
 
-(defun symex-enter (&optional count)
+(defun symex--enter (&optional count)
   "Enter lower symex level.
 
-Enter COUNT times, defaulting to one."
+Enter COUNT times, defaulting to one.
+
+This is a primitive operation that is provided below the public
+abstraction level of symex.el.  It currently uses built-in Emacs
+commands and third party tools like paredit to perform its function.
+This procedure is not to be used except in the low-level internals
+of symex mode (use the public `symex-go-in` instead)."
   (interactive)
   (let ((count (or count 1))
         (result 0))
@@ -182,10 +200,16 @@ Enter COUNT times, defaulting to one."
              1)
     (error 0)))
 
-(defun symex-exit (&optional count)
+(defun symex--exit (&optional count)
   "Exit to higher symex level.
 
-Exit COUNT times, defaulting to one."
+Exit COUNT times, defaulting to one.
+
+This is a primitive operation that is provided below the public
+abstraction level of symex.el.  It currently uses built-in Emacs
+commands and third party tools like paredit to perform its function.
+This procedure is not to be used except in the low-level internals
+of symex mode (use the public `symex-go-out` instead)."
   (interactive)
   (let ((count (or count 1))
         (result 0))
