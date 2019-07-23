@@ -13,10 +13,17 @@ INIT_PACKAGE_EL="(progn  \
 PROJECT_FILES=`${CASK} files`
 
 lint:
-	${CASK} exec $(EMACS) -Q --batch --eval $(INIT_PACKAGE_EL) -l "package-lint.el" -f "package-lint-batch-and-exit" ${PROJECT_FILES}
+	${CASK} exec $(EMACS) -Q --batch  \
+	                      --eval $(INIT_PACKAGE_EL)  \
+	                      -l "package-lint.el"  \
+	                      -f "package-lint-batch-and-exit"  \
+	                      ${PROJECT_FILES}
 
 checkdoc:
-	${CASK} exec $(EMACS) -Q --batch --eval $(INIT_PACKAGE_EL) -l "build-utils.el" --eval '(flycheck/batch-checkdoc ".")'
+	${CASK} exec $(EMACS) -Q --batch  \
+	                      --eval $(INIT_PACKAGE_EL)  \
+	                      -l "build-utils.el"  \
+	                      --eval '(flycheck/batch-checkdoc ".")'
 
 build :
 	${CASK} build
