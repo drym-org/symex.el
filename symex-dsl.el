@@ -57,7 +57,12 @@ TIMES - see underlying Lisp implementation."
                        ,times))
 
 (defun symex--rewrite-precaution-condition (condition)
-  "rewrite condition"
+  "Rewrite a condition expression into a lambda expression.
+
+CONDITION - a condition specified in DSL syntax, which is to
+be rewritten into a lambda expression in terms of an existing
+predicate procedure, or left unmodified if it is already a
+procedure."
   (cond ((symbolp condition)
          (cond ((equal 'final condition)
                 'symex--point-at-final-symex-p)
@@ -68,7 +73,8 @@ TIMES - see underlying Lisp implementation."
                ((equal 'last condition)
                 'symex--point-at-last-symex-p)
                ((equal 'root condition)
-                'symex--point-at-root-symex-p)))
+                'symex--point-at-root-symex-p)
+               (t condition)))
         ((equal 'not (car condition))
          `(lambda () (not (,(symex--rewrite-precaution-condition (cadr condition))))))
         ((equal 'at (car condition))
@@ -78,7 +84,7 @@ TIMES - see underlying Lisp implementation."
 (defun symex--rewrite-precaution-condition-spec (condition-spec)
   "Rewrite DSL syntax to Lisp syntax in a precaution specification.
 
-CONDITION - a condition written in DSL syntax. See underlying Lisp
+CONDITION-SPEC - a condition written in DSL syntax.  See underlying Lisp
 implementation for more on precaution conditions."
   (cond ((or (equal 'before (car condition-spec))
              (equal 'beforehand (car condition-spec)))
@@ -91,33 +97,33 @@ implementation for more on precaution conditions."
   "Compile a precaution from Symex DSL -> Lisp.
 
 TRAVERSAL - see underlying Lisp implementation.
-CONDITIONS - conditions to be checked either before or after executing
-the traversal -- see underlying Lisp implementation. The conditions may
+CONDITION-SPECS - conditions to be checked either before or after executing
+the traversal -- see underlying Lisp implementation.  The conditions may
 either be specified purely using the DSL, or could also include custom
 lambdas which will be used verbatim.
 
 Conditions to be checked before executing the traversal are specified as:
 
-(beforehand ...)
+  (beforehand ...)
 
 Conditions to be checked after executing the traversal are specified as:
 
-(afterwards ...)
+  (afterwards ...)
 
 Checking that we are at a particular node is done via:
 
-(at root/first/last/initial/final)
+  (at root/first/last/initial/final)
 
 where root is the root of the current tree, first and last are the first
 and last symexes at the current level, and initial and final refer to the
-first and last symex in the buffer. These conditions may also be negated:
+first and last symex in the buffer.  These conditions may also be negated:
 
-(not (at ...)).
+  (not (at ...)).
 
 Alternatively, if a custom condition is desired, it may be specified
 directly, e.g.:
 
-(beforehand <procedure>)."
+  (beforehand <procedure>)."
   (append `(symex-make-precaution (symex-traversal ,traversal))
           (apply 'append
                  (mapcar 'symex--rewrite-precaution-condition-spec condition-specs))))
