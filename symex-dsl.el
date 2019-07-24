@@ -56,27 +56,71 @@ TIMES - see underlying Lisp implementation."
   `(symex-make-circuit (symex-traversal ,traversal)
                        ,times))
 
-(defun symex--rewrite-precaution-component (arg)
-  "Rewrite DSL syntax to Lisp syntax in a protocol specification.
+(defun symex--rewrite-precaution-condition (condition)
+  "rewrite condition"
+  (cond ((symbolp condition)
+         (cond ((equal 'final condition)
+                'symex--point-at-final-symex-p)
+               ((equal 'initial condition)
+                'symex--point-at-initial-symex-p)
+               ((equal 'first condition)
+                'symex--point-at-first-symex-p)
+               ((equal 'last condition)
+                'symex--point-at-last-symex-p)
+               ((equal 'root condition)
+                'symex--point-at-root-symex-p)))
+        ((equal 'not (car condition))
+         `(lambda () (not (,(symex--rewrite-precaution-condition (cadr condition))))))
+        ((equal 'at (car condition))
+         (symex--rewrite-precaution-condition (cadr condition)))
+        (t condition)))
 
-ARG - an argument provided to the protocol definition."
-  (cond ((not (symbolp arg)) arg)
-        ((or (equal ':before arg)
-             (equal ':beforehand arg))
-         ':pre-condition)
-        ((or (equal ':after arg)
-             (equal ':afterwards arg))
-         ':post-condition)))
+(defun symex--rewrite-precaution-condition-spec (condition-spec)
+  "Rewrite DSL syntax to Lisp syntax in a precaution specification.
 
-(defmacro symex--compile-precaution (traversal &rest args)
+CONDITION - a condition written in DSL syntax. See underlying Lisp
+implementation for more on precaution conditions."
+  (cond ((or (equal 'before (car condition-spec))
+             (equal 'beforehand (car condition-spec)))
+         `(:pre-condition ,(symex--rewrite-precaution-condition (cadr condition-spec))))
+        ((or (equal 'after (car condition-spec))
+             (equal 'afterwards (car condition-spec)))
+         `(:post-condition ,(symex--rewrite-precaution-condition (cadr condition-spec))))))
+
+(defmacro symex--compile-precaution (traversal &rest condition-specs)
   "Compile a precaution from Symex DSL -> Lisp.
 
 TRAVERSAL - see underlying Lisp implementation.
-ARGS - arguments provided in the precaution specification.  This may
-include the keyword arguments :before and :after together with
-the corresponding boolean functions."
-  `(symex-make-precaution (symex-traversal ,traversal)
-                          ,@(mapcar 'symex--rewrite-precaution-component args)))
+CONDITIONS - conditions to be checked either before or after executing
+the traversal -- see underlying Lisp implementation. The conditions may
+either be specified purely using the DSL, or could also include custom
+lambdas which will be used verbatim.
+
+Conditions to be checked before executing the traversal are specified as:
+
+(beforehand ...)
+
+Conditions to be checked after executing the traversal are specified as:
+
+(afterwards ...)
+
+Checking that we are at a particular node is done via:
+
+(at root/first/last/initial/final)
+
+where root is the root of the current tree, first and last are the first
+and last symexes at the current level, and initial and final refer to the
+first and last symex in the buffer. These conditions may also be negated:
+
+(not (at ...)).
+
+Alternatively, if a custom condition is desired, it may be specified
+directly, e.g.:
+
+(beforehand <procedure>)."
+  (append `(symex-make-precaution (symex-traversal ,traversal))
+          (apply 'append
+                 (mapcar 'symex--rewrite-precaution-condition-spec condition-specs))))
 
 (defmacro symex--compile-move (direction)
   "Compile a move from Symex DSL -> Lisp.
