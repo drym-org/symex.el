@@ -19,6 +19,7 @@
 ;;; Code:
 
 (require 'slime)
+(require 'slime-repl)
 
 (defun symex-eval-common-lisp ()
   "Eval last sexp.
