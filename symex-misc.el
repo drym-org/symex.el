@@ -27,6 +27,7 @@
 (require 'symex-interface-elisp)
 (require 'symex-interface-racket)
 (require 'symex-interface-scheme)
+(require 'symex-interface-clojure)
 
 ;; These are customization or config variables defined elsewhere;
 ;; explicitly indicating them here to avoid byte compile warnings
@@ -53,6 +54,8 @@
              (symex-eval-elisp))
             ((equal major-mode 'scheme-mode)
              (symex-eval-scheme))
+            ((equal major-mode 'clojure-mode)
+             (symex-eval-clojure))
             (t (error "Symex mode: Lisp flavor not recognized!"))))
     (funcall (intern (concat "evil-" (symbol-name original-evil-state) "-state")))))
 
@@ -65,6 +68,8 @@
          (symex-eval-definition-elisp))
         ((equal major-mode 'scheme-mode)
          (symex-eval-definition-scheme))
+        ((equal major-mode 'clojure-mode)
+         (symex-eval-definition-clojure))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
 (defun symex-evaluate-pretty ()
@@ -78,6 +83,8 @@
            (symex-eval-pretty-elisp))
           ((equal major-mode 'scheme-mode)
            (symex-eval-pretty-scheme))
+          ((equal major-mode 'clojure-mode)
+           (symex-eval-pretty-clojure))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-eval-print ()
@@ -91,6 +98,8 @@
            (symex-eval-print-elisp))
           ((equal major-mode 'scheme-mode)
            (symex-eval-print-scheme))
+          ((equal major-mode 'clojure-mode)
+           (symex-eval-print-clojure))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-describe ()
@@ -104,6 +113,8 @@
            (symex-describe-symbol-elisp))
           ((equal major-mode 'scheme-mode)
            (symex-describe-symbol-scheme))
+          ((equal major-mode 'clojure-mode)
+           (symex-describe-symbol-clojure))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-repl ()
@@ -115,6 +126,8 @@
          (symex-repl-elisp))
         ((equal major-mode 'scheme-mode)
          (symex-repl-scheme))
+        ((equal major-mode 'clojure-mode)
+         (symex-repl-clojure))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
 (defun symex-switch-to-scratch-buffer ()
