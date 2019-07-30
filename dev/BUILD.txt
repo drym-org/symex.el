@@ -1,0 +1,36 @@
+Build steps
+===========
+
+1. Run lint checks
+
+make lint
+
+2. Run checkdoc (docstring checker)
+
+make checkdoc
+
+3. Install any new dependencies
+
+make install
+
+4. Byte compile
+
+make build
+
+5. Test in MELPA sandbox
+
+# In melpa git repo
+make clean
+make sandbox INSTALL=symex
+
+Drafting a New Release
+======================
+
+1. Tag the release commit
+
+git tag -n  # list existing tags and annotations
+git tag -a <new version number> -m "<release message>"
+
+2. Push the new tag to origin:
+
+git push --follow-tags  # push new tag to remote
