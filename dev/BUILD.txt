@@ -5,6 +5,10 @@ Build steps
 
 make lint
 
+# may want to pipe the output to less to parse it since there are a lot
+# of errors that are not really errors
+make lint 2>&1 | less
+
 2. Run checkdoc (docstring checker)
 
 make checkdoc
