@@ -12,6 +12,20 @@ INIT_PACKAGE_EL="(progn  \
 
 PROJECT_FILES=`${CASK} files`
 
+help:
+	@echo "clean - remove all build artifacts"
+	@echo "install - install package dependencies in .cask/"
+	@echo "lint - check style with package-lint"
+	@echo "checkdoc - check docstrings"
+	@echo "build - byte compile the package"
+	@echo "test - run tests"
+
+clean :
+	${CASK} clean-elc
+
+install:
+	${CASK} install
+
 lint:
 	${CASK} exec $(EMACS) -Q --batch  \
 	                      --eval $(INIT_PACKAGE_EL)  \
@@ -28,13 +42,7 @@ checkdoc:
 build :
 	${CASK} build
 
-clean :
-	${CASK} clean-elc
-
-install:
-	${CASK} install
-
 test: build
 	${CASK} exec ert-runner
 
-.PHONY:	lint checkdoc build clean install test
+.PHONY:	help lint checkdoc build clean install test
