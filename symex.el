@@ -259,7 +259,7 @@ to enter, and any of the standard exits to exit."
   ("s-;" symex-evaluate "evaluate" :exit t)
   ;; configuration
   ("H-h" symex--toggle-highlight "toggle highlight")
-  ("H-m" symex-toggle-menu)
+  ("H-m" symex-toggle-menu "show/hide this menu")
   ;; escape hatches
   ("R" evil-replace-state nil :exit t)
   ("v" evil-visual-char nil :exit t)
