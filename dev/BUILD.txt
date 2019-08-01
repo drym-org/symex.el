@@ -27,6 +27,11 @@ make build
 make clean
 make sandbox INSTALL=symex
 
+6. For a new release, you can check that MELPA stable finds it:
+
+# In melpa git repo
+STABLE=t make recipes/symex
+
 Drafting a New Release
 ======================
 
