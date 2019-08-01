@@ -148,6 +148,27 @@
   (setq symex-highlight-p
         (not symex-highlight-p)))
 
+(defun symex-hide-menu ()
+  "Hide symex menu."
+  (hydra-set-property 'hydra-symex :verbosity 0))
+
+(defun symex-show-menu ()
+  "Show symex menu."
+  (hydra-set-property 'hydra-symex :verbosity 1))
+
+(defun symex-toggle-menu ()
+  "Show/hide the symex menu.
+
+Note that hiding the menu still retains the symex editing mode,
+and simply toggles whether the menu is visible or not.  To enter
+and exit the symex modal interface, use `symex-mode-interface`
+to enter, and any of the standard exits to exit."
+  (interactive)
+  (let ((visibility (hydra-get-property 'hydra-symex :verbosity)))
+    (if (= 1 visibility)
+        (symex-hide-menu)
+      (symex-show-menu))))
+
 
 (defhydra hydra-symex (:idle 1.0
                        :columns 4
@@ -238,6 +259,7 @@
   ("s-;" symex-evaluate "evaluate" :exit t)
   ;; configuration
   ("H-h" symex--toggle-highlight "toggle highlight")
+  ("H-m" symex-toggle-menu)
   ;; escape hatches
   ("R" evil-replace-state nil :exit t)
   ("v" evil-visual-char nil :exit t)
