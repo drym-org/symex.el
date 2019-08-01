@@ -30,11 +30,11 @@ Install the package the usual way via MELPA. Then add the following config to yo
   (dolist (mode-name symex-lisp-modes)
     (let ((mode-hook (intern (concat (symbol-name mode-name)
                                      "-hook"))))
-      (add-hook mode-hook 'symex-mode))))
+      (add-hook mode-hook 'symex-mode)))
 
 This provides a keybinding to load the symex editing interface, and also enables the symex minor mode in all recognized lisp modes (the minor mode is simply there to ensure that manual edits respect the tree structure, e.g. keeps parens balanced like paredit).
 
-By default, entering the symex modal interface shows you a comprehensive menu of all possible actions. This is helpful initially, but over time you may prefer to dismiss the menu and bring it up on demand in order to conserve screen real estate. To do this, either run ``symex-toggle-menu`` via the menu entry point (``H-m``) while in symex mode, or add this to your ``init.d``:
+By default, entering the symex modal interface shows you a comprehensive menu of all possible actions. This is helpful initially, but over time you may prefer to dismiss the menu and bring it up on demand in order to conserve screen real estate. To do this, either run ``symex-toggle-menu`` via the menu entry point (``H-m``) while in symex mode, or add this to your ``init.d`` (as part of the config above):
 
 ::
 
