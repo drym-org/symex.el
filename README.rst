@@ -40,6 +40,14 @@ By default, entering the symex modal interface shows you a comprehensive menu of
 
   (symex-hide-menu)
 
+If you want to learn more about the implementation and see some usage examples, watch the video overview:
+
+.. raw:: html
+
+  <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; height: auto;">
+    <iframe src="https://www.youtube.com/watch?v=a5s1ScTx8Zk" frameborder="0" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+  </div>
+
 A Note on the Name
 ==================
 A little while ago I was discussing Lisp syntax with `@apromessi <https://github.com/apromessi>`_:
