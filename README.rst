@@ -46,7 +46,7 @@ If you want to learn more about the implementation and see some usage examples, 
 
   <p align="center">
     <a href="https://www.youtube.com/watch?v=a5s1ScTx8Zk">
-      <img src="https://img.youtube.com/vi/a5s1ScTx8Zk/0.jpg" alt="Watch video" title="Watch video"/>
+      <img src="https://i.imgur.com/tk1x1p0.jpg" alt="Watch video" title="Watch video"/>
     </a>
   </p>
 
