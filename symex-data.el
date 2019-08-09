@@ -207,6 +207,44 @@ An option could be either a maneuver, or a protocol itself."
              (nth 0 obj))
     (error nil)))
 
+(defun symex-make-decision (condition consequent alternative)
+  "A specification to choose between two traversals.
+
+If CONDITION is true, then the CONSEQUENT traversal is executed,
+otherwise the ALTERNATIVE traversal is executed.
+
+This is analogous to an `if` statement in common languages."
+  (list 'decision
+        condition
+        consequent
+        alternative))
+
+(defun symex--decision-condition (decision)
+  "Get the condition component of the DECISION.
+
+This is the condition upon which the decision
+to choose one or the other traversal is based."
+  (nth 1 decision))
+
+(defun symex--decision-consequent (decision)
+  "Get the consequent component of the DECISION.
+
+This is the traversal that will be chosen if the condition is true."
+  (nth 2 decision))
+
+(defun symex--decision-alternative (decision)
+  "Get the alternative component of the DECISION.
+
+This is the traversal that will be chosen if the condition is false."
+  (nth 3 decision))
+
+(defun symex-decision-p (obj)
+  "Check if OBJ specifies a decision."
+  (condition-case nil
+      (equal 'decision
+             (nth 0 obj))
+    (error nil)))
+
 (defun symex-traversal-p (obj)
   "Check if OBJ specifies a traversal."
   (or (symex-move-p obj)
@@ -214,7 +252,8 @@ An option could be either a maneuver, or a protocol itself."
       (symex-circuit-p obj)
       (symex-detour-p obj)
       (symex-precaution-p obj)
-      (symex-protocol-p obj)))
+      (symex-protocol-p obj)
+      (symex-decision-p obj)))
 
 
 (provide 'symex-data)

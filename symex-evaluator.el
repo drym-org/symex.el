@@ -195,6 +195,22 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
                                             remaining-options)
                                      computation)))))))
 
+(defun symex-execute-decision (decision computation)
+  "Attempt to execute a given DECISION.
+
+The consequent traversal is executed if the condition holds, and the
+alternative traversal is executed if the condition does not hold.
+
+Evaluates to a COMPUTATION on the traversal actually executed."
+  (let ((condition (symex--decision-condition decision))
+        (consequent (symex--decision-consequent decision))
+        (alternative (symex--decision-alternative decision)))
+    (if (funcall condition)
+        (symex-execute-traversal consequent
+                                 computation)
+      (symex-execute-traversal alternative
+                               computation))))
+
 (defun symex-execute-traversal (traversal &optional computation side-effect)
   "Execute a tree TRAVERSAL.
 
@@ -224,6 +240,9 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                                     ((symex-detour-p traversal)
                                      (symex-execute-detour traversal
                                                            computation))
+                                    ((symex-decision-p traversal)
+                                     (symex-execute-decision traversal
+                                                             computation))
                                     ((symex-move-p traversal)
                                      (symex-execute-move traversal
                                                          computation))

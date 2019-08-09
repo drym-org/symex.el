@@ -56,7 +56,7 @@ TIMES - see underlying Lisp implementation."
   `(symex-make-circuit (symex-traversal ,traversal)
                        ,times))
 
-(defun symex--rewrite-precaution-condition (condition)
+(defun symex--rewrite-condition (condition)
   "Rewrite a condition expression into a lambda expression.
 
 CONDITION - a condition specified in DSL syntax, which is to
@@ -65,20 +65,20 @@ predicate procedure, or left unmodified if it is already a
 procedure."
   (cond ((symbolp condition)
          (cond ((equal 'final condition)
-                'symex--point-at-final-symex-p)
+                (function 'symex--point-at-final-symex-p))
                ((equal 'initial condition)
-                'symex--point-at-initial-symex-p)
+                (function 'symex--point-at-initial-symex-p))
                ((equal 'first condition)
-                'symex--point-at-first-symex-p)
+                (function 'symex--point-at-first-symex-p))
                ((equal 'last condition)
-                'symex--point-at-last-symex-p)
+                (function 'symex--point-at-last-symex-p))
                ((equal 'root condition)
-                'symex--point-at-root-symex-p)
+                (function 'symex--point-at-root-symex-p))
                (t condition)))
         ((equal 'not (car condition))
-         `(lambda () (not (,(symex--rewrite-precaution-condition (cadr condition))))))
+         `(lambda () (not (funcall ,(symex--rewrite-condition (cadr condition))))))
         ((equal 'at (car condition))
-         (symex--rewrite-precaution-condition (cadr condition)))
+         (symex--rewrite-condition (cadr condition)))
         (t condition)))
 
 (defun symex--rewrite-precaution-condition-spec (condition-spec)
@@ -88,10 +88,10 @@ CONDITION-SPEC - a condition written in DSL syntax.  See underlying Lisp
 implementation for more on precaution conditions."
   (cond ((or (equal 'before (car condition-spec))
              (equal 'beforehand (car condition-spec)))
-         `(:pre-condition ,(symex--rewrite-precaution-condition (cadr condition-spec))))
+         `(:pre-condition ,(symex--rewrite-condition (cadr condition-spec))))
         ((or (equal 'after (car condition-spec))
              (equal 'afterwards (car condition-spec)))
-         `(:post-condition ,(symex--rewrite-precaution-condition (cadr condition-spec))))))
+         `(:post-condition ,(symex--rewrite-condition (cadr condition-spec))))))
 
 (defmacro symex--compile-precaution (traversal &rest condition-specs)
   "Compile a precaution from Symex DSL -> Lisp.
@@ -128,6 +128,35 @@ directly, e.g.:
           (apply 'append
                  (mapcar 'symex--rewrite-precaution-condition-spec condition-specs))))
 
+(defmacro symex--compile-decision (condition consequent alternative)
+  "Compile a decision from Symex DSL -> Lisp.
+
+CONDITION - The condition on which the decision to choose either the
+CONSEQUENT or the ALTERNATIVE traversal is based (see underlying Lisp
+implementation).
+
+The conditions may either be specified purely using the DSL, or could
+also include custom lambdas which will be used verbatim.
+
+Checking that we are at a particular node is done via:
+
+  (at root/first/last/initial/final)
+
+where root is the root of the current tree, first and last are the
+first and last symexes at the current level, and initial and final
+refer to the first and last symex in the buffer.  These conditions may
+also be negated:
+
+  (not (at ...)).
+
+Alternatively, if a custom condition is desired, it may be specified
+directly, e.g.:
+
+  (decision <procedure> ...)."
+  `(symex-make-decision ,(symex--rewrite-condition condition)
+                        (symex-traversal ,consequent)
+                        (symex-traversal ,alternative)))
+
 (defmacro symex--compile-move (direction)
   "Compile a move from Symex DSL -> Lisp.
 
@@ -145,6 +174,10 @@ forward, backward, in, or out."
 (defmacro symex-traversal (traversal)
   "Compile a traversal from Symex DSL -> Lisp.
 
+This defines an anonymous traversal, much like `lambda` defines an
+anonymous function. To give the traversal a name, either assign it to
+a variable, or use the `deftraversal` form (analogous to `defun`).
+
 TRAVERSAL could be any traversal specification, e.g. a maneuver,
 a detour, a move, etc., which is specified using the Symex DSL."
   (cond ((not (listp traversal)) traversal)  ; e.g. a variable containing a traversal
@@ -158,6 +191,8 @@ a detour, a move, etc., which is specified using the Symex DSL."
          `(symex--compile-circuit ,@(cdr traversal)))
         ((equal 'precaution (car traversal))
          `(symex--compile-precaution ,@(cdr traversal)))
+        ((equal 'decision (car traversal))
+         `(symex--compile-decision ,@(cdr traversal)))
         ((equal 'move (car traversal))
          `(symex--compile-move ,@(cdr traversal)))))
 
