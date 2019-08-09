@@ -28,25 +28,34 @@
 ;;; TRAVERSALS ;;;
 ;;;;;;;;;;;;;;;;;;
 
+(deftraversal symex--traversal-goto-first
+  (circuit (move backward))
+  "Go to first symex at present level.")
+
+(deftraversal symex--traversal-goto-last
+  (circuit (move forward))
+  "Go to last symex at present level.")
+
+(deftraversal symex--traversal-goto-outermost
+  (circuit (move out))
+  "Go to outermost (root) symex in present tree.")
+
 (defun symex-goto-first ()
   "Select first symex at present level."
   (interactive)
-  (symex-execute-traversal (symex-traversal
-                            (circuit (move backward))))
+  (symex-execute-traversal symex--traversal-goto-first)
   (point))
 
 (defun symex-goto-last ()
   "Select last symex at present level."
   (interactive)
-  (symex-execute-traversal (symex-traversal
-                            (circuit (move forward))))
+  (symex-execute-traversal symex--traversal-goto-last)
   (point))
 
 (defun symex-goto-outermost ()
   "Select outermost symex."
   (interactive)
-  (symex-execute-traversal (symex-traversal
-                            (circuit (move out))))
+  (symex-execute-traversal symex--traversal-goto-outermost)
   (point))
 
 (defun symex-goto-innermost ()
