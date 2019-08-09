@@ -45,7 +45,9 @@ If you want to learn more about the implementation and see some usage examples, 
 .. raw:: html
 
   <p align="center">
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/a5s1ScTx8Zk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <a href="https://www.youtube.com/watch?v=a5s1ScTx8Zk">
+      <img src="https://img.youtube.com/vi/a5s1ScTx8Zk/0.jpg" alt="Watch video" title="Watch video"/>
+    </a>
   </p>
 
 A Note on the Name
