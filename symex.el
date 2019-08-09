@@ -195,6 +195,8 @@ to enter, and any of the standard exits to exit."
   ("f" symex-traverse-forward "flow forward")
   ("b" symex-traverse-backward "flow backward")
   ("F" symex-traverse-backward "flow backward")
+  ("C-h" symex-leap-backward "leap backward")
+  ("C-l" symex-leap-forward "leap forward")
   ("y" symex-yank "yank (copy)")
   ("p" symex-paste-after "paste after")
   ("P" symex-paste-before "paste before")

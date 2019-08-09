@@ -220,6 +220,61 @@ If SMOOTH-SCROLL is set, then scroll the view gently to aid in visual tracking."
           (setq result (1+ result)))
         result))))
 
+(defun symex-depth ()  ; TODO: may be better framed as a computation
+  "Get depth (from root) of current symex."
+  (interactive)
+  (save-excursion
+    (symex-select-nearest)
+    (let ((moves (symex-execute-traversal symex--traversal-goto-outermost)))
+      (length moves))))
+
+(defun symex-leap-backward ()
+  "Leap backward to a neighboring branch at the same depth."
+  (interactive)
+  (let ((depth (symex-depth))
+        (index (symex-index)))
+    (symex-execute-traversal
+     (symex-traversal
+      (maneuver (decision (at first)
+                          (circuit (precaution symex--traversal-postorder
+                                               (afterwards (not (lambda ()
+                                                                  (= (symex-depth)
+                                                                     depth))))))
+                          (maneuver symex--traversal-goto-first
+                                    (circuit (precaution symex--traversal-postorder
+                                                         (afterwards (not (lambda ()
+                                                                            (= (symex-depth)
+                                                                               depth))))))))
+                symex--traversal-postorder
+                symex--traversal-goto-first
+                (circuit (precaution (move forward)
+                                     (beforehand (lambda ()
+                                                   (< (symex-index)
+                                                      index))))))))))
+
+(defun symex-leap-forward ()
+  "Leap forward to a neighboring branch at the same depth."
+  (interactive)
+  (let ((depth (symex-depth))
+        (index (symex-index)))
+    (symex-execute-traversal
+     (symex-traversal
+      (maneuver (decision (at last)
+                          (circuit (precaution symex--traversal-preorder
+                                               (afterwards (not (lambda ()
+                                                                  (= (symex-depth)
+                                                                     depth))))))
+                          (maneuver symex--traversal-goto-last
+                                    (circuit (precaution symex--traversal-preorder
+                                                         (afterwards (not (lambda ()
+                                                                            (= (symex-depth)
+                                                                               depth))))))))
+                symex--traversal-preorder
+                (circuit (precaution (move forward)
+                                     (beforehand (lambda ()
+                                                   (< (symex-index)
+                                                      index))))))))))
+
 (defun symex--selection-side-effects ()
   "Things to do as part of symex selection, e.g. after navigations."
   (interactive)
