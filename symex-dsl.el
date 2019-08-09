@@ -175,7 +175,7 @@ forward, backward, in, or out."
   "Compile a traversal from Symex DSL -> Lisp.
 
 This defines an anonymous traversal, much like `lambda` defines an
-anonymous function. To give the traversal a name, either assign it to
+anonymous function.  To give the traversal a name, either assign it to
 a variable, or use the `deftraversal` form (analogous to `defun`).
 
 TRAVERSAL could be any traversal specification, e.g. a maneuver,
