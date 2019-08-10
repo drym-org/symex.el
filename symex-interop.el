@@ -56,32 +56,6 @@
          (evil-insert-state))
         (t (evil-emacs-state))))
 
-(defun symex--enter-mode ()
-  "Enter the symex modal interface."
-  (cond ((and (boundp 'epistemic-mode)
-              epistemic-mode)
-         (when (fboundp 'eem-enter-mode-with-recall)
-           (eem-enter-mode-with-recall 'symex)))
-        ((and (boundp 'evil-mode)
-              evil-mode)
-         (evil-normal-state))
-        (t (evil-emacs-state))))
-
-(defun symex--exit-mode ()
-  "Exit the symex modal interface."
-  (when (hydra-get-property 'hydra-symex :exiting)
-    (deactivate-mark)
-    (cond ((and (boundp 'epistemic-mode)
-                epistemic-mode)
-           (when (fboundp 'eem-exit-mode-with-recall)
-             (eem-exit-mode-with-recall 'symex)))
-          ((and (boundp 'evil-mode)
-                evil-mode)
-           (evil-normal-state))
-          (t (evil-emacs-state)))
-    ;; clear the exiting flag for next time
-    (hydra-set-property 'hydra-symex :exiting nil)))
-
 
 (provide 'symex-interop)
 ;;; symex-interop.el ends here

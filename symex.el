@@ -169,17 +169,12 @@ to enter, and any of the standard exits to exit."
         (symex-hide-menu)
       (symex-show-menu))))
 
-(defun symex--set-mode-exit-flag ()
-  "Set a mode exit flag to indicate cleanup operations need to be performed."
-  (hydra-set-property 'hydra-symex :exiting t))
-
 
 (defhydra hydra-symex (:idle 1.0
                        :columns 4
                        :color pink
                        :body-pre (symex-select-nearest)
-                       :post (symex--set-mode-exit-flag)
-                       :after-exit (symex--exit-mode))
+                       :post (deactivate-mark))
   "Symex mode"
   ("(" (lambda ()
          (interactive)
@@ -287,7 +282,7 @@ to enter, and any of the standard exits to exit."
 Enter the symex evil state and show a hydra menu for accessing various
 features."
   (interactive)
-  (symex--enter-mode))
+  (evil-symex-state))
 
 
 (provide 'symex)
