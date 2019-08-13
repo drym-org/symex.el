@@ -1,5 +1,13 @@
 *Symex (pron. "sym-ex", pl. symexes): A Lisp symbolic expression, which designates a computation to be performed.*
 
+.. image:: https://melpa.org/packages/symex-badge.svg
+    :alt: MELPA
+    :target: https://melpa.org/#/symex
+
+.. image:: https://stable.melpa.org/packages/symex-badge.svg
+    :alt: MELPA Stable
+    :target: https://stable.melpa.org/#/symex
+
 symex.el
 ========
 An `evil <https://github.com/emacs-evil/evil>`_ way to edit Lisp symbolic expressions ("symexes") as trees in Emacs
