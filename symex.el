@@ -14,6 +14,14 @@
 ;; that it isn't a license at all but an idea about the world and how
 ;; economic systems could be set up so that everyone wins.  Learn more
 ;; at drym.org.
+;;
+;; This work transcends traditional legal and economic systems, but
+;; for the purposes of any such systems within which you may need to
+;; operate:
+;;
+;; This is free and unencumbered software released into the public domain.
+;; The authors relinquish any copyright claims on this work.
+;;
 
 ;;; Commentary:
 ;;
