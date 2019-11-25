@@ -106,6 +106,20 @@
             (move out))
   "Post-order tree traversal.")
 
+(deftraversal symex--traversal-skip-forward
+  (protocol (move forward)
+            (detour (precaution (move out)
+                                (afterwards (not (at final))))
+                    (move forward)))
+  "Tree traversal focused on moving forward, leveraging preorder backtracking
+when the way is blocked.")
+
+(deftraversal symex--traversal-skip-backward
+  (protocol (move backward)
+            (move out))
+  "Tree traversal focused on moving backwards, leveraging postorder backtracking
+when the way is blocked.")
+
 (defun symex-traverse-forward ()
   "Traverse symex as a tree, using pre-order traversal."
   (interactive)
@@ -120,6 +134,13 @@
     (message "%s" result)
     result))
 
+(defun symex-traverse-forward-skip ()
+  "Traverse symex as a tree, skipping forward."
+  (interactive)
+  (let ((result (symex-execute-traversal symex--traversal-skip-forward)))
+    (message "%s" result)
+    result))
+
 (defun symex-traverse-backward ()
   "Traverse symex as a tree, using converse post-order traversal."
   (interactive)
@@ -131,6 +152,13 @@
   "Traverse symex backward using post-order traversal, stopping at root of tree."
   (interactive)
   (let ((result (symex-execute-traversal symex--traversal-postorder-in-tree)))
+    (message "%s" result)
+    result))
+
+(defun symex-traverse-backward-skip ()
+  "Traverse symex as a tree, skipping backwards."
+  (interactive)
+  (let ((result (symex-execute-traversal symex--traversal-skip-backward)))
     (message "%s" result)
     result))
 
