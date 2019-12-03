@@ -86,7 +86,7 @@
   "Symex state."
   :tag " <λ> "
   :message "-- SYMEX --"
-  :entry-hook (hydra-symex/body symex--ensure-minor-mode)
+  :entry-hook (symex--adjust-point hydra-symex/body symex--ensure-minor-mode)
   :enable (normal))
 
 (defvar symex-elisp-modes (list 'lisp-interaction-mode
@@ -146,6 +146,18 @@
   "Enable symex minor mode if it isn't already enabled."
   (unless symex-mode
     (symex-mode)))
+
+(defun symex--adjust-point ()
+  "Adjust point context from the Emacs to the Vim interpretation.
+
+If entering symex mode from Insert or Emacs mode, then translate point
+so it indicates the appropriate symex in Symex mode.  This is necessary
+because in Emacs, the symex preceding point is indicated.  In Vim, the
+symex 'under' point is indicated.  We want to make sure to select the
+right symex when we enter Symex mode."
+  (interactive)
+  (when (member evil-previous-state '(insert emacs))
+    (backward-char)))
 
 (defun symex--toggle-highlight ()
   "Toggle highlighting of selected symex."
