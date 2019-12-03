@@ -72,10 +72,10 @@ similarly to how the Lisp interpreter does it (when it is following
   (interactive)
   (sp-kill-sexp nil)
   (cond ((or (symex--current-line-empty-p)  ; ^<>$
-             (save-excursion (back-to-indentation)  ; ^(<>
+             (save-excursion (back-to-indentation)  ; ^<>)
                              (forward-char)
                              (lispy-right-p)))
-         (progn (evil-previous-line)
+         (progn (symex-go-backward)
                 (symex-join-lines)))
         ((save-excursion (evil-last-non-blank)  ; (<>$
                          (lispy-left-p))
@@ -85,6 +85,9 @@ similarly to how the Lisp interpreter does it (when it is following
         ((looking-at-p "\n")  ; (abc <>
          (evil-join (line-beginning-position)
                     (line-end-position)))
+        ((save-excursion (forward-char)  ; ... <>)
+                         (lispy-right-p))
+         (symex-go-backward))
         (t (fixup-whitespace)))
   (symex-select-nearest)
   (symex-tidy))
