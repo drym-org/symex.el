@@ -71,10 +71,13 @@ similarly to how the Lisp interpreter does it (when it is following
   "Delete symex."
   (interactive)
   (kill-sexp 1)
-  (cond ((or (symex--current-line-empty-p)  ; ^<>$
-             (save-excursion (back-to-indentation)  ; ^<>)
-                             (forward-char)
-                             (lispy-right-p)))
+  (cond ((symex--current-line-empty-p)             ; ^<>$
+         (progn (symex-go-backward)
+                (symex-join-lines)
+                (symex-go-forward)))
+        ((save-excursion (back-to-indentation)     ; ^<>)
+                         (forward-char)
+                         (lispy-right-p))
          (progn (symex-go-backward)
                 (symex-join-lines)))
         ((save-excursion (evil-last-non-blank)  ; (<>$
