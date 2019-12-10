@@ -70,7 +70,7 @@ similarly to how the Lisp interpreter does it (when it is following
 (defun symex-delete ()
   "Delete symex."
   (interactive)
-  (sp-kill-sexp nil)
+  (kill-sexp 1)
   (cond ((or (symex--current-line-empty-p)  ; ^<>$
              (save-excursion (back-to-indentation)  ; ^<>)
                              (forward-char)
