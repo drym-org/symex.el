@@ -68,6 +68,10 @@
             ((equal major-mode 'lisp-mode)
              (symex-eval-common-lisp))
             (t (error "Symex mode: Lisp flavor not recognized!"))))
+    ;; enter normal state here momentarily, as a workaround to prevent entry into
+    ;; symex mode from being treated as "emacs context" since the entry into emacs
+    ;; state is done here as an implementation detail and is not user-directed
+    (evil-normal-state)
     (funcall (intern (concat "evil-" (symbol-name original-evil-state) "-state")))))
 
 (defun symex-evaluate-definition ()
