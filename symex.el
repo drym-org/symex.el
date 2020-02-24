@@ -86,7 +86,7 @@
   "Symex state."
   :tag " <λ> "
   :message "-- SYMEX --"
-  :entry-hook (symex--adjust-point hydra-symex/body symex--ensure-minor-mode)
+  :entry-hook (symex--ensure-minor-mode hydra-symex/body symex--adjust-point)
   :enable (normal))
 
 (defvar symex-elisp-modes (list 'lisp-interaction-mode
