@@ -157,7 +157,10 @@ symex 'under' point is indicated.  We want to make sure to select the
 right symex when we enter Symex mode."
   (interactive)
   (when (member evil-previous-state '(insert emacs))
-    (backward-char)))
+    (let ((just-inside-symex-p (save-excursion (backward-char)
+                                               (lispy-left-p))))
+      (unless just-inside-symex-p
+        (backward-char)))))
 
 (defun symex--toggle-highlight ()
   "Toggle highlighting of selected symex."
