@@ -317,11 +317,26 @@ New list delimiters are determined by the TYPE."
     (symex-tidy)))
 
 (defun symex-swallow ()
-  "Swallow symex, putting its contents in the parent symex."
+  "Swallow symex.
+
+This consumes the head of the symex, putting the rest of its contents
+in the parent symex."
   (interactive)
   (symex-go-in)
   (symex-go-forward)
   (paredit-splice-sexp-killing-backward))
+
+(defun symex-splice ()
+  "Splice or 'clip' symex.
+
+If the symex is a nested list, this operation eliminates the symex,
+putting its contents in the parent symex.  If the symex is an atom,
+then no action is taken."
+  (interactive)
+  (let ((symex-at-point (car (read-from-string (thing-at-point 'sexp 'no-properties)))))
+    (when (not (atom symex-at-point))
+      (symex-go-in)
+      (paredit-splice-sexp-killing-backward))))
 
 (defun symex-wrap-round ()
   "Wrap with ()."
