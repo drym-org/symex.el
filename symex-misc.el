@@ -155,7 +155,6 @@
          (symex-repl-common-lisp))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
-
 (defun symex-run ()
   "Send to REPL."
   (interactive)
@@ -172,6 +171,7 @@
         ((equal major-mode 'arc-mode)
          (symex-run-arc))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
+
 (defun symex-switch-to-scratch-buffer ()
   "Switch to scratch buffer."
   (interactive)

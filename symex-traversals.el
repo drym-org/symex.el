@@ -120,6 +120,18 @@ when the way is blocked.")
   "Tree traversal focused on moving backwards, leveraging postorder backtracking
 when the way is blocked.")
 
+(deftraversal symex--traversal-climb-branch
+  (protocol (move in)
+            (detour (circuit (move forward))
+                    (move in))
+            (circuit (move forward))))
+
+(deftraversal symex--traversal-descend-branch
+  (protocol symex--traversal-goto-first
+            (maneuver (move out)
+                      (precaution (circuit (move backward))
+                                  (beforehand (not (at root)))))))
+
 (defun symex-traverse-forward ()
   "Traverse symex as a tree, using pre-order traversal."
   (interactive)
@@ -162,6 +174,19 @@ when the way is blocked.")
     (message "%s" result)
     result))
 
+(defun symex-traverse-climb-branch ()
+  "Climb up."
+  (interactive)
+  (let ((result (symex-execute-traversal symex--traversal-climb-branch)))
+    (message "%s" result)
+    result))
+
+(defun symex-traverse-descend-branch ()
+  "Descend the tree."
+  (interactive)
+  (let ((result (symex-execute-traversal symex--traversal-descend-branch)))
+    (message "%s" result)
+    result))
 
 (provide 'symex-traversals)
 ;;; symex-traversals.el ends here
