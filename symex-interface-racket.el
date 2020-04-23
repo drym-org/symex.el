@@ -91,6 +91,10 @@ Accounts for different point location in evil vs Emacs mode."
   "Go to REPL."
   (racket-repl))
 
+(defun symex-run-racket ()
+  "Evaluate buffer."
+  (racket-run nil))
+
 
 (provide 'symex-interface-racket)
 ;;; symex-interface-racket.el ends here

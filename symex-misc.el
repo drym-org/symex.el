@@ -155,6 +155,23 @@
          (symex-repl-common-lisp))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
+
+(defun symex-run ()
+  "Send to REPL."
+  (interactive)
+  (cond ((member major-mode symex-racket-modes)
+         (symex-run-racket))
+        ((member major-mode symex-elisp-modes)
+         (symex-run-elisp))
+        ((equal major-mode 'scheme-mode)
+         (symex-run-scheme))
+        ((equal major-mode 'clojure-mode)
+         (symex-run-clojure))
+        ((equal major-mode 'lisp-mode)
+         (symex-run-common-lisp))
+        ((equal major-mode 'arc-mode)
+         (symex-run-arc))
+        (t (error "Symex mode: Lisp flavor not recognized!"))))
 (defun symex-switch-to-scratch-buffer ()
   "Switch to scratch buffer."
   (interactive)

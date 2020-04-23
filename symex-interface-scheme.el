@@ -58,6 +58,10 @@
   "Go to REPL."
   (geiser-mode-switch-to-repl nil))
 
+(defun symex-run-scheme ()
+  "Evaluate buffer."
+  (geiser-eval-buffer nil))
+
 
 (provide 'symex-interface-scheme)
 ;;; symex-interface-scheme.el ends here

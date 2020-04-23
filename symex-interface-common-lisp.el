@@ -59,6 +59,10 @@ Accounts for different point location in evil vs Emacs mode."
   "Go to REPL."
   (slime-repl))
 
+(defun symex-run-common-lisp ()
+  "Evaluate buffer."
+  (slime-eval-buffer))
+
 
 (provide 'symex-interface-common-lisp)
 ;;; symex-interface-common-lisp.el ends here

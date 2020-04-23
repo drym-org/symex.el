@@ -68,6 +68,10 @@ open in current window."
            (evil-window-right 1)))
   (ielm))
 
+(defun symex-run-elisp ()
+  "Evaluate buffer."
+  (eval-buffer))
+
 
 (provide 'symex-interface-elisp)
 ;;; symex-interface-elisp.el ends here

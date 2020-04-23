@@ -249,6 +249,8 @@ to enter, and any of the standard exits to exit."
   ("t" symex-switch-to-scratch-buffer "scratch buffer" :exit t)
   ("G" symex-switch-to-messages-buffer "messages buffer" :exit t)
   ("r" symex-repl "go to REPL" :exit t)
+  ("R" symex-run "run buffer")
+  ("X" symex-run "run buffer")
   ("|" lispy-split "split")
   ("m" symex-join "merge (join)")
   ("\\" symex-splice "clip/splice")
@@ -287,7 +289,6 @@ to enter, and any of the standard exits to exit."
   ("H-h" symex--toggle-highlight "toggle highlight")
   ("H-m" symex-toggle-menu "show/hide this menu")
   ;; escape hatches
-  ("R" evil-replace-state nil :exit t)
   ("v" evil-visual-char nil :exit t)
   ("V" evil-visual-line nil :exit t)
   ("C-v" evil-visual-block nil :exit t)

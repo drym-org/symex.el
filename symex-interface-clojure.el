@@ -58,6 +58,10 @@ Accounts for different point location in evil vs Emacs mode."
   "Go to REPL."
   (cider-switch-to-repl-buffer))
 
+(defun symex-run-clojure ()
+  "Evaluate buffer."
+  (cider-eval-buffer))
+
 
 (provide 'symex-interface-clojure)
 ;;; symex-interface-clojure.el ends here
