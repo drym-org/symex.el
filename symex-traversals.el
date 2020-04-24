@@ -127,7 +127,8 @@ when the way is blocked.")
             (circuit (move forward))))
 
 (deftraversal symex--traversal-descend-branch
-  (protocol symex--traversal-goto-first
+  (protocol (precaution symex--traversal-goto-first
+                        (beforehand (not (at root))))
             (maneuver (move out)
                       (precaution (circuit (move backward))
                                   (beforehand (not (at root)))))))
