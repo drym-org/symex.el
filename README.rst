@@ -54,11 +54,11 @@ The default keybindings in symex mode treat increasingly nested code as being "h
 
    (setq symex-custom-keys
          '(("j" symex-go-in "enter")
-		   ("k" symex-go-out "exit")
-		   ("C-j" symex-climb-branch "climb branch")
-		   ("C-k" symex-descend-branch "descend branch")
+           ("k" symex-go-out "exit")
+           ("C-j" symex-climb-branch "climb branch")
+           ("C-k" symex-descend-branch "descend branch")
            ("M-j" symex-goto-innermost "go to innermost")
-		   ("M-k" symex-goto-outermost "go to outermost")))
+           ("M-k" symex-goto-outermost "go to outermost")))
 
 If you want to learn more about the implementation and see some usage examples, watch the video overview:
 
