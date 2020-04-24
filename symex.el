@@ -200,8 +200,8 @@ to enter, and any of the standard exits to exit."
 (eval `(defhydra hydra-symex (:idle 1.0
                               :columns 4
                               :color pink
-                              :body-pre (progn (symex-select-nearest)
-                                               (evil-symex-state))
+                              :body-pre (progn (evil-symex-state)
+                                               (symex-select-nearest))
                               :post (deactivate-mark))
          "Symex mode"
          ("(" (lambda ()
