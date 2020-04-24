@@ -86,7 +86,7 @@
   "Symex state."
   :tag " <λ> "
   :message "-- SYMEX --"
-  :entry-hook (symex--ensure-minor-mode hydra-symex/body symex--adjust-point)
+  :entry-hook (symex--ensure-minor-mode symex--adjust-point)
   :enable (normal))
 
 (defvar symex-elisp-modes (list 'lisp-interaction-mode
@@ -196,7 +196,8 @@ to enter, and any of the standard exits to exit."
 (defhydra hydra-symex (:idle 1.0
                        :columns 4
                        :color pink
-                       :body-pre (symex-select-nearest)
+                       :body-pre (progn (symex-select-nearest)
+                                        (evil-symex-state))
                        :post (deactivate-mark))
   "Symex mode"
   ("(" (lambda ()
@@ -309,7 +310,7 @@ to enter, and any of the standard exits to exit."
 Enter the symex evil state and show a hydra menu for accessing various
 features."
   (interactive)
-  (evil-symex-state))
+  (hydra-symex/body))
 
 
 (provide 'symex)
