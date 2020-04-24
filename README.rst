@@ -48,6 +48,18 @@ By default, entering the symex modal interface shows you a comprehensive menu of
 
   (symex-hide-menu)
 
+The default keybindings in symex mode treat increasingly nested code as being "higher" and elements closer to the root as "lower." Think going "up" to the nest and "down" to the root. But if you'd prefer to modify these or any other key bindings to whatever you find most natural, you can add config resembling the following to your ``init.d``. Note that if you're using `use-package <https://github.com/jwiegley/use-package>`__ to manage your configuration, you'll need to put this key binding config in the ``:init`` section rather than in the ``:config`` section:
+
+::
+
+   (setq symex-custom-keys
+         '(("j" symex-go-in "enter")
+		   ("k" symex-go-out "exit")
+		   ("C-j" symex-climb-branch "climb branch")
+		   ("C-k" symex-descend-branch "descend branch")
+           ("M-j" symex-goto-innermost "go to innermost")
+		   ("M-k" symex-goto-outermost "go to outermost")))
+
 If you want to learn more about the implementation and see some usage examples, watch the video overview:
 
 .. raw:: html
