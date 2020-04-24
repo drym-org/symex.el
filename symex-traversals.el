@@ -174,14 +174,14 @@ when the way is blocked.")
     (message "%s" result)
     result))
 
-(defun symex-traverse-climb-branch ()
+(defun symex-climb-branch ()
   "Climb up."
   (interactive)
   (let ((result (symex-execute-traversal symex--traversal-climb-branch)))
     (message "%s" result)
     result))
 
-(defun symex-traverse-descend-branch ()
+(defun symex-descend-branch ()
   "Descend the tree."
   (interactive)
   (let ((result (symex-execute-traversal symex--traversal-descend-branch)))
