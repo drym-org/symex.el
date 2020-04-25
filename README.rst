@@ -53,12 +53,12 @@ The default keybindings in symex mode treat increasingly nested code as being "h
 ::
 
    (setq symex-custom-keys
-         '(("j" symex-go-in "enter")
-           ("k" symex-go-out "exit")
+         '(("j" symex-go-up "up")
+           ("k" symex-go-down "down")
            ("C-j" symex-climb-branch "climb branch")
            ("C-k" symex-descend-branch "descend branch")
-           ("M-j" symex-goto-innermost "go to innermost")
-           ("M-k" symex-goto-outermost "go to outermost")))
+           ("M-j" symex-goto-highest "go to highest")
+           ("M-k" symex-goto-lowest "go to lowest")))
 
 If you want to learn more about the implementation and see some usage examples, watch the video overview:
 

@@ -77,12 +77,12 @@ Optional argument COMPUTATION currently unused."
   (interactive)
   (symex--execute-tree-move (symex-make-move (- count) 0)))
 
-(cl-defun symex-go-in (&optional (count 1))
+(cl-defun symex-go-up (&optional (count 1))
   "Move in COUNT symexes."
   (interactive)
   (symex--execute-tree-move (symex-make-move 0 count)))
 
-(cl-defun symex-go-out (&optional (count 1))
+(cl-defun symex-go-down (&optional (count 1))
   "Move out COUNT symexes."
   (interactive)
   (symex--execute-tree-move (symex-make-move 0 (- count))))

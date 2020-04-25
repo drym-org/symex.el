@@ -44,9 +44,9 @@
   (circuit (move forward))
   "Go to last symex at present level.")
 
-(deftraversal symex--traversal-goto-outermost
+(deftraversal symex--traversal-goto-lowest
   (circuit (move out))
-  "Go to outermost (root) symex in present tree.")
+  "Go to lowest (root) symex in present tree.")
 
 (defun symex-goto-first ()
   "Select first symex at present level."
@@ -60,14 +60,14 @@
   (symex-execute-traversal symex--traversal-goto-last)
   (point))
 
-(defun symex-goto-outermost ()
-  "Select outermost symex."
+(defun symex-goto-lowest ()
+  "Select lowest symex."
   (interactive)
-  (symex-execute-traversal symex--traversal-goto-outermost)
+  (symex-execute-traversal symex--traversal-goto-lowest)
   (point))
 
-(defun symex-goto-innermost ()
-  "Select innermost symex."
+(defun symex-goto-highest ()
+  "Select highest symex."
   (interactive)
   (symex-execute-traversal (symex-traversal
                             (maneuver (move in)

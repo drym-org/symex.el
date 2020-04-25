@@ -254,7 +254,7 @@ If SMOOTH-SCROLL is set, then scroll the view gently to aid in visual tracking."
   (interactive)
   (save-excursion
     (symex-select-nearest)
-    (let ((moves (symex-execute-traversal symex--traversal-goto-outermost)))
+    (let ((moves (symex-execute-traversal symex--traversal-goto-lowest)))
       (length moves))))
 
 (defun symex-leap-backward ()
@@ -349,12 +349,12 @@ is expected to handle in Emacs)."
 
 (advice-add #'symex-go-forward :around #'symex-selection-advice)
 (advice-add #'symex-go-backward :around #'symex-selection-advice)
-(advice-add #'symex-go-in :around #'symex-selection-advice)
-(advice-add #'symex-go-out :around #'symex-selection-advice)
+(advice-add #'symex-go-up :around #'symex-selection-advice)
+(advice-add #'symex-go-down :around #'symex-selection-advice)
 (advice-add #'symex-goto-first :around #'symex-selection-advice)
 (advice-add #'symex-goto-last :around #'symex-selection-advice)
-(advice-add #'symex-goto-outermost :around #'symex-selection-advice)
-(advice-add #'symex-goto-innermost :around #'symex-selection-advice)
+(advice-add #'symex-goto-lowest :around #'symex-selection-advice)
+(advice-add #'symex-goto-highest :around #'symex-selection-advice)
 (advice-add #'symex-traverse-forward :around #'symex-selection-advice)
 (advice-add #'symex-traverse-backward :around #'symex-selection-advice)
 (advice-add #'symex-select-nearest :around #'symex-selection-advice)

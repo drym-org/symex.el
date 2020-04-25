@@ -191,7 +191,7 @@ This is a primitive operation that is provided below the public
 abstraction level of symex.el.  It currently uses built-in Emacs
 commands and third party tools like paredit to perform its function.
 This procedure is not to be used except in the low-level internals
-of symex mode (use the public `symex-go-in` instead)."
+of symex mode (use the public `symex-go-up` instead)."
   (interactive)
   (let ((count (or count 1))
         (result 0))
@@ -217,7 +217,7 @@ This is a primitive operation that is provided below the public
 abstraction level of symex.el.  It currently uses built-in Emacs
 commands and third party tools like paredit to perform its function.
 This procedure is not to be used except in the low-level internals
-of symex mode (use the public `symex-go-out` instead)."
+of symex mode (use the public `symex-go-down` instead)."
   (interactive)
   (let ((count (or count 1))
         (result 0))
