@@ -169,14 +169,14 @@ directly, e.g.:
   "Compile a move from Symex DSL -> Lisp.
 
 DIRECTION - the direction to move in, which could be one of:
-forward, backward, in, or out."
+forward, backward, up, or down."
   (cond ((equal 'forward direction)
          '(symex-make-move 1 0))
         ((equal 'backward direction)
          '(symex-make-move -1 0))
-        ((equal 'in direction)
+        ((equal 'up direction)
          '(symex-make-move 0 1))
-        ((equal 'out direction)
+        ((equal 'down direction)
          '(symex-make-move 0 -1))))
 
 (defmacro symex-traversal (traversal)
