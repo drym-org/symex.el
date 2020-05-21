@@ -326,6 +326,18 @@ in the parent symex."
   (symex-go-forward)
   (paredit-splice-sexp-killing-backward))
 
+(defun symex-swallow-tail ()
+  "Swallow-tail symex.
+
+This consumes the tail of the symex, putting the head
+in the parent symex."
+  (interactive)
+  (symex-go-up)
+  (symex-go-forward)
+  (paredit-splice-sexp-killing-forward)
+  (symex-go-backward)
+  (symex-tidy))
+
 (defun symex-splice ()
   "Splice or 'clip' symex.
 

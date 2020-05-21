@@ -248,6 +248,7 @@ to enter, and any of the standard exits to exit."
          ("C-S-k" symex-emit-forward "emit forward")
          ("C-)" symex-capture-forward "capture forward")
          ("z" symex-swallow "swallow")
+         ("Z" symex-swallow-tail "swallow tail")
          ("e" symex-evaluate "evaluate")
          ("E" symex-evaluate-pretty "pretty evaluate")
          ("d" symex-evaluate-definition "evaluate definition")
