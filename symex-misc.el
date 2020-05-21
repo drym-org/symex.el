@@ -291,16 +291,17 @@ approach is the one employed here."
                                                        depth)))))))))
       (symex-execute-traversal
        (symex-traversal
-        (maneuver (decision (at first)
-                            find-neighboring-branch
-                            (maneuver symex--traversal-goto-first
-                                      find-neighboring-branch))
-                  symex--traversal-postorder
-                  symex--traversal-goto-first
-                  (circuit (precaution (move forward)
-                                       (beforehand (lambda ()
-                                                     (< (symex-index)
-                                                        index)))))))))))
+        (precaution (maneuver (decision (at first)
+                                        find-neighboring-branch
+                                        (maneuver symex--traversal-goto-first
+                                                  find-neighboring-branch))
+                              symex--traversal-postorder
+                              symex--traversal-goto-first
+                              (circuit (precaution (move forward)
+                                                   (beforehand (lambda ()
+                                                                 (< (symex-index)
+                                                                    index))))))
+                    (beforehand (not (at root)))))))))
 
 (defun symex-leap-forward ()
   "Leap forward to a neighboring branch, preserving the depth and position.
@@ -318,15 +319,16 @@ the implementation."
                                                        depth)))))))))
       (symex-execute-traversal
        (symex-traversal
-        (maneuver (decision (at last)
-                            find-neighboring-branch
-                            (maneuver symex--traversal-goto-last
-                                      find-neighboring-branch))
-                  symex--traversal-preorder
-                  (circuit (precaution (move forward)
-                                       (beforehand (lambda ()
-                                                     (< (symex-index)
-                                                        index)))))))))))
+        (precaution (maneuver (decision (at last)
+                                        find-neighboring-branch
+                                        (maneuver symex--traversal-goto-last
+                                                  find-neighboring-branch))
+                              symex--traversal-preorder
+                              (circuit (precaution (move forward)
+                                                   (beforehand (lambda ()
+                                                                 (< (symex-index)
+                                                                    index))))))
+                    (beforehand (not (at root)))))))))
 
 (defun symex--selection-side-effects ()
   "Things to do as part of symex selection, e.g. after navigations."
