@@ -44,6 +44,12 @@
   (interactive)
   (symex-eval-elisp))
 
+(defun symex-eval-thunk-elisp ()
+  "Evaluate symex as a 'thunk,' i.e. as a function taking no arguments."
+  (interactive)
+  ;; can use (eval (car (read-from-string thunk-code)))
+  (message "eval as thunk currently not supported for ELisp"))
+
 (defun symex-eval-print-elisp ()
   "Eval symex and print result in buffer."
   (interactive)

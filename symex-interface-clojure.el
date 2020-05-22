@@ -44,6 +44,11 @@ Accounts for different point location in evil vs Emacs mode."
   (interactive)
   (symex-eval-clojure))
 
+(defun symex-eval-thunk-clojure ()
+  "Evaluate symex as a 'thunk,' i.e. as a function taking no arguments."
+  (interactive)
+  (message "eval as thunk currently not supported for Clojure"))
+
 (defun symex-eval-print-clojure ()
   "Eval symex and print result in buffer."
   (interactive)

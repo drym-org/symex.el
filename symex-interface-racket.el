@@ -77,6 +77,16 @@ Accounts for different point location in evil vs Emacs mode."
                                   [else result]))"))))
     (symex--racket-send-to-repl pretty-code)))
 
+(defun symex-eval-thunk-racket ()
+  "Evaluate symex as a 'thunk,' i.e. as a function taking no arguments."
+  (interactive)
+  (let ((thunk-code (string-join
+                      `("("
+                        ,(buffer-substring (racket--repl-last-sexp-start)
+                                           (point))
+                        ")"))))
+    (symex--racket-send-to-repl thunk-code)))
+
 (defun symex-eval-print-racket ()
   "Eval symex and print result in buffer."
   (interactive)

@@ -123,6 +123,27 @@
            (symex-eval-print-common-lisp))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
+(defun symex-evaluate-thunk ()
+  "Evaluate Symex as a thunk.
+
+This treats the symex as a thunk -- i.e. a function that takes no
+arguments -- by (transparently) wrapping it in parens and then
+executing it."
+  (interactive)
+  (save-excursion
+    (forward-sexp)  ; selected symexes will have the cursor on the starting paren
+    (cond ((member major-mode symex-racket-modes)
+           (symex-eval-thunk-racket))
+          ((member major-mode symex-elisp-modes)
+           (symex-eval-thunk-elisp))
+          ((equal major-mode 'scheme-mode)
+           (symex-eval-thunk-scheme))
+          ((equal major-mode 'clojure-mode)
+           (symex-eval-thunk-clojure))
+          ((equal major-mode 'lisp-mode)
+           (symex-eval-thunk-common-lisp))
+          (t (error "Symex mode: Lisp flavor not recognized!")))))
+
 (defun symex-describe ()
   "Lookup doc on symex."
   (interactive)

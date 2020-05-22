@@ -253,6 +253,7 @@ to enter, and any of the standard exits to exit."
          ("E" symex-evaluate-pretty "pretty evaluate")
          ("d" symex-evaluate-definition "evaluate definition")
          ("M-e" symex-eval-recursive "evaluate recursively")
+         ("T" symex-evaluate-thunk "evaluate as 'thunk'")
          (":" eval-expression "eval expression")
          ("t" symex-switch-to-scratch-buffer "scratch buffer" :exit t)
          ("G" symex-switch-to-messages-buffer "messages buffer" :exit t)
