@@ -209,7 +209,7 @@ of symex mode (use the public `symex-go-up` instead)."
   "Exit one level."
   (condition-case nil
       (progn (paredit-backward-up 1)
-             (when (looking-back "#")
+             (when (looking-back "#" (line-beginning-position))
                ;; one-off - better to recognize #( as a delimiter
                ;; at the AST level
                (backward-char))
