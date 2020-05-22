@@ -345,10 +345,9 @@ If the symex is a nested list, this operation eliminates the symex,
 putting its contents in the parent symex.  If the symex is an atom,
 then no action is taken."
   (interactive)
-  (let ((symex-at-point (car (read-from-string (thing-at-point 'sexp 'no-properties)))))
-    (when (not (atom symex-at-point))
-      (symex-go-up)
-      (paredit-splice-sexp-killing-backward))))
+  (when (lispy-left-p)
+    (symex-go-up)
+    (paredit-splice-sexp-killing-backward)))
 
 (defun symex-wrap-round ()
   "Wrap with ()."
