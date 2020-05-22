@@ -172,7 +172,7 @@ of symex mode (use the public `symex-go-backward` instead)."
       (symex-make-move (- result) 0))))
 
 (defun symex--enter-one ()
-  "Enter one lower symex level."
+  "Enter one level."
   (let ((result 1))
     (cond ((symex-comment-line-p)
            (lispy-flow 1))
@@ -183,7 +183,7 @@ of symex mode (use the public `symex-go-backward` instead)."
     result))
 
 (defun symex--enter (&optional count)
-  "Enter lower symex level.
+  "Enter higher symex level.
 
 Enter COUNT times, defaulting to one.
 
@@ -209,7 +209,7 @@ of symex mode (use the public `symex-go-up` instead)."
     (error 0)))
 
 (defun symex--exit (&optional count)
-  "Exit to higher symex level.
+  "Exit to lower symex level.
 
 Exit COUNT times, defaulting to one.
 
