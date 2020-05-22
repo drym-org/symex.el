@@ -179,6 +179,10 @@ of symex mode (use the public `symex-go-backward` instead)."
           ((and (lispy-left-p)
                 (not (symex-empty-list-p)))
            (forward-char))
+          ;; one-off - better to recognize #( as a delimiter
+          ;; at the AST level
+          ((looking-at (concat "#" lispy-left))
+           (forward-char 2))
           (t (setq result 0)))
     result))
 
@@ -205,6 +209,10 @@ of symex mode (use the public `symex-go-up` instead)."
   "Exit one level."
   (condition-case nil
       (progn (paredit-backward-up 1)
+             (when (looking-back "#")
+               ;; one-off - better to recognize #( as a delimiter
+               ;; at the AST level
+               (backward-char))
              1)
     (error 0)))
 
