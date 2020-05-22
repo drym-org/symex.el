@@ -48,17 +48,24 @@ By default, entering the symex modal interface shows you a comprehensive menu of
 
   (symex-hide-menu)
 
-The default keybindings in symex mode treat increasingly nested code as being "higher" and elements closer to the root as "lower." Think going "up" to the nest and "down" to the root. But if you'd prefer to modify these or any other key bindings to whatever you find most natural, you can add config resembling the following to your ``init.d``. Note that if you're using `use-package <https://github.com/jwiegley/use-package>`__ to manage your configuration, you'll need to put this key binding config in the ``:init`` section rather than in the ``:config`` section:
+The default keybindings in symex mode treat increasingly nested code as being "higher" and elements closer to the root as "lower." Think going "up" to the nest and "down" to the root. But if you'd prefer to modify these or any other key bindings to whatever you find most natural, you can add the following config to your ``init.d``. If you're using `use-package <https://github.com/jwiegley/use-package>`__ to manage your configuration, put this in the ``:config`` section.
 
 ::
 
-   (setq symex-custom-keys
-         '(("j" symex-go-up "up")
-           ("k" symex-go-down "down")
-           ("C-j" symex-climb-branch "climb branch")
-           ("C-k" symex-descend-branch "descend branch")
-           ("M-j" symex-goto-highest "go to highest")
-           ("M-k" symex-goto-lowest "go to lowest")))
+  (defhydra+ hydra-symex (:idle 1.0
+                          :columns 4
+                          :color pink
+                          :body-pre (progn (evil-symex-state)
+                                           (symex-select-nearest))
+                          :post (deactivate-mark))
+      "Symex mode"
+      ("j" symex-go-up "up")
+      ("k" symex-go-down "down")
+      ("C-j" symex-climb-branch "climb branch")
+      ("C-k" symex-descend-branch "descend branch")
+      ("M-j" symex-goto-highest "go to highest")
+      ("M-k" symex-goto-lowest "go to lowest")
+	  ("F" nil nil))
 
 If you want to learn more about the implementation and see some usage examples, watch the video overview:
 
