@@ -65,7 +65,7 @@ The default keybindings in symex mode treat increasingly nested code as being "h
       ("C-k" symex-descend-branch "descend branch")
       ("M-j" symex-goto-highest "go to highest")
       ("M-k" symex-goto-lowest "go to lowest")
-	  ("F" nil nil))
+      ("F" nil nil))
 
 If you want to learn more about the implementation and see some usage examples, watch the video overview:
 
