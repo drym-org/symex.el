@@ -1,3 +1,7 @@
+# Determine this makefile's path.
+# Be sure to place this BEFORE `include` directives, if any.
+THIS_FILE := $(lastword $(MAKEFILE_LIST))
+
 EMACS=emacs
 CASK ?= cask
 
@@ -32,6 +36,9 @@ lint:
 	                      -l "package-lint.el"  \
 	                      -f "package-lint-batch-and-exit"  \
 	                      ${PROJECT_FILES}
+
+lint+less:
+	@$(MAKE) -f $(THIS_FILE) lint 2>&1 | less
 
 checkdoc:
 	${CASK} exec $(EMACS) -Q --batch  \
