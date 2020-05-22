@@ -48,7 +48,7 @@ By default, entering the symex modal interface shows you a comprehensive menu of
 
   (symex-hide-menu)
 
-The default keybindings in symex mode treat increasingly nested code as being "higher" and elements closer to the root as "lower." Think going "up" to the nest and "down" to the root. But if you'd prefer to modify these or any other key bindings to whatever you find most natural, you can add the following config to your ``init.d``. If you're using `use-package <https://github.com/jwiegley/use-package>`__ to manage your configuration, put this in the ``:config`` section.
+The default keybindings in symex mode treat increasingly nested code as being "higher" and elements closer to the root as "lower." Think going "up" to the nest and "down" to the root. But if you'd prefer to modify these or any other key bindings to whatever you find most natural, you can add the following config to your ``init.d``. If you're using `use-package <https://github.com/jwiegley/use-package>`__ to manage your configuration, put this in the ``:config`` section:
 
 ::
 
