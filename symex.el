@@ -182,7 +182,7 @@ right symex when we enter Symex mode."
 
 (defun symex-show-menu ()
   "Show symex menu."
-  (hydra-set-property 'hydra-symex :verbosity 1))
+  (hydra-set-property 'hydra-symex :verbosity 2))
 
 (defun symex-toggle-menu ()
   "Show/hide the symex menu.
@@ -193,7 +193,7 @@ and exit the symex modal interface, use `symex-mode-interface`
 to enter, and any of the standard exits to exit."
   (interactive)
   (let ((visibility (hydra-get-property 'hydra-symex :verbosity)))
-    (if (= 1 visibility)
+    (if (> visibility 0)
         (symex-hide-menu)
       (symex-show-menu))))
 
