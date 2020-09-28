@@ -179,8 +179,11 @@ of symex mode (use the public `symex-go-backward` instead)."
           ((and (lispy-left-p)
                 (not (symex-empty-list-p)))
            (forward-char))
-          ;; one-off - better to recognize #( as a delimiter
+          ;; one-off - better to recognize these as delimiters
           ;; at the AST level
+          ((looking-at (concat "#['`]" lispy-left)) ; racket syntax objects
+           (forward-char 3))
+          ;; clojurescript anonymous function literal, quoted list
           ((looking-at (concat "[#'`]" lispy-left))
            (forward-char 2))
           (t (setq result 0)))
@@ -209,10 +212,12 @@ of symex mode (use the public `symex-go-up` instead)."
   "Exit one level."
   (condition-case nil
       (progn (paredit-backward-up 1)
-             (when (looking-back "[#'`]" (line-beginning-position))
-               ;; one-off - better to recognize #( as a delimiter
-               ;; at the AST level
-               (backward-char))
+             ;; one-off - better to recognize these as delimiters
+             ;; at the AST level
+             (cond ((looking-back "#['`]" (line-beginning-position))
+                    (backward-char 2))
+                   ((looking-back "[#'`]" (line-beginning-position))
+                    (backward-char)))
              1)
     (error 0)))
 
