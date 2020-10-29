@@ -267,6 +267,7 @@ to enter, and any of the standard exits to exit."
   ("n" symex-insert-newline "newline")
   ("C-S-o" symex-append-newline "append newline")
   ("J" symex-join-lines "join lines")
+  ("M-J" symex-collapse "collapse to single line")
   ("N" (lambda ()
          (interactive)
          (symex-join-lines t)) "join lines backwards")

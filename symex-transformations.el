@@ -425,12 +425,27 @@ then no action is taken."
   "Properly tidy things up."
   (interactive)
   (save-excursion
-    (symex-execute-traversal (symex-traversal
-                              (circuit symex--traversal-preorder-in-tree))
-                             nil
-                             #'symex-tidy)
+    (symex-execute-traversal
+     (symex-traversal (circuit symex--traversal-preorder-in-tree))
+     nil
+     #'symex-tidy)
     (symex--do-while-traversing #'symex-tidy
                                 symex--traversal-postorder-in-tree)))
+
+(defun symex-collapse ()
+  "Collapse a symex to a single line."
+  (interactive)
+  (save-excursion
+    (let ((start (point)))
+      (symex-execute-traversal
+       (symex-traversal (circuit symex--traversal-preorder-in-tree)))
+      (symex--do-while-traversing
+       (apply-partially #'symex-join-lines t)
+       (symex-traversal
+        (precaution symex--traversal-postorder-in-tree
+                    (afterwards (lambda ()
+                                  (not (equal (line-number-at-pos (point))
+                                              (line-number-at-pos start)))))))))))
 
 (provide 'symex-transformations)
 ;;; symex-transformations.el ends here
