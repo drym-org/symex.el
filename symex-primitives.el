@@ -81,8 +81,9 @@
   "Check if point is at the first symex in the buffer."
   (save-excursion
     (condition-case nil
-        (progn (backward-sexp 1)
-               (not (thing-at-point 'sexp)))
+        (or (bobp)
+            (progn (backward-sexp 1)
+                   (not (thing-at-point 'sexp))))
       (error nil))))
 
 (defun symex-comment-line-p ()
