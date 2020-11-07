@@ -37,6 +37,7 @@
 (require 'symex-interface-scheme)
 (require 'symex-interface-clojure)
 (require 'symex-interface-common-lisp)
+(require 'symex-interface-arc)
 
 ;; These are customization or config variables defined elsewhere;
 ;; explicitly indicating them here to avoid byte compile warnings
@@ -86,6 +87,8 @@
                  (symex-eval-clojure))
                 ((equal major-mode 'lisp-mode)
                  (symex-eval-common-lisp))
+                ((equal major-mode 'arc-mode)
+                 (symex-eval-arc))
                 (t (error "Symex mode: Lisp flavor not recognized!"))))
       ;; enter a "normal-like" state here momentarily, to prevent entry
       ;; into symex mode from being treated as if it was in an "emacs" context
@@ -113,6 +116,8 @@
          (symex-eval-definition-clojure))
         ((equal major-mode 'lisp-mode)
          (symex-eval-definition-common-lisp))
+        ((equal major-mode 'arc-mode)
+         (symex-eval-definition-arc))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
 (defun symex-evaluate-pretty ()
@@ -130,6 +135,8 @@
            (symex-eval-pretty-clojure))
           ((equal major-mode 'lisp-mode)
            (symex-eval-pretty-common-lisp))
+          ((equal major-mode 'arc-mode)
+           (symex-eval-pretty-arc))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-eval-print ()
@@ -147,6 +154,8 @@
            (symex-eval-print-clojure))
           ((equal major-mode 'lisp-mode)
            (symex-eval-print-common-lisp))
+          ((equal major-mode 'arc-mode)
+           (symex-eval-print-arc))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-evaluate-thunk ()
@@ -168,6 +177,8 @@ executing it."
            (symex-eval-thunk-clojure))
           ((equal major-mode 'lisp-mode)
            (symex-eval-thunk-common-lisp))
+          ((equal major-mode 'arc-mode)
+           (symex-eval-thunk-arc))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-describe ()
@@ -185,6 +196,8 @@ executing it."
            (symex-describe-symbol-clojure))
           ((equal major-mode 'lisp-mode)
            (symex-describe-symbol-common-lisp))
+          ((equal major-mode 'arc-mode)
+           (symex-describe-symbol-arc))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-repl ()
@@ -200,6 +213,8 @@ executing it."
          (symex-repl-clojure))
         ((equal major-mode 'lisp-mode)
          (symex-repl-common-lisp))
+        ((equal major-mode 'arc-mode)
+         (symex-repl-arc))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
 (defun symex-run ()
