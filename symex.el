@@ -220,6 +220,8 @@ to enter, and any of the standard exits to exit."
   ("F" symex-traverse-forward-skip "skip forward")
   ("B" symex-traverse-backward-skip "skip backward")
   ("C-h" symex-leap-backward "leap backward")
+  ("C-M-h" symex-leap-to-first "leap to first")
+  ("C-M-l" symex-leap-to-last "leap to last")
   ("C-l" symex-leap-forward "leap forward")
   ("C-k" symex-climb-branch "climb branch")
   ("C-j" symex-descend-branch "descend branch")

@@ -38,15 +38,23 @@
 
 (deftraversal symex--traversal-goto-first
   (circuit (move backward))
-  "Go to first symex at present level.")
+  "Go to first symex on the present branch.")
 
 (deftraversal symex--traversal-goto-last
   (circuit (move forward))
-  "Go to last symex at present level.")
+  "Go to last symex on the present branch.")
 
 (deftraversal symex--traversal-goto-lowest
   (circuit (move down))
   "Go to lowest (root) symex in present tree.")
+
+(deftraversal symex--traversal-leap-to-first
+  (circuit #'symex-leap-backward)
+  "Leap to the first symex branch preserving the present position on it.")
+
+(deftraversal symex--traversal-leap-to-last
+  (circuit #'symex-leap-forward)
+  "Leap to the first symex branch preserving the present position on it.")
 
 (defun symex-goto-first ()
   "Select first symex at present level."
@@ -73,6 +81,18 @@
                             (maneuver (move up)
                                       (circuit (protocol (circuit (move forward))
                                                          (move up))))))
+  (point))
+
+(defun symex-leap-to-first ()
+  "Select first branch, preserving the present position."
+  (interactive)
+  (symex-execute-traversal symex--traversal-leap-to-first)
+  (point))
+
+(defun symex-leap-to-last ()
+  "Select last branch, preserving the present position."
+  (interactive)
+  (symex-execute-traversal symex--traversal-leap-to-last)
   (point))
 
 (deftraversal symex--traversal-preorder
