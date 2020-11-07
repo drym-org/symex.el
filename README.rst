@@ -15,7 +15,7 @@ An `evil <https://github.com/emacs-evil/evil>`_ way to edit Lisp symbolic expres
 .. raw:: html
 
   <p align="center">
-    <img src="https://thenypost.files.wordpress.com/2017/07/shutterstock_681631765.jpg?quality=90&strip=all&w=618&h=410&crop=1" alt="Symex the Squirrel" title="Symex the Squirrel"/>
+    <img src="https://user-images.githubusercontent.com/401668/98453162-e3ca2f00-210a-11eb-8669-c1048ff4547c.jpg" width="618" height="410" alt="Symex the Squirrel" title="Symex the Squirrel"/>
   </p>
 
 Symex mode (pronounced sym-ex, as in symbolic expression) is a vim-inspired way of editing Lisp code as trees. Entering symex mode allows you to reason about your code in terms of its structure, similar to other tools like `paredit <https://www.emacswiki.org/emacs/ParEdit>`_ and `lispy <https://github.com/abo-abo/lispy>`_. But while those packages provide a curated number of useful tree operations, symex mode treats the tree structure explicitly so that arbitrary tree navigations and operations can be described using an expressive DSL, and invoked conveniently in a vim-style modal interface implemented with a `Hydra <https://github.com/abo-abo/hydra>`_.
