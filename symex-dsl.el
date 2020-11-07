@@ -179,6 +179,11 @@ forward, backward, up, or down."
         ((equal 'down direction)
          '(symex-make-move 0 -1))))
 
+;; TODO: support args here like lambda / defun (i.e. as a list in the
+;; binding form -- not passed in but syntactically inserted)
+;; try a lambda / defun with args to see what I mean
+;; and implement symex--traversal-goto-index as a first instance
+
 (defmacro symex-traversal (traversal)
   "Compile a traversal from Symex DSL -> Lisp.
 
