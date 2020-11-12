@@ -195,10 +195,7 @@ to enter, and any of the standard exits to exit."
 (defhydra hydra-symex (:idle 1.0
                        :columns 4
                        :color pink
-                       :body-pre (progn (evil-symex-state)
-                                        (symex--ensure-minor-mode)
-                                        (symex--adjust-point)
-                                        (symex-select-nearest))
+                       :body-pre (symex-enter-mode)
                        :post (symex-exit-mode)
                        :after-exit (symex--signal-exit))
   "Symex mode"

@@ -70,11 +70,36 @@
          (evil-insert-state))
         (t (evil-emacs-state))))
 
+(defun symex--set-scroll-margin ()
+  "Set a convenient scroll margin for symex mode, after storing the original value."
+  (setq-local symex--original-scroll-margin scroll-margin
+              symex--original-max-scroll-margin maximum-scroll-margin)
+  (setq-local scroll-margin 9999
+              maximum-scroll-margin 0.368))
+
+(defun symex--restore-scroll-margin ()
+  "Restore original scroll-margin (e.g. upon symex exit)."
+  (setq-local scroll-margin symex--original-scroll-margin
+              maximum-scroll-margin symex--original-max-scroll-margin))
+
+(defun symex-enter-mode ()
+  "Take necessary action upon symex mode entry."
+  (evil-symex-state)
+  (symex--ensure-minor-mode)
+  (symex--adjust-point)
+  (symex-select-nearest)
+  (when symex-refocus-p
+    ;; smooth scrolling currently not supported
+    ;; may add it back in the future
+    (symex--set-scroll-margin)))
+
 (defun symex-exit-mode ()
   "Take necessary action upon symex mode exit."
   (deactivate-mark)
   (when (fboundp 'eem--update-mode-exit-flag)
-    (eem--update-mode-exit-flag "symex" t)))
+    (eem--update-mode-exit-flag "symex" t))
+  (when symex-refocus-p
+    (symex--restore-scroll-margin)))
 
 (defun symex--signal-exit ()
   "Witness symex exit and take appropriate action."
