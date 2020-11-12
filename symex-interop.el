@@ -58,11 +58,28 @@
   (cond ((and (boundp 'epistemic-mode)
               epistemic-mode)
          (when (fboundp 'eem-enter-lowest-level)
-           (eem-enter-lowest-level)))
+           (eem-enter-lowest-level)
+           ;; TODO: generalize so that commands specifically entering
+           ;; another level (esp the lowest) clear any recall flags;
+           ;; on the other hand, it may be desirable to retain it but
+           ;; override it temporarily, so that exiting the lowest level
+           ;; via normal exits (e.g. Esc) returns to the prior state
+           (eem--update-mode-exit-flag "symex" nil)))
         ((and (boundp 'evil-mode)
               evil-mode)
          (evil-insert-state))
         (t (evil-emacs-state))))
+
+(defun symex-exit-mode ()
+  "Take necessary action upon symex mode exit."
+  (deactivate-mark)
+  (when (fboundp 'eem--update-mode-exit-flag)
+    (eem--update-mode-exit-flag "symex" t)))
+
+(defun symex--signal-exit ()
+  "Witness symex exit and take appropriate action."
+  (when (fboundp 'eem-hydra-signal-exit)
+    (eem-hydra-signal-exit "symex")))
 
 
 (provide 'symex-interop)

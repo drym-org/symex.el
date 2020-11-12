@@ -199,7 +199,8 @@ to enter, and any of the standard exits to exit."
                                         (symex--ensure-minor-mode)
                                         (symex--adjust-point)
                                         (symex-select-nearest))
-                       :post (deactivate-mark))
+                       :post (symex-exit-mode)
+                       :after-exit (symex--signal-exit))
   "Symex mode"
   ("(" (lambda ()
          (interactive)
