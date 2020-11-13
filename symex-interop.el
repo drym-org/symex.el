@@ -64,7 +64,7 @@
            ;; on the other hand, it may be desirable to retain it but
            ;; override it temporarily, so that exiting the lowest level
            ;; via normal exits (e.g. Esc) returns to the prior state
-           (eem--update-mode-exit-flag "symex" nil)))
+           (eem--update-mode-exit-flag "symex")))
         ((and (boundp 'evil-mode)
               evil-mode)
          (evil-insert-state))

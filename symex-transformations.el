@@ -106,7 +106,8 @@ to how the Lisp interpreter does it (when it is following
   (interactive)
   (let ((move (symex-go-up)))
     (if move
-        (apply #'evil-change (evil-inner-paren))  ; TODO: dispatch on paren type
+        (progn (apply #'evil-delete (evil-inner-paren))  ; TODO: dispatch on paren type
+               (symex-enter-lowest))
       (sp-kill-sexp nil)
       (symex-enter-lowest))))
 
