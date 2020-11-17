@@ -195,7 +195,6 @@ to enter, and any of the standard exits to exit."
 (defhydra hydra-symex (:idle 1.0
                        :columns 4
                        :color pink
-                       :body-pre (symex-enter-mode)
                        :post (symex-exit-mode)
                        :after-exit (symex--signal-exit))
   "Symex mode"
@@ -314,7 +313,7 @@ to enter, and any of the standard exits to exit."
 Enter the symex evil state and show a hydra menu for accessing various
 features."
   (interactive)
-  (hydra-symex/body))
+  (symex-enter-mode))
 
 
 (provide 'symex)

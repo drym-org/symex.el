@@ -64,7 +64,7 @@
            ;; on the other hand, it may be desirable to retain it but
            ;; override it temporarily, so that exiting the lowest level
            ;; via normal exits (e.g. Esc) returns to the prior state
-           (eem--update-mode-exit-flag "symex")))
+           (eem-hydra-flag-mode-exit "symex")))
         ((and (boundp 'evil-mode)
               evil-mode)
          (evil-insert-state))
@@ -84,27 +84,29 @@
 
 (defun symex-enter-mode ()
   "Take necessary action upon symex mode entry."
-  (evil-symex-state)
+  (unless (and (boundp 'epistemic-mode) epistemic-mode)
+    (evil-symex-state))
   (symex--ensure-minor-mode)
   (symex--adjust-point)
   (symex-select-nearest)
   (when symex-refocus-p
     ;; smooth scrolling currently not supported
     ;; may add it back in the future
-    (symex--set-scroll-margin)))
+    (symex--set-scroll-margin))
+  (hydra-symex/body))
 
 (defun symex-exit-mode ()
   "Take necessary action upon symex mode exit."
   (deactivate-mark)
-  (when (fboundp 'eem--update-mode-exit-flag)
-    (eem--update-mode-exit-flag "symex" t))
+  (when (fboundp 'eem-hydra-flag-mode-exit)
+    (eem-hydra-flag-mode-exit "symex" t))
   (when symex-refocus-p
     (symex--restore-scroll-margin)))
 
 (defun symex--signal-exit ()
   "Witness symex exit and take appropriate action."
   (when (fboundp 'eem-hydra-signal-exit)
-    (eem-hydra-signal-exit "symex")))
+    (eem-hydra-signal-exit "symex" #'chimera-handle-hydra-exit)))
 
 
 (provide 'symex-interop)
