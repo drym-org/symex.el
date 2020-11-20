@@ -64,7 +64,7 @@
            ;; on the other hand, it may be desirable to retain it but
            ;; override it temporarily, so that exiting the lowest level
            ;; via normal exits (e.g. Esc) returns to the prior state
-           (eem-hydra-flag-mode-exit "symex")))
+           (chimera-hydra-portend-exit chimera-symex-mode)))
         ((and (boundp 'evil-mode)
               evil-mode)
          (evil-insert-state))
@@ -98,15 +98,16 @@
 (defun symex-exit-mode ()
   "Take necessary action upon symex mode exit."
   (deactivate-mark)
-  (when (fboundp 'eem-hydra-flag-mode-exit)
-    (eem-hydra-flag-mode-exit "symex" t))
+  (when (fboundp 'chimera-hydra-portend-exit)
+    (chimera-hydra-portend-exit chimera-symex-mode t))
   (when symex-refocus-p
     (symex--restore-scroll-margin)))
 
 (defun symex--signal-exit ()
   "Witness symex exit and take appropriate action."
-  (when (fboundp 'eem-hydra-signal-exit)
-    (eem-hydra-signal-exit "symex" #'chimera-handle-hydra-exit)))
+  (when (fboundp 'chimera-hydra-signal-exit)
+    (chimera-hydra-signal-exit chimera-symex-mode
+                               #'chimera-handle-hydra-exit)))
 
 
 (provide 'symex-interop)
