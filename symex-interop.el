@@ -79,8 +79,10 @@
 
 (defun symex--restore-scroll-margin ()
   "Restore original scroll-margin (e.g. upon symex exit)."
-  (setq-local scroll-margin symex--original-scroll-margin
-              maximum-scroll-margin symex--original-max-scroll-margin))
+  (setq-local scroll-margin (and (boundp 'symex--original-scroll-margin)
+                                 symex--original-scroll-margin)
+              maximum-scroll-margin (and (boundp 'symex--original-max-scroll-margin)
+                                         symex--original-max-scroll-margin)))
 
 (defun symex-enter-mode ()
   "Take necessary action upon symex mode entry."
