@@ -242,6 +242,8 @@ to enter, and any of the standard exits to exit."
   ("C-}" symex-emit-forward "emit forward")
   ("C-S-k" symex-emit-forward "emit forward")
   ("C-)" symex-capture-forward "capture forward")
+  ("u" undo-tree-undo "undo")
+  ("C-r" undo-tree-redo "redo")
   ("z" symex-swallow "swallow head")
   ("Z" symex-swallow-tail "swallow tail")
   ("e" symex-evaluate "evaluate")
