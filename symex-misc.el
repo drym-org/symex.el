@@ -50,29 +50,55 @@
 ;;; MISCELLANEOUS ;;;
 ;;;;;;;;;;;;;;;;;;;;;
 
+(evil-define-state emacslike
+  "An Emacs-like state."
+  :tag " <E> "
+  :message "-- EMACHS --"
+  :enable (emacs))
+
+(evil-define-state normallike
+  "A Normal-like state."
+  :tag " <N> "
+  :message "-- NORMALE --"
+  :enable (normal))
+
 (defun symex-evaluate ()
   "Evaluate Symex."
   (interactive)
   (let ((original-evil-state evil-state))
-    (evil-emacs-state) ; so that which symex is meant has a standard interpretation
-    (save-excursion
-      (forward-sexp) ; selected symexes will have the cursor on the starting paren
-      (cond ((member major-mode symex-racket-modes)
-             (symex-eval-racket))
-            ((member major-mode symex-elisp-modes)
-             (symex-eval-elisp))
-            ((equal major-mode 'scheme-mode)
-             (symex-eval-scheme))
-            ((equal major-mode 'clojure-mode)
-             (symex-eval-clojure))
-            ((equal major-mode 'lisp-mode)
-             (symex-eval-common-lisp))
-            (t (error "Symex mode: Lisp flavor not recognized!"))))
-    ;; enter normal state here momentarily, as a workaround to prevent entry into
-    ;; symex mode from being treated as "emacs context" since the entry into emacs
-    ;; state is done here as an implementation detail and is not user-directed
-    (evil-normal-state)
-    (funcall (intern (concat "evil-" (symbol-name original-evil-state) "-state")))))
+    (unwind-protect
+        (save-excursion
+          ;; enter an "emacs-like" state so that which symex is meant
+          ;; has a standard interpretation. We don't go into emacs state
+          ;; itself since, as a known, "registered" evil state in
+          ;; epistemic mode, it would trigger state transition logic
+          ;; that we don't want to trigger since this is to be treated
+          ;; merely as an implementation detail of this operation
+          (evil-emacslike-state)
+          (forward-sexp) ; selected symexes will have the cursor on the starting paren
+          (cond ((member major-mode symex-racket-modes)
+                 (symex-eval-racket))
+                ((member major-mode symex-elisp-modes)
+                 (symex-eval-elisp))
+                ((equal major-mode 'scheme-mode)
+                 (symex-eval-scheme))
+                ((equal major-mode 'clojure-mode)
+                 (symex-eval-clojure))
+                ((equal major-mode 'lisp-mode)
+                 (symex-eval-common-lisp))
+                (t (error "Symex mode: Lisp flavor not recognized!"))))
+      ;; enter a "normal-like" state here momentarily, to prevent entry
+      ;; into symex mode from being treated as if it was in an "emacs" context
+      ;; since the entry into emacs state is done here as an implementation
+      ;; detail and is not user-directed
+      ;; we don't enter normal state itself but rather a clone, to go
+      ;; "under the radar" of any registered hooks
+      (evil-normallike-state)
+      ;; ideally we shouldn't do this since it would still trigger entry
+      ;; hooks, but for now that's OK
+      ;; the right way to handle all this would be to avoid any state
+      ;; transitions
+      (funcall (intern (concat "evil-" (symbol-name original-evil-state) "-state"))))))
 
 (defun symex-evaluate-definition ()
   "Evaluate entire containing symex definition."
