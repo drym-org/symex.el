@@ -194,7 +194,6 @@ to enter, and any of the standard exits to exit."
 
 (defhydra hydra-symex (:idle 1.0
                        :columns 4
-                       :color pink
                        :post (symex-exit-mode)
                        :after-exit (symex--signal-exit))
   "Symex mode"
