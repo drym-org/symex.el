@@ -228,6 +228,7 @@ executing it."
   "Switch to messages buffer while retaining focus in original window."
   (interactive)
   (switch-to-buffer-other-window "*Messages*")
+  (goto-char (point-max))
   (evil-window-mru))
 
 (defun symex-select-nearest ()
