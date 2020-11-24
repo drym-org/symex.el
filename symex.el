@@ -192,8 +192,7 @@ to enter, and any of the standard exits to exit."
         (symex-hide-menu)
       (symex-show-menu))))
 
-(defhydra hydra-symex (:idle 1.0
-                       :columns 4
+(defhydra hydra-symex (:columns 4
                        :post (symex-exit-mode)
                        :after-exit (symex--signal-exit))
   "Symex mode"
@@ -242,8 +241,6 @@ to enter, and any of the standard exits to exit."
   ("C-}" symex-emit-forward "emit forward")
   ("C-S-k" symex-emit-forward "emit forward")
   ("C-)" symex-capture-forward "capture forward")
-  ("u" undo-tree-undo "undo")
-  ("C-r" undo-tree-redo "redo")
   ("z" symex-swallow "swallow head")
   ("Z" symex-swallow-tail "swallow tail")
   ("e" symex-evaluate "evaluate")
@@ -295,10 +292,11 @@ to enter, and any of the standard exits to exit."
   ;; configuration
   ("H-h" symex--toggle-highlight "toggle highlight")
   ("H-m" symex-toggle-menu "show/hide this menu")
-  ;; escape hatches
-  ("v" evil-visual-char nil :exit t)
-  ("V" evil-visual-line nil :exit t)
-  ("C-v" evil-visual-block nil :exit t)
+  ;; explicit "pass through" so hydra persists
+  ("u" undo-tree-undo nil)
+  ("C-r" undo-tree-redo nil)
+  ("C-e" symex--scroll-down nil)
+  ("C-y" symex--scroll-up nil)
   ;; standard exits
   ("?" symex-describe "info")
   ("<return>" symex-enter-lower "enter lower" :exit t)

@@ -111,6 +111,17 @@
     (chimera-hydra-signal-exit chimera-symex-mode
                                #'chimera-handle-hydra-exit)))
 
+;; TODO: these are only here because there's no good "pass through" option
+;; to use whatever scrolling (or other) command is mapped to e.g. C-e and C-y
+;; outside of the hydra
+(defun symex--scroll-down ()
+  (interactive)
+  (evil-scroll-line-down 3))
+
+(defun symex--scroll-up ()
+  (interactive)
+  (evil-scroll-line-up 3))
+
 
 (provide 'symex-interop)
 ;;; symex-interop.el ends here
