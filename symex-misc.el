@@ -229,6 +229,7 @@ executing it."
   (interactive)
   (switch-to-buffer-other-window "*Messages*")
   (goto-char (point-max))
+  (recenter)
   (evil-window-mru))
 
 (defun symex-select-nearest ()
