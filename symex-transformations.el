@@ -195,7 +195,8 @@ by default, joins next symex to current one."
                                  (line-end-position))))
     (unless (= (current-column)
                original-column)
-      (forward-char))))
+      (forward-char)))
+  (symex-tidy))
 
 (defun symex-yank ()
   "Yank (copy) symex."

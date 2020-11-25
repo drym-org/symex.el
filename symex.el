@@ -192,6 +192,8 @@ to enter, and any of the standard exits to exit."
         (symex-hide-menu)
       (symex-show-menu))))
 
+;; TOOD: it might make sense to symex-tidy as a formal followup,
+;; possibly after every head, but at least after the transformations
 (defhydra hydra-symex (:columns 4
                        :post (symex-exit-mode)
                        :after-exit (symex--signal-exit))
