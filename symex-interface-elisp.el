@@ -66,7 +66,7 @@
   "Enter elisp REPL, context-aware.
 
 If there is only one window, open REPL in a new window.  Otherwise
-open in current window."
+open in most recently used other window."
   (interactive)
   (if (= (length (window-list))
          1)
