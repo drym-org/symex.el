@@ -72,8 +72,10 @@
 
 (defun symex--set-scroll-margin ()
   "Set a convenient scroll margin for symex mode, after storing the original value."
-  (setq-local symex--original-scroll-margin scroll-margin
-              symex--original-max-scroll-margin maximum-scroll-margin)
+  (unless (boundp 'symex--original-scroll-margin)
+    ;; only set these the first time symex mode is entered in the buffer
+    (setq-local symex--original-scroll-margin scroll-margin
+                symex--original-max-scroll-margin maximum-scroll-margin))
   (setq-local scroll-margin 9999
               maximum-scroll-margin 0.368))
 
