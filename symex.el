@@ -194,6 +194,8 @@ to enter, and any of the standard exits to exit."
 
 ;; TOOD: it might make sense to symex-tidy as a formal followup,
 ;; possibly after every head, but at least after the transformations
+;; likewise, we might want to disable and re-enable highlighting,
+;; if active, on each command
 (defhydra hydra-symex (:columns 4
                        :post (symex-exit-mode)
                        :after-exit (symex--signal-exit))
