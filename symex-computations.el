@@ -62,7 +62,7 @@
   "A computation to be performed as part of a traversal.
 
 COMPONENTS - a list of nested computations that will each process the
-input independently and produce a result. These results will then be
+input independently and produce a result.  These results will then be
 filtered and finally considered collectively to produce a decision.
 PERCEIVE - the function to be applied to the result of each traversal step,
 which transforms it to the perceived type.
@@ -73,13 +73,13 @@ FILTER - a predicate function to be applied to results from nested computations
 to select those that will factor into the decision.
 DECIDE - a binary function to be applied in combining results from nested
 computations (each of the 'perceived' type) to yield the provisional result
-(also of the perceived type).
+\(also of the perceived type).
 EXPRESS - a function to transform data of the perceived type (e.g. the
 type produced by the decision) to the application type (the type that can be
 used by the application).
 ACT - a binary function to be applied in combining results from the overall
 computation (each of the 'expressed' type) to yield the final result
-(also of the expressed type)."
+\(also of the expressed type)."
   (list 'computation
         components
         perceive

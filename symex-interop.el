@@ -80,7 +80,7 @@
               maximum-scroll-margin 0.368))
 
 (defun symex--restore-scroll-margin ()
-  "Restore original scroll-margin (e.g. upon symex exit)."
+  "Restore original `scroll-margin` (e.g. upon symex exit)."
   (setq-local scroll-margin (and (boundp 'symex--original-scroll-margin)
                                  symex--original-scroll-margin)
               maximum-scroll-margin (and (boundp 'symex--original-max-scroll-margin)
@@ -117,10 +117,12 @@
 ;; to use whatever scrolling (or other) command is mapped to e.g. C-e and C-y
 ;; outside of the hydra
 (defun symex--scroll-down ()
+  "Scroll view down."
   (interactive)
   (evil-scroll-line-down 3))
 
 (defun symex--scroll-up ()
+  "Scroll view up."
   (interactive)
   (evil-scroll-line-up 3))
 
