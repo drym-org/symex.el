@@ -90,9 +90,9 @@ as standard linear vector magnitude computation is used."
 (cl-defun symex-make-precaution (traversal &key pre-condition post-condition)
   "A specification to check conditions before/after execution of a TRAVERSAL.
 
-PRE-CONDITION is a boolean function executed before the traversal. The
+PRE-CONDITION is a boolean function executed before the traversal.  The
 traversal is not executed unless this returns true.
-POST-CONDITION is a boolean function executed after the traversal. The
+POST-CONDITION is a boolean function executed after the traversal.  The
 executed traversal is reversed if this returns false."
   (let ((pre-condition (or pre-condition (lambda () t)))
         (post-condition (or post-condition (lambda () t))))

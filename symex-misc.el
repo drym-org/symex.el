@@ -50,29 +50,55 @@
 ;;; MISCELLANEOUS ;;;
 ;;;;;;;;;;;;;;;;;;;;;
 
+(evil-define-state emacslike
+  "An Emacs-like state."
+  :tag " <E> "
+  :message "-- EMACHS --"
+  :enable (emacs))
+
+(evil-define-state normallike
+  "A Normal-like state."
+  :tag " <N> "
+  :message "-- NORMALE --"
+  :enable (normal))
+
 (defun symex-evaluate ()
   "Evaluate Symex."
   (interactive)
   (let ((original-evil-state evil-state))
-    (evil-emacs-state) ; so that which symex is meant has a standard interpretation
-    (save-excursion
-      (forward-sexp) ; selected symexes will have the cursor on the starting paren
-      (cond ((member major-mode symex-racket-modes)
-             (symex-eval-racket))
-            ((member major-mode symex-elisp-modes)
-             (symex-eval-elisp))
-            ((equal major-mode 'scheme-mode)
-             (symex-eval-scheme))
-            ((equal major-mode 'clojure-mode)
-             (symex-eval-clojure))
-            ((equal major-mode 'lisp-mode)
-             (symex-eval-common-lisp))
-            (t (error "Symex mode: Lisp flavor not recognized!"))))
-    ;; enter normal state here momentarily, as a workaround to prevent entry into
-    ;; symex mode from being treated as "emacs context" since the entry into emacs
-    ;; state is done here as an implementation detail and is not user-directed
-    (evil-normal-state)
-    (funcall (intern (concat "evil-" (symbol-name original-evil-state) "-state")))))
+    (unwind-protect
+        (save-excursion
+          ;; enter an "emacs-like" state so that which symex is meant
+          ;; has a standard interpretation. We don't go into emacs state
+          ;; itself since, as a known, "registered" evil state in
+          ;; epistemic mode, it would trigger state transition logic
+          ;; that we don't want to trigger since this is to be treated
+          ;; merely as an implementation detail of this operation
+          (evil-emacslike-state)
+          (forward-sexp) ; selected symexes will have the cursor on the starting paren
+          (cond ((member major-mode symex-racket-modes)
+                 (symex-eval-racket))
+                ((member major-mode symex-elisp-modes)
+                 (symex-eval-elisp))
+                ((equal major-mode 'scheme-mode)
+                 (symex-eval-scheme))
+                ((equal major-mode 'clojure-mode)
+                 (symex-eval-clojure))
+                ((equal major-mode 'lisp-mode)
+                 (symex-eval-common-lisp))
+                (t (error "Symex mode: Lisp flavor not recognized!"))))
+      ;; enter a "normal-like" state here momentarily, to prevent entry
+      ;; into symex mode from being treated as if it was in an "emacs" context
+      ;; since the entry into emacs state is done here as an implementation
+      ;; detail and is not user-directed
+      ;; we don't enter normal state itself but rather a clone, to go
+      ;; "under the radar" of any registered hooks
+      (evil-normallike-state)
+      ;; ideally we shouldn't do this since it would still trigger entry
+      ;; hooks, but for now that's OK
+      ;; the right way to handle all this would be to avoid any state
+      ;; transitions
+      (funcall (intern (concat "evil-" (symbol-name original-evil-state) "-state"))))))
 
 (defun symex-evaluate-definition ()
   "Evaluate entire containing symex definition."
@@ -189,8 +215,6 @@ executing it."
          (symex-run-clojure))
         ((equal major-mode 'lisp-mode)
          (symex-run-common-lisp))
-        ((equal major-mode 'arc-mode)
-         (symex-run-arc))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
 (defun symex-switch-to-scratch-buffer ()
@@ -202,6 +226,8 @@ executing it."
   "Switch to messages buffer while retaining focus in original window."
   (interactive)
   (switch-to-buffer-other-window "*Messages*")
+  (goto-char (point-max))
+  (recenter)
   (evil-window-mru))
 
 (defun symex-select-nearest ()
@@ -222,39 +248,6 @@ executing it."
         (t (symex-if-stuck (symex-go-backward)
                            (symex-go-forward))))
   (point))
-
-(defun symex-refocus (&optional smooth-scroll)
-  "Move screen to put symex in convenient part of the view.
-
-If SMOOTH-SCROLL is set, then scroll the view gently to aid in visual tracking."
-  (interactive)
-  ;; Note: window-text-height is not robust to zooming
-  (let* ((window-focus-line-number (/ (window-text-height)
-                                       3))
-         (current-line-number (line-number-at-pos))
-         (top-line-number (save-excursion (evil-window-top)
-                                          (line-number-at-pos)))
-         (window-current-line-number (- current-line-number
-                                        top-line-number))
-         (window-scroll-delta (- window-current-line-number
-                                 window-focus-line-number))
-         (window-upper-view-bound (/ (window-text-height)
-                                     9))
-         (window-lower-view-bound (* (window-text-height)
-                                     (/ 4.0 6))))
-    (unless (< window-upper-view-bound
-               window-current-line-number
-               window-lower-view-bound)
-      (if smooth-scroll
-          (dotimes (_ (/ (abs window-scroll-delta)
-                         3))
-            (condition-case nil
-                (evil-scroll-line-down (if (> window-scroll-delta 0)
-                                           3
-                                         -3))
-              (error nil))
-            (sit-for 0.0001))
-        (recenter window-focus-line-number)))))
 
 (defun symex-index ()  ; TODO: may be better framed as a computation
   "Get relative (from start of containing symex) index of current symex."
@@ -354,8 +347,6 @@ the implementation."
 (defun symex--selection-side-effects ()
   "Things to do as part of symex selection, e.g. after navigations."
   (interactive)
-  (when symex-refocus-p
-    (symex-refocus symex-smooth-scroll-p))
   (when symex-highlight-p
     (mark-sexp)))
 

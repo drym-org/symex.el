@@ -38,11 +38,11 @@
 
 (deftraversal symex--traversal-goto-first
   (circuit (move backward))
-  "Go to first symex at present level.")
+  "Go to first symex on the present branch.")
 
 (deftraversal symex--traversal-goto-last
   (circuit (move forward))
-  "Go to last symex at present level.")
+  "Go to last symex on the present branch.")
 
 (deftraversal symex--traversal-goto-lowest
   (circuit (move down))

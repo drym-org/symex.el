@@ -106,7 +106,8 @@ to how the Lisp interpreter does it (when it is following
   (interactive)
   (let ((move (symex-go-up)))
     (if move
-        (apply #'evil-change (evil-inner-paren))  ; TODO: dispatch on paren type
+        (progn (apply #'evil-delete (evil-inner-paren))  ; TODO: dispatch on paren type
+               (symex-enter-lowest))
       (sp-kill-sexp nil)
       (symex-enter-lowest))))
 
@@ -194,7 +195,8 @@ by default, joins next symex to current one."
                                  (line-end-position))))
     (unless (= (current-column)
                original-column)
-      (forward-char))))
+      (forward-char)))
+  (symex-tidy))
 
 (defun symex-yank ()
   "Yank (copy) symex."
@@ -425,12 +427,27 @@ then no action is taken."
   "Properly tidy things up."
   (interactive)
   (save-excursion
-    (symex-execute-traversal (symex-traversal
-                              (circuit symex--traversal-preorder-in-tree))
-                             nil
-                             #'symex-tidy)
+    (symex-execute-traversal
+     (symex-traversal (circuit symex--traversal-preorder-in-tree))
+     nil
+     #'symex-tidy)
     (symex--do-while-traversing #'symex-tidy
                                 symex--traversal-postorder-in-tree)))
+
+(defun symex-collapse ()
+  "Collapse a symex to a single line."
+  (interactive)
+  (save-excursion
+    (let ((start (point)))
+      (symex-execute-traversal
+       (symex-traversal (circuit symex--traversal-preorder-in-tree)))
+      (symex--do-while-traversing
+       (apply-partially #'symex-join-lines t)
+       (symex-traversal
+        (precaution symex--traversal-postorder-in-tree
+                    (afterwards (lambda ()
+                                  (not (equal (line-number-at-pos (point))
+                                              (line-number-at-pos start)))))))))))
 
 (provide 'symex-transformations)
 ;;; symex-transformations.el ends here

@@ -179,6 +179,11 @@ forward, backward, up, or down."
         ((equal 'down direction)
          '(symex-make-move 0 -1))))
 
+;; TODO: support args here like lambda / defun (i.e. as a list in the
+;; binding form -- not passed in but syntactically inserted)
+;; try a lambda / defun with args to see what I mean
+;; and implement symex--traversal-goto-index as a first instance
+
 (defmacro symex-traversal (traversal)
   "Compile a traversal from Symex DSL -> Lisp.
 
@@ -202,7 +207,8 @@ a detour, a move, etc., which is specified using the Symex DSL."
         ((equal 'decision (car traversal))
          `(symex--compile-decision ,@(cdr traversal)))
         ((equal 'move (car traversal))
-         `(symex--compile-move ,@(cdr traversal)))))
+         `(symex--compile-move ,@(cdr traversal)))
+        (t traversal)))  ; function-valued symbols wind up here
 
 (defmacro deftraversal (name traversal &optional docstring)
   "Define a symex traversal using the Symex DSL.

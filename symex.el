@@ -3,7 +3,7 @@
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/countvajhula/symex.el
 ;; Version: 0.1
-;; Package-Requires: ((emacs "24.4") (cl-lib "0.6.1") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (dash-functional "2.15.0") (evil "1.2.14") (smartparens "1.11.0") (racket-mode "20181030.1345") (geiser "0.10") (evil-surround "1.0.4") (hydra "0.15.0") (cider "0.21.0") (slime "2.24"))
+;; Package-Requires: ((emacs "24.4") (cl-lib "0.6.1") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (dash-functional "2.15.0") (evil "1.2.14") (smartparens "1.11.0") (racket-mode "20181030.1345") (geiser "0.10") (evil-surround "1.0.4") (hydra "0.15.0") (cider "0.21.0") (slime "2.24") (seq "2.22") (undo-tree "0.7.5"))
 ;; Keywords: lisp, evil
 
 ;; This program is "part of the world," in the sense described at
@@ -43,6 +43,7 @@
 ;;; Code:
 
 (require 'evil)
+(require 'undo-tree)
 (require 'lispy)
 (require 'paredit)
 (require 'evil-cleverparens)  ;; really only need cp-textobjects here
@@ -58,6 +59,10 @@
 (require 'symex-transformations)
 (require 'symex-misc)
 (require 'symex-interop)
+
+(eval-when-compile              ; eventually sort out the dependency
+  (defvar chimera-symex-mode)   ; order so this is unnecessary
+  (declare-function chimera-hydra-portend-exit "ext:ignore"))
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;;; CONFIGURATION ;;;
@@ -86,7 +91,6 @@
   "Symex state."
   :tag " <λ> "
   :message "-- SYMEX --"
-  :entry-hook (symex--ensure-minor-mode symex--adjust-point)
   :enable (normal))
 
 (defvar symex-elisp-modes (list 'lisp-interaction-mode
@@ -157,10 +161,33 @@ symex 'under' point is indicated.  We want to make sure to select the
 right symex when we enter Symex mode."
   (interactive)
   (when (member evil-previous-state '(insert emacs))
-    (let ((just-inside-symex-p (save-excursion (backward-char)
-                                               (lispy-left-p))))
-      (unless just-inside-symex-p
-        (backward-char)))))
+    (unless (bobp)
+      (let ((just-inside-symex-p (save-excursion (backward-char)
+                                                 (lispy-left-p))))
+        (unless just-inside-symex-p
+          (backward-char))))))
+
+(defun symex-enter-mode ()
+  "Take necessary action upon symex mode entry."
+  (unless (and (boundp 'epistemic-mode) epistemic-mode)
+    (when (and (boundp 'evil-mode) evil-mode)
+      (evil-symex-state)))
+  (symex--ensure-minor-mode)
+  (symex--adjust-point)
+  (symex-select-nearest)
+  (when symex-refocus-p
+    ;; smooth scrolling currently not supported
+    ;; may add it back in the future
+    (symex--set-scroll-margin))
+  (hydra-symex/body))
+
+(defun symex-exit-mode ()
+  "Take necessary action upon symex mode exit."
+  (deactivate-mark)
+  (when symex-refocus-p
+    (symex--restore-scroll-margin))
+  (when (and (boundp 'epistemic-mode) epistemic-mode)
+    (chimera-hydra-portend-exit chimera-symex-mode t)))
 
 (defun symex--toggle-highlight ()
   "Toggle highlighting of selected symex."
@@ -192,12 +219,13 @@ to enter, and any of the standard exits to exit."
         (symex-hide-menu)
       (symex-show-menu))))
 
-(defhydra hydra-symex (:idle 1.0
-                       :columns 4
-                       :color pink
-                       :body-pre (progn (evil-symex-state)
-                                        (symex-select-nearest))
-                       :post (deactivate-mark))
+;; TOOD: it might make sense to symex-tidy as a formal followup,
+;; possibly after every head, but at least after the transformations
+;; likewise, we might want to disable and re-enable highlighting,
+;; if active, on each command
+(defhydra hydra-symex (:columns 4
+                       :post (symex-exit-mode)
+                       :after-exit (symex--signal-exit))
   "Symex mode"
   ("(" (lambda ()
          (interactive)
@@ -267,6 +295,7 @@ to enter, and any of the standard exits to exit."
   ("n" symex-insert-newline "newline")
   ("C-S-o" symex-append-newline "append newline")
   ("J" symex-join-lines "join lines")
+  ("M-J" symex-collapse "collapse to single line")
   ("N" (lambda ()
          (interactive)
          (symex-join-lines t)) "join lines backwards")
@@ -292,10 +321,11 @@ to enter, and any of the standard exits to exit."
   ;; configuration
   ("H-h" symex--toggle-highlight "toggle highlight")
   ("H-m" symex-toggle-menu "show/hide this menu")
-  ;; escape hatches
-  ("v" evil-visual-char nil :exit t)
-  ("V" evil-visual-line nil :exit t)
-  ("C-v" evil-visual-block nil :exit t)
+  ;; explicit "pass through" so hydra persists
+  ("u" undo-tree-undo nil)
+  ("C-r" undo-tree-redo nil)
+  ("C-e" symex--scroll-down nil)
+  ("C-y" symex--scroll-up nil)
   ;; standard exits
   ("?" symex-describe "info")
   ("<return>" symex-enter-lower "enter lower" :exit t)
@@ -311,7 +341,7 @@ to enter, and any of the standard exits to exit."
 Enter the symex evil state and show a hydra menu for accessing various
 features."
   (interactive)
-  (hydra-symex/body))
+  (symex-enter-mode))
 
 
 (provide 'symex)

@@ -66,13 +66,15 @@
   "Enter elisp REPL, context-aware.
 
 If there is only one window, open REPL in a new window.  Otherwise
-open in current window."
+open in most recently used other window."
   (interactive)
-  (when (= (length (window-list))
-           1)
-    (progn (evil-window-vsplit)
-           (evil-window-right 1)))
-  (ielm))
+  (if (= (length (window-list))
+         1)
+      (progn (evil-window-vsplit)
+             (evil-window-right 1)
+             (ielm))
+    (evil-window-mru)
+    (ielm)))
 
 (defun symex-run-elisp ()
   "Evaluate buffer."
