@@ -207,7 +207,8 @@ a detour, a move, etc., which is specified using the Symex DSL."
         ((equal 'decision (car traversal))
          `(symex--compile-decision ,@(cdr traversal)))
         ((equal 'move (car traversal))
-         `(symex--compile-move ,@(cdr traversal)))))
+         `(symex--compile-move ,@(cdr traversal)))
+        (t traversal)))  ; function-valued symbols wind up here
 
 (defmacro deftraversal (name traversal &optional docstring)
   "Define a symex traversal using the Symex DSL.
