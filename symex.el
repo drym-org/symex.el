@@ -3,7 +3,7 @@
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/countvajhula/symex.el
 ;; Version: 0.1
-;; Package-Requires: ((emacs "24.4") (cl-lib "0.6.1") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (dash-functional "2.15.0") (evil "1.2.14") (smartparens "1.11.0") (racket-mode "20181030.1345") (geiser "0.10") (evil-surround "1.0.4") (hydra "0.15.0") (cider "0.21.0") (slime "2.24") (seq "2.22"))
+;; Package-Requires: ((emacs "24.4") (cl-lib "0.6.1") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (dash-functional "2.15.0") (evil "1.2.14") (smartparens "1.11.0") (racket-mode "20181030.1345") (geiser "0.10") (evil-surround "1.0.4") (hydra "0.15.0") (cider "0.21.0") (slime "2.24") (seq "2.22") (undo-tree "0.7.5"))
 ;; Keywords: lisp, evil
 
 ;; This program is "part of the world," in the sense described at
@@ -43,6 +43,7 @@
 ;;; Code:
 
 (require 'evil)
+(require 'undo-tree)
 (require 'lispy)
 (require 'paredit)
 (require 'evil-cleverparens)  ;; really only need cp-textobjects here
@@ -58,6 +59,10 @@
 (require 'symex-transformations)
 (require 'symex-misc)
 (require 'symex-interop)
+
+(eval-when-compile              ; eventually sort out the dependency
+  (defvar chimera-symex-mode)   ; order so this is unnecessary
+  (declare-function chimera-hydra-portend-exit "ext:ignore"))
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;;; CONFIGURATION ;;;
@@ -161,6 +166,28 @@ right symex when we enter Symex mode."
                                                  (lispy-left-p))))
         (unless just-inside-symex-p
           (backward-char))))))
+
+(defun symex-enter-mode ()
+  "Take necessary action upon symex mode entry."
+  (unless (and (boundp 'epistemic-mode) epistemic-mode)
+    (when (and (boundp 'evil-mode) evil-mode)
+      (evil-symex-state)))
+  (symex--ensure-minor-mode)
+  (symex--adjust-point)
+  (symex-select-nearest)
+  (when symex-refocus-p
+    ;; smooth scrolling currently not supported
+    ;; may add it back in the future
+    (symex--set-scroll-margin))
+  (hydra-symex/body))
+
+(defun symex-exit-mode ()
+  "Take necessary action upon symex mode exit."
+  (deactivate-mark)
+  (when symex-refocus-p
+    (symex--restore-scroll-margin))
+  (when (and (boundp 'epistemic-mode) epistemic-mode)
+    (chimera-hydra-portend-exit chimera-symex-mode t)))
 
 (defun symex--toggle-highlight ()
   "Toggle highlighting of selected symex."

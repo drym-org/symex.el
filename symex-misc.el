@@ -215,8 +215,6 @@ executing it."
          (symex-run-clojure))
         ((equal major-mode 'lisp-mode)
          (symex-run-common-lisp))
-        ((equal major-mode 'arc-mode)
-         (symex-run-arc))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
 (defun symex-switch-to-scratch-buffer ()
