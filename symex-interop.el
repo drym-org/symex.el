@@ -35,9 +35,9 @@
 (defvar symex-refocus-p)
 
 ;; misc bindings defined elsewhere
-(declare-function eem-enter-higher-level "ext:ignore")
-(declare-function eem-enter-lower-level "ext:ignore")
-(declare-function eem-enter-lowest-level "ext:ignore")
+(declare-function rigpa-enter-higher-level "ext:ignore")
+(declare-function rigpa-enter-lower-level "ext:ignore")
+(declare-function rigpa-enter-lowest-level "ext:ignore")
 (declare-function chimera-hydra-portend-exit "ext:ignore")
 (declare-function chimera-hydra-signal-exit "ext:ignore")
 (declare-function chimera-handle-hydra-exit "ext:ignore")
@@ -49,7 +49,7 @@
   "Exit symex mode via an 'escape'."
   (interactive)
   (cond ((and (boundp 'rigpa-mode) rigpa-mode)
-         (eem-enter-higher-level))
+         (rigpa-enter-higher-level))
         ((and (boundp 'evil-mode) evil-mode)
          (evil-normal-state))
         (t (evil-emacs-state))))
@@ -58,7 +58,7 @@
   "Exit symex mode via an 'enter'."
   (interactive)
   (cond ((and (boundp 'rigpa-mode) rigpa-mode)
-         (eem-enter-lower-level))
+         (rigpa-enter-lower-level))
         ((and (boundp 'evil-mode) evil-mode)
          (evil-insert-state))
         (t (evil-emacs-state))))
@@ -67,7 +67,7 @@
   "Enter the lowest (manual) editing level."
   (interactive)
   (cond ((and (boundp 'rigpa-mode) rigpa-mode)
-         (eem-enter-lowest-level)
+         (rigpa-enter-lowest-level)
          ;; TODO: generalize so that commands specifically entering
          ;; another level (esp the lowest) clear any recall flags;
          ;; on the other hand, it may be desirable to retain it but
