@@ -71,7 +71,7 @@
           ;; enter an "emacs-like" state so that which symex is meant
           ;; has a standard interpretation. We don't go into emacs state
           ;; itself since, as a known, "registered" evil state in
-          ;; epistemic mode, it would trigger state transition logic
+          ;; rigpa, it would trigger state transition logic
           ;; that we don't want to trigger since this is to be treated
           ;; merely as an implementation detail of this operation
           (evil-emacslike-state)

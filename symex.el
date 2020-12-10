@@ -169,7 +169,7 @@ right symex when we enter Symex mode."
 
 (defun symex-enter-mode ()
   "Take necessary action upon symex mode entry."
-  (unless (and (boundp 'epistemic-mode) epistemic-mode)
+  (unless (and (boundp 'rigpa-mode) rigpa-mode)
     (when (and (boundp 'evil-mode) evil-mode)
       (evil-symex-state)))
   (symex--ensure-minor-mode)
@@ -186,7 +186,7 @@ right symex when we enter Symex mode."
   (deactivate-mark)
   (when symex-refocus-p
     (symex--restore-scroll-margin))
-  (when (and (boundp 'epistemic-mode) epistemic-mode)
+  (when (and (boundp 'rigpa-mode) rigpa-mode)
     (chimera-hydra-portend-exit chimera-symex-mode t)))
 
 (defun symex--toggle-highlight ()

@@ -48,7 +48,7 @@
 (defun symex-escape-higher ()
   "Exit symex mode via an 'escape'."
   (interactive)
-  (cond ((and (boundp 'epistemic-mode) epistemic-mode)
+  (cond ((and (boundp 'rigpa-mode) rigpa-mode)
          (eem-enter-higher-level))
         ((and (boundp 'evil-mode) evil-mode)
          (evil-normal-state))
@@ -57,7 +57,7 @@
 (defun symex-enter-lower ()
   "Exit symex mode via an 'enter'."
   (interactive)
-  (cond ((and (boundp 'epistemic-mode) epistemic-mode)
+  (cond ((and (boundp 'rigpa-mode) rigpa-mode)
          (eem-enter-lower-level))
         ((and (boundp 'evil-mode) evil-mode)
          (evil-insert-state))
@@ -66,7 +66,7 @@
 (defun symex-enter-lowest ()
   "Enter the lowest (manual) editing level."
   (interactive)
-  (cond ((and (boundp 'epistemic-mode) epistemic-mode)
+  (cond ((and (boundp 'rigpa-mode) rigpa-mode)
          (eem-enter-lowest-level)
          ;; TODO: generalize so that commands specifically entering
          ;; another level (esp the lowest) clear any recall flags;
@@ -95,7 +95,7 @@
 
 (defun symex--signal-exit ()
   "Witness symex exit and take appropriate action."
-  (when (and (boundp 'epistemic-mode) epistemic-mode)
+  (when (and (boundp 'rigpa-mode) rigpa-mode)
     (chimera-hydra-signal-exit chimera-symex-mode
                                #'chimera-handle-hydra-exit)))
 
