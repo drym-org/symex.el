@@ -26,9 +26,7 @@
 
 ;;; Code:
 
-
 (require 'evil)
-
 
 (defun symex-eval-elisp ()
   "Eval Elisp symex."

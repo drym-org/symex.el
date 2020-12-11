@@ -26,9 +26,13 @@
 
 ;;; Code:
 
+(require 'geiser-mode nil 'noerror)
 
-(require 'geiser-mode)
-
+(declare-function geiser-eval-last-sexp "ext:geiser-mode")
+(declare-function geiser-eval-definition "ext:geiser-mode")
+(declare-function geiser-doc-symbol-at-point "ext:geiser-mode")
+(declare-function geiser-mode-switch-to-repl "ext:geiser-mode")
+(declare-function geiser-eval-buffer "ext:geiser-mode")
 
 (defun symex-eval-scheme ()
   "Eval Scheme symex."

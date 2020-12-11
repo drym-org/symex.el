@@ -26,7 +26,14 @@
 
 ;;; Code:
 
-(require 'cider)
+(require 'cider nil 'noerror)
+
+(declare-function cider-eval-last-sexp "ext:cider")
+(declare-function cider-eval-defun-at-point "ext:cider")
+(declare-function cider-eval-print-last-sexp "ext:cider")
+(declare-function cider-doc "ext:cider")
+(declare-function cider-switch-to-repl-buffer "ext:cider")
+(declare-function cider-eval-buffer "ext:cider")
 
 (defun symex-eval-clojure ()
   "Eval last sexp.

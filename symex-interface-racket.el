@@ -26,11 +26,20 @@
 
 ;;; Code:
 
-(require 'racket-mode)
+(require 'racket-mode nil 'noerror)
 (require 'subr-x)
 
 (eval-when-compile                    ; from racket-mode
   (defvar racket--repl-buffer-name))  ; avoid byte-compile warnings
+
+(declare-function racket-repl "ext:racket-mode")
+(declare-function racket--repl-forget-errors "ext:racket-mode")
+(declare-function with-racket-repl-buffer "ext:racket-mode")
+(declare-function racket-send-last-sexp "ext:racket-mode")
+(declare-function racket-send-definition "ext:racket-mode")
+(declare-function racket--repl-last-sexp-start "ext:racket-mode")
+(declare-function racket-describe "ext:racket-mode")
+(declare-function racket-run "ext:racket-mode")
 
 (defun symex--racket-send-to-repl (code)
   "Internal function to send CODE to the Racket REPL for evaluation.

@@ -26,8 +26,13 @@
 
 ;;; Code:
 
-(require 'slime)
-(require 'slime-repl)
+(require 'slime nil 'noerror)
+(require 'slime-repl nil 'noerror)
+
+(declare-function slime-eval-last-expression "ext:slime")
+(declare-function slime-eval-defun "ext:slime")
+(declare-function slime-eval-buffer "ext:slime")
+(declare-function slime-repl "ext:slime-repl")
 
 (defun symex-eval-common-lisp ()
   "Eval last sexp.
