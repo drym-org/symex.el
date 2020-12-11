@@ -10,7 +10,7 @@
 
 symex.el
 ========
-An `evil <https://github.com/emacs-evil/evil>`_ way to edit Lisp symbolic expressions ("symexes") as trees in Emacs
+An `evil <https://github.com/emacs-evil/evil>`_ way to edit Lisp symbolic expressions ("symexes") as trees in Emacs.
 
 .. raw:: html
 
@@ -18,9 +18,13 @@ An `evil <https://github.com/emacs-evil/evil>`_ way to edit Lisp symbolic expres
     <img src="https://user-images.githubusercontent.com/401668/98453162-e3ca2f00-210a-11eb-8669-c1048ff4547c.jpg" width="618" height="410" alt="Symex the Squirrel" title="Symex the Squirrel"/>
   </p>
 
-Symex mode (pronounced sym-ex, as in symbolic expression) is a vim-inspired way of editing Lisp code as trees. Entering symex mode allows you to reason about your code in terms of its structure, similar to other tools like `paredit <https://www.emacswiki.org/emacs/ParEdit>`_ and `lispy <https://github.com/abo-abo/lispy>`_. But while those packages provide a curated number of useful tree operations, symex mode treats the tree structure explicitly so that arbitrary tree navigations and operations can be described using an expressive DSL, and invoked conveniently in a vim-style modal interface implemented with a `Hydra <https://github.com/abo-abo/hydra>`_.
+Symex mode (pronounced sym-ex, as in symbolic expression) is a vim-inspired way of editing Lisp code as trees. Entering symex mode allows you to reason about your code in terms of its structure, similar to other tools like `paredit <https://www.emacswiki.org/emacs/ParEdit>`_ and `lispy <https://github.com/abo-abo/lispy>`_. But while those packages provide a curated number of useful tree operations, symex mode treats the tree structure explicitly so that arbitrary tree navigations and operations can be described using an expressive DSL, and invoked conveniently via a vim-style modal interface implemented with a `Hydra <https://github.com/abo-abo/hydra>`_. As a consequence of this:
 
-At the moment, symex mode uses ``paredit``, ``lispy``, and `evil-cleverparens <https://github.com/luxbock/evil-cleverparens>`_ to provide much of its low level functionality. In the future, this layer of primitives may be replaced with a layer that explicitly uses the abstract syntax tree, for greater precision.
+- Symex provides many novel features, such as "leap branch," "climb/descend branch," "goto highest/lowest," "skip forward/backward", recursive indent, recursive evaluate, among many others
+- Implementation of new structure-related features in general is relatively easy [1]_.
+- Keybindings are short and memorable
+
+At the moment, symex mode uses ``paredit``, ``lispy``, and `evil-cleverparens <https://github.com/luxbock/evil-cleverparens>`_ to provide much of its low level functionality. In the future, this layer of primitives may be replaced with a layer that explicitly uses the abstract syntax tree, for still greater precision.
 
 .. raw:: html
 
@@ -30,19 +34,24 @@ At the moment, symex mode uses ``paredit``, ``lispy``, and `evil-cleverparens <h
 
 Installation and Usage
 ======================
-Install the package the usual way via MELPA. Then add the following config to your ``init.d``:
+
+1. Install the package the usual way via MELPA (e.g. :code:`M-x package-install`).
+
+2. Then, assuming you're using `use-package <https://github.com/jwiegley/use-package>`__ to manage your configuration, add the following config to your ``init.d``:
 
 ::
 
-  (global-set-key (kbd "s-;") 'symex-mode-interface)  ; or whatever keybinding you like
-  (dolist (mode-name symex-lisp-modes)
-    (let ((mode-hook (intern (concat (symbol-name mode-name)
-                                     "-hook"))))
-      (add-hook mode-hook 'symex-mode)))
+  (use-package symex
+    :config
+    (global-set-key (kbd "s-;") 'symex-mode-interface)  ; or whatever keybinding you like
+    (dolist (mode-name symex-lisp-modes)
+      (let ((mode-hook (intern (concat (symbol-name mode-name)
+                                       "-hook"))))
+        (add-hook mode-hook 'symex-mode)))
 
-This provides a keybinding to load the symex editing interface, and also enables the symex minor mode in all recognized lisp modes (the minor mode is simply there to ensure that manual edits respect the tree structure, e.g. keeps parens balanced like paredit).
+This provides a keybinding to load the symex editing interface, and also enables the symex minor mode in all recognized lisp modes (the minor mode ensures that manual edits respect the tree structure, e.g. keeps parens balanced like paredit).
 
-By default, entering the symex modal interface shows you a comprehensive menu of all possible actions. This is helpful initially, but over time you may prefer to dismiss the menu and bring it up on demand in order to conserve screen real estate. To do this, either run ``symex-toggle-menu`` via the menu entry point (``H-m``) while in symex mode, or add this to your ``init.d`` (as part of the config above):
+By default, entering the symex modal interface (via e.g. :code:`s-;`) shows you a comprehensive menu of all possible actions. This is helpful initially, but over time you may prefer to dismiss the menu and bring it up only on demand, in order to conserve screen real estate. To do this, either run ``symex-toggle-menu`` via the menu entry point (``H-m``) while in symex mode, or add this to your ``init.d`` (as part of the config above):
 
 ::
 
@@ -104,3 +113,5 @@ Lisp has inherited a few oddball names from its deep prehistory, including the i
 "s-ex": Speaks for itself.
 
 "Symex": 2 syllables, short in written form, has normal linguistic analogues like "complex/complexes," and it's fun to say! Symex also sounds like `Ibex <https://en.wikipedia.org/wiki/Ibex>`_, and that's obviously a plus.
+
+.. [1] As long as, from a theoretical perspective, the intended traversal can be accomplished using a `finite automaton <https://en.wikipedia.org/wiki/Deterministic_finite_automaton>`_. More complex traversals can be implemented (such as "leap branch"), but not as easily. Symex may be made Turing-complete at some point in the future, if there is interest in a feature that cannot be implemented in the DSL in its current form.
