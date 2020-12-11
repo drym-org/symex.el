@@ -102,7 +102,7 @@
 
 (defvar symex-lisp-modes (append symex-elisp-modes
                                  symex-racket-modes
-                                 (list 'scheme-mode)))
+                                 (list 'scheme-mode 'arc-mode)))
 
 ;;;###autoload
 (define-minor-mode symex-mode
