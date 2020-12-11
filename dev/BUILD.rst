@@ -47,7 +47,11 @@ Build steps
 Drafting a New Release
 ======================
 
-1. Bump the version in the symex.el header and commit the changes
+1. Bump the version in the :code:`symex.el` header and commit the changes
+
+.. code-block:: elisp
+
+  ;; Version: i.j.k [use MAJOR.MINOR.PATCH]
 
 2. Tag the release commit
 
