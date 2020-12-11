@@ -26,7 +26,13 @@
 
 ;;; Code:
 
-(require 'arc)
+(require 'arc nil 'noerror)
+
+(declare-function arc-send-last-sexp "ext:arc")
+(declare-function arc-send-definition "ext:arc")
+(declare-function arc--repl-last-sexp-start "ext:arc")
+(declare-function arc--send-to-repl "ext:arc")
+(declare-function arc-repl "ext:arc")
 
 (defun symex-eval-arc ()
   "Eval last sexp.
@@ -37,7 +43,6 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-eval-definition-arc ()
   "Eval entire containing definition."
-  ;; (slime-eval-defun)
   (arc-send-definition))
 
 (defun symex-eval-pretty-arc ()
@@ -58,13 +63,11 @@ Accounts for different point location in evil vs Emacs mode."
 (defun symex-eval-print-arc ()
   "Eval symex and print result in buffer."
   (interactive)
-  ;; (call-interactively 'slime-eval-print-last-expression)
   nil)
 
 (defun symex-describe-symbol-arc ()
   "Describe symbol at point."
   (interactive)
-  ;; (call-interactively 'slime-documentation)
   nil)
 
 (defun symex-repl-arc ()
@@ -73,7 +76,6 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-run-arc ()
   "Evaluate buffer."
-  ;; (arc-eval-buffer)
   (error "Not implemented"))
 
 
