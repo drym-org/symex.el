@@ -21,7 +21,7 @@ An `evil <https://github.com/emacs-evil/evil>`_ way to edit Lisp symbolic expres
 Symex mode (pronounced sym-ex, as in symbolic expression) is a vim-inspired way of editing Lisp code as trees. Entering symex mode allows you to reason about your code in terms of its structure, similar to other tools like `paredit <https://www.emacswiki.org/emacs/ParEdit>`_ and `lispy <https://github.com/abo-abo/lispy>`_. But while those packages provide a curated number of useful tree operations, symex mode treats the tree structure explicitly so that arbitrary tree navigations and operations can be described using an expressive DSL, and invoked conveniently via a vim-style modal interface implemented with a `Hydra <https://github.com/abo-abo/hydra>`_. As a consequence of this:
 
 - Symex provides many novel features, such as "leap branch," "climb/descend branch," "goto highest/lowest," "skip forward/backward", recursive indent, recursive evaluate, among many others
-- Implementation of new structure-related features in general is easy [1]_.
+- Implementing new structure-related features in general is easy [1]_.
 - Keybindings are short and memorable
 
 At the moment, symex mode uses ``paredit``, ``lispy``, and `evil-cleverparens <https://github.com/luxbock/evil-cleverparens>`_ to provide much of its low level functionality. In the future, this layer of primitives may be replaced with a layer that explicitly uses the abstract syntax tree, for still greater precision.
