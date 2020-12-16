@@ -21,7 +21,7 @@ An `evil <https://github.com/emacs-evil/evil>`_ way to edit Lisp symbolic expres
 Symex mode (pronounced sym-ex, as in symbolic expression) is a vim-inspired way of editing Lisp code as trees. Entering symex mode allows you to reason about your code in terms of its structure, similar to other tools like `paredit <https://www.emacswiki.org/emacs/ParEdit>`_ and `lispy <https://github.com/abo-abo/lispy>`_. But while those packages provide a curated number of useful tree operations, symex mode treats the tree structure explicitly so that arbitrary tree navigations and operations can be described using an expressive DSL, and invoked conveniently via a vim-style modal interface implemented with a `Hydra <https://github.com/abo-abo/hydra>`_. As a consequence of this:
 
 - Symex provides many novel features, such as "leap branch," "climb/descend branch," "goto highest/lowest," "skip forward/backward", recursive indent, recursive evaluate, among many others
-- Implementation of new structure-related features in general is relatively easy [1]_.
+- Implementation of new structure-related features in general is easy [1]_.
 - Keybindings are short and memorable
 
 At the moment, symex mode uses ``paredit``, ``lispy``, and `evil-cleverparens <https://github.com/luxbock/evil-cleverparens>`_ to provide much of its low level functionality. In the future, this layer of primitives may be replaced with a layer that explicitly uses the abstract syntax tree, for still greater precision.
@@ -31,6 +31,8 @@ At the moment, symex mode uses ``paredit``, ``lispy``, and `evil-cleverparens <h
   <p align="center">
     <img src="https://user-images.githubusercontent.com/401668/59328521-6db96280-8ca1-11e9-8b32-24574a0af676.png" alt="Screenshot" title="Screenshot"/>
   </p>
+
+.. [1] As long as, from a theoretical perspective, the intended traversal can be accomplished using a `finite automaton <https://en.wikipedia.org/wiki/Deterministic_finite_automaton>`_. More complex traversals can be implemented (such as "leap branch"), but not as easily. Symex may be made Turing-complete at some point in the future, if there is interest in a feature that cannot be implemented in the DSL in its current form.
 
 Installation and Usage
 ======================
@@ -114,4 +116,6 @@ Lisp has inherited a few oddball names from its deep prehistory, including the i
 
 "Symex": 2 syllables, short in written form, has normal linguistic analogues like "complex/complexes," and it's fun to say! Symex also sounds like `Ibex <https://en.wikipedia.org/wiki/Ibex>`_, and that's obviously a plus.
 
-.. [1] As long as, from a theoretical perspective, the intended traversal can be accomplished using a `finite automaton <https://en.wikipedia.org/wiki/Deterministic_finite_automaton>`_. More complex traversals can be implemented (such as "leap branch"), but not as easily. Symex may be made Turing-complete at some point in the future, if there is interest in a feature that cannot be implemented in the DSL in its current form.
+"License"
+==========
+This work is "part of the world." You are free to do whatever you like with it and it isn't owned by anybody, not even the creators. Attribution would be appreciated and would help, but it is not strictly necessary nor required. If you'd like to learn more about this way of doing things and how it could lead to a peaceful, efficient, and creative world, and how you can help, visit `drym.org <https://drym.org>`_.
