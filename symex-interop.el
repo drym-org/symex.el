@@ -83,15 +83,15 @@
   (unless symex--original-scroll-margin
     ;; only set these the first time symex mode is entered in the buffer
     ;; do they need to be buffer-local, though?
-    (setq-local symex--original-scroll-margin scroll-margin
-                symex--original-max-scroll-margin maximum-scroll-margin))
-  (setq-local scroll-margin 9999
-              maximum-scroll-margin 0.368))
+    (setq-local symex--original-scroll-margin scroll-margin)
+    (setq-local symex--original-max-scroll-margin maximum-scroll-margin))
+  (setq-local scroll-margin 9999)
+  (setq-local maximum-scroll-margin 0.368))
 
 (defun symex--restore-scroll-margin ()
   "Restore original `scroll-margin` (e.g. upon symex exit)."
-  (setq-local scroll-margin symex--original-scroll-margin
-              maximum-scroll-margin symex--original-max-scroll-margin))
+  (setq-local scroll-margin symex--original-scroll-margin)
+  (setq-local maximum-scroll-margin symex--original-max-scroll-margin))
 
 (defun symex--signal-exit ()
   "Witness symex exit and take appropriate action."
