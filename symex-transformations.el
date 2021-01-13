@@ -217,7 +217,8 @@ by default, joins next symex to current one."
       (save-excursion
         (save-excursion
           (evil-paste-before nil nil)
-          (forward-char)
+          (when evil-move-cursor-back
+            (forward-char))
           (insert extra-to-append))
         (symex-go-forward)
         (symex-tidy)))))
