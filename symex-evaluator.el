@@ -26,6 +26,8 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+
 (require 'symex-data)
 (require 'symex-primitives)
 (require 'symex-computations)

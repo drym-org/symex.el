@@ -28,6 +28,7 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; DATA ABSTRACTIONS ;;;
