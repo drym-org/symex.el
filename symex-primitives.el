@@ -88,8 +88,9 @@
 
 (defun symex-comment-line-p ()
   "Check if we're currently at the start of a comment line."
-  (and (lispy-bolp)
-       (looking-at-p ";")))
+  (save-excursion
+    (back-to-indentation)
+    (looking-at-p ";")))
 
 (defun symex-empty-list-p ()
   "Check if we're looking at an empty list."

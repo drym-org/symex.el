@@ -72,14 +72,42 @@ to how the Lisp interpreter does it (when it is following
   (interactive)
   (kill-sexp 1)
   (cond ((symex--current-line-empty-p)             ; ^<>$
-         (progn (symex-go-backward)
-                (symex-join-lines)
-                (symex-go-forward)))
+         (delete-region (line-beginning-position)
+                        (1+ (line-end-position))))
         ((save-excursion (back-to-indentation)     ; ^<>)
                          (forward-char)
                          (lispy-right-p))
-         (progn (symex-go-backward)
-                (symex-join-lines)))
+         ;; Cases 2 and 3 in issue #18
+         ;; if the deleted symex is preceded by a comment line
+         ;; or if the preceding symex is followed by a comment
+         ;; on the same line, then don't attempt to join lines
+         (let ((original-position (point)))
+           (when (symex-go-backward)
+             (let ((previous-symex-pos (point))
+                   (line-diff 1))
+               (goto-char original-position)
+               (if (catch 'stop
+                     (previous-line)
+                     (while (not (= (line-number-at-pos)
+                                    (line-number-at-pos previous-symex-pos)))
+                       (unless (symex--current-line-empty-p)
+                         (if (symex-comment-line-p)
+                             (throw 'stop nil)
+                           (throw 'stop t)))
+                       (previous-line)
+                       (setq line-diff (- (line-number-at-pos original-position)
+                                          (line-number-at-pos))))
+                     t)
+                   (progn (goto-char previous-symex-pos)
+                          ;; ensure that there isn't a comment on the
+                          ;; current line before joining lines
+                          (unless (condition-case nil
+                                      (progn (evil-find-char 1 ?\;)
+                                             t)
+                                    (error nil))
+                              (dotimes (i line-diff)
+                                (symex-join-lines))))
+                 (goto-char previous-symex-pos))))))
         ((save-excursion (evil-last-non-blank)  ; (<>$
                          (lispy-left-p))
          (sp-next-sexp)
