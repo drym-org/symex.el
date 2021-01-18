@@ -252,7 +252,10 @@ executing it."
               (save-excursion (forward-char) (lispy-right-p)))  ; |)
          (forward-char)
          (lispy-different))
-        ((looking-at-p "[[:space:]\n]")  ; <> |<> or <> |$
+        ((symex-comment-line-p)
+         (symex-if-stuck (symex-go-backward)
+                         (symex-go-forward)))
+        ((looking-at-p "[[:space:]\n]")  ; <>| <> or <> |$
          (condition-case nil
              (progn (re-search-forward "[^[:space:]\n]")
                     (backward-char))
