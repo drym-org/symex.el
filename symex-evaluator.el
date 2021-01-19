@@ -69,6 +69,38 @@ Optional argument COMPUTATION currently unused."
     (when executed-move
       (list executed-move))))
 
+(cl-defun symex--go-forward (&optional (count 1))
+  "Move forward COUNT symexes.
+
+This is an internal utility that avoids any user-level concerns
+such as symex selection via advice. This should be used in all
+internal operations that are not primarily user-directed."
+  (symex--execute-tree-move (symex-make-move count 0)))
+
+(defun symex--go-backward (&optional (count 1))
+  "Move backwards COUNT symexes.
+
+This is an internal utility that avoids any user-level concerns
+such as symex selection via advice. This should be used in all
+internal operations that are not primarily user-directed."
+  (symex--execute-tree-move (symex-make-move (- count) 0)))
+
+(cl-defun symex--go-up (&optional (count 1))
+  "Move up COUNT symexes.
+
+This is an internal utility that avoids any user-level concerns
+such as symex selection via advice. This should be used in all
+internal operations that are not primarily user-directed."
+  (symex--execute-tree-move (symex-make-move 0 count)))
+
+(defun symex--go-down (&optional (count 1))
+  "Move down COUNT symexes.
+
+This is an internal utility that avoids any user-level concerns
+such as symex selection via advice. This should be used in all
+internal operations that are not primarily user-directed."
+  (symex--execute-tree-move (symex-make-move 0 (- count))))
+
 (cl-defun symex-go-forward (&optional (count 1))
   "Move forward COUNT symexes."
   (interactive)

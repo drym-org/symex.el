@@ -82,7 +82,7 @@ to how the Lisp interpreter does it (when it is following
          ;; or if the preceding symex is followed by a comment
          ;; on the same line, then don't attempt to join lines
          (let ((original-position (point)))
-           (when (symex-go-backward)
+           (when (symex--go-backward)
              (let ((previous-symex-pos (point))
                    (line-diff 1))
                (goto-char original-position)
@@ -118,7 +118,7 @@ to how the Lisp interpreter does it (when it is following
                     (line-end-position)))
         ((save-excursion (forward-char)  ; ... <>)
                          (lispy-right-p))
-         (symex-go-backward))
+         (symex--go-backward))
         (t (fixup-whitespace)))
   (symex-select-nearest)
   (symex-tidy))
@@ -132,7 +132,7 @@ to how the Lisp interpreter does it (when it is following
 (defun symex-replace ()
   "Replace contents of symex."
   (interactive)
-  (let ((move (symex-go-up)))
+  (let ((move (symex--go-up)))
     (if move
         (progn (apply #'evil-delete (evil-inner-paren))  ; TODO: dispatch on paren type
                (symex-enter-lowest))
@@ -142,7 +142,7 @@ to how the Lisp interpreter does it (when it is following
 (defun symex-clear ()
   "Clear contents of symex."
   (interactive)
-  (let ((move (symex-go-up)))
+  (let ((move (symex--go-up)))
     (if move
         (apply #'evil-delete (evil-inner-paren))  ; TODO: dispatch on paren type
       (sp-kill-sexp nil))
@@ -155,13 +155,13 @@ to how the Lisp interpreter does it (when it is following
   (when (and (lispy-left-p)
              (not (symex-empty-list-p)))
     (save-excursion
-      (symex-go-up)  ; need to be inside the symex to emit and capture
+      (symex--go-up)  ; need to be inside the symex to emit and capture
       (paredit-backward-barf-sexp 1))
-    (symex-go-forward)
+    (symex--go-forward)
     (when (symex-empty-list-p)
       (fixup-whitespace)
       (re-search-forward lispy-left)
-      (symex-go-down))))
+      (symex--go-down))))
 
 (defun symex-emit-forward ()
   "Emit forward."
@@ -169,10 +169,10 @@ to how the Lisp interpreter does it (when it is following
   (when (and (lispy-left-p)
              (not (symex-empty-list-p)))
     (save-excursion
-      (symex-go-up)  ; need to be inside the symex to emit and capture
+      (symex--go-up)  ; need to be inside the symex to emit and capture
       (paredit-forward-barf-sexp 1))
     (when (symex-empty-list-p)
-      (symex-go-forward)
+      (symex--go-forward)
       (fixup-whitespace)
       (re-search-backward lispy-left))))
 
@@ -182,10 +182,10 @@ to how the Lisp interpreter does it (when it is following
   (when (lispy-left-p)
     (if (symex-empty-list-p)
         (forward-char)
-      (symex-go-up))  ; need to be inside the symex to emit and capture
+      (symex--go-up))  ; need to be inside the symex to emit and capture
     (paredit-backward-slurp-sexp 1)
     (fixup-whitespace)
-    (symex-go-down)))
+    (symex--go-down)))
 
 (defun symex-capture-forward ()
   "Capture from the front."
@@ -194,14 +194,14 @@ to how the Lisp interpreter does it (when it is following
     (save-excursion
       (if (symex-empty-list-p)
           (forward-char)
-        (symex-go-up))  ; need to be inside the symex to emit and capture
+        (symex--go-up))  ; need to be inside the symex to emit and capture
       (lispy-forward-slurp-sexp 1))))
 
 (defun symex-join ()
   "Merge symexes at the same level."
   (interactive)
   (save-excursion
-    (symex-go-forward)
+    (symex--go-forward)
     (paredit-join-sexps)))
 
 (defun symex-join-lines (&optional backwards)
@@ -248,7 +248,7 @@ by default, joins next symex to current one."
           (when evil-move-cursor-back
             (forward-char))
           (insert extra-to-append))
-        (symex-go-forward)
+        (symex--go-forward)
         (symex-tidy)))))
 
 (defun symex-paste-after ()
@@ -268,9 +268,9 @@ by default, joins next symex to current one."
           (insert extra-to-prepend)
           (evil-paste-before nil nil)
           (forward-char))
-        (symex-go-forward)
+        (symex--go-forward)
         (symex-tidy))
-      (symex-go-forward))))
+      (symex--go-forward))))
 
 (defun symex-open-line-after ()
   "Open new line after symex."
@@ -352,8 +352,8 @@ New list delimiters are determined by the TYPE."
 This consumes the head of the symex, putting the rest of its contents
 in the parent symex."
   (interactive)
-  (symex-go-up)
-  (symex-go-forward)
+  (symex--go-up)
+  (symex--go-forward)
   (paredit-splice-sexp-killing-backward))
 
 (defun symex-swallow-tail ()
@@ -362,10 +362,10 @@ in the parent symex."
 This consumes the tail of the symex, putting the head
 in the parent symex."
   (interactive)
-  (symex-go-up)
-  (symex-go-forward)
+  (symex--go-up)
+  (symex--go-forward)
   (paredit-splice-sexp-killing-forward)
-  (symex-go-backward)
+  (symex--go-backward)
   (symex-tidy))
 
 (defun symex-splice ()
@@ -376,20 +376,20 @@ putting its contents in the parent symex.  If the symex is an atom,
 then no action is taken."
   (interactive)
   (when (lispy-left-p)
-    (symex-go-up)
+    (symex--go-up)
     (paredit-splice-sexp-killing-backward)))
 
 (defun symex-wrap-round ()
   "Wrap with ()."
   (interactive)
   (paredit-wrap-round)
-  (symex-go-down))
+  (symex--go-down))
 
 (defun symex-wrap-square ()
   "Wrap with []."
   (interactive)
   (paredit-wrap-square)
-  (symex-go-down))
+  (symex--go-down))
 
 (defun symex-wrap-curly ()
   "Wrap with {}."
@@ -421,10 +421,10 @@ then no action is taken."
 (defun symex-shift-backward ()
   "Move symex backward in current tree level."
   (interactive)
-  (let ((move (symex-go-backward)))
+  (let ((move (symex--go-backward)))
     (when move
       (symex-shift-forward)
-      (symex-go-backward))))
+      (symex--go-backward))))
 
 (defun symex-change-delimiter ()
   "Change delimiter enclosing current symex, e.g. round -> square brackets."
