@@ -276,7 +276,7 @@ executing it."
       (let ((current-location (symex-goto-first))
             (result 0))
         (while (< current-location original-location)
-          (symex-go-forward)
+          (symex--execute-tree-move (symex-make-move 1 0))
           (setq current-location (point))
           (setq result (1+ result)))
         result))))
@@ -391,6 +391,58 @@ is expected to handle in Emacs)."
 (advice-add #'symex-traverse-backward :around #'symex-selection-advice)
 (advice-add #'symex-select-nearest :around #'symex-selection-advice)
 
+(defun symex--remember-branch-position (fn &rest args)
+  "Remember branch position when descending the tree.
+
+This pushes the current position onto a stack, which is popped
+while ascending."
+  (let ((position (symex-index)))
+    (let ((result (apply fn args)))
+      (when result
+        (push position symex--branch-memory))
+      result)))
+
+(defun symex--return-to-branch-position (fn &rest args)
+  "Return to recalled position on the branch."
+  (let ((result (apply fn args)))
+    (when result
+      (let ((position (pop symex--branch-memory)))
+        (when position
+          (symex--execute-tree-move (symex-make-move position 0)))))
+    result))
+
+(defun symex--clear-branch-memory ()
+  "Clear the branch memory stack.
+
+Technically, branch memory is tree-specific, and stored branch
+positions are no longer relevant on a different tree than the one on
+which they were recorded. To be conservative and err on the side of
+determinism here, we clear branch memory upon entering symex mode,
+since may enter at arbitrary points in the code, i.e. on arbitrary
+trees.
+
+TODO: Yet, hypothetically if there were two identical trees next to
+one another, then the positions from one would naturally carry over to
+the other and in some sense this would be the most intuitive.  Thus,
+an alternative could be to retain branch memory across trees so that
+we attempt to climb each tree as if it were the last tree
+climbed, which may in practice end up being more intuitive than
+assuming no knowledge of the tree at all.
+
+This may be worth exploring as a defcustom."
+  (setq symex--branch-memory nil))
+
+(defun symex--forget-branch-positions (fn &rest args)
+  "Forget any stored branch positions when moving to a different tree."
+  (let ((result (apply fn args)))
+    (when result
+      (setq symex--branch-memory nil))
+    result))
+
+(advice-add #'symex-go-down :around #'symex--remember-branch-position)
+(advice-add #'symex-go-up :around #'symex--return-to-branch-position)
+(advice-add #'symex-go-backward :around #'symex--forget-branch-positions)
+(advice-add #'symex-go-forward :around #'symex--forget-branch-positions)
 
 (provide 'symex-misc)
 ;;; symex-misc.el ends here

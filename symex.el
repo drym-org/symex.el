@@ -174,6 +174,7 @@ right symex when we enter Symex mode."
       (evil-symex-state)))
   (symex--ensure-minor-mode)
   (symex--adjust-point)
+  (symex--clear-branch-memory)
   (symex-select-nearest)
   (when symex-refocus-p
     ;; smooth scrolling currently not supported
