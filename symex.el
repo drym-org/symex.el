@@ -3,7 +3,7 @@
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/countvajhula/symex.el
 ;; Version: 0.8.1
-;; Package-Requires: ((emacs "24.4") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (dash-functional "2.15.0") (evil "1.2.14") (smartparens "1.11.0") (evil-surround "1.0.4") (hydra "0.15.0") (seq "2.22") (undo-tree "0.7.5"))
+;; Package-Requires: ((emacs "24.4") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (dash "2.18.0") (evil "1.2.14") (smartparens "1.11.0") (evil-surround "1.0.4") (hydra "0.15.0") (seq "2.22") (undo-tree "0.7.5"))
 ;; Keywords: lisp, evil
 
 ;; This program is "part of the world," in the sense described at
@@ -48,7 +48,7 @@
 (require 'paredit)
 (require 'evil-cleverparens)  ;; really only need cp-textobjects here
 (require 'cl-lib)
-(require 'dash-functional)
+(require 'dash)
 (require 'hydra)
 
 (require 'symex-data)
