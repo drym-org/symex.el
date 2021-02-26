@@ -314,7 +314,8 @@ to enter, and any of the standard exits to exit."
   ("i" symex-insert-at-beginning "insert inside symex" :exit t)
   ("I" symex-insert-before "insert before symex" :exit t)
   ("w" symex-wrap "wrap with symex" :exit t)
-  ("g" evil-jump-to-tag "Go to definition")
+  ("g" evil-jump-to-tag "go to definition")
+  ("G" evil-jump-backward "return to previous location")
   (";" symex-comment "comment out")
   ("C-;" symex-eval-print "eval + print")
   ;; canonical action
