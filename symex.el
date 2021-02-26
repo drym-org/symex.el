@@ -280,7 +280,7 @@ to enter, and any of the standard exits to exit."
   ("T" symex-evaluate-thunk "evaluate as 'thunk'")
   (":" eval-expression "eval expression")
   ("t" symex-switch-to-scratch-buffer "scratch buffer" :exit t)
-  ("G" symex-switch-to-messages-buffer "messages buffer" :exit t)
+  ("M" symex-switch-to-messages-buffer "messages buffer")
   ("r" symex-repl "go to REPL" :exit t)
   ("R" symex-run "run buffer")
   ("X" symex-run "run buffer")
