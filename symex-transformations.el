@@ -129,25 +129,27 @@ to how the Lisp interpreter does it (when it is following
   (kill-sexp 1)
   (symex-enter-lowest))
 
+(defun symex--clear ()
+  "Helper to clear contents of symex."
+  (let ((formp (save-excursion (symex--go-up))))
+    (if formp
+        (apply #'evil-delete (evil-inner-paren))  ; TODO: dispatch on paren type
+      (sp-kill-sexp nil))))
+
 (defun symex-replace ()
   "Replace contents of symex."
   (interactive)
-  (let ((move (symex--go-up)))
-    (if move
-        (progn (apply #'evil-delete (evil-inner-paren))  ; TODO: dispatch on paren type
-               (symex-enter-lowest))
-      (sp-kill-sexp nil)
-      (symex-enter-lowest))))
+  (symex--clear)
+  (when (lispy-left-p) ; TODO: use abstract predicates for atom/non-atom
+    (forward-char))
+  (symex-enter-lowest))
 
 (defun symex-clear ()
   "Clear contents of symex."
   (interactive)
-  (let ((move (symex--go-up)))
-    (if move
-        (apply #'evil-delete (evil-inner-paren))  ; TODO: dispatch on paren type
-      (sp-kill-sexp nil))
-    (symex-select-nearest)
-    (symex-tidy)))
+  (symex--clear)
+  (symex-select-nearest)
+  (symex-tidy))
 
 (defun symex-emit-backward ()
   "Emit backward."
