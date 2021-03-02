@@ -1,4 +1,4 @@
-*Symex (pron. "sym-ex", pl. symexes): A Lisp symbolic expression, which designates a computation to be performed.*
+*Symex (pron. "sym-ex", pl. symexes): A Lisp symbolic expression, which describes a computation to be performed.*
 
 .. image:: https://melpa.org/packages/symex-badge.svg
     :alt: MELPA
@@ -17,6 +17,11 @@ An `evil <https://github.com/emacs-evil/evil>`_ way to edit Lisp symbolic expres
   <p align="center">
     <img src="https://user-images.githubusercontent.com/401668/98453162-e3ca2f00-210a-11eb-8669-c1048ff4547c.jpg" width="618" height="410" alt="Symex the Squirrel" title="Symex the Squirrel"/>
   </p>
+
+.. contents:: :depth: 2
+
+Introduction
+============
 
 Symex mode (pronounced sym-ex, as in symbolic expression) is a vim-inspired way of editing Lisp code as trees. Entering symex mode allows you to reason about your code in terms of its structure, similar to other tools like `paredit <https://www.emacswiki.org/emacs/ParEdit>`_ and `lispy <https://github.com/abo-abo/lispy>`_. But while those packages provide a curated number of useful tree operations, symex mode treats the tree structure explicitly so that arbitrary tree navigations and operations can be described using an expressive DSL, and invoked conveniently via a vim-style modal interface implemented with a `Hydra <https://github.com/abo-abo/hydra>`_. As a consequence of this:
 
@@ -93,7 +98,7 @@ When going up and down, the choice of initial position on the branch is arbitrar
 Learn More
 ==========
 
-Learn more about the implementation and see some usage examples in the video overview (from an `Emacs SF <https://www.meetup.com/Emacs-SF/>`_ meetup in 2019):
+Learn more about the implementation and see some usage examples in the video overview (given at an `Emacs SF <https://www.meetup.com/Emacs-SF/>`_ meetup in 2019):
 
 .. raw:: html
 
