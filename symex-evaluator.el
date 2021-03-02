@@ -73,7 +73,7 @@ Optional argument COMPUTATION currently unused."
   "Move forward COUNT symexes.
 
 This is an internal utility that avoids any user-level concerns
-such as symex selection via advice. This should be used in all
+such as symex selection via advice.  This should be used in all
 internal operations that are not primarily user-directed."
   (symex--execute-tree-move (symex-make-move count 0)))
 
@@ -81,7 +81,7 @@ internal operations that are not primarily user-directed."
   "Move backwards COUNT symexes.
 
 This is an internal utility that avoids any user-level concerns
-such as symex selection via advice. This should be used in all
+such as symex selection via advice.  This should be used in all
 internal operations that are not primarily user-directed."
   (symex--execute-tree-move (symex-make-move (- count) 0)))
 
@@ -89,7 +89,7 @@ internal operations that are not primarily user-directed."
   "Move up COUNT symexes.
 
 This is an internal utility that avoids any user-level concerns
-such as symex selection via advice. This should be used in all
+such as symex selection via advice.  This should be used in all
 internal operations that are not primarily user-directed."
   (symex--execute-tree-move (symex-make-move 0 count)))
 
@@ -97,7 +97,7 @@ internal operations that are not primarily user-directed."
   "Move down COUNT symexes.
 
 This is an internal utility that avoids any user-level concerns
-such as symex selection via advice. This should be used in all
+such as symex selection via advice.  This should be used in all
 internal operations that are not primarily user-directed."
   (symex--execute-tree-move (symex-make-move 0 (- count))))
 

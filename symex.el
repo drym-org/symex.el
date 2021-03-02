@@ -340,7 +340,7 @@ to enter, and any of the standard exits to exit."
 (defun symex-initialize ()
   "Initialize symex mode.
 
-This registers symex mode for use in all recognized lisp modes, and also
+This registers symex mode for use in all recognized Lisp modes, and also
 advises functions to enable or disable features based on user configuration."
   ;; enable the symex minor mode in all recognized lisp modes
   (dolist (mode-name symex-lisp-modes)
@@ -361,9 +361,9 @@ This unregisters the symex minor mode from all lisp-related hooks, and
 removes any advice corresponding to configured features.
 
 If you are changing symex customizations to enable or disable certain
-features, you may need to call this function after making such
-changes and prior to calling symex-initialize again, in order for the
-former configuration to be disabled and the new one adopted."
+features, you may need to call this function after making such changes
+and prior to calling `symex-initialize` again, in order for the former
+configuration to be disabled and the new one adopted."
   (dolist (mode-name symex-lisp-modes)
     (let ((mode-hook (intern (concat (symbol-name mode-name)
                                      "-hook"))))
