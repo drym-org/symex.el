@@ -82,11 +82,6 @@
   :type 'boolean
   :group 'symex)
 
-(defcustom symex-smooth-scroll-p nil
-  "Whether refocusing should happen smoothly or abruptly."
-  :type 'boolean
-  :group 'symex)
-
 (defcustom symex-remember-branch-positions-p t
   "Whether movement in the vertical direction should remember branch positions."
   :type 'boolean

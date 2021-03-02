@@ -43,7 +43,6 @@
 ;; explicitly indicating them here to avoid byte compile warnings
 (defvar symex-refocus-p)
 (defvar symex-highlight-p)
-(defvar symex-smooth-scroll-p)
 (defvar symex-racket-modes)
 (defvar symex-elisp-modes)
 
