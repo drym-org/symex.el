@@ -34,41 +34,44 @@ At the moment, symex mode uses ``paredit``, ``lispy``, and `evil-cleverparens <h
 
 .. [1] As long as, from a theoretical perspective, the intended traversal can be accomplished using a `finite automaton <https://en.wikipedia.org/wiki/Deterministic_finite_automaton>`_. More complex traversals can be implemented (such as "leap branch"), but not as easily. Symex may be made Turing-complete at some point in the future, if there is interest in a feature that cannot be implemented in the DSL in its current form.
 
-Installation and Usage
-======================
+Installation
+============
 
 1. Install the package the usual way via MELPA (e.g. :code:`M-x package-install`).
 
-2. Then, assuming you're using `use-package <https://github.com/jwiegley/use-package>`__ to manage your configuration, add the following config to your ``init.d``:
+2. Then, assuming you're using `use-package <https://github.com/jwiegley/use-package>`__ to manage your configuration, add the following config to your ``init.d`` (note these instructions have changed as of `version 0.9 <https://github.com/countvajhula/symex.el/releases/tag/0.9>`__):
 
 ::
 
   (use-package symex
     :config
+	(symex-initialize)
     (global-set-key (kbd "s-;") 'symex-mode-interface)  ; or whatever keybinding you like
-    (dolist (mode-name symex-lisp-modes)
-      (let ((mode-hook (intern (concat (symbol-name mode-name)
-                                       "-hook"))))
-        (add-hook mode-hook 'symex-mode)))
 
 This provides a keybinding to load the symex editing interface, and also enables the symex minor mode in all recognized lisp modes (the minor mode ensures that manual edits respect the tree structure, e.g. keeps parens balanced like paredit).
 
-By default, entering the symex modal interface (via e.g. :code:`s-;`) shows you a comprehensive menu of all possible actions. This is helpful initially, but over time you may prefer to dismiss the menu and bring it up only on demand, in order to conserve screen real estate. To do this, either run ``symex-toggle-menu`` via the menu entry point (``H-m``) while in symex mode, or add this to your ``init.d`` (as part of the config above):
+Usage and Customization
+=======================
+
+The Menu
+--------
+
+Entering the symex modal interface (via e.g. :code:`s-;`) shows you a comprehensive menu of all possible actions, by default. This is helpful initially, but over time you may prefer to dismiss the menu and bring it up only on demand, in order to conserve screen real estate. To do this, either run ``symex-toggle-menu`` via the menu entry point (``H-m``) while in symex mode, or add this to your ``init.d`` (as part of the config above):
 
 ::
 
   (symex-hide-menu)
 
+Up and Down
+-----------
+
 The default keybindings in symex mode treat increasingly nested code as being "higher" and elements closer to the root as "lower." Think going "up" to the nest and "down" to the root. But if you'd prefer to modify these or any other key bindings to whatever you find most natural, you can add the following config to your ``init.d``. If you're using `use-package <https://github.com/jwiegley/use-package>`__ to manage your configuration, put this in the ``:config`` section:
 
 ::
 
-  (defhydra+ hydra-symex (:idle 1.0
-                          :columns 4
-                          :color pink
-                          :body-pre (progn (evil-symex-state)
-                                           (symex-select-nearest))
-                          :post (deactivate-mark))
+  (defhydra+ hydra-symex (:columns 4
+                          :post (symex-exit-mode)
+                          :after-exit (symex--signal-exit))
       "Symex mode"
       ("j" symex-go-up "up")
       ("k" symex-go-down "down")
@@ -78,7 +81,19 @@ The default keybindings in symex mode treat increasingly nested code as being "h
       ("M-k" symex-goto-lowest "go to lowest")
       ("F" nil nil))
 
-If you want to learn more about the implementation and see some usage examples, watch the video overview:
+Branch Memory
+-------------
+
+When going up and down, the choice of initial position on the branch is arbitrary. By default, symex the squirrel remembers where it was on each branch as it goes up and down the tree, so you return to your last position when going up and down. If you'd like to move to the first or last position, you can use (for instance) ``0`` or ``$`` at each level, as usual, or traverse the tree using ``f`` and ``b`` instead. If, on the other hand, you'd like to start always at the first position when going up (as it was in older versions of Symex), disable the branch memory feature by adding this to the ``:custom`` section of your ``use-package`` config:
+
+::
+
+   (symex-remember-branch-position-p nil)
+
+Learn More
+==========
+
+Learn more about the implementation and see some usage examples in the video overview (from an `Emacs SF <https://www.meetup.com/Emacs-SF/>`_ meetup in 2019):
 
 .. raw:: html
 

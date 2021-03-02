@@ -58,7 +58,7 @@ Drafting a New Release
 .. code-block:: bash
 
   git tag -n  # list existing tags and annotations
-  git tag -a <new version number> -m "<release message>"
+  git tag -a <new version number>  # add the release notes when prompted
 
 3. Push the new tag to origin:
 
