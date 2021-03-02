@@ -87,6 +87,11 @@
   :type 'boolean
   :group 'symex)
 
+(defcustom symex-remember-branch-positions-p t
+  "Whether movement in the vertical direction should remember branch positions."
+  :type 'boolean
+  :group 'symex)
+
 (evil-define-state symex
   "Symex state."
   :tag " <λ> "
@@ -174,7 +179,8 @@ right symex when we enter Symex mode."
       (evil-symex-state)))
   (symex--ensure-minor-mode)
   (symex--adjust-point)
-  (symex--clear-branch-memory)
+  (when symex-remember-branch-positions-p
+    (symex--clear-branch-memory))
   (symex-select-nearest)
   (when symex-refocus-p
     ;; smooth scrolling currently not supported
@@ -335,6 +341,43 @@ to enter, and any of the standard exits to exit."
   ("<escape>" symex-escape-higher "escape higher" :exit t)
   ("C-g" symex-escape-higher "escape higher" :exit t))
 
+;;;###autoload
+(defun symex-initialize ()
+  "Initialize symex mode.
+
+This registers symex mode for use in all recognized lisp modes, and also
+advises functions to enable or disable features based on user configuration."
+  ;; enable the symex minor mode in all recognized lisp modes
+  (dolist (mode-name symex-lisp-modes)
+    (let ((mode-hook (intern (concat (symbol-name mode-name)
+                                     "-hook"))))
+      (add-hook mode-hook 'symex-mode)))
+  ;; advise functions to enable or disable configured features
+  (when symex-remember-branch-positions-p
+    (advice-add #'symex-go-down :around #'symex--remember-branch-position)
+    (advice-add #'symex-go-up :around #'symex--return-to-branch-position)
+    (advice-add #'symex-go-backward :around #'symex--forget-branch-positions)
+    (advice-add #'symex-go-forward :around #'symex--forget-branch-positions)))
+
+(defun symex-disable ()
+  "Disable symex.
+
+This unregisters the symex minor mode from all lisp-related hooks, and
+removes any advice corresponding to configured features.
+
+If you are changing symex customizations to enable or disable certain
+features, you may need to call this function after making such
+changes and prior to calling symex-initialize again, in order for the
+former configuration to be disabled and the new one adopted."
+  (dolist (mode-name symex-lisp-modes)
+    (let ((mode-hook (intern (concat (symbol-name mode-name)
+                                     "-hook"))))
+      (remove-hook mode-hook 'symex-mode)))
+  ;; remove all advice
+  (advice-remove #'symex-go-down #'symex--remember-branch-position)
+  (advice-remove #'symex-go-up #'symex--return-to-branch-position)
+  (advice-remove #'symex-go-backward #'symex--forget-branch-positions)
+  (advice-remove #'symex-go-forward #'symex--forget-branch-positions))
 
 ;;;###autoload
 (defun symex-mode-interface ()

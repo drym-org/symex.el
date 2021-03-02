@@ -439,10 +439,5 @@ This may be worth exploring as a defcustom."
       (setq symex--branch-memory nil))
     result))
 
-(advice-add #'symex-go-down :around #'symex--remember-branch-position)
-(advice-add #'symex-go-up :around #'symex--return-to-branch-position)
-(advice-add #'symex-go-backward :around #'symex--forget-branch-positions)
-(advice-add #'symex-go-forward :around #'symex--forget-branch-positions)
-
 (provide 'symex-misc)
 ;;; symex-misc.el ends here
