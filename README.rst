@@ -70,7 +70,7 @@ Entering the symex modal interface (via e.g. :code:`s-;`) shows you a comprehens
 Up and Down
 -----------
 
-The default keybindings in symex mode treat increasingly nested code as being "higher" and elements closer to the root as "lower." Think going "up" to the nest and "down" to the root. But if you'd prefer to modify these or any other key bindings to whatever you find most natural, you can add the following config to your ``init.d``. If you're using ``use-package`` to manage your configuration, put this in the ``:config`` section:
+The default keybindings in symex mode treat increasingly nested code as being "higher" and elements closer to the root as "lower." Think going "up" to the nest and "down" to the root. But if you'd prefer to modify these or any other key bindings to whatever you find most natural, you can add the following config to your ``init.d``. If you're using ``use-package`` to manage your configuration, put something resembling this in the ``:config`` section:
 
 ::
 
