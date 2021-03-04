@@ -131,16 +131,17 @@ to how the Lisp interpreter does it (when it is following
 
 (defun symex--clear ()
   "Helper to clear contents of symex."
-  (let ((formp (save-excursion (symex--go-up))))
-    (if formp
-        (apply #'evil-delete (evil-inner-paren))  ; TODO: dispatch on paren type
-      (sp-kill-sexp nil))))
+  (cond ((symex-form-p)
+         (apply #'evil-delete (evil-inner-paren)))  ; TODO: dispatch on paren type
+        ((symex-string-p)
+         (apply #'evil-delete (evil-inner-double-quote)))
+        (t (sp-kill-sexp nil))))
 
 (defun symex-replace ()
   "Replace contents of symex."
   (interactive)
   (symex--clear)
-  (when (lispy-left-p) ; TODO: use abstract predicates for atom/non-atom
+  (when (or (symex-form-p) (symex-string-p))
     (forward-char))
   (symex-enter-lowest))
 
