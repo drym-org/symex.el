@@ -289,6 +289,10 @@ by default, joins next symex to current one."
   (evil-previous-line)
   (indent-according-to-mode)
   (evil-move-end-of-line)
+  (unless (or (symex--current-line-empty-p)
+              (save-excursion (backward-char)
+                              (lispy-left-p)))
+    (insert " "))
   (symex-enter-lowest))
 
 (defun symex-append-after ()
