@@ -21,6 +21,8 @@ help:
 	@echo "clean - remove all build artifacts"
 	@echo "install - install package dependencies in .cask/"
 	@echo "lint - check style with package-lint"
+	@echo "lint+less - lint piped to less"
+	@echo "lint-no-noise - lint with typically noisy warnings filtered out"
 	@echo "checkdoc - check docstrings"
 	@echo "build - byte compile the package"
 	@echo "test - run tests"
@@ -56,4 +58,4 @@ build :
 test: build
 	${CASK} exec ert-runner
 
-.PHONY:	help lint checkdoc build clean install test
+.PHONY:	help lint lint+less lint-no-noise checkdoc build clean install test

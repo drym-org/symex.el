@@ -35,6 +35,7 @@ Build steps
 
   # In melpa git repo
   make clean
+  make recipes/symex
   make sandbox INSTALL=symex
 
 6. For a new release, you can check that MELPA stable finds it
