@@ -344,12 +344,19 @@ approach is the one employed here."
       (symex-execute-traversal
        (symex-traversal
         (precaution (maneuver run-along-neighboring-branch
-                              (circuit (decision (lambda ()
-                                                   (not (= (symex-index)
-                                                           index)))
-                                                 run-along-neighboring-branch
-                                                 symex--move-zero)))
-                    (beforehand (not (at root)))))))))
+                              (circuit
+                               (precaution (decision (lambda ()
+                                                       (< (symex-index)
+                                                          index))
+                                                     run-along-neighboring-branch
+                                                     symex--move-zero)
+                                           (beforehand (lambda ()
+                                                         (< (symex-index)
+                                                            index))))))
+                    (beforehand (not (at root)))
+                    (afterwards (lambda ()
+                                  (= (symex-index)
+                                     index)))))))))
 
 (defun symex-leap-forward ()
   "Leap forward to a neighboring branch, preserving height and position.
@@ -379,12 +386,19 @@ the implementation."
       (symex-execute-traversal
        (symex-traversal
         (precaution (maneuver run-along-neighboring-branch
-                              (circuit (decision (lambda ()
-                                                   (not (= (symex-index)
-                                                           index)))
-                                                 run-along-neighboring-branch
-                                                 symex--move-zero)))
-                    (beforehand (not (at root)))))))))
+                              (circuit
+                               (precaution (decision (lambda ()
+                                                       (< (symex-index)
+                                                          index))
+                                                     run-along-neighboring-branch
+                                                     symex--move-zero)
+                                           (beforehand (lambda ()
+                                                         (< (symex-index)
+                                                            index))))))
+                    (beforehand (not (at root)))
+                    (afterwards (lambda ()
+                                  (= (symex-index)
+                                     index)))))))))
 
 (defun symex--selection-side-effects ()
   "Things to do as part of symex selection, e.g. after navigations."
