@@ -234,10 +234,43 @@ executing it."
          (symex-run-common-lisp))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
+(cl-defun symex--new-scratch-buffer (buffer-name)
+  "Create a new empty buffer.
+
+The buffer will be named BUFFER-NAME and will be created in the
+currently active (at the time of command execution) major mode.
+As a \"scratch\" buffer, its contents will be treated as
+disposable, and it will not prompt to save if it is closed or
+if Emacs is exited.
+
+Modified from:
+URL `http://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
+Version 2017-11-01"
+  (interactive)
+  (let (($buf (generate-new-buffer buffer-name))
+        (major-mode-to-use major-mode))
+    (with-current-buffer $buf
+      (funcall major-mode-to-use)
+      (setq buffer-offer-save nil))
+    $buf))
+
 (defun symex-switch-to-scratch-buffer ()
   "Switch to scratch buffer."
   (interactive)
-  (switch-to-buffer-other-window "*scratch*"))  ; TODO: create in lisp interaction mode if missing
+  (let* ((buffer-name (cond ((member major-mode symex-racket-modes)
+                             "*scratch - Racket*")
+                            ((member major-mode symex-elisp-modes)
+                             "*scratch*")
+                            ((equal major-mode 'scheme-mode)
+                             "*scratch - Scheme*")
+                            ((equal major-mode 'clojure-mode)
+                             "*scratch - Clojure*")
+                            ((equal major-mode 'lisp-mode)
+                             "*scratch - Common Lisp*")
+                            (t (error "Symex mode: Lisp flavor not recognized!"))))
+         (buf (get-buffer buffer-name)))
+    (let ((buf (or buf (symex--new-scratch-buffer buffer-name))))
+      (switch-to-buffer-other-window buf))))
 
 (defun symex-switch-to-messages-buffer ()
   "Switch to messages buffer while retaining focus in original window."
