@@ -114,7 +114,7 @@ to how the Lisp interpreter does it (when it is following
                          (lispy-left-p))
          (sp-next-sexp)
          (save-excursion
-           (symex-join-lines t)))
+           (symex-join-lines-backwards)))
         ((looking-at-p "\n")  ; (abc <>
          (evil-join (line-beginning-position)
                     (line-end-position)))
@@ -213,12 +213,21 @@ to how the Lisp interpreter does it (when it is following
     (symex--go-forward)
     (paredit-join-sexps)))
 
-(defun symex-join-lines (&optional backwards)
+(defun symex-join-lines ()
+  "Join lines inside symex."
+  (interactive)
+  (symex--join-lines))
+
+(defun symex-join-lines-backwards ()
+  "Join lines backwards inside symex."
+  (interactive)
+  (symex--join-lines t))
+
+(defun symex--join-lines (&optional backwards)
   "Join lines inside symex.
 
 If BACKWARDS is true, then joins current symex to previous one, otherwise,
 by default, joins next symex to current one."
-  (interactive)
   (let ((original-column (current-column)))
     (if backwards
         (progn (evil-previous-line)
@@ -334,7 +343,6 @@ by default, joins next symex to current one."
   "Create new symex (list).
 
 New list delimiters are determined by the TYPE."
-  (interactive)
   (save-excursion
     (cond ((equal type 'round)
            (insert "()"))
@@ -344,6 +352,26 @@ New list delimiters are determined by the TYPE."
            (insert "{}"))
           ((equal type 'angled)
            (insert "<>")))))
+
+(defun symex-create-round ()
+  "Create new symex with round delimiters."
+  (interactive)
+  (symex-create 'round))
+
+(defun symex-create-square ()
+  "Create new symex with square delimiters."
+  (interactive)
+  (symex-create 'square))
+
+(defun symex-create-curly ()
+  "Create new symex with curly delimiters."
+  (interactive)
+  (symex-create 'curly))
+
+(defun symex-create-angled ()
+  "Create new symex with angled delimiters."
+  (interactive)
+  (symex-create 'angled))
 
 (defun symex-insert-newline ()
   "Insert newline and reindent symex."
@@ -486,7 +514,7 @@ then no action is taken."
       (symex-execute-traversal
        (symex-traversal (circuit symex--traversal-preorder-in-tree)))
       (symex--do-while-traversing
-       (apply-partially #'symex-join-lines t)
+       #'symex-join-lines-backwards
        (symex-traversal
         (precaution symex--traversal-postorder-in-tree
                     (afterwards (lambda ()

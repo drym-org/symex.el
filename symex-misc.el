@@ -330,6 +330,26 @@ Version 2017-11-01"
 This interface will be removed in a future version."
   (symex-height))
 
+(defun symex-soar-backward ()
+  "Leap backwards, crossing to a neighboring tree.
+
+At the moment, if a neighboring branch in the current tree is
+available in that direction, we leap to it. In a future version of
+symex, this may be changed to always go to a neighboring tree,
+ignoring local branches."
+  (interactive)
+  (symex-leap-backward t))
+
+(defun symex-soar-forward ()
+  "Leap forward, crossing to a neighboring tree.
+
+At the moment, if a neighboring branch in the current tree is
+available in that direction, we leap to it. In a future version of
+symex, this may be changed to always go to a neighboring tree,
+ignoring local branches."
+  (interactive)
+  (symex-leap-forward t))
+
 (defun symex-leap-backward (&optional soar)
   "Leap backward to a neighboring branch, preserving height and position.
 
