@@ -83,6 +83,11 @@
   :type 'boolean
   :group 'symex)
 
+(defcustom symex-modal-backend 'evil
+  "Whether to use hydra or evil as the backend for the modal interface."
+  :type 'symbol
+  :group 'symex)
+
 (defvar symex-elisp-modes (list 'lisp-interaction-mode
                                 'emacs-lisp-mode
                                 'inferior-emacs-lisp-mode))
@@ -158,9 +163,6 @@ right symex when we enter Symex mode."
                                                  (lispy-left-p))))
         (unless just-inside-symex-p
           (backward-char))))))
-
-(setq symex-modal-backend 'evil)
-;; (setq symex-modal-backend 'hydra)
 
 (defun symex--enter-mode ()
   "Load the modal interface."
