@@ -3,6 +3,7 @@
 
 (require 'symex-ui)
 (require 'symex-misc)
+(require 'symex-interop)
 
 (eval-when-compile              ; eventually sort out the dependency
   (defvar chimera-symex-mode)   ; order so this is unnecessary

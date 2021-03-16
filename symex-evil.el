@@ -2,6 +2,7 @@
 
 (require 'symex-evil-support)
 (require 'symex-ui)
+(require 'symex-interop)
 
 (defvar symex-editing-mode-map (make-sparse-keymap))
 
@@ -114,12 +115,6 @@
 
 (symex--define-evil-keys-from-spec symex--evil-keyspec
                                    symex-editing-mode-map)
-
-
-
-;; TODO: if not rigpa, enable the editing minor mode in
-;; symex-enter-mode and disable it in normal, insert, and emacs state
-;; entry hooks
 
 (defun symex-enable-editing-minor-mode ()
   "Enable symex minor mode."

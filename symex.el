@@ -155,8 +155,8 @@ because in Emacs, the symex preceding point is indicated.  In Vim, the
 symex 'under' point is indicated.  We want to make sure to select the
 right symex when we enter Symex mode."
   (interactive)
-  (when (or (not (boundp 'evil-mode))
-            (and (boundp 'evil-mode) (not evil-mode))
+  (when (or (not (symex--evil-installed-p))
+            (symex--evil-disabled-p)
             (member evil-previous-state '(insert emacs)))
     (unless (bobp)
       (let ((just-inside-symex-p (save-excursion (backward-char)
@@ -167,7 +167,14 @@ right symex when we enter Symex mode."
 (defun symex--enter-mode ()
   "Load the modal interface."
   (cond ((eq symex-modal-backend 'hydra) (hydra-symex/body))
-        ((eq symex-modal-backend 'evil) (evil-symex-state))))
+        ((eq symex-modal-backend 'evil)
+         (unless (symex--rigpa-enabled-p)
+           ;; the minor mode needs to be enabled prior to entering the
+           ;; evil state or the keybindings won't take effect. So we
+           ;; can't do it in the state entry hook, which would
+           ;; otherwise be preferable
+           (symex-enable-editing-minor-mode))
+         (evil-symex-state))))
 
 (defun symex-enter-mode ()
   "Take necessary action upon symex mode entry."
@@ -227,7 +234,16 @@ advises functions to enable or disable features based on user configuration."
     (advice-add #'symex-go-up :around #'symex--return-to-branch-position)
     (advice-add #'symex-go-backward :around #'symex--forget-branch-positions)
     (advice-add #'symex-go-forward :around #'symex--forget-branch-positions))
-  (symex--add-selection-advice))
+  (symex--add-selection-advice)
+  (when (and (eq symex-modal-backend 'evil)
+             (not (symex--rigpa-enabled-p)))
+    ;; without rigpa (which would handle this for us), we need to
+    ;; manage the editing minor mode and ensure that it is active
+    ;; while in symex evil state and inactive when in other states
+    (add-hook 'evil-normal-state-entry-hook #'symex-disable-editing-minor-mode)
+    (add-hook 'evil-insert-state-entry-hook #'symex-disable-editing-minor-mode)
+    (add-hook 'evil-emacs-state-entry-hook #'symex-disable-editing-minor-mode)
+    (add-hook 'evil-replace-state-entry-hook #'symex-disable-editing-minor-mode)))
 
 (defun symex-disable ()
   "Disable symex.
@@ -248,7 +264,12 @@ configuration to be disabled and the new one adopted."
   (advice-remove #'symex-go-up #'symex--return-to-branch-position)
   (advice-remove #'symex-go-backward #'symex--forget-branch-positions)
   (advice-remove #'symex-go-forward #'symex--forget-branch-positions)
-  (symex--remove-selection-advice))
+  (symex--remove-selection-advice)
+  (unless (symex--rigpa-enabled-p)
+    (remove-hook 'evil-normal-state-entry-hook #'symex-disable-editing-minor-mode)
+    (remove-hook 'evil-insert-state-entry-hook #'symex-disable-editing-minor-mode)
+    (remove-hook 'evil-emacs-state-entry-hook #'symex-disable-editing-minor-mode)
+    (remove-hook 'evil-replace-state-entry-hook #'symex-disable-editing-minor-mode)))
 
 ;;;###autoload
 (defun symex-mode-interface ()
