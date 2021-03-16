@@ -31,7 +31,7 @@
 (require 'lispy)
 (require 'evil)
 (require 'evil-surround)
-(require 'evil-cleverparens)
+(require 'evil-cleverparens)  ;; really only need cp-textobjects here
 (require 'smartparens)
 (require 'symex-utils)
 (require 'symex-misc)
