@@ -159,19 +159,16 @@ right symex when we enter Symex mode."
         (unless just-inside-symex-p
           (backward-char))))))
 
+(setq symex-modal-backend 'evil)
+;; (setq symex-modal-backend 'hydra)
+
 (defun symex--enter-mode ()
   "Load the modal interface."
-  ;; condition on a defcustom
-  ;; (hydra-symex/body)
-  (evil-symex-state)
-  )
+  (cond ((eq symex-modal-backend 'hydra) (hydra-symex/body))
+        ((eq symex-modal-backend 'evil) (evil-symex-state))))
 
 (defun symex-enter-mode ()
   "Take necessary action upon symex mode entry."
-  ;; probably get rid of this
-  ;; (unless (and (boundp 'rigpa-mode) rigpa-mode)
-  ;;   (when (and (boundp 'evil-mode) evil-mode)
-  ;;     (evil-symex-state)))
   (symex--ensure-minor-mode)
   (symex--adjust-point)
   (when symex-remember-branch-positions-p
@@ -182,6 +179,34 @@ right symex when we enter Symex mode."
     ;; may add it back in the future
     (symex--set-scroll-margin))
   (symex--enter-mode))
+
+(defun symex--add-selection-advice ()
+  "Add selection advice."
+  (advice-add #'symex-go-forward :around #'symex-selection-motion-advice)
+  (advice-add #'symex-go-backward :around #'symex-selection-motion-advice)
+  (advice-add #'symex-go-up :around #'symex-selection-motion-advice)
+  (advice-add #'symex-go-down :around #'symex-selection-motion-advice)
+  (advice-add #'symex-goto-first :around #'symex-selection-advice)
+  (advice-add #'symex-goto-last :around #'symex-selection-advice)
+  (advice-add #'symex-goto-lowest :around #'symex-selection-advice)
+  (advice-add #'symex-goto-highest :around #'symex-selection-advice)
+  (advice-add #'symex-traverse-forward :around #'symex-selection-advice)
+  (advice-add #'symex-traverse-backward :around #'symex-selection-advice)
+  (advice-add #'symex-select-nearest :around #'symex-selection-advice))
+
+(defun symex--remove-selection-advice ()
+  "Remove selection advice."
+  (advice-remove #'symex-go-forward #'symex-selection-motion-advice)
+  (advice-remove #'symex-go-backward #'symex-selection-motion-advice)
+  (advice-remove #'symex-go-up #'symex-selection-motion-advice)
+  (advice-remove #'symex-go-down #'symex-selection-motion-advice)
+  (advice-remove #'symex-goto-first #'symex-selection-advice)
+  (advice-remove #'symex-goto-last #'symex-selection-advice)
+  (advice-remove #'symex-goto-lowest #'symex-selection-advice)
+  (advice-remove #'symex-goto-highest #'symex-selection-advice)
+  (advice-remove #'symex-traverse-forward #'symex-selection-advice)
+  (advice-remove #'symex-traverse-backward #'symex-selection-advice)
+  (advice-remove #'symex-select-nearest #'symex-selection-advice))
 
 ;;;###autoload
 (defun symex-initialize ()
@@ -199,7 +224,8 @@ advises functions to enable or disable features based on user configuration."
     (advice-add #'symex-go-down :around #'symex--remember-branch-position)
     (advice-add #'symex-go-up :around #'symex--return-to-branch-position)
     (advice-add #'symex-go-backward :around #'symex--forget-branch-positions)
-    (advice-add #'symex-go-forward :around #'symex--forget-branch-positions)))
+    (advice-add #'symex-go-forward :around #'symex--forget-branch-positions))
+  (symex--add-selection-advice))
 
 (defun symex-disable ()
   "Disable symex.
@@ -219,7 +245,8 @@ configuration to be disabled and the new one adopted."
   (advice-remove #'symex-go-down #'symex--remember-branch-position)
   (advice-remove #'symex-go-up #'symex--return-to-branch-position)
   (advice-remove #'symex-go-backward #'symex--forget-branch-positions)
-  (advice-remove #'symex-go-forward #'symex--forget-branch-positions))
+  (advice-remove #'symex-go-forward #'symex--forget-branch-positions)
+  (symex--remove-selection-advice))
 
 ;;;###autoload
 (defun symex-mode-interface ()

@@ -486,17 +486,20 @@ is expected to handle in Emacs)."
     (symex--selection-side-effects)
     result))
 
-(advice-add #'symex-go-forward :around #'symex-selection-advice)
-(advice-add #'symex-go-backward :around #'symex-selection-advice)
-(advice-add #'symex-go-up :around #'symex-selection-advice)
-(advice-add #'symex-go-down :around #'symex-selection-advice)
-(advice-add #'symex-goto-first :around #'symex-selection-advice)
-(advice-add #'symex-goto-last :around #'symex-selection-advice)
-(advice-add #'symex-goto-lowest :around #'symex-selection-advice)
-(advice-add #'symex-goto-highest :around #'symex-selection-advice)
-(advice-add #'symex-traverse-forward :around #'symex-selection-advice)
-(advice-add #'symex-traverse-backward :around #'symex-selection-advice)
-(advice-add #'symex-select-nearest :around #'symex-selection-advice)
+(defun symex-selection-motion-advice (orig-fn count &rest args)
+  "Attach symex selection side effects to a given function.
+
+This is a version of `symex-selection-advice` that preserves a numeric
+argument supplied by the user, and can be used when the underlying
+function expects to receive one.
+
+ORIG-FN could be any function that results in a symex being selected.
+ARGS are the arguments that were passed to ORIG-FN (as any advice function
+is expected to handle in Emacs)."
+  (interactive "p")
+  (let ((result (apply orig-fn count args)))
+    (symex--selection-side-effects)
+    result))
 
 (defun symex--remember-branch-position (orig-fn &rest args)
   "Remember branch position when descending the tree.
