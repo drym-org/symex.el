@@ -161,7 +161,7 @@
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-evaluate-thunk ()
-  "Evaluate Symex as a thunk.
+  "Evaluate symex as a thunk.
 
 This treats the symex as a thunk -- i.e. a function that takes no
 arguments -- by (transparently) wrapping it in parens and then

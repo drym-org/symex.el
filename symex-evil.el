@@ -20,7 +20,7 @@
 ;; TODO: next steps: convert these to evil operators, motions, and commands
 ;; but first evaluate the level at which that needs to happen so that the
 ;; same core can be shared with hydra
-(setq symex--evil-keyspec
+(defvar symex--evil-keyspec
   '(("h" . symex-go-backward)
     ("j" . symex-go-down)
     ("k" . symex-go-up)
@@ -29,10 +29,10 @@
     ("[" . symex-create-square)
     ("{" . symex-create-curly)
     ("<" . symex-create-angled)
-    ("h" . symex-go-backward)
-    ("k" . symex-go-up)
-    ("j" . symex-go-down)
-    ("l" . symex-go-forward)
+    (")" . symex-wrap-round)
+    ("]" . symex-wrap-square)
+    ("}" . symex-wrap-curly)
+    (">" . symex-wrap-angled)
     ("f" . symex-traverse-forward)
     ("b" . symex-traverse-backward)
     ("F" . symex-traverse-forward-skip)
@@ -53,8 +53,7 @@
     ("S" . symex-change-delimiter)
     ("H" . symex-shift-backward)
     ("L" . symex-shift-forward)
-    ("K" . paredit-raise-sexp)
-
+    ("K" . paredit-raise-sexp) ; revisit kb
     ("C-S-j" . symex-emit-backward)
     ("C-(" . symex-capture-backward)
     ("C-S-h" . symex-capture-backward)
@@ -71,7 +70,6 @@
     ("M-e" . symex-eval-recursive)
     ("T" . symex-evaluate-thunk)
     (":" . eval-expression)
-
     ("t" . symex-switch-to-scratch-buffer)
     ("M" . symex-switch-to-messages-buffer)
     ("r" . symex-repl)
@@ -80,19 +78,14 @@
     ("|" . lispy-split)
     ("m" . symex-join)
     ("\\" . symex-splice)
-    (")" . symex-wrap-round)
-    ("]" . symex-wrap-square)
-    ("}" . symex-wrap-curly)
-    (">" . symex-wrap-angled)
     ("o" . symex-open-line-after)
     ("O" . symex-open-line-before)
     ("n" . symex-insert-newline)
     ("C-S-o" . symex-append-newline)
     ("J" . symex-join-lines)
-    ("M-J" . symex-collapse)
+    ("M-J" . symex-collapse) ; leaves out 9 (in both)
     ("N" . symex-join-lines-backwards)
     ("0" . symex-goto-first)
-
     ("M-h" . symex-goto-first)
     ("$" . symex-goto-last)
     ("M-l" . symex-goto-last)
@@ -106,23 +99,18 @@
     ("i" . symex-insert-at-beginning)
     ("I" . symex-insert-before)
     ("w" . symex-wrap)
-    ("g" . evil-jump-to-tag)
-    ("G" . evil-jump-backward)
+    ("g" . evil-jump-to-tag)   ; not needed
+    ("G" . evil-jump-backward) ; not needed
     (";" . symex-comment)
-    ("C-;" . symex-eval-print)
-
+    ("C-;" . symex-eval-print) ; weird pre-offset (in both)
     ("s-;" . symex-evaluate)
-    ("H-h" . symex--toggle-highlight)
-    ("H-m" . symex-toggle-menu)
+    ("H-h" . symex--toggle-highlight) ; treats visual as distinct mode
     ("?" . symex-describe)
     ("<return>" . symex-enter-lower)
     ("C-<escape>" . symex-enter-lower)
     ("<escape>" . symex-escape-higher)
-    ("C-g" . symex-escape-higher)
-
-    )
-  ;"Key specification for symex evil state."
-  )
+    ("C-g" . symex-escape-higher))
+  "Key specification for symex evil state.")
 
 (symex--define-evil-keys-from-spec symex--evil-keyspec
                                    symex-editing-mode-map)
