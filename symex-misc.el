@@ -555,5 +555,11 @@ ORIG-FN applied to ARGS is the invocation being advised."
       (setq symex--branch-memory nil))
     result))
 
+(defun symex-exit-mode ()
+  "Take necessary action upon symex mode exit."
+  (deactivate-mark)
+  (when symex-refocus-p
+    (symex--restore-scroll-margin)))
+
 (provide 'symex-misc)
 ;;; symex-misc.el ends here

@@ -10,12 +10,12 @@
   :lighter "symex"
   :keymap symex-editing-mode-map)
 
-
 (evil-define-state symex
   "Symex state."
   :tag " <λ> "
   :message "-- SYMEX --"
-  :enable (normal))
+  :enable (normal)
+  :exit-hook (symex-exit-mode))
 
 ;; TODO: next steps: convert these to evil operators, motions, and commands
 ;; but first evaluate the level at which that needs to happen so that the
