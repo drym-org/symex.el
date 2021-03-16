@@ -96,6 +96,18 @@
   "Check if the symex is a string."
   (looking-at-p "\""))
 
+(defun symex-opening-round-p ()
+  "Check if point is at an opening parenthesis."
+  (looking-at-p "("))
+
+(defun symex-opening-square-p ()
+  "Check if point is at an opening square bracket."
+  (looking-at-p "\\["))
+
+(defun symex-opening-curly-p ()
+  "Check if point is at an opening curly bracket."
+  (looking-at-p "{"))
+
 (defun symex-empty-list-p ()
   "Check if we're looking at an empty list."
   (save-excursion

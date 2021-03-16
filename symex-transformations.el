@@ -131,8 +131,12 @@ to how the Lisp interpreter does it (when it is following
 
 (defun symex--clear ()
   "Helper to clear contents of symex."
-  (cond ((symex-form-p)
-         (apply #'evil-delete (evil-inner-paren)))  ; TODO: dispatch on paren type
+  (cond ((symex-opening-round-p)
+         (apply #'evil-delete (evil-inner-paren)))
+        ((symex-opening-square-p)
+         (apply #'evil-delete (evil-inner-bracket)))
+        ((symex-opening-curly-p)
+         (apply #'evil-delete (evil-inner-curly)))
         ((symex-string-p)
          (apply #'evil-delete (evil-inner-double-quote)))
         (t (sp-kill-sexp nil))))
