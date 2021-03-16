@@ -35,7 +35,7 @@ to enter, and any of the standard exits to exit."
         (symex-hide-menu)
       (symex-show-menu))))
 
-;; TOOD: it might make sense to symex-tidy as a formal followup,
+;; TODO: it might make sense to symex-tidy as a formal followup,
 ;; possibly after every head, but at least after the transformations
 ;; likewise, we might want to disable and re-enable highlighting,
 ;; if active, on each command

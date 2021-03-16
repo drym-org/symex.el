@@ -49,10 +49,13 @@ Before sending the code (in string form), calls `racket-repl' and
 mark so that output goes on a fresh line, not on the same line as
 the prompt.
 
-Afterwards call `racket--repl-show-and-move-to-end'."
+Afterwards call `racket--repl-show-and-move-to-end'.
+
+This function is based on code from an old version of the racket-mode
+Emacs package."
   (racket-repl t)
   (racket--repl-forget-errors)
-  (let ((proc (get-buffer-process racket--repl-buffer-name)))
+  (let ((proc (get-buffer-process racket-repl-buffer-name)))
     (with-racket-repl-buffer
       (save-excursion
         (goto-char (process-mark proc))
