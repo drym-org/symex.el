@@ -61,9 +61,10 @@ to how the Lisp interpreter does it (when it is following
   (interactive)
   (save-excursion
     (symex-execute-traversal (symex-traversal
-                              (circuit symex--traversal-preorder-in-tree))
-                             nil
-                             #'symex-evaluate)
+                              (circuit symex--traversal-preorder-in-tree)))
+    ;; do it once first since it will be executed as a side-effect
+    ;; _after_ each step in the traversal
+    (symex-evaluate)
     (symex--do-while-traversing #'symex-evaluate
                                 symex--traversal-postorder-in-tree)))
 
@@ -512,9 +513,10 @@ then no action is taken."
   (interactive)
   (save-excursion
     (symex-execute-traversal
-     (symex-traversal (circuit symex--traversal-preorder-in-tree))
-     nil
-     #'symex-tidy)
+     (symex-traversal (circuit symex--traversal-preorder-in-tree)))
+    ;; do it once first since it will be executed as a side-effect
+    ;; _after_ each step in the traversal
+    (symex-tidy)
     (symex--do-while-traversing #'symex-tidy
                                 symex--traversal-postorder-in-tree)))
 
@@ -525,6 +527,9 @@ then no action is taken."
     (let ((start (point)))
       (symex-execute-traversal
        (symex-traversal (circuit symex--traversal-preorder-in-tree)))
+      ;; do it once first since it will be executed as a side-effect
+      ;; _after_ each step in the traversal
+      (symex-join-lines-backwards)
       (symex--do-while-traversing
        #'symex-join-lines-backwards
        (symex-traversal

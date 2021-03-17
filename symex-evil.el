@@ -84,7 +84,7 @@
     ("n" . symex-insert-newline)
     ("C-S-o" . symex-append-newline)
     ("J" . symex-join-lines)
-    ("M-J" . symex-collapse) ; leaves out 9 (in both)
+    ("M-J" . symex-collapse)
     ("N" . symex-join-lines-backwards)
     ("0" . symex-goto-first)
     ("M-h" . symex-goto-first)
