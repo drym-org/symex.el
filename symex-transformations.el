@@ -459,10 +459,12 @@ then no action is taken."
   (save-excursion
     (forward-sexp)
     (fixup-whitespace))
-  (save-excursion
-    (apply #'evil-indent
-           (seq-take (evil-cp-a-form 1)
-                     2)))
+  (condition-case err
+      (save-excursion
+        (apply #'evil-indent
+               (seq-take (evil-cp-a-form 1)
+                         2)))
+    (error (message "[Symex] symex-tidy: suppressed error %S" err)))
   (symex-select-nearest))
 
 (defun symex-tidy-proper ()
