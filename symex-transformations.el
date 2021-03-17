@@ -413,18 +413,18 @@ New list delimiters are determined by the TYPE."
   (interactive)
   (symex-create 'angled))
 
-(defun symex-insert-newline ()
+(defun symex-insert-newline (count)
   "Insert newline and reindent symex."
-  (interactive)
-  (newline-and-indent)
+  (interactive "p")
+  (newline-and-indent count)
   (symex-tidy))
 
-(defun symex-append-newline ()
+(defun symex-append-newline (count)
   "Append newline and reindent symex."
-  (interactive)
+  (interactive "p")
   (save-excursion
     (forward-sexp)
-    (newline-and-indent)
+    (newline-and-indent count)
     (symex-tidy)))
 
 (defun symex-swallow ()
