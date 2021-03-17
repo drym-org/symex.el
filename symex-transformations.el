@@ -159,9 +159,8 @@ to how the Lisp interpreter does it (when it is following
   (symex-select-nearest)
   (symex-tidy))
 
-(defun symex-emit-backward ()
+(defun symex--emit-backward ()
   "Emit backward."
-  (interactive)
   (when (and (lispy-left-p)
              (not (symex-empty-list-p)))
     (save-excursion
@@ -173,9 +172,14 @@ to how the Lisp interpreter does it (when it is following
       (re-search-forward lispy-left)
       (symex--go-down))))
 
-(defun symex-emit-forward ()
+(defun symex-emit-backward (count)
+  "Emit backward."
+  (interactive "p")
+  (dotimes (i count)
+    (symex--emit-backward)))
+
+(defun symex--emit-forward ()
   "Emit forward."
-  (interactive)
   (when (and (lispy-left-p)
              (not (symex-empty-list-p)))
     (save-excursion
@@ -186,9 +190,14 @@ to how the Lisp interpreter does it (when it is following
       (fixup-whitespace)
       (re-search-backward lispy-left))))
 
-(defun symex-capture-backward ()
+(defun symex-emit-forward (count)
+  "Emit forward."
+  (interactive "p")
+  (dotimes (i count)
+    (symex--emit-forward)))
+
+(defun symex--capture-backward ()
   "Capture from behind."
-  (interactive)
   (when (lispy-left-p)
     (if (symex-empty-list-p)
         (forward-char)
@@ -197,15 +206,26 @@ to how the Lisp interpreter does it (when it is following
     (fixup-whitespace)
     (symex--go-down)))
 
-(defun symex-capture-forward ()
+(defun symex-capture-backward (count)
+  "Capture from behind."
+  (interactive "p")
+  (dotimes (i count)
+    (symex--capture-backward)))
+
+(defun symex--capture-forward ()
   "Capture from the front."
-  (interactive)
   (when (lispy-left-p)
     (save-excursion
       (if (symex-empty-list-p)
           (forward-char)
         (symex--go-up))  ; need to be inside the symex to emit and capture
       (lispy-forward-slurp-sexp 1))))
+
+(defun symex-capture-forward (count)
+  "Capture from the front."
+  (interactive "p")
+  (dotimes (i count)
+    (symex--capture-forward)))
 
 (defun symex--join ()
   "Merge symexes at the same level."
