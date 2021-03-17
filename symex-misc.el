@@ -330,27 +330,41 @@ Version 2017-11-01"
 This interface will be removed in a future version."
   (symex-height))
 
-(defun symex-soar-backward ()
+(defun symex-soar-backward (count)
   "Leap backwards, crossing to a neighboring tree.
 
 At the moment, if a neighboring branch in the current tree is
 available in that direction, we leap to it. In a future version of
 symex, this may be changed to always go to a neighboring tree,
 ignoring local branches."
-  (interactive)
-  (symex-leap-backward t))
+  (interactive "p")
+  (dotimes (i count)
+    (symex--leap-backward t)))
 
-(defun symex-soar-forward ()
+(defun symex-soar-forward (count)
   "Leap forward, crossing to a neighboring tree.
 
 At the moment, if a neighboring branch in the current tree is
 available in that direction, we leap to it. In a future version of
 symex, this may be changed to always go to a neighboring tree,
 ignoring local branches."
-  (interactive)
-  (symex-leap-forward t))
+  (interactive "p")
+  (dotimes (i count)
+    (symex--leap-forward t)))
 
-(defun symex-leap-backward (&optional soar)
+(defun symex-leap-backward (count)
+  "Leap backward to a neighboring branch, preserving height and position."
+  (interactive "p")
+  (dotimes (i count)
+    (symex--leap-backward)))
+
+(defun symex-leap-forward (count)
+  "Leap forward to a neighboring branch, preserving height and position."
+  (interactive "p")
+  (dotimes (i count)
+    (symex--leap-forward)))
+
+(defun symex--leap-backward (&optional soar)
   "Leap backward to a neighboring branch, preserving height and position.
 
 If SOAR is true, leap between trees too, otherwise, stay in the
@@ -376,7 +390,6 @@ determine always from a common reference point (the root) the current
 height. This allows us to circumvent the need for 'memory' since this
 information could be computed afresh at each step.  This latter
 approach is the one employed here."
-  (interactive)
   (let ((traverse (if soar
                       symex--traversal-postorder
                     symex--traversal-postorder-in-tree))
@@ -419,7 +432,7 @@ approach is the one employed here."
                                        (= (symex-height)
                                           height))))))))))
 
-(defun symex-leap-forward (&optional soar)
+(defun symex--leap-forward (&optional soar)
   "Leap forward to a neighboring branch, preserving height and position.
 
 If SOAR is true, leap between trees too, otherwise, stay in the
@@ -427,7 +440,6 @@ current tree.
 
 See the documentation on `symex-leap-backward` for details regarding
 the implementation."
-  (interactive)
   (let ((traverse (if soar
                       symex--traversal-preorder
                     symex--traversal-preorder-in-tree))

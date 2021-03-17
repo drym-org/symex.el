@@ -19,7 +19,7 @@
   :exit-hook (symex-exit-mode))
 
 ;; TODO: others that could accept a count argument:
-;; leap, shift, join, emit, capture
+;; shift, join, emit, capture
 ;; insert and append newline, simple insert/append
 (defvar symex--evil-keyspec
   '(("h" . symex-go-backward)
