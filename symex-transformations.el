@@ -109,13 +109,13 @@ to how the Lisp interpreter does it (when it is following
                                              t)
                                     (error nil))
                               (dotimes (_i line-diff)
-                                (symex-join-lines))))
+                                (symex--join-lines))))
                  (goto-char previous-symex-pos))))))
         ((save-excursion (evil-last-non-blank)  ; (<>$
                          (lispy-left-p))
          (sp-next-sexp)
          (save-excursion
-           (symex-join-lines-backwards)))
+           (symex--join-lines t)))
         ((looking-at-p "\n")  ; (abc <>
          (evil-join (line-beginning-position)
                     (line-end-position)))
@@ -565,9 +565,9 @@ then no action is taken."
        (symex-traversal (circuit symex--traversal-preorder-in-tree)))
       ;; do it once first since it will be executed as a side-effect
       ;; _after_ each step in the traversal
-      (symex-join-lines-backwards)
+      (symex--join-lines t)
       (symex--do-while-traversing
-       #'symex-join-lines-backwards
+       (apply-partially #'symex--join-lines t)
        (symex-traversal
         (precaution symex--traversal-postorder-in-tree
                     (afterwards (lambda ()
