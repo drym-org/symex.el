@@ -18,9 +18,9 @@
   :enable (normal)
   :exit-hook (symex-exit-mode))
 
-;; TODO: next steps: convert these to evil operators, motions, and commands
-;; but first evaluate the level at which that needs to happen so that the
-;; same core can be shared with hydra
+;; TODO: others that could accept a count argument:
+;; f/b/F/B, leap, shift, join, emit, capture, ascend, descend
+;; insert and append newline, simple insert/append
 (defvar symex--evil-keyspec
   '(("h" . symex-go-backward)
     ("j" . symex-go-down)

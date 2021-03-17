@@ -67,10 +67,10 @@ to how the Lisp interpreter does it (when it is following
     (symex--do-while-traversing #'symex-evaluate
                                 symex--traversal-postorder-in-tree)))
 
-(defun symex-delete ()
+(defun symex-delete (count)
   "Delete symex."
-  (interactive)
-  (kill-sexp 1)
+  (interactive "p")
+  (kill-sexp count)
   (cond ((symex--current-line-empty-p)             ; ^<>$
          (delete-region (line-beginning-position)
                         (if (eobp)
@@ -125,10 +125,10 @@ to how the Lisp interpreter does it (when it is following
   (symex-select-nearest)
   (symex-tidy))
 
-(defun symex-change ()
+(defun symex-change (count)
   "Change symex."
-  (interactive)
-  (kill-sexp 1)
+  (interactive "p")
+  (kill-sexp count)
   (symex-enter-lowest))
 
 (defun symex--clear ()
@@ -244,12 +244,12 @@ by default, joins next symex to current one."
       (forward-char)))
   (symex-tidy))
 
-(defun symex-yank ()
+(defun symex-yank (count)
   "Yank (copy) symex."
-  (interactive)
-  (lispy-new-copy))
+  (interactive "p")
+  (sp-copy-sexp count))
 
-(defun symex-paste-before ()
+(defun symex--paste-before ()
   "Paste before symex."
   (interactive)
   (let ((extra-to-append
@@ -259,17 +259,23 @@ by default, joins next symex to current one."
                                     (eolp)))
                 "\n")
                (t " "))))
-    (symex--with-undo-collapse
+    (save-excursion
       (save-excursion
-        (save-excursion
-          (evil-paste-before nil nil)
-          (when evil-move-cursor-back
-            (forward-char))
-          (insert extra-to-append))
-        (symex--go-forward)
-        (symex-tidy)))))
+        (evil-paste-before nil nil)
+        (when evil-move-cursor-back
+          (forward-char))
+        (insert extra-to-append))
+      (symex--go-forward)
+      (symex-tidy))))
 
-(defun symex-paste-after ()
+(defun symex-paste-before (count)
+  "Paste before symex."
+  (interactive "p")
+  (symex--with-undo-collapse
+    (dotimes (i count)
+      (symex--paste-before))))
+
+(defun symex--paste-after ()
   "Paste after symex."
   (interactive)
   (let ((extra-to-prepend
@@ -279,16 +285,22 @@ by default, joins next symex to current one."
                                     (eolp)))
                 "\n")
                (t " "))))
-    (symex--with-undo-collapse
+    (save-excursion
       (save-excursion
-        (save-excursion
-          (forward-sexp)
-          (insert extra-to-prepend)
-          (evil-paste-before nil nil)
-          (forward-char))
-        (symex--go-forward)
-        (symex-tidy))
-      (symex--go-forward))))
+        (forward-sexp)
+        (insert extra-to-prepend)
+        (evil-paste-before nil nil)
+        (forward-char))
+      (symex--go-forward)
+      (symex-tidy))
+    (symex--go-forward)))
+
+(defun symex-paste-after (count)
+  "Paste after symex."
+  (interactive "p")
+  (symex--with-undo-collapse
+    (dotimes (i count)
+      (symex--paste-after))))
 
 (defun symex-open-line-after ()
   "Open new line after symex."
