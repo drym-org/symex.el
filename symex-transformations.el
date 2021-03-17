@@ -73,7 +73,9 @@ to how the Lisp interpreter does it (when it is following
   (kill-sexp 1)
   (cond ((symex--current-line-empty-p)             ; ^<>$
          (delete-region (line-beginning-position)
-                        (1+ (line-end-position))))
+                        (if (eobp)
+                            (line-end-position)
+                          (1+ (line-end-position)))))
         ((save-excursion (back-to-indentation)     ; ^<>)
                          (forward-char)
                          (lispy-right-p))
