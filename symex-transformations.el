@@ -207,22 +207,29 @@ to how the Lisp interpreter does it (when it is following
         (symex--go-up))  ; need to be inside the symex to emit and capture
       (lispy-forward-slurp-sexp 1))))
 
-(defun symex-join ()
+(defun symex--join ()
   "Merge symexes at the same level."
-  (interactive)
   (save-excursion
     (symex--go-forward)
     (paredit-join-sexps)))
 
-(defun symex-join-lines ()
-  "Join lines inside symex."
-  (interactive)
-  (symex--join-lines))
+(defun symex-join (count)
+  "Merge symexes at the same level."
+  (interactive "p")
+  (dotimes (i count)
+    (symex--join)))
 
-(defun symex-join-lines-backwards ()
+(defun symex-join-lines (count)
+  "Join lines inside symex."
+  (interactive "p")
+  (dotimes (i count)
+    (symex--join-lines)))
+
+(defun symex-join-lines-backwards (count)
   "Join lines backwards inside symex."
-  (interactive)
-  (symex--join-lines t))
+  (interactive "p")
+  (dotimes (i count)
+    (symex--join-lines t)))
 
 (defun symex--join-lines (&optional backwards)
   "Join lines inside symex.
@@ -463,22 +470,31 @@ then no action is taken."
   (symex-wrap-round)
   (symex-insert-at-beginning))
 
-(defun symex-shift-forward ()
+(defun symex--shift-forward ()
   "Move symex forward in current tree level."
-  (interactive)
   (forward-sexp)
   (condition-case nil
       (progn (transpose-sexps 1)
              (backward-sexp))
     (error (backward-sexp))))
 
-(defun symex-shift-backward ()
+(defun symex-shift-forward (count)
+  "Move symex forward in current tree level."
+  (interactive "p")
+  (dotimes (i count)
+    (symex--shift-forward)))
+
+(defun symex--shift-backward ()
   "Move symex backward in current tree level."
-  (interactive)
   (let ((move (symex--go-backward)))
     (when move
-      (symex-shift-forward)
+      (symex--shift-forward)
       (symex--go-backward))))
+
+(defun symex-shift-backward (count)
+  "Move symex backward in current tree level."
+  (interactive "p")
+  (dotimes (i count) (symex--shift-backward)))
 
 (defun symex-change-delimiter ()
   "Change delimiter enclosing current symex, e.g. round -> square brackets."
