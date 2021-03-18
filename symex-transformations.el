@@ -69,7 +69,7 @@ to how the Lisp interpreter does it (when it is following
                                 symex--traversal-postorder-in-tree)))
 
 (defun symex-delete (count)
-  "Delete symex."
+  "Delete COUNT symexes."
   (interactive "p")
   (kill-sexp count)
   (cond ((symex--current-line-empty-p)             ; ^<>$
@@ -127,7 +127,7 @@ to how the Lisp interpreter does it (when it is following
   (symex-tidy))
 
 (defun symex-change (count)
-  "Change symex."
+  "Change COUNT symexes."
   (interactive "p")
   (kill-sexp count)
   (symex-enter-lowest))
@@ -173,7 +173,7 @@ to how the Lisp interpreter does it (when it is following
       (symex--go-down))))
 
 (defun symex-emit-backward (count)
-  "Emit backward."
+  "Emit backward, COUNT times."
   (interactive "p")
   (dotimes (i count)
     (symex--emit-backward)))
@@ -191,7 +191,7 @@ to how the Lisp interpreter does it (when it is following
       (re-search-backward lispy-left))))
 
 (defun symex-emit-forward (count)
-  "Emit forward."
+  "Emit forward, COUNT times."
   (interactive "p")
   (dotimes (i count)
     (symex--emit-forward)))
@@ -207,7 +207,7 @@ to how the Lisp interpreter does it (when it is following
     (symex--go-down)))
 
 (defun symex-capture-backward (count)
-  "Capture from behind."
+  "Capture from behind, COUNT times."
   (interactive "p")
   (dotimes (i count)
     (symex--capture-backward)))
@@ -222,7 +222,7 @@ to how the Lisp interpreter does it (when it is following
       (lispy-forward-slurp-sexp 1))))
 
 (defun symex-capture-forward (count)
-  "Capture from the front."
+  "Capture from the front, COUNT times."
   (interactive "p")
   (dotimes (i count)
     (symex--capture-forward)))
@@ -234,19 +234,19 @@ to how the Lisp interpreter does it (when it is following
     (paredit-join-sexps)))
 
 (defun symex-join (count)
-  "Merge symexes at the same level."
+  "Merge COUNT symexes at the same level."
   (interactive "p")
   (dotimes (i count)
     (symex--join)))
 
 (defun symex-join-lines (count)
-  "Join lines inside symex."
+  "Join COUNT lines inside symex."
   (interactive "p")
   (dotimes (i count)
     (symex--join-lines)))
 
 (defun symex-join-lines-backwards (count)
-  "Join lines backwards inside symex."
+  "Join COUNT lines backwards inside symex."
   (interactive "p")
   (dotimes (i count)
     (symex--join-lines t)))
@@ -273,7 +273,7 @@ by default, joins next symex to current one."
   (symex-tidy))
 
 (defun symex-yank (count)
-  "Yank (copy) symex."
+  "Yank (copy) COUNT symexes."
   (interactive "p")
   (sp-copy-sexp count))
 
@@ -297,7 +297,7 @@ by default, joins next symex to current one."
       (symex-tidy))))
 
 (defun symex-paste-before (count)
-  "Paste before symex."
+  "Paste before symex, COUNT times."
   (interactive "p")
   (symex--with-undo-collapse
     (dotimes (i count)
@@ -324,7 +324,7 @@ by default, joins next symex to current one."
     (symex--go-forward)))
 
 (defun symex-paste-after (count)
-  "Paste after symex."
+  "Paste after symex, COUNT times."
   (interactive "p")
   (symex--with-undo-collapse
     (dotimes (i count)
@@ -414,13 +414,13 @@ New list delimiters are determined by the TYPE."
   (symex-create 'angled))
 
 (defun symex-insert-newline (count)
-  "Insert newline and reindent symex."
+  "Insert COUNT newlines before symex."
   (interactive "p")
   (newline-and-indent count)
   (symex-tidy))
 
 (defun symex-append-newline (count)
-  "Append newline and reindent symex."
+  "Append COUNT newlines after symex."
   (interactive "p")
   (save-excursion
     (forward-sexp)
@@ -499,7 +499,7 @@ then no action is taken."
     (error (backward-sexp))))
 
 (defun symex-shift-forward (count)
-  "Move symex forward in current tree level."
+  "Move symex forward COUNT times in current tree level."
   (interactive "p")
   (dotimes (i count)
     (symex--shift-forward)))
@@ -512,7 +512,7 @@ then no action is taken."
       (symex--go-backward))))
 
 (defun symex-shift-backward (count)
-  "Move symex backward in current tree level."
+  "Move symex backward COUNT times in current tree level."
   (interactive "p")
   (dotimes (i count) (symex--shift-backward)))
 

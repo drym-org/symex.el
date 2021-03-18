@@ -334,9 +334,11 @@ This interface will be removed in a future version."
   "Leap backwards, crossing to a neighboring tree.
 
 At the moment, if a neighboring branch in the current tree is
-available in that direction, we leap to it. In a future version of
+available in that direction, we leap to it.  In a future version of
 symex, this may be changed to always go to a neighboring tree,
-ignoring local branches."
+ignoring local branches.
+
+Leaps COUNT times, defaulting to once."
   (interactive "p")
   (dotimes (i count)
     (symex--leap-backward t)))
@@ -345,21 +347,27 @@ ignoring local branches."
   "Leap forward, crossing to a neighboring tree.
 
 At the moment, if a neighboring branch in the current tree is
-available in that direction, we leap to it. In a future version of
+available in that direction, we leap to it.  In a future version of
 symex, this may be changed to always go to a neighboring tree,
-ignoring local branches."
+ignoring local branches.
+
+Leaps COUNT times, defaulting to once."
   (interactive "p")
   (dotimes (i count)
     (symex--leap-forward t)))
 
 (defun symex-leap-backward (count)
-  "Leap backward to a neighboring branch, preserving height and position."
+  "Leap backward to a neighboring branch, preserving height and position.
+
+Leaps COUNT times, defaulting to once."
   (interactive "p")
   (dotimes (i count)
     (symex--leap-backward)))
 
 (defun symex-leap-forward (count)
-  "Leap forward to a neighboring branch, preserving height and position."
+  "Leap forward to a neighboring branch, preserving height and position.
+
+Leaps COUNT times, defaulting to once."
   (interactive "p")
   (dotimes (i count)
     (symex--leap-forward)))
@@ -506,6 +514,7 @@ argument supplied by the user, and can be used when the underlying
 function expects to receive one.
 
 ORIG-FN could be any function that results in a symex being selected.
+COUNT is the numeric argument provided via interactive invocation.
 ARGS are the arguments that were passed to ORIG-FN (as any advice function
 is expected to handle in Emacs)."
   (interactive "p")

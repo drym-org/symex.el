@@ -51,8 +51,8 @@ the prompt.
 
 Afterwards call `racket--repl-show-and-move-to-end'.
 
-This function is based on code from an old version of the racket-mode
-Emacs package."
+This function is based on code from an old version of the
+`racket-mode` Emacs package."
   (racket-repl t)
   (racket--repl-forget-errors)
   (let ((proc (get-buffer-process racket-repl-buffer-name)))

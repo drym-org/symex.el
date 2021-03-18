@@ -134,49 +134,65 @@ when the way is blocked.")
                                   (beforehand (not (at root)))))))
 
 (defun symex-traverse-forward (count)
-  "Traverse symex as a tree, using pre-order traversal."
+  "Traverse symex as a tree, using pre-order traversal.
+
+Executes the motion COUNT times."
   (interactive "p")
   (dotimes (i count)
     (symex-execute-traversal symex--traversal-preorder)))
 
 (defun symex-traverse-forward-in-tree (count)
-  "Traverse symex forward using pre-order traversal, stopping at end of tree."
+  "Traverse symex forward using pre-order traversal, stopping at end of tree.
+
+Executes the motion COUNT times."
   (interactive "p")
   (dotimes (i count)
     (symex-execute-traversal symex--traversal-preorder-in-tree)))
 
 (defun symex-traverse-forward-skip (count)
-  "Traverse symex as a tree, skipping forward."
+  "Traverse symex as a tree, skipping forward.
+
+Executes the motion COUNT times."
   (interactive "p")
   (dotimes (i count)
     (symex-execute-traversal symex--traversal-skip-forward)))
 
 (defun symex-traverse-backward (count)
-  "Traverse symex as a tree, using converse post-order traversal."
+  "Traverse symex as a tree, using converse post-order traversal.
+
+Executes the motion COUNT times."
   (interactive "p")
   (dotimes (i count)
     (symex-execute-traversal symex--traversal-postorder)))
 
 (defun symex-traverse-backward-in-tree (count)
-  "Traverse symex backward using post-order traversal, stopping at root of tree."
+  "Traverse symex backward using post-order traversal, stopping at root of tree.
+
+Executes the motion COUNT times."
   (interactive "p")
   (dotimes (i count)
     (symex-execute-traversal symex--traversal-postorder-in-tree)))
 
 (defun symex-traverse-backward-skip (count)
-  "Traverse symex as a tree, skipping backwards."
+  "Traverse symex as a tree, skipping backwards.
+
+Executes the motion COUNT times."
   (interactive "p")
   (dotimes (i count)
     (symex-execute-traversal symex--traversal-skip-backward)))
 
 (defun symex-climb-branch (count)
-  "Climb up."
+  "Climb up.
+
+Executes the motion COUNT times."
   (interactive "p")
   (dotimes (i count)
     (symex-execute-traversal symex--traversal-climb-branch)))
 
 (defun symex-descend-branch (count)
-  "Descend the tree."
+  "Descend the tree.
+
+Executes the motion COUNT times."
   (interactive "p")
   (dotimes (i count)
     (symex-execute-traversal symex--traversal-descend-branch)))
