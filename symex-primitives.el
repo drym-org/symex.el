@@ -86,6 +86,18 @@
                    (not (thing-at-point 'sexp))))
       (error nil))))
 
+(defvar symex--re-comment-line "^[[:space:]]*;"
+  "A comment line.")
+
+(defvar symex--re-empty-line "^$"
+  "An empty line.")
+
+(defvar symex--re-blank-line "^[[:space:]]*$"
+  "A blank line, either empty or containing only whitespace.")
+
+(defvar symex--re-symex-line "^[[:space:]]*[^;[:space:]\n]"
+  "A line that isn't blank and isn't a comment line.")
+
 (defun symex-comment-line-p ()
   "Check if we're currently at the start of a comment line."
   (save-excursion
@@ -197,12 +209,15 @@ of symex mode (use the public `symex-go-backward` instead)."
     (when (> result 0)
       (symex-make-move (- result) 0))))
 
+(defun symex--find-next ()
+  "Find the next symex."
+  (re-search-forward symex--re-symex-line)
+  (back-to-indentation))
+
 (defun symex--enter-one ()
   "Enter one level."
   (let ((result 1))
-    (cond ((symex-comment-line-p)
-           (lispy-flow 1))
-          ((and (lispy-left-p)
+    (cond ((and (lispy-left-p)
                 (not (symex-empty-list-p)))
            (forward-char))
           ;; one-off - better to recognize these as delimiters
