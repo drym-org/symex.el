@@ -340,7 +340,7 @@ ignoring local branches.
 
 Leaps COUNT times, defaulting to once."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex--leap-backward t)))
 
 (defun symex-soar-forward (count)
@@ -353,7 +353,7 @@ ignoring local branches.
 
 Leaps COUNT times, defaulting to once."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex--leap-forward t)))
 
 (defun symex-leap-backward (count)
@@ -361,7 +361,7 @@ Leaps COUNT times, defaulting to once."
 
 Leaps COUNT times, defaulting to once."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex--leap-backward)))
 
 (defun symex-leap-forward (count)
@@ -369,7 +369,7 @@ Leaps COUNT times, defaulting to once."
 
 Leaps COUNT times, defaulting to once."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex--leap-forward)))
 
 (defun symex--leap-backward (&optional soar)
@@ -521,6 +521,46 @@ is expected to handle in Emacs)."
   (let ((result (apply orig-fn count args)))
     (symex--selection-side-effects)
     result))
+
+(defun symex--add-selection-advice ()
+  "Add selection advice."
+  (advice-add #'symex-go-forward :around #'symex-selection-motion-advice)
+  (advice-add #'symex-go-backward :around #'symex-selection-motion-advice)
+  (advice-add #'symex-go-up :around #'symex-selection-motion-advice)
+  (advice-add #'symex-go-down :around #'symex-selection-motion-advice)
+  (advice-add #'symex-traverse-forward :around #'symex-selection-motion-advice)
+  (advice-add #'symex-traverse-backward :around #'symex-selection-motion-advice)
+  (advice-add #'symex-traverse-forward-skip :around #'symex-selection-motion-advice)
+  (advice-add #'symex-traverse-backward-skip :around #'symex-selection-motion-advice)
+  (advice-add #'symex-leap-forward :around #'symex-selection-motion-advice)
+  (advice-add #'symex-leap-backward :around #'symex-selection-motion-advice)
+  (advice-add #'symex-soar-forward :around #'symex-selection-motion-advice)
+  (advice-add #'symex-soar-backward :around #'symex-selection-motion-advice)
+  (advice-add #'symex-goto-first :around #'symex-selection-advice)
+  (advice-add #'symex-goto-last :around #'symex-selection-advice)
+  (advice-add #'symex-goto-lowest :around #'symex-selection-advice)
+  (advice-add #'symex-goto-highest :around #'symex-selection-advice)
+  (advice-add #'symex-select-nearest :around #'symex-selection-advice))
+
+(defun symex--remove-selection-advice ()
+  "Remove selection advice."
+  (advice-remove #'symex-go-forward #'symex-selection-motion-advice)
+  (advice-remove #'symex-go-backward #'symex-selection-motion-advice)
+  (advice-remove #'symex-go-up #'symex-selection-motion-advice)
+  (advice-remove #'symex-go-down #'symex-selection-motion-advice)
+  (advice-remove #'symex-traverse-forward #'symex-selection-motion-advice)
+  (advice-remove #'symex-traverse-backward #'symex-selection-motion-advice)
+  (advice-remove #'symex-traverse-forward-skip #'symex-selection-motion-advice)
+  (advice-remove #'symex-traverse-backward-skip #'symex-selection-motion-advice)
+  (advice-remove #'symex-leap-forward #'symex-selection-motion-advice)
+  (advice-remove #'symex-leap-backward #'symex-selection-motion-advice)
+  (advice-remove #'symex-soar-forward #'symex-selection-motion-advice)
+  (advice-remove #'symex-soar-backward #'symex-selection-motion-advice)
+  (advice-remove #'symex-goto-first #'symex-selection-advice)
+  (advice-remove #'symex-goto-last #'symex-selection-advice)
+  (advice-remove #'symex-goto-lowest #'symex-selection-advice)
+  (advice-remove #'symex-goto-highest #'symex-selection-advice)
+  (advice-remove #'symex-select-nearest #'symex-selection-advice))
 
 (defun symex--remember-branch-position (orig-fn &rest args)
   "Remember branch position when descending the tree.

@@ -108,7 +108,7 @@ to how the Lisp interpreter does it (when it is following
                                       (progn (evil-find-char 1 ?\;)
                                              t)
                                     (error nil))
-                              (dotimes (_i line-diff)
+                              (dotimes (_ line-diff)
                                 (symex--join-lines))))
                  (goto-char previous-symex-pos))))))
         ((save-excursion (evil-last-non-blank)  ; (<>$
@@ -175,7 +175,7 @@ to how the Lisp interpreter does it (when it is following
 (defun symex-emit-backward (count)
   "Emit backward, COUNT times."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex--emit-backward)))
 
 (defun symex--emit-forward ()
@@ -193,7 +193,7 @@ to how the Lisp interpreter does it (when it is following
 (defun symex-emit-forward (count)
   "Emit forward, COUNT times."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex--emit-forward)))
 
 (defun symex--capture-backward ()
@@ -209,7 +209,7 @@ to how the Lisp interpreter does it (when it is following
 (defun symex-capture-backward (count)
   "Capture from behind, COUNT times."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex--capture-backward)))
 
 (defun symex--capture-forward ()
@@ -224,7 +224,7 @@ to how the Lisp interpreter does it (when it is following
 (defun symex-capture-forward (count)
   "Capture from the front, COUNT times."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex--capture-forward)))
 
 (defun symex--join ()
@@ -236,19 +236,19 @@ to how the Lisp interpreter does it (when it is following
 (defun symex-join (count)
   "Merge COUNT symexes at the same level."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex--join)))
 
 (defun symex-join-lines (count)
   "Join COUNT lines inside symex."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex--join-lines)))
 
 (defun symex-join-lines-backwards (count)
   "Join COUNT lines backwards inside symex."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex--join-lines t)))
 
 (defun symex--join-lines (&optional backwards)
@@ -300,7 +300,7 @@ by default, joins next symex to current one."
   "Paste before symex, COUNT times."
   (interactive "p")
   (symex--with-undo-collapse
-    (dotimes (i count)
+    (dotimes (_ count)
       (symex--paste-before))))
 
 (defun symex--paste-after ()
@@ -327,7 +327,7 @@ by default, joins next symex to current one."
   "Paste after symex, COUNT times."
   (interactive "p")
   (symex--with-undo-collapse
-    (dotimes (i count)
+    (dotimes (_ count)
       (symex--paste-after))))
 
 (defun symex-open-line-after ()
@@ -501,7 +501,7 @@ then no action is taken."
 (defun symex-shift-forward (count)
   "Move symex forward COUNT times in current tree level."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex--shift-forward)))
 
 (defun symex--shift-backward ()
@@ -514,7 +514,7 @@ then no action is taken."
 (defun symex-shift-backward (count)
   "Move symex backward COUNT times in current tree level."
   (interactive "p")
-  (dotimes (i count) (symex--shift-backward)))
+  (dotimes (_ count) (symex--shift-backward)))
 
 (defun symex-change-delimiter ()
   "Change delimiter enclosing current symex, e.g. round -> square brackets."

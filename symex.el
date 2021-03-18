@@ -3,7 +3,7 @@
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/countvajhula/symex.el
 ;; Version: 0.9
-;; Package-Requires: ((emacs "24.4") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (dash "2.18.0") (evil "1.2.14") (smartparens "1.11.0") (evil-surround "1.0.4") (hydra "0.15.0") (seq "2.22") (undo-tree "0.7.5"))
+;; Package-Requires: ((emacs "24.4") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (evil "1.2.14") (smartparens "1.11.0") (evil-surround "1.0.4") (hydra "0.15.0") (seq "2.22") (undo-tree "0.7.5"))
 ;; Keywords: lisp, evil
 
 ;; This program is "part of the world," in the sense described at
@@ -42,62 +42,13 @@
 
 ;;; Code:
 
-(require 'undo-tree)
 (require 'lispy)
-(require 'paredit)
-(require 'cl-lib)
-(require 'dash)
 
-(require 'symex-data)
-(require 'symex-computations)
-(require 'symex-primitives)
-(require 'symex-evaluator)
-(require 'symex-traversals)
-(require 'symex-transformations)
-(require 'symex-misc)
-(require 'symex-interop)
-(require 'symex-ui)
 (require 'symex-hydra)
 (require 'symex-evil)
-
-;;;;;;;;;;;;;;;;;;;;;
-;;; CONFIGURATION ;;;
-;;;;;;;;;;;;;;;;;;;;;
-
-(defgroup symex nil
-  "A language for editing symbolic expressions."
-  :group 'lisp)
-
-(defcustom symex-highlight-p nil
-  "Whether selected symexes should be highlighted."
-  :type 'boolean
-  :group 'symex)
-
-(defcustom symex-refocus-p t
-  "Whether to refocus on the selected symex when it's close to the edge of the screen."
-  :type 'boolean
-  :group 'symex)
-
-(defcustom symex-remember-branch-positions-p t
-  "Whether movement in the vertical direction should remember branch positions."
-  :type 'boolean
-  :group 'symex)
-
-(defcustom symex-modal-backend 'evil
-  "Whether to use hydra or evil as the backend for the modal interface."
-  :type 'symbol
-  :group 'symex)
-
-(defvar symex-elisp-modes (list 'lisp-interaction-mode
-                                'emacs-lisp-mode
-                                'inferior-emacs-lisp-mode))
-
-(defvar symex-racket-modes (list 'racket-mode
-                                 'racket-repl-mode))
-
-(defvar symex-lisp-modes (append symex-elisp-modes
-                                 symex-racket-modes
-                                 (list 'scheme-mode 'arc-mode)))
+(require 'symex-interop)
+(require 'symex-misc)
+(require 'symex-custom)
 
 ;;;###autoload
 (define-minor-mode symex-mode
@@ -107,37 +58,37 @@
             (define-key
               symex-map
               (kbd "(")
-              'paredit-open-round)
+              #'paredit-open-round)
 
             (define-key
               symex-map
               (kbd ")")
-              'paredit-close-round)
+              #'paredit-close-round)
 
             (define-key
               symex-map
               (kbd "[")
-              'paredit-open-square)
+              #'paredit-open-square)
 
             (define-key
               symex-map
               (kbd "]")
-              'paredit-close-square)
+              #'paredit-close-square)
 
             (define-key
               symex-map
               (kbd "<backspace>")
-              'paredit-backward-delete)
+              #'paredit-backward-delete)
 
             (define-key
               symex-map
               (kbd "<DEL>")
-              'paredit-backward-delete)
+              #'paredit-backward-delete)
 
             (define-key
               symex-map
               (kbd "\"")
-              'paredit-doublequote)
+              #'paredit-doublequote)
 
             symex-map))
 
@@ -145,24 +96,6 @@
   "Enable symex minor mode if it isn't already enabled."
   (unless symex-mode
     (symex-mode)))
-
-(defun symex--adjust-point ()
-  "Adjust point context from the Emacs to the Vim interpretation.
-
-If entering symex mode from Insert or Emacs mode, then translate point
-so it indicates the appropriate symex in Symex mode.  This is necessary
-because in Emacs, the symex preceding point is indicated.  In Vim, the
-symex 'under' point is indicated.  We want to make sure to select the
-right symex when we enter Symex mode."
-  (interactive)
-  (when (or (not (symex--evil-installed-p))
-            (symex--evil-disabled-p)
-            (member evil-previous-state '(insert emacs)))
-    (unless (bobp)
-      (let ((just-inside-symex-p (save-excursion (backward-char)
-                                                 (lispy-left-p))))
-        (unless just-inside-symex-p
-          (backward-char))))))
 
 (defun symex--enter-mode ()
   "Load the modal interface."
@@ -189,45 +122,17 @@ right symex when we enter Symex mode."
     (symex--set-scroll-margin))
   (symex--enter-mode))
 
-(defun symex--add-selection-advice ()
-  "Add selection advice."
-  (advice-add #'symex-go-forward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-go-backward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-go-up :around #'symex-selection-motion-advice)
-  (advice-add #'symex-go-down :around #'symex-selection-motion-advice)
-  (advice-add #'symex-traverse-forward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-traverse-backward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-traverse-forward-skip :around #'symex-selection-motion-advice)
-  (advice-add #'symex-traverse-backward-skip :around #'symex-selection-motion-advice)
-  (advice-add #'symex-leap-forward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-leap-backward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-soar-forward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-soar-backward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-goto-first :around #'symex-selection-advice)
-  (advice-add #'symex-goto-last :around #'symex-selection-advice)
-  (advice-add #'symex-goto-lowest :around #'symex-selection-advice)
-  (advice-add #'symex-goto-highest :around #'symex-selection-advice)
-  (advice-add #'symex-select-nearest :around #'symex-selection-advice))
+;;; Major modes in which symex should be active.
+(defvar symex-elisp-modes (list 'lisp-interaction-mode
+                                'emacs-lisp-mode
+                                'inferior-emacs-lisp-mode))
 
-(defun symex--remove-selection-advice ()
-  "Remove selection advice."
-  (advice-remove #'symex-go-forward #'symex-selection-motion-advice)
-  (advice-remove #'symex-go-backward #'symex-selection-motion-advice)
-  (advice-remove #'symex-go-up #'symex-selection-motion-advice)
-  (advice-remove #'symex-go-down #'symex-selection-motion-advice)
-  (advice-remove #'symex-traverse-forward #'symex-selection-motion-advice)
-  (advice-remove #'symex-traverse-backward #'symex-selection-motion-advice)
-  (advice-remove #'symex-traverse-forward-skip #'symex-selection-motion-advice)
-  (advice-remove #'symex-traverse-backward-skip #'symex-selection-motion-advice)
-  (advice-remove #'symex-leap-forward #'symex-selection-motion-advice)
-  (advice-remove #'symex-leap-backward #'symex-selection-motion-advice)
-  (advice-remove #'symex-soar-forward #'symex-selection-motion-advice)
-  (advice-remove #'symex-soar-backward #'symex-selection-motion-advice)
-  (advice-remove #'symex-goto-first #'symex-selection-advice)
-  (advice-remove #'symex-goto-last #'symex-selection-advice)
-  (advice-remove #'symex-goto-lowest #'symex-selection-advice)
-  (advice-remove #'symex-goto-highest #'symex-selection-advice)
-  (advice-remove #'symex-select-nearest #'symex-selection-advice))
+(defvar symex-racket-modes (list 'racket-mode
+                                 'racket-repl-mode))
+
+(defvar symex-lisp-modes (append symex-elisp-modes
+                                 symex-racket-modes
+                                 (list 'scheme-mode 'arc-mode)))
 
 ;;;###autoload
 (defun symex-initialize ()

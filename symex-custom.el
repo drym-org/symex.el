@@ -1,4 +1,4 @@
-;;; symex-ui.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
+;;; symex-custom.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
 
 ;; URL: https://github.com/countvajhula/symex.el
 
@@ -21,23 +21,36 @@
 
 ;;; Commentary:
 ;;
-;; User interface-related resources
+;; User Customization configuration
 ;;
 
 ;;; Code:
 
 
-(require 'symex-custom)
+(defgroup symex nil
+  "A language for editing symbolic expressions."
+  :group 'lisp)
 
-(defun symex--toggle-highlight ()
-  "Toggle highlighting of selected symex."
-  (interactive)
-  (if mark-active
-      (deactivate-mark)
-    (mark-sexp))
-  (setq symex-highlight-p
-        (not symex-highlight-p)))
+(defcustom symex-highlight-p nil
+  "Whether selected symexes should be highlighted."
+  :type 'boolean
+  :group 'symex)
+
+(defcustom symex-refocus-p t
+  "Whether to refocus on the selected symex when it's close to the edge of the screen."
+  :type 'boolean
+  :group 'symex)
+
+(defcustom symex-remember-branch-positions-p t
+  "Whether movement in the vertical direction should remember branch positions."
+  :type 'boolean
+  :group 'symex)
+
+(defcustom symex-modal-backend 'evil
+  "Whether to use hydra or evil as the backend for the modal interface."
+  :type 'symbol
+  :group 'symex)
 
 
-(provide 'symex-ui)
-;;; symex-ui.el ends here
+(provide 'symex-custom)
+;;; symex-custom.el ends here

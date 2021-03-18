@@ -138,7 +138,7 @@ when the way is blocked.")
 
 Executes the motion COUNT times."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex-execute-traversal symex--traversal-preorder)))
 
 (defun symex-traverse-forward-in-tree (count)
@@ -146,7 +146,7 @@ Executes the motion COUNT times."
 
 Executes the motion COUNT times."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex-execute-traversal symex--traversal-preorder-in-tree)))
 
 (defun symex-traverse-forward-skip (count)
@@ -154,7 +154,7 @@ Executes the motion COUNT times."
 
 Executes the motion COUNT times."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex-execute-traversal symex--traversal-skip-forward)))
 
 (defun symex-traverse-backward (count)
@@ -162,7 +162,7 @@ Executes the motion COUNT times."
 
 Executes the motion COUNT times."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex-execute-traversal symex--traversal-postorder)))
 
 (defun symex-traverse-backward-in-tree (count)
@@ -170,7 +170,7 @@ Executes the motion COUNT times."
 
 Executes the motion COUNT times."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex-execute-traversal symex--traversal-postorder-in-tree)))
 
 (defun symex-traverse-backward-skip (count)
@@ -178,7 +178,7 @@ Executes the motion COUNT times."
 
 Executes the motion COUNT times."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex-execute-traversal symex--traversal-skip-backward)))
 
 (defun symex-climb-branch (count)
@@ -186,7 +186,7 @@ Executes the motion COUNT times."
 
 Executes the motion COUNT times."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex-execute-traversal symex--traversal-climb-branch)))
 
 (defun symex-descend-branch (count)
@@ -194,7 +194,7 @@ Executes the motion COUNT times."
 
 Executes the motion COUNT times."
   (interactive "p")
-  (dotimes (i count)
+  (dotimes (_ count)
     (symex-execute-traversal symex--traversal-descend-branch)))
 
 (provide 'symex-traversals)

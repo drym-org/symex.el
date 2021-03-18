@@ -28,11 +28,12 @@
 
 ;;; Code:
 
-(eval-when-compile              ; eventually sort out the dependency
-  (defvar chimera-symex-mode))  ; order so this is unnecessary
+(require 'symex-custom)
 
-;; customization variables; avoid byte-compile warnings
-(defvar symex-refocus-p)
+;; to avoid byte compile warnings.  eventually sort out the dependency
+;; order so this is unnecessary
+(defvar chimera-symex-mode)
+(defvar rigpa-mode)
 
 ;; misc bindings defined elsewhere
 (declare-function rigpa-enter-higher-level "ext:ignore")
@@ -44,6 +45,24 @@
 
 (defvar-local symex--original-scroll-margin nil)
 (defvar-local symex--original-max-scroll-margin nil)
+
+(defun symex--adjust-point ()
+  "Adjust point context from the Emacs to the Vim interpretation.
+
+If entering symex mode from Insert or Emacs mode, then translate point
+so it indicates the appropriate symex in Symex mode.  This is necessary
+because in Emacs, the symex preceding point is indicated.  In Vim, the
+symex 'under' point is indicated.  We want to make sure to select the
+right symex when we enter Symex mode."
+  (interactive)
+  (when (or (not (symex--evil-installed-p))
+            (symex--evil-disabled-p)
+            (member evil-previous-state '(insert emacs)))
+    (unless (bobp)
+      (let ((just-inside-symex-p (save-excursion (backward-char)
+                                                 (lispy-left-p))))
+        (unless just-inside-symex-p
+          (backward-char))))))
 
 (defun symex--rigpa-installed-p ()
   "Check if rigpa is installed."

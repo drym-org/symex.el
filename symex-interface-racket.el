@@ -29,8 +29,8 @@
 (require 'racket-mode nil 'noerror)
 (require 'subr-x)
 
-(eval-when-compile                    ; from racket-mode
-  (defvar racket--repl-buffer-name))  ; avoid byte-compile warnings
+;; from racket-mode - avoid byte-compile warnings
+(defvar racket-repl-buffer-name)
 
 (declare-function racket-repl "ext:racket-mode")
 (declare-function racket--repl-forget-errors "ext:racket-mode")

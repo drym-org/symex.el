@@ -33,6 +33,7 @@
   "Define a keybinding in the symex evil state.
 
 Assigns FN to KEY in keymap MAP."
+  (ignore key fn map)  ; keep the byte-compiler happy
   (evil-define-key (list 'symex 'visual 'operator)
                    map
                    (kbd key)

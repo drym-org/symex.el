@@ -28,14 +28,17 @@
 
 (require 'hydra)
 (require 'evil)
+(require 'undo-tree)
 
 (require 'symex-ui)
 (require 'symex-misc)
+(require 'symex-transformations)
 (require 'symex-interop)
 
-(eval-when-compile              ; eventually sort out the dependency
-  (defvar chimera-symex-mode)   ; order so this is unnecessary
-  (declare-function chimera-hydra-portend-exit "ext:ignore"))
+;; to avoid byte compile warnings.  eventually sort out the dependency
+;; order so this is unnecessary
+(defvar chimera-symex-mode)
+(declare-function chimera-hydra-portend-exit "ext:ignore")
 
 (defun symex-hydra-exit ()
   "Take necessary action upon symex mode exit."
