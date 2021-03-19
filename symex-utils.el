@@ -26,6 +26,7 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 
 (defun symex--current-line-empty-p ()
   "Check if the current line is empty.
