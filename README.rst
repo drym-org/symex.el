@@ -58,10 +58,31 @@ This provides a keybinding to load the symex editing interface, and also enables
 Usage and Customization
 =======================
 
-The Menu
---------
+Evil or Hydra?
+--------------
 
-Entering the symex modal interface (via e.g. :code:`s-;`) shows you a comprehensive menu of all possible actions, by default. This is helpful initially, but over time you may prefer to dismiss the menu and bring it up only on demand, in order to conserve screen real estate. To do this, either run ``symex-toggle-menu`` via the menu entry point (``H-m``) while in symex mode, or add this to your ``init.d`` (e.g. in the ``:config`` section of the ``use-package`` form):
+Symex provides both an evil state as well as a hydra-based modal interface. Which one should you use?
+
+TL;DR: if you're an evil user, use the evil option (this is the default). Otherwise, use the hydra option.
+
+The evil option is less obtrusive and allows you to, for instance, execute ``M-x`` commands without leaving symex mode. It should feel very similar to using Normal state, and doesn't interfere with normal Emacs usage.
+
+The hydra operates almost identically to the evil state, but it comes with some benefits and drawbacks: first, it doesn't rely on evil being enabled so it is accessible to evil and vanilla Emacs users alike. Another benefit is that as it provides a menu that can be toggled on and off, it can help you learn the keybindings as you go along. On the other hand, the drawback is that the hydra will exit if you do something not specifically connected to symex mode -- for instance, if you run an ``M-x`` command. You could customize the hydra so that it is more persistent (e.g. "amaranth hydra") but doing so could cause it to interfere with normal Emacs functions, as hydra keybindings take precedence over everything else. In short, hydra is the more intrusive option, but it comes with some benefits.
+
+Depending on your choice, put one of these in the ``:custom`` `section <https://github.com/jwiegley/use-package#customizing-variables>`__ (not the ``:config`` section) of your ``use-package`` form:
+
+::
+
+  (symex-modal-backend 'evil)
+
+::
+
+  (symex-modal-backend 'hydra)
+
+The Menu (Hydra-only)
+---------------------
+
+Entering the symex modal interface (via e.g. :code:`s-;`) using the hydra option shows you a comprehensive menu of all possible actions, by default. This is helpful initially, but over time you may prefer to dismiss the menu and bring it up only on demand, in order to conserve screen real estate. To do this, either run ``symex-toggle-menu`` via the menu entry point (``H-m``) while in symex mode, or add this to your ``init.d`` (e.g. in the ``:config`` section of the ``use-package`` form):
 
 ::
 
@@ -70,7 +91,21 @@ Entering the symex modal interface (via e.g. :code:`s-;`) shows you a comprehens
 Up and Down
 -----------
 
-The default keybindings in symex mode treat increasingly nested code as being "higher" and elements closer to the root as "lower." Think going "up" to the nest and "down" to the root. But if you'd prefer to modify these or any other key bindings to whatever you find most natural, you can add the following config to your ``init.d``. If you're using ``use-package`` to manage your configuration, put something resembling this in the ``:config`` section:
+The default keybindings in symex mode treat increasingly nested code as being "higher" and elements closer to the root as "lower." Think going "up" to the nest and "down" to the root. But symex allows you to modify these or any other keybindings to whatever you may find most natural.
+
+If you're using evil, put something resembling this in your configuration *before* the call to ``(symex-initialize)``:
+
+::
+
+  (setq symex--user-evil-keyspec
+        '(("j" . symex-go-up)
+          ("k" . symex-go-down)
+          ("C-j" . symex-climb-branch)
+          ("C-k" . symex-descend-branch)
+          ("M-j" . symex-goto-highest)
+          ("M-k" . symex-goto-lowest)))
+
+If you're using hydra, put something resembling this in your configuration *after* the call to ``(symex-initialize)``:
 
 ::
 
@@ -83,8 +118,7 @@ The default keybindings in symex mode treat increasingly nested code as being "h
       ("C-j" symex-climb-branch "climb branch")
       ("C-k" symex-descend-branch "descend branch")
       ("M-j" symex-goto-highest "go to highest")
-      ("M-k" symex-goto-lowest "go to lowest")
-      ("F" nil nil))
+      ("M-k" symex-goto-lowest "go to lowest"))
 
 Branch Memory
 -------------
