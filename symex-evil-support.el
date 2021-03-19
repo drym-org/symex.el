@@ -34,10 +34,10 @@
 
 Assigns FN to KEY in keymap MAP."
   (ignore key fn map)  ; keep the byte-compiler happy
-  (evil-define-key (list 'symex 'visual 'operator)
-                   map
-                   (kbd key)
-                   fn))
+  (evil-define-key* (list 'symex 'visual 'operator)
+                    map
+                    (kbd key)
+                    fn))
 
 (defun symex--define-evil-keys-from-spec (keyspec keymap)
   "Define evil keys from a specification.
