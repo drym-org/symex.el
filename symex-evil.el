@@ -27,12 +27,14 @@
 ;;; Code:
 
 (require 'evil)
+(require 'cl-lib)
 
 (require 'symex-evil-support)
 (require 'symex-ui)
 (require 'symex-misc)
 (require 'symex-transformations)
 (require 'symex-interop)
+(require 'symex-utils)
 
 (defvar symex-editing-mode-map (make-sparse-keymap))
 
@@ -142,10 +144,15 @@
     ("C-g" . symex-escape-higher))
   "Key specification for symex evil state.")
 
+(defvar symex--user-evil-keyspec nil
+  "User key specification overrides for symex evil state.")
+
 (defun symex-evil-initialize ()
   "Initialize evil modal interface."
-  (symex--define-evil-keys-from-spec symex--evil-keyspec
-                                     symex-editing-mode-map)
+  (let ((keyspec (symex--combine-alists symex--user-evil-keyspec
+                                        symex--evil-keyspec)))
+    (symex--define-evil-keys-from-spec keyspec
+                                       symex-editing-mode-map))
   (unless (symex--rigpa-enabled-p)
     ;; without rigpa (which would handle this for us), we need to
     ;; manage the editing minor mode and ensure that it is active
