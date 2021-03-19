@@ -26,6 +26,7 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 
 (defun symex--current-line-empty-p ()
   "Check if the current line is empty.
@@ -87,6 +88,17 @@ MARKER is some kind of delimiter for the undo block, TODO."
              ,@body)
          (with-current-buffer ,buffer-var
            (symex--undo-collapse-end ',marker))))))
+
+(defun symex--combine-alists (al1 al2)
+  "Combine two association lists, prioritizing one of them.
+
+The result includes all values present in either AL1 or AL2.  If a key
+exists in both AL1 as well as AL2, the value in AL1 is retained in the
+result."
+  (let ((result al1))
+    (dolist (p al2)
+      (cl-pushnew p result :key #'car :test #'equal))
+    result))
 
 
 (provide 'symex-utils)

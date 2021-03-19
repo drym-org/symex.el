@@ -28,11 +28,12 @@
 
 ;;; Code:
 
-(eval-when-compile              ; eventually sort out the dependency
-  (defvar chimera-symex-mode))  ; order so this is unnecessary
+(require 'symex-custom)
 
-;; customization variables; avoid byte-compile warnings
-(defvar symex-refocus-p)
+;; to avoid byte compile warnings.  eventually sort out the dependency
+;; order so this is unnecessary
+(defvar chimera-symex-mode)
+(defvar rigpa-mode)
 
 ;; misc bindings defined elsewhere
 (declare-function rigpa-enter-higher-level "ext:ignore")
@@ -45,28 +46,66 @@
 (defvar-local symex--original-scroll-margin nil)
 (defvar-local symex--original-max-scroll-margin nil)
 
+(defun symex--adjust-point ()
+  "Adjust point context from the Emacs to the Vim interpretation.
+
+If entering symex mode from Insert or Emacs mode, then translate point
+so it indicates the appropriate symex in Symex mode.  This is necessary
+because in Emacs, the symex preceding point is indicated.  In Vim, the
+symex 'under' point is indicated.  We want to make sure to select the
+right symex when we enter Symex mode."
+  (interactive)
+  (when (or (not (symex--evil-installed-p))
+            (symex--evil-disabled-p)
+            (member evil-previous-state '(insert emacs)))
+    (unless (bobp)
+      (let ((just-inside-symex-p (save-excursion (backward-char)
+                                                 (lispy-left-p))))
+        (unless just-inside-symex-p
+          (backward-char))))))
+
+(defun symex--rigpa-installed-p ()
+  "Check if rigpa is installed."
+  (boundp 'rigpa-mode))
+
+(defun symex--rigpa-enabled-p ()
+  "Check if rigpa is enabled."
+  (and (symex--rigpa-installed-p) rigpa-mode))
+
+(defun symex--evil-installed-p ()
+  "Check if evil is installed."
+  (boundp 'evil-mode))
+
+(defun symex--evil-enabled-p ()
+  "Check if evil is enabled."
+  (and (symex--evil-installed-p) evil-mode))
+
+(defun symex--evil-disabled-p ()
+  "Check if evil is disabled."
+  (and (symex--evil-installed-p) (not evil-mode)))
+
 (defun symex-escape-higher ()
   "Exit symex mode via an 'escape'."
   (interactive)
-  (cond ((and (boundp 'rigpa-mode) rigpa-mode)
+  (cond ((symex--rigpa-enabled-p)
          (rigpa-enter-higher-level))
-        ((and (boundp 'evil-mode) evil-mode)
+        ((symex--evil-enabled-p)
          (evil-normal-state))
         (t (evil-emacs-state))))
 
 (defun symex-enter-lower ()
   "Exit symex mode via an 'enter'."
   (interactive)
-  (cond ((and (boundp 'rigpa-mode) rigpa-mode)
+  (cond ((symex--rigpa-enabled-p)
          (rigpa-enter-lower-level))
-        ((and (boundp 'evil-mode) evil-mode)
+        ((symex--evil-enabled-p)
          (evil-insert-state))
         (t (evil-emacs-state))))
 
 (defun symex-enter-lowest ()
   "Enter the lowest (manual) editing level."
   (interactive)
-  (cond ((and (boundp 'rigpa-mode) rigpa-mode)
+  (cond ((symex--rigpa-enabled-p)
          (rigpa-enter-lowest-level)
          ;; TODO: generalize so that commands specifically entering
          ;; another level (esp the lowest) clear any recall flags;
@@ -74,7 +113,7 @@
          ;; override it temporarily, so that exiting the lowest level
          ;; via normal exits (e.g. Esc) returns to the prior state
          (chimera-hydra-portend-exit chimera-symex-mode))
-        ((and (boundp 'evil-mode) evil-mode)
+        ((symex--evil-enabled-p)
          (evil-insert-state))
         (t (evil-emacs-state))))
 
@@ -95,7 +134,7 @@
 
 (defun symex--signal-exit ()
   "Witness symex exit and take appropriate action."
-  (when (and (boundp 'rigpa-mode) rigpa-mode)
+  (when (symex--rigpa-enabled-p)
     (chimera-hydra-signal-exit chimera-symex-mode
                                #'chimera-handle-hydra-exit)))
 

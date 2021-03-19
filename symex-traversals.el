@@ -133,61 +133,69 @@ when the way is blocked.")
                       (precaution (circuit (move backward))
                                   (beforehand (not (at root)))))))
 
-(defun symex-traverse-forward ()
-  "Traverse symex as a tree, using pre-order traversal."
-  (interactive)
-  (let ((result (symex-execute-traversal symex--traversal-preorder)))
-    (message "%s" result)
-    result))
+(defun symex-traverse-forward (count)
+  "Traverse symex as a tree, using pre-order traversal.
 
-(defun symex-traverse-forward-in-tree ()
-  "Traverse symex forward using pre-order traversal, stopping at end of tree."
-  (interactive)
-  (let ((result (symex-execute-traversal symex--traversal-preorder-in-tree)))
-    (message "%s" result)
-    result))
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-execute-traversal symex--traversal-preorder)))
 
-(defun symex-traverse-forward-skip ()
-  "Traverse symex as a tree, skipping forward."
-  (interactive)
-  (let ((result (symex-execute-traversal symex--traversal-skip-forward)))
-    (message "%s" result)
-    result))
+(defun symex-traverse-forward-in-tree (count)
+  "Traverse symex forward using pre-order traversal, stopping at end of tree.
 
-(defun symex-traverse-backward ()
-  "Traverse symex as a tree, using converse post-order traversal."
-  (interactive)
-  (let ((result (symex-execute-traversal symex--traversal-postorder)))
-    (message "%s" result)
-    result))
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-execute-traversal symex--traversal-preorder-in-tree)))
 
-(defun symex-traverse-backward-in-tree ()
-  "Traverse symex backward using post-order traversal, stopping at root of tree."
-  (interactive)
-  (let ((result (symex-execute-traversal symex--traversal-postorder-in-tree)))
-    (message "%s" result)
-    result))
+(defun symex-traverse-forward-skip (count)
+  "Traverse symex as a tree, skipping forward.
 
-(defun symex-traverse-backward-skip ()
-  "Traverse symex as a tree, skipping backwards."
-  (interactive)
-  (let ((result (symex-execute-traversal symex--traversal-skip-backward)))
-    (message "%s" result)
-    result))
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-execute-traversal symex--traversal-skip-forward)))
 
-(defun symex-climb-branch ()
-  "Climb up."
-  (interactive)
-  (let ((result (symex-execute-traversal symex--traversal-climb-branch)))
-    (message "%s" result)
-    result))
+(defun symex-traverse-backward (count)
+  "Traverse symex as a tree, using converse post-order traversal.
 
-(defun symex-descend-branch ()
-  "Descend the tree."
-  (interactive)
-  (let ((result (symex-execute-traversal symex--traversal-descend-branch)))
-    (message "%s" result)
-    result))
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-execute-traversal symex--traversal-postorder)))
+
+(defun symex-traverse-backward-in-tree (count)
+  "Traverse symex backward using post-order traversal, stopping at root of tree.
+
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-execute-traversal symex--traversal-postorder-in-tree)))
+
+(defun symex-traverse-backward-skip (count)
+  "Traverse symex as a tree, skipping backwards.
+
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-execute-traversal symex--traversal-skip-backward)))
+
+(defun symex-climb-branch (count)
+  "Climb up.
+
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-execute-traversal symex--traversal-climb-branch)))
+
+(defun symex-descend-branch (count)
+  "Descend the tree.
+
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-execute-traversal symex--traversal-descend-branch)))
 
 (provide 'symex-traversals)
 ;;; symex-traversals.el ends here
