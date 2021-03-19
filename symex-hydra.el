@@ -174,6 +174,11 @@ to enter, and any of the standard exits to exit."
   ("<escape>" symex-escape-higher "escape higher" :exit t)
   ("C-g" symex-escape-higher "escape higher" :exit t))
 
+(defun symex-hydra-initialize ()
+  "Initialize hydra modal interface."
+  ;; just for symmetry - nothing specific to do here atm
+  nil)
+
 
 (provide 'symex-hydra)
 ;;; symex-hydra.el ends here

@@ -30,6 +30,8 @@
 
 (require 'symex-evil-support)
 (require 'symex-ui)
+(require 'symex-misc)
+(require 'symex-transformations)
 (require 'symex-interop)
 
 (defvar symex-editing-mode-map (make-sparse-keymap))
@@ -140,8 +142,18 @@
     ("C-g" . symex-escape-higher))
   "Key specification for symex evil state.")
 
-(symex--define-evil-keys-from-spec symex--evil-keyspec
-                                   symex-editing-mode-map)
+(defun symex-evil-initialize ()
+  "Initialize evil modal interface."
+  (symex--define-evil-keys-from-spec symex--evil-keyspec
+                                     symex-editing-mode-map)
+  (unless (symex--rigpa-enabled-p)
+    ;; without rigpa (which would handle this for us), we need to
+    ;; manage the editing minor mode and ensure that it is active
+    ;; while in symex evil state and inactive when in other states
+    (add-hook 'evil-normal-state-entry-hook #'symex-disable-editing-minor-mode)
+    (add-hook 'evil-insert-state-entry-hook #'symex-disable-editing-minor-mode)
+    (add-hook 'evil-emacs-state-entry-hook #'symex-disable-editing-minor-mode)
+    (add-hook 'evil-replace-state-entry-hook #'symex-disable-editing-minor-mode)))
 
 (defun symex-enable-editing-minor-mode ()
   "Enable symex minor mode."

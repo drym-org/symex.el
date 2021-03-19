@@ -46,9 +46,9 @@ Read the specification KEYSPEC and define the indicated keybindings in
 the KEYMAP.  The specification of each keybinding is expected to be in
 the form (key . fn)."
   (dolist (keybinding keyspec)
-    (symex--define-evil-key (car keybinding)
-                            (cdr keybinding)
-                            keymap)))
+    (let ((key (car keybinding))
+          (fn (cdr keybinding)))
+      (symex--define-evil-key key fn keymap))))
 
 (provide 'symex-evil-support)
 ;;; symex-evil-support.el ends here

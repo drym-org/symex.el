@@ -152,15 +152,11 @@ advises functions to enable or disable features based on user configuration."
     (advice-add #'symex-go-backward :around #'symex--forget-branch-positions)
     (advice-add #'symex-go-forward :around #'symex--forget-branch-positions))
   (symex--add-selection-advice)
-  (when (and (eq symex-modal-backend 'evil)
-             (not (symex--rigpa-enabled-p)))
-    ;; without rigpa (which would handle this for us), we need to
-    ;; manage the editing minor mode and ensure that it is active
-    ;; while in symex evil state and inactive when in other states
-    (add-hook 'evil-normal-state-entry-hook #'symex-disable-editing-minor-mode)
-    (add-hook 'evil-insert-state-entry-hook #'symex-disable-editing-minor-mode)
-    (add-hook 'evil-emacs-state-entry-hook #'symex-disable-editing-minor-mode)
-    (add-hook 'evil-replace-state-entry-hook #'symex-disable-editing-minor-mode)))
+  ;; initialize modal interface frontend
+  (cond ((eq symex-modal-backend 'hydra)
+         (symex-hydra-initialize))
+        ((eq symex-modal-backend 'evil)
+         (symex-evil-initialize))))
 
 (defun symex-disable ()
   "Disable symex.
