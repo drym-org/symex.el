@@ -63,7 +63,7 @@ Evil or Hydra?
 
 Symex provides both an evil state as well as a hydra-based modal interface. Which one should you use?
 
-TL;DR: if you're an evil user, use the evil option (this is the default). Otherwise, use the hydra option.
+**TL;DR**: if you're an evil user, use the evil option (this is the default). Otherwise, use the hydra option.
 
 The evil option is less obtrusive and allows you to, for instance, execute ``M-x`` commands without leaving symex mode. It should feel very similar to using Normal state, and doesn't interfere with normal Emacs usage.
 
