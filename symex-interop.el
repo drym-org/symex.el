@@ -57,7 +57,7 @@ right symex when we enter Symex mode."
   (interactive)
   (when (or (not (symex--evil-installed-p))
             (symex--evil-disabled-p)
-            (member evil-previous-state '(insert emacs)))
+            (member evil-state '(insert emacs)))
     (unless (bobp)
       (let ((just-inside-symex-p (save-excursion (backward-char)
                                                  (lispy-left-p))))
