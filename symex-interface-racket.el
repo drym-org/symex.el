@@ -31,6 +31,7 @@
 
 ;; from racket-mode - avoid byte-compile warnings
 (defvar racket-repl-buffer-name)
+(defvar racket-xp-mode)
 
 (declare-function racket-repl "ext:racket-mode")
 (declare-function racket--repl-forget-errors "ext:racket-mode")
