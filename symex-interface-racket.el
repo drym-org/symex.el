@@ -113,9 +113,11 @@ Accounts for different point location in evil vs Emacs mode."
 (defun symex-describe-symbol-racket ()
   "Describe symbol at point."
   (interactive)
-  (cond (racket-xp-mode (racket-xp-describe))
-        ((eq major-mode 'racket-repl-mode) (racket-repl-describe))
-        (t (error "Enable racket-xp-mode or start the REPL!"))))
+  (let ((original-window (selected-window)))
+    (cond (racket-xp-mode (racket-xp-describe))
+          ((eq major-mode 'racket-repl-mode) (racket-repl-describe))
+          (t (error "Enable racket-xp-mode or start the REPL!")))
+    (select-window original-window)))
 
 (defun symex-repl-racket ()
   "Go to REPL."
