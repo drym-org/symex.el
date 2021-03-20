@@ -285,7 +285,8 @@ Version 2017-11-01"
   (interactive)
   (cond ((and (not (eobp))
               (save-excursion (forward-char) (lispy-right-p)))  ; |)
-         (forward-char)
+         (thing-at-point--beginning-of-sexp))
+        ((lispy-right-p) ; )|
          (lispy-different))
         ((symex-comment-line-p)
          (symex-if-stuck (symex--go-backward)
