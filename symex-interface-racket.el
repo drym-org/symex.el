@@ -38,7 +38,8 @@
 (declare-function racket-send-last-sexp "ext:racket-mode")
 (declare-function racket-send-definition "ext:racket-mode")
 (declare-function racket--repl-last-sexp-start "ext:racket-mode")
-(declare-function racket-describe "ext:racket-mode")
+(declare-function racket-xp-describe "ext:racket-mode")
+(declare-function racket-repl-describe "ext:racket-mode")
 (declare-function racket-run "ext:racket-mode")
 
 (defun symex--racket-send-to-repl (code)
@@ -78,7 +79,7 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-eval-definition-racket ()
   "Eval entire containing definition."
-  (racket-send-definition nil))
+  (racket-send-definition))
 
 (defun symex-eval-pretty-racket ()
   "Evaluate symex and render the result in a useful string form."
@@ -111,7 +112,9 @@ Accounts for different point location in evil vs Emacs mode."
 (defun symex-describe-symbol-racket ()
   "Describe symbol at point."
   (interactive)
-  (racket-describe))
+  (cond (racket-xp-mode (racket-xp-describe))
+        ((eq major-mode 'racket-repl-mode) (racket-repl-describe))
+        (t (error "Enable racket-xp-mode or start the REPL!"))))
 
 (defun symex-repl-racket ()
   "Go to REPL."
