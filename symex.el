@@ -132,7 +132,10 @@
 
 (defvar symex-lisp-modes (append symex-elisp-modes
                                  symex-racket-modes
-                                 (list 'scheme-mode 'arc-mode)))
+                                 (list 'scheme-mode
+                                       'arc-mode
+                                       'clojure-mode
+                                       'lisp-mode)))
 
 ;;;###autoload
 (defun symex-initialize ()
