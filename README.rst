@@ -63,11 +63,13 @@ Evil or Hydra?
 
 Symex provides both an evil state as well as a hydra-based modal interface. Which one should you use?
 
-**TL;DR**: if you're an evil user, use the evil option (this is the default). Otherwise, use the hydra option.
+**TL;DR**: in the long term, use the evil option (this is the default, and it is available to both evil and vanilla emacs users). If you're learning and would like some hand-holding as you familiarize yourself with the keybindings, use the hydra option.
 
-The evil option is less obtrusive and allows you to, for instance, execute ``M-x`` commands without leaving symex mode. It should feel very similar to using Normal state, and doesn't interfere with normal Emacs usage.
+The evil option is less obtrusive and allows you to, for instance, execute ``M-x`` commands without leaving symex mode. It should feel very similar to using Normal state, and doesn't interfere with normal Emacs usage including any custom keybindings you may be using.
 
-The hydra operates almost identically to the evil state, but it comes with some benefits and drawbacks: first, it doesn't rely on evil being enabled so it is accessible to evil and vanilla Emacs users alike. Another benefit is that as it provides a menu that can be toggled on and off, it can help you learn the keybindings as you go along. On the other hand, the drawback is that the hydra will exit if you do something not specifically connected to symex mode -- for instance, if you run an ``M-x`` command. You could customize the hydra so that it is more persistent (e.g. "amaranth hydra") but doing so could cause it to interfere with normal Emacs functions, as hydra keybindings take precedence over everything else. In short, hydra is the more intrusive option, but it comes with some benefits.
+The hydra operates almost identically to the evil state, but it provides a comprehensive menu that can be toggled on and off, and can therefore help you learn the keybindings as you go along. On the other hand, the drawback is that the hydra will exit if you do something not specifically connected to symex mode -- for instance, if you run an ``M-x`` command, or do a text search, or run a custom command of some kind. You could customize the hydra so that it is more persistent (e.g. "pink" or "amaranth" hydra) but doing so could cause it to interfere with normal Emacs functions, as hydra keybindings take precedence over everything else.
+
+In short, evil provides a more seamless experience, but hydra may be a good option while you are learning to use symex.
 
 Depending on your choice, put one of these in the ``:custom`` `section <https://github.com/jwiegley/use-package#customizing-variables>`__ (not the ``:config`` section) of your ``use-package`` form:
 
