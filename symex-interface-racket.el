@@ -121,7 +121,8 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-repl-racket ()
   "Go to REPL."
-  (racket-repl))
+  (racket-repl)
+  (goto-char (point-max)))
 
 (defun symex-run-racket ()
   "Evaluate buffer."

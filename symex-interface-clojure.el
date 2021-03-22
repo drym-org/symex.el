@@ -68,6 +68,8 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-repl-clojure ()
   "Go to REPL."
+  ;; this already goes to the active repl prompt
+  ;; so there's no need to move point there
   (cider-switch-to-repl-buffer))
 
 (defun symex-run-clojure ()

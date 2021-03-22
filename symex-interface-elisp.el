@@ -72,7 +72,8 @@ open in most recently used other window."
              (evil-window-right 1)
              (ielm))
     (evil-window-mru)
-    (ielm)))
+    (ielm))
+  (goto-char (point-max)))
 
 (defun symex-run-elisp ()
   "Evaluate buffer."

@@ -72,7 +72,8 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-repl-arc ()
   "Go to REPL."
-  (arc-repl))
+  (arc-repl)
+  (goto-char (point-max)))
 
 (defun symex-run-arc ()
   "Evaluate buffer."

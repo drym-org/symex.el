@@ -68,6 +68,8 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-repl-common-lisp ()
   "Go to REPL."
+  ;; this already goes to the active repl prompt
+  ;; so there's no need to move point there
   (slime-repl))
 
 (defun symex-run-common-lisp ()

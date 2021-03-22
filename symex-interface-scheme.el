@@ -65,7 +65,8 @@
 
 (defun symex-repl-scheme ()
   "Go to REPL."
-  (geiser-mode-switch-to-repl nil))
+  (geiser-mode-switch-to-repl nil)
+  (goto-char (point-max)))
 
 (defun symex-run-scheme ()
   "Evaluate buffer."
