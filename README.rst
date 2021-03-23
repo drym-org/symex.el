@@ -86,6 +86,9 @@ Key Bindings
 
 The following table lists the key bindings in symex mode. You would only need this table for the evil frontend, as with the hydra frontend, you can lookup the keybindings at any time by pulling up the hydra menu (default binding: ``H-m``).
 
+Movement
+~~~~~~~~
+
 .. list-table::
    :header-rows: 1
 
@@ -95,18 +98,6 @@ The following table lists the key bindings in symex mode. You would only need th
 
    * - ``h``, ``j``, ``k``, ``l``
      - backwards, down, up, forwards
-     -
-
-   * - ``(``, ``[``, ``{``, ``<``
-     - create symex with indicated delimiter
-     -
-
-   * - ``)``, ``]``, ``}``, ``>``
-     - wrap symex with indicated delimiter
-     -
-
-   * - ``w``
-     - wrap with parens and insert
      -
 
    * - ``f``, ``b``
@@ -129,8 +120,45 @@ The following table lists the key bindings in symex mode. You would only need th
      - climb, descend
      - a fast way to go up and down a tree
 
-   * - ``y``, ``p``, ``P``
-     - yank (copy), paste after, paste before
+   * - ``0`` / ``M-h``
+     - go to first symex at this level
+     -
+
+   * - ``$``, ``M-l``
+     - go to last symex at this level
+     -
+
+   * - ``M-j``, ``M-k``
+     - go to lowest, highest symex in the tree
+     -
+
+Editing
+~~~~~~~
+
+.. list-table::
+
+   * - ``i``, ``a``
+     - insert at beginning, append at end
+     -
+
+   * - ``I``, ``A``
+     - insert before, append after
+     -
+
+   * - ``o``, ``O``
+     - open line below, above
+     -
+
+   * - ``(``, ``[``, ``{``, ``<``
+     - create symex with indicated delimiter
+     -
+
+   * - ``)``, ``]``, ``}``, ``>``
+     - wrap symex with indicated delimiter
+     -
+
+   * - ``w``
+     - wrap with parens and insert
      -
 
    * - ``x``
@@ -139,6 +167,10 @@ The following table lists the key bindings in symex mode. You would only need th
 
    * - ``c``
      - change
+     -
+
+   * - ``y``, ``p``, ``P``
+     - yank (copy), paste after, paste before
      -
 
    * - ``C``, ``s``
@@ -169,6 +201,43 @@ The following table lists the key bindings in symex mode. You would only need th
      - swallow head, swallow tail
      -
 
+   * - ``|``, ``m``
+     - split, join/merge
+     -
+
+   * - ``\\``
+     - splice
+     - clip the delimiters, joining the symex to the containing expression
+
+   * - ``n``, ``C-S-o``
+     - insert newline before, append newline after
+     -
+
+   * - ``J``, ``N``
+     - join with next line, join with preceding line
+     -
+
+   * - ``M-J``
+     - collapse to a single line
+     -
+
+   * - ``=``, ``<tab>``
+     - tidy
+     - indent and remove extraneous whitespace
+
+   * - ``M-=``
+     - tidy recursively
+     - tidies while traversing the symex from the highest branch to the root, for cases where a simple tidy isn't adequate
+
+   * - ``;``
+     - comment out
+     -
+
+Control
+~~~~~~~
+
+.. list-table::
+
    * - ``e``, ``E``, ``d``, ``M-e``, ``T``
      - evaluate, pretty evaluate, evaluate definition, evaluate recursively, evaluate as "thunk"
      - ``T`` evaluates the indicated symex as if it were wrapped with parentheses, i.e. invoking it as a function, passing no arguments
@@ -191,62 +260,6 @@ The following table lists the key bindings in symex mode. You would only need th
 
    * - ``R`` / ``X``
      - run/eval the buffer
-     -
-
-   * - ``|``, ``m``
-     - split, join/merge
-     -
-
-   * - ``\\``
-     - splice
-     - clip the delimiters, joining the symex to the containing expression
-
-   * - ``o``, ``O``
-     - open line below, above
-     -
-
-   * - ``n``, ``C-S-o``
-     - insert newline before, append newline after
-     -
-
-   * - ``J``, ``N``
-     - join with next line, join with preceding line
-     -
-
-   * - ``M-J``
-     - collapse to a single line
-     -
-
-   * - ``0`` / ``M-h``
-     - go to first symex at this level
-     -
-
-   * - ``$``, ``M-l``
-     - go to last symex at this level
-     -
-
-   * - ``M-j``, ``M-k``
-     - go to lowest, highest symex in the tree
-     -
-
-   * - ``=``, ``<tab>``
-     - tidy
-     - indent and remove extraneous whitespace
-
-   * - ``M-=``
-     - tidy recursively
-     - tidies while traversing the symex from the highest branch to the root, for cases where a simple tidy isn't adequate
-
-   * - ``i``, ``a``
-     - insert at beginning, append at end
-     -
-
-   * - ``I``, ``A``
-     - insert before, append after
-     -
-
-   * - ``;``
-     - comment out
      -
 
    * - ``C-;``
