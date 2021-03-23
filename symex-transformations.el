@@ -299,6 +299,7 @@ by default, joins next symex to current one."
 (defun symex-paste-before (count)
   "Paste before symex, COUNT times."
   (interactive "p")
+  (setq this-command 'evil-paste-before)
   (symex--with-undo-collapse
     (dotimes (_ count)
       (symex--paste-before))))
@@ -326,6 +327,7 @@ by default, joins next symex to current one."
 (defun symex-paste-after (count)
   "Paste after symex, COUNT times."
   (interactive "p")
+  (setq this-command 'evil-paste-after)
   (symex--with-undo-collapse
     (dotimes (_ count)
       (symex--paste-after))))
