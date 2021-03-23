@@ -138,6 +138,7 @@ executing this command to get the expected behavior."
     ("=" . symex-tidy)
     ("<tab>" . symex-tidy)
     ("M-=" . symex-tidy-proper)
+    ("M-<tab>" . symex-tidy)
     ("A" . symex-append-after)
     ("a" . symex-insert-at-end)
     ("i" . symex-insert-at-beginning)
