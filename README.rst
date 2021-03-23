@@ -106,7 +106,7 @@ Movement
 
    * - ``F``, ``B``
      - skip forwards, backwards
-     -
+     - a quick way to move forwards and backwards -- traverse, but don't enter nested expressions
 
    * - ``C-h``, ``C-l``
      - leap backwards, forwards
@@ -118,7 +118,7 @@ Movement
 
    * - ``C-k``, ``C-j``
      - climb, descend
-     - a fast way to go up and down a tree
+     - a quick way to go up and down a tree
 
    * - ``0`` / ``M-h``
      - go to first symex at this level
@@ -174,7 +174,7 @@ Editing
      -
 
    * - ``C``, ``s``
-     - clear, replace
+     - clear, replace/substitute
      -
 
    * - ``S``
