@@ -67,7 +67,7 @@ Symex provides both an evil state as well as a hydra-based modal interface. Whic
 
 The evil option is less obtrusive and allows you to, for instance, execute ``M-x`` commands without leaving symex mode. It should feel very similar to using Normal state, and doesn't interfere with normal Emacs usage including any custom keybindings you may be using.
 
-The hydra operates almost identically to the evil state, but it provides a comprehensive menu that can be toggled on and off, and can therefore help you learn the keybindings as you go along. On the other hand, the drawback is that the hydra will exit if you do something not specifically connected to symex mode -- for instance, if you run an ``M-x`` command, or do a text search, or run a custom command of some kind. You could customize the hydra so that it is more persistent (e.g. "pink" or "amaranth" hydra) but doing so could cause it to interfere with normal Emacs functions, as hydra keybindings take precedence over everything else.
+The hydra operates almost identically to the evil state, but it provides a comprehensive menu that can be toggled on and off, and can therefore help you learn the keybindings as you go along. On the other hand, the drawback is that the hydra will exit if you do something not specifically connected to symex mode -- for instance, if you run an ``M-x`` command, or do a text search, or save the buffer, or run a custom command of some kind. You could customize the hydra so that it is more persistent (e.g. "pink" or "amaranth" hydra) but doing so could cause it to interfere with normal Emacs functions, as hydra keybindings take precedence over everything else.
 
 In short, evil provides a more seamless experience, but hydra may be a good option while you are learning to use symex.
 
@@ -80,6 +80,194 @@ Depending on your choice, put one of these in the ``:custom`` `section <https://
 ::
 
   (symex-modal-backend 'hydra)
+
+Key Bindings
+------------
+
+The following table lists the key bindings in symex mode. You would only need this table for the evil frontend, as with the hydra frontend, you can lookup the keybindings at any time by pulling up the hydra menu (default binding: ``H-m``).
+
+.. list-table::
+   :header-rows: 1
+
+   * - Key
+     - Action
+     - Remarks
+
+   * - ``h``, ``j``, ``k``, ``l``
+     - backwards, down, up, forwards
+     -
+
+   * - ``(``, ``[``, ``{``, ``<``
+     - create symex with indicated delimiter
+     -
+
+   * - ``)``, ``]``, ``}``, ``>``
+     - wrap symex with indicated delimiter
+     -
+
+   * - ``w``
+     - wrap with parens and insert
+     -
+
+   * - ``f``, ``b``
+     - traverse forwards, backwards
+     -
+
+   * - ``F``, ``B``
+     - skip forwards, backwards
+     -
+
+   * - ``C-h``, ``C-l``
+     - leap backwards, forwards
+     - "leap" to adjacent branches in the current tree, preserving position on branch
+
+   * - ``C-M-h``, ``C-M-l``
+     - soar backwards, forwards
+     - leap, but crossing trees if necessary
+
+   * - ``C-k``, ``C-j``
+     - climb, descend
+     - a fast way to go up and down a tree
+
+   * - ``y``, ``p``, ``P``
+     - yank (copy), paste after, paste before
+     -
+
+   * - ``x``
+     - delete
+     -
+
+   * - ``c``
+     - change
+     -
+
+   * - ``C``, ``s``
+     - clear, replace
+     -
+
+   * - ``S``
+     - change "surrounding" delimiter
+     -
+
+   * - ``H``, ``L``
+     - move/shift symex backwards, forwards
+     -
+
+   * - ``K``
+     - raise
+     -
+
+   * - ``C-S-j`` / ``C-{``, ``C-S-k`` / ``C-}``
+     - emit backwards, forwards
+     -
+
+   * - ``C-S-h`` / ``C-(``, ``C-S-l`` / ``C-)``
+     - capture backwards, forwards
+     -
+
+   * - ``z``, ``Z``
+     - swallow head, swallow tail
+     -
+
+   * - ``e``, ``E``, ``d``, ``M-e``, ``T``
+     - evaluate, pretty evaluate, evaluate definition, evaluate recursively, evaluate as "thunk"
+     - ``T`` evaluates the indicated symex as if it were wrapped with parentheses, i.e. invoking it as a function, passing no arguments
+
+   * - ``:``
+     - eval-expression
+     - evaluate an arbitrary expression in the minibuffer
+
+   * - ``t``
+     - switch to a scratch buffer
+     -
+
+   * - ``M``
+     - display the messages buffer alongside
+     -
+
+   * - ``r``
+     - go to REPL
+     -
+
+   * - ``R`` / ``X``
+     - run/eval the buffer
+     -
+
+   * - ``|``, ``m``
+     - split, join/merge
+     -
+
+   * - ``\\``
+     - splice
+     - clip the delimiters, joining the symex to the containing expression
+
+   * - ``o``, ``O``
+     - open line below, above
+     -
+
+   * - ``n``, ``C-S-o``
+     - insert newline before, append newline after
+     -
+
+   * - ``J``, ``N``
+     - join with next line, join with preceding line
+     -
+
+   * - ``M-J``
+     - collapse to a single line
+     -
+
+   * - ``0`` / ``M-h``
+     - go to first symex at this level
+     -
+
+   * - ``$``, ``M-l``
+     - go to last symex at this level
+     -
+
+   * - ``M-j``, ``M-k``
+     - go to lowest, highest symex in the tree
+     -
+
+   * - ``=``, ``<tab>``
+     - tidy
+     - indent and remove extraneous whitespace
+
+   * - ``M-=``
+     - tidy recursively
+     - tidies while traversing the symex from the highest branch to the root, for cases where a simple tidy isn't adequate
+
+   * - ``i``, ``a``
+     - insert at beginning, append at end
+     -
+
+   * - ``I``, ``A``
+     - insert before, append after
+     -
+
+   * - ``;``
+     - comment out
+     -
+
+   * - ``C-;``
+     - evaluate, and insert result
+     -
+
+   * - ``H-h``
+     - toggle highlight
+     -
+
+   * - ``?``
+     - describe / lookup documentation
+     -
+
+   * - ``<return>``
+     - enter insertion state
+     -
+
+   * - ``<escape>``, ``C-g``
+     - exit
+     -
 
 The Menu (Hydra-only)
 ---------------------
