@@ -127,6 +127,35 @@
          (progn (forward-char 2) ;; need to go forward by 2 for some reason
                 (lispy-right-p)))))
 
+(defun symex--racket-syntax-object-p ()
+  "Check if the symex is a racket syntax object."
+  (looking-at (concat "#['`]" lispy-left)))
+
+(defun symex--quoted-list-p ()
+  "Check if the symex is a quoted list."
+  (looking-at (concat "['`]" lispy-left)))
+
+(defun symex--clojure-literal-lambda-p ()
+  "Check if the symex is a clojurescript anonymous function literal."
+  (looking-at (concat "#" lispy-left)))
+
+(defun symex--special-empty-list-p ()
+  "Check if we're looking at a 'special' empty list.
+
+This includes any special cases that should be treated as lists for
+the purpose of movement, such as quoted lists and Lisp flavor-specific
+special forms.  This may be the sort of information that's best
+obtained from an AST-aware primitives layer, rather than parsed
+as special cases here."
+  (or (save-excursion
+        (and (symex--racket-syntax-object-p)
+             (progn (forward-char 4)
+                    (lispy-right-p))))
+      (save-excursion
+        (and (or (symex--quoted-list-p) (symex--clojure-literal-lambda-p))
+             (progn (forward-char 3)
+                    (lispy-right-p))))))
+
 (defun symex-atom-p ()
   "Check if the symex is an atom."
   (not (lispy-left-p)))
@@ -220,12 +249,15 @@ of symex mode (use the public `symex-go-backward` instead)."
     (cond ((and (lispy-left-p)
                 (not (symex-empty-list-p)))
            (forward-char))
-          ;; one-off - better to recognize these as delimiters
-          ;; at the AST level
-          ((looking-at (concat "#['`]" lispy-left)) ; racket syntax objects
+          ;; note that at least some symex features would benefit by
+          ;; treating these special cases as "symex-left-p" but it
+          ;; would likely be too much special case handling to be
+          ;; worth it to support those cases naively, without an AST
+          ((and (symex--racket-syntax-object-p)
+                (not (symex--special-empty-list-p)))
            (forward-char 3))
-          ;; clojurescript anonymous function literal, quoted list
-          ((looking-at (concat "[#'`]" lispy-left))
+          ((and (or (symex--quoted-list-p) (symex--clojure-literal-lambda-p))
+                (not (symex--special-empty-list-p)))
            (forward-char 2))
           (t (setq result 0)))
     result))
