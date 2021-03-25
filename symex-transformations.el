@@ -535,9 +535,11 @@ then no action is taken."
   (fixup-whitespace)
   (when (save-excursion (looking-at-p "[[:space:]]"))
       (forward-char))
-  (save-excursion
-    (forward-sexp)
-    (fixup-whitespace))
+  (condition-case nil
+      (save-excursion
+        (forward-sexp)
+        (fixup-whitespace))
+    (error nil))
   (condition-case err
       (save-excursion
         (apply #'evil-indent
