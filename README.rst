@@ -108,11 +108,11 @@ Movement
      - skip forwards, backwards
      - a quick way to move forwards and backwards -- traverse, but don't enter nested expressions
 
-   * - ``C-b``, ``C-f``
+   * - ``C-,``, ``C-/``
      - leap backwards, forwards
      - "leap" to adjacent branches in the current tree, preserving position on branch
 
-   * - ``C-M-b``, ``C-M-f``
+   * - ``C-M-,``, ``C-M-/``
      - soar backwards, forwards
      - leap, but crossing trees if necessary
 
