@@ -108,11 +108,11 @@ Movement
      - skip forwards, backwards
      - a quick way to move forwards and backwards -- traverse, but don't enter nested expressions
 
-   * - ``C-h``, ``C-l``
+   * - ``C-b``, ``C-f``
      - leap backwards, forwards
      - "leap" to adjacent branches in the current tree, preserving position on branch
 
-   * - ``C-M-h``, ``C-M-l``
+   * - ``C-M-b``, ``C-M-f``
      - soar backwards, forwards
      - leap, but crossing trees if necessary
 
@@ -149,11 +149,11 @@ Editing
      - open line below, above
      -
 
-   * - ``(``, ``[``, ``{``, ``<``
+   * - ``(``, ``[``, ``{``
      - create symex with indicated delimiter
      -
 
-   * - ``)``, ``]``, ``}``, ``>``
+   * - ``)``, ``]``, ``}``
      - wrap symex with indicated delimiter
      -
 
@@ -209,12 +209,12 @@ Editing
      - splice
      - clip the delimiters, joining the symex to the containing expression
 
-   * - ``n``, ``C-S-o``
+   * - ``>``, ``C->`` / ``C-S-o``
      - insert newline before, append newline after
      -
 
-   * - ``J``, ``N``
-     - join with next line, join with preceding line
+   * - ``<``,  ``J`` / ``C-<``
+     - join with preceding line, join with next line
      -
 
    * - ``M-J``
@@ -278,7 +278,7 @@ Control
      - enter insertion state
      -
 
-   * - ``<escape>``, ``C-g``
+   * - ``<escape>``
      - exit
      -
 
