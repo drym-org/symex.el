@@ -543,7 +543,13 @@ then no action is taken."
         (apply #'evil-indent
                (seq-take (evil-cp-a-form 1)
                          2)))
-    (error (message "[Symex] symex-tidy: suppressed error %S" err)))
+    (error (message "[Symex] symex-tidy: suppressed error %S" err)
+           (let ((start (point))
+                 (end (save-excursion (forward-sexp) (point))))
+             ;; maybe we should just always use this instead
+             (save-excursion
+               (apply #'evil-indent
+                      (list start end))))))
   (symex-select-nearest))
 
 (defun symex-tidy-proper ()
