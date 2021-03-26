@@ -272,13 +272,24 @@ by default, joins next symex to current one."
       (forward-char)))
   (symex-tidy))
 
+(defun symex--get-end-point (count)
+  "Get the point value after COUNT symexes.
+
+If the containing expression terminates earlier than COUNT
+symexes, returns the end point of the last one found."
+  (save-excursion
+    (if (= count 0)
+        (point)
+      (condition-case nil
+          (forward-sexp)
+        (error (point)))
+      (symex--get-end-point (1- count)))))
+
 (defun symex-yank (count)
   "Yank (copy) COUNT symexes."
   (interactive "p")
   (let ((start (point))
-        (end (save-excursion
-               (forward-sexp count)
-               (point))))
+        (end (symex--get-end-point count)))
     (copy-region-as-kill start end)))
 
 (defun symex--paste-before ()
