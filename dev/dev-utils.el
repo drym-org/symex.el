@@ -13,3 +13,20 @@
   (symex--define-evil-keys-from-spec keyspec
                                      symex-editing-mode-map))
 
+
+;; Some edge-casey test data
+
+(list 1 2 '(1 2 3) 4)
+(list 1 2 #(1 2 3) 4)
+(list 1 2 #'(1 2 3) 4)
+(list 1 2 '(3) 4)
+(list 1 2 #(3) 4)
+(list 1 2 #'(3) 4)
+(list 1 2 '() 4)
+(list 1 2 #() 4)
+(list 1 2 #'() 4)
+
+#'() 4
+
+((a 'a)
+ (b 'b))
