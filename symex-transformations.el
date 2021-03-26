@@ -71,7 +71,9 @@ to how the Lisp interpreter does it (when it is following
 (defun symex-delete (count)
   "Delete COUNT symexes."
   (interactive "p")
-  (kill-sexp count)
+  (let ((start (point))
+        (end (symex--get-end-point count)))
+    (kill-region start end))
   (cond ((symex--current-line-empty-p)             ; ^<>$
          (delete-region (line-beginning-position)
                         (if (eobp)
@@ -129,7 +131,9 @@ to how the Lisp interpreter does it (when it is following
 (defun symex-change (count)
   "Change COUNT symexes."
   (interactive "p")
-  (kill-sexp count)
+  (let ((start (point))
+        (end (symex--get-end-point count)))
+    (kill-region start end))
   (symex-enter-lowest))
 
 (defun symex--clear ()
