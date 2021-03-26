@@ -275,7 +275,11 @@ by default, joins next symex to current one."
 (defun symex-yank (count)
   "Yank (copy) COUNT symexes."
   (interactive "p")
-  (sp-copy-sexp count))
+  (let ((start (point))
+        (end (save-excursion
+               (forward-sexp count)
+               (point))))
+    (copy-region-as-kill start end)))
 
 (defun symex--paste-before ()
   "Paste before symex."
