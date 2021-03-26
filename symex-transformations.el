@@ -32,7 +32,6 @@
 (require 'evil)
 (require 'evil-surround)
 (require 'evil-cleverparens)  ;; really only need cp-textobjects here
-(require 'smartparens)
 (require 'symex-primitives)
 (require 'symex-utils)
 (require 'symex-misc)
@@ -116,7 +115,7 @@ to how the Lisp interpreter does it (when it is following
                  (goto-char previous-symex-pos))))))
         ((save-excursion (evil-last-non-blank)  ; (<>$
                          (lispy-left-p))
-         (sp-next-sexp)
+         (symex--go-forward-to-start)
          (save-excursion
            (symex--join-lines t)))
         ((looking-at-p "\n")  ; (abc <>
@@ -147,7 +146,7 @@ to how the Lisp interpreter does it (when it is following
          (apply #'evil-delete (evil-inner-curly)))
         ((symex-string-p)
          (apply #'evil-delete (evil-inner-double-quote)))
-        (t (sp-kill-sexp nil))))
+        (t (kill-sexp))))
 
 (defun symex-replace ()
   "Replace contents of symex."

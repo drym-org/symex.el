@@ -86,6 +86,16 @@
                    (not (thing-at-point 'sexp))))
       (error nil))))
 
+(defun symex--point-at-start-p ()
+  "Check if point is at the start of a symex."
+  (and (not (eolp))
+       (or (lispy-left-p)
+           (symex--special-left-p)
+           (and (not (looking-at-p "[[:space:]]"))
+                (or (bolp)
+                    (looking-back "[[:space:]]" (line-beginning-position))
+                    (looking-back lispy-left (line-beginning-position)))))))
+
 (defvar symex--re-comment-line "^[[:space:]]*;"
   "A comment line.")
 
@@ -139,6 +149,12 @@
   "Check if the symex is a clojurescript anonymous function literal."
   (looking-at (concat "#" lispy-left)))
 
+(defun symex--special-left-p ()
+  "Check if point is at a 'special' opening delimiter."
+  (or (symex--quoted-list-p)
+      (symex--racket-syntax-object-p)
+      (symex--clojure-literal-lambda-p)))
+
 (defun symex--special-empty-list-p ()
   "Check if we're looking at a 'special' empty list.
 
@@ -176,6 +192,22 @@ symexes, returns the end point of the last one found."
           (forward-sexp)
         (error (point)))
       (symex--get-end-point (1- count)))))
+
+(defun symex--go-forward-to-start ()
+  "Go to the start of next symex.
+
+If point is already at the start of a symex, do nothing."
+  (interactive)
+  (unless (symex--point-at-start-p)
+    (if (or (eolp) (looking-at-p "[[:space:]]"))
+        (condition-case nil
+            (progn (forward-sexp)
+                   (backward-sexp))
+          (error nil))
+      (condition-case nil
+          (progn (forward-sexp 2)
+                 (backward-sexp))
+        (error nil)))))
 
 (defun symex--forward-one ()
   "Forward one symex."
