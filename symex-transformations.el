@@ -33,6 +33,7 @@
 (require 'evil-surround)
 (require 'evil-cleverparens)  ;; really only need cp-textobjects here
 (require 'smartparens)
+(require 'symex-primitives)
 (require 'symex-utils)
 (require 'symex-misc)
 (require 'symex-traversals)
@@ -275,19 +276,6 @@ by default, joins next symex to current one."
                original-column)
       (forward-char)))
   (symex-tidy))
-
-(defun symex--get-end-point (count)
-  "Get the point value after COUNT symexes.
-
-If the containing expression terminates earlier than COUNT
-symexes, returns the end point of the last one found."
-  (save-excursion
-    (if (= count 0)
-        (point)
-      (condition-case nil
-          (forward-sexp)
-        (error (point)))
-      (symex--get-end-point (1- count)))))
 
 (defun symex-yank (count)
   "Yank (copy) COUNT symexes."

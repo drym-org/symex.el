@@ -164,6 +164,19 @@ as special cases here."
   "Check if the symex is a composite expression, i.e. a nonatom."
   (not (symex-atom-p)))
 
+(defun symex--get-end-point (count)
+  "Get the point value after COUNT symexes.
+
+If the containing expression terminates earlier than COUNT
+symexes, returns the end point of the last one found."
+  (save-excursion
+    (if (= count 0)
+        (point)
+      (condition-case nil
+          (forward-sexp)
+        (error (point)))
+      (symex--get-end-point (1- count)))))
+
 (defun symex--forward-one ()
   "Forward one symex."
   (let ((original-location (point))
