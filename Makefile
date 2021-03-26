@@ -23,6 +23,7 @@ help:
 	@echo "lint - check style with package-lint"
 	@echo "lint+less - lint piped to less"
 	@echo "lint-no-noise - lint with typically noisy warnings filtered out"
+	@echo "lint-noiseless - lint-no-noise piped to less"
 	@echo "checkdoc - check docstrings"
 	@echo "build - byte compile the package"
 	@echo "test - run tests"
@@ -46,6 +47,9 @@ lint+less:
 lint-no-noise:
 	@$(MAKE) -f $(THIS_FILE) lint 2>&1 | grep -v "start with.*prefix" |grep -v "lexical-binding" |grep -v "non-snapshot.*racket" |grep -v "non-snapshot.*clever" |grep -v "Version.*header is missing" |grep -v "Package-Version"
 
+lint-noiseless:
+	@$(MAKE) -f $(THIS_FILE) lint-no-noise 2>&1 | less
+
 checkdoc:
 	${CASK} exec $(EMACS) -Q --batch  \
 	                      --eval $(INIT_PACKAGE_EL)  \
@@ -58,4 +62,4 @@ build :
 test: build
 	${CASK} exec ert-runner
 
-.PHONY:	help lint lint+less lint-no-noise checkdoc build clean install test
+.PHONY:	help lint lint+less lint-no-noise lint-noiseless checkdoc build clean install test
