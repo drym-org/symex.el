@@ -31,14 +31,21 @@
 ((a 'a)
  (b 'b))
 
-((save-excursion (evil-last-non-blank)  ; (<>$
-                 (lispy-left-p))
- (symex--go-forward-to-start)
+((save-excursion (blah-blah)  ; (<>$
+                 (etc))
+ (blah-blah)
  (save-excursion
-   (symex--join-lines t)))
+   (blah-blah t)))
 
-((save-excursion (evil-last-non-blank)
-                 (lispy-left-p))  ; (<1>$
- (symex--go-forward-to-start)  ; (<2>$
+((save-excursion (blah-blah)
+                 (etc))  ; (<1>$
+ (blah-blah)  ; (<2>$
  (save-excursion  ; (<3>$
-   (symex--join-lines t)))
+   (blah-blah t)))
+
+((save-excursion (blah-blah)
+                 (etc)))
+((save-excursion (blah-blah)
+                 
+                 
+                 (etc))
