@@ -30,3 +30,15 @@
 
 ((a 'a)
  (b 'b))
+
+((save-excursion (evil-last-non-blank)  ; (<>$
+                 (lispy-left-p))
+ (symex--go-forward-to-start)
+ (save-excursion
+   (symex--join-lines t)))
+
+((save-excursion (evil-last-non-blank)
+                 (lispy-left-p))  ; (<1>$
+ (symex--go-forward-to-start)  ; (<2>$
+ (save-excursion  ; (<3>$
+   (symex--join-lines t)))
