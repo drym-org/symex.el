@@ -39,6 +39,8 @@
 ;;; PRIMITIVES ;;;
 ;;;;;;;;;;;;;;;;;;
 
+;;; Predicates
+
 (defmacro symex-if-stuck (do-what operation &rest body)
   "Attempt OPERATION and if it fails, then do DO-WHAT."
   `(let ((orig-pt (point)))
@@ -180,6 +182,8 @@ as special cases here."
   "Check if the symex is a composite expression, i.e. a nonatom."
   (not (symex-atom-p)))
 
+;;; Navigation
+
 (defun symex--get-end-point (count)
   "Get the point value after COUNT symexes.
 
@@ -196,7 +200,8 @@ symexes, returns the end point of the last one found."
 (defun symex--go-forward-to-start ()
   "Go to the start of next symex.
 
-If point is already at the start of a symex, do nothing."
+If point is already at the start of a symex, do nothing.
+Results in an error if there's no next symex."
   (interactive)
   (unless (symex--point-at-start-p)
     (if (or (eolp) (looking-at-p "[[:space:]]"))
@@ -353,6 +358,26 @@ of symex mode (use the public `symex-go-down` instead)."
         (setq result (+ res result))))
     (when (> result 0)
       (symex-make-move 0 (- result)))))
+
+;;; Transformations
+
+(defun symex--join-to-next ()
+  "Join current position to the next symex, eliminating whitespace."
+  (condition-case nil
+      (let* ((start (point))
+             (end (save-excursion (symex--go-forward-to-start)
+                                  (point))))
+        (delete-region start end))))
+
+(defun symex--join-to-match (pattern)
+  "Join current position to the next position matching PATTERN.
+
+This eliminates whitespace between the original position and the found match."
+  (condition-case nil
+      (let* ((start (point))
+             (end (save-excursion (re-search-forward pattern)
+                                  (match-beginning 0))))
+        (delete-region start end))))
 
 
 (provide 'symex-primitives)

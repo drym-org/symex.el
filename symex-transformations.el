@@ -78,13 +78,8 @@ to how the Lisp interpreter does it (when it is following
              (save-excursion (evil-last-non-blank)     ; (<>$
                              (lispy-left-p))
              (looking-at-p "\n"))                      ; (abc <>
-         (condition-case nil
-             (let* ((original-position (point))
-                    (next-symex-position (save-excursion (symex--go-forward-to-start)
-                                                         (point))))
-               (delete-region original-position
-                              next-symex-position))))
-        ((save-excursion (back-to-indentation)     ; ^<>)
+         (symex--join-to-next))
+        ((save-excursion (back-to-indentation)         ; ^<>)
                          (forward-char)
                          (lispy-right-p))
          ;; Cases 2 and 3 in issue #18
@@ -94,8 +89,7 @@ to how the Lisp interpreter does it (when it is following
          (let ((original-position (point)))
            (when (symex--go-backward)
              (let ((previous-symex-start-pos (point))
-                   (previous-symex-end-pos (symex--get-end-point 1))
-                   (line-diff 1))
+                   (previous-symex-end-pos (symex--get-end-point 1)))
                (goto-char original-position)
                (if (catch 'stop
                      (forward-line -1)
@@ -105,9 +99,7 @@ to how the Lisp interpreter does it (when it is following
                          (if (symex-comment-line-p)
                              (throw 'stop nil)
                            (throw 'stop t)))
-                       (forward-line -1)
-                       (setq line-diff (- (line-number-at-pos original-position)
-                                          (line-number-at-pos))))
+                       (forward-line -1))
                      t)
                    (progn (goto-char previous-symex-end-pos)
                           ;; ensure that there isn't a comment on the
@@ -116,10 +108,10 @@ to how the Lisp interpreter does it (when it is following
                                       (progn (evil-find-char 1 ?\;)
                                              t)
                                     (error nil))
-                            (goto-char previous-symex-start-pos)
-                            (symex-join-lines line-diff)))
+                            (symex--join-to-match lispy-right)
+                            (backward-char)))
                  (goto-char previous-symex-start-pos))))))
-        ((save-excursion (forward-char)  ; ... <>)
+        ((save-excursion (forward-char)                ; ... <>)
                          (lispy-right-p))
          (symex--go-backward))
         (t (fixup-whitespace)))
