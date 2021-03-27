@@ -74,11 +74,16 @@ to how the Lisp interpreter does it (when it is following
   (let ((start (point))
         (end (symex--get-end-point count)))
     (kill-region start end))
-  (cond ((symex--current-line-empty-p)             ; ^<>$
-         (delete-region (line-beginning-position)
-                        (if (eobp)
-                            (line-end-position)
-                          (1+ (line-end-position)))))
+  (cond ((or (symex--current-line-empty-p)             ; ^<>$
+             (save-excursion (evil-last-non-blank)     ; (<>$
+                             (lispy-left-p))
+             (looking-at-p "\n"))                      ; (abc <>
+         (condition-case nil
+             (let* ((original-position (point))
+                    (next-symex-position (save-excursion (symex--go-forward-to-start)
+                                                         (point))))
+               (delete-region original-position
+                              next-symex-position))))
         ((save-excursion (back-to-indentation)     ; ^<>)
                          (forward-char)
                          (lispy-right-p))
@@ -114,14 +119,6 @@ to how the Lisp interpreter does it (when it is following
                             (goto-char previous-symex-start-pos)
                             (symex-join-lines line-diff)))
                  (goto-char previous-symex-start-pos))))))
-        ((save-excursion (evil-last-non-blank)  ; (<>$
-                         (lispy-left-p))
-         (symex--go-forward-to-start)
-         (save-excursion
-           (symex--join-lines t)))
-        ((looking-at-p "\n")  ; (abc <>
-         (evil-join (line-beginning-position)
-                    (line-end-position)))
         ((save-excursion (forward-char)  ; ... <>)
                          (lispy-right-p))
          (symex--go-backward))

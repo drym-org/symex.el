@@ -200,14 +200,10 @@ If point is already at the start of a symex, do nothing."
   (interactive)
   (unless (symex--point-at-start-p)
     (if (or (eolp) (looking-at-p "[[:space:]]"))
-        (condition-case nil
-            (progn (forward-sexp)
-                   (backward-sexp))
-          (error nil))
-      (condition-case nil
-          (progn (forward-sexp 2)
-                 (backward-sexp))
-        (error nil)))))
+        (progn (forward-sexp)
+               (backward-sexp))
+      (forward-sexp 2)
+      (backward-sexp))))
 
 (defun symex--forward-one ()
   "Forward one symex."
