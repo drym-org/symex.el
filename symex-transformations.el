@@ -88,13 +88,14 @@ to how the Lisp interpreter does it (when it is following
          ;; on the same line, then don't attempt to join lines
          (let ((original-position (point)))
            (when (symex--go-backward)
-             (let ((previous-symex-pos (point))
+             (let ((previous-symex-start-pos (point))
+                   (previous-symex-end-pos (symex--get-end-point 1))
                    (line-diff 1))
                (goto-char original-position)
                (if (catch 'stop
                      (forward-line -1)
                      (while (not (= (line-number-at-pos)
-                                    (line-number-at-pos previous-symex-pos)))
+                                    (line-number-at-pos previous-symex-end-pos)))
                        (unless (symex--current-line-empty-p)
                          (if (symex-comment-line-p)
                              (throw 'stop nil)
@@ -103,16 +104,16 @@ to how the Lisp interpreter does it (when it is following
                        (setq line-diff (- (line-number-at-pos original-position)
                                           (line-number-at-pos))))
                      t)
-                   (progn (goto-char previous-symex-pos)
+                   (progn (goto-char previous-symex-end-pos)
                           ;; ensure that there isn't a comment on the
-                          ;; current line before joining lines
+                          ;; preceding line before joining lines
                           (unless (condition-case nil
                                       (progn (evil-find-char 1 ?\;)
                                              t)
                                     (error nil))
-                              (dotimes (_ line-diff)
-                                (symex--join-lines))))
-                 (goto-char previous-symex-pos))))))
+                            (goto-char previous-symex-start-pos)
+                            (symex-join-lines line-diff)))
+                 (goto-char previous-symex-start-pos))))))
         ((save-excursion (evil-last-non-blank)  ; (<>$
                          (lispy-left-p))
          (symex--go-forward-to-start)
