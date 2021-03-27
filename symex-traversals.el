@@ -141,6 +141,14 @@ Executes the motion COUNT times."
   (dotimes (_ count)
     (symex-execute-traversal symex--traversal-preorder)))
 
+(defun symex-traverse-forward-more (count)
+  "Traverse symex as a tree, using pre-order traversal.
+
+Moves more steps at a time.  Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-traverse-forward 3)))
+
 (defun symex-traverse-forward-in-tree (count)
   "Traverse symex forward using pre-order traversal, stopping at end of tree.
 
@@ -164,6 +172,14 @@ Executes the motion COUNT times."
   (interactive "p")
   (dotimes (_ count)
     (symex-execute-traversal symex--traversal-postorder)))
+
+(defun symex-traverse-backward-more (count)
+  "Traverse symex as a tree, using pre-order traversal.
+
+Moves more steps at a time.  Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-traverse-backward 3)))
 
 (defun symex-traverse-backward-in-tree (count)
   "Traverse symex backward using post-order traversal, stopping at root of tree.

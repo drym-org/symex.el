@@ -77,6 +77,8 @@ executing this command to get the expected behavior."
     ("}" . symex-wrap-curly)
     ("f" . symex-traverse-forward)
     ("b" . symex-traverse-backward)
+    ("C-f" . symex-traverse-forward-more)
+    ("C-b" . symex-traverse-backward-more)
     ("F" . symex-traverse-forward-skip)
     ("B" . symex-traverse-backward-skip)
     ("C-," . symex-leap-backward)

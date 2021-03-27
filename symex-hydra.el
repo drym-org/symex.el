@@ -85,6 +85,8 @@ to enter, and any of the standard exits to exit."
   ("l" symex-go-forward "next")
   ("f" symex-traverse-forward "flow forward")
   ("b" symex-traverse-backward "flow backward")
+  ("C-f" symex-traverse-forward-more "flow forward more")
+  ("C-b" symex-traverse-backward-more "flow backward more")
   ("F" symex-traverse-forward-skip "skip forward")
   ("B" symex-traverse-backward-skip "skip backward")
   ("C-h" symex-leap-backward "leap backward")
