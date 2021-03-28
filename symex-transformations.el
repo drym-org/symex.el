@@ -88,29 +88,18 @@ to how the Lisp interpreter does it (when it is following
          ;; on the same line, then don't attempt to join lines
          (let ((original-position (point)))
            (when (symex--go-backward)
-             (let ((previous-symex-start-pos (point))
-                   (previous-symex-end-pos (symex--get-end-point 1)))
-               (goto-char original-position)
-               (if (catch 'stop
-                     (forward-line -1)
-                     (while (not (= (line-number-at-pos)
-                                    (line-number-at-pos previous-symex-end-pos)))
-                       (unless (symex--current-line-empty-p)
-                         (if (symex-comment-line-p)
-                             (throw 'stop nil)
-                           (throw 'stop t)))
-                       (forward-line -1))
-                     t)
-                   (progn (goto-char previous-symex-end-pos)
-                          ;; ensure that there isn't a comment on the
-                          ;; preceding line before joining lines
-                          (unless (condition-case nil
-                                      (progn (evil-find-char 1 ?\;)
-                                             t)
-                                    (error nil))
-                            (symex--join-to-match lispy-right)
-                            (backward-char)))
-                 (goto-char previous-symex-start-pos))))))
+             (let ((previous-symex-end-pos (symex--get-end-point 1)))
+               (unless (symex--intervening-comment-line-p previous-symex-end-pos
+                                                          original-position)
+                 (goto-char previous-symex-end-pos)
+                 ;; ensure that there isn't a comment on the
+                 ;; preceding line before joining lines
+                 (unless (condition-case nil
+                             (progn (evil-find-char 1 ?\;)
+                                    t)
+                           (error nil))
+                   (symex--join-to-match lispy-right)
+                   (backward-char)))))))
         ((save-excursion (forward-char)                ; ... <>)
                          (lispy-right-p))
          (symex--go-backward))
@@ -196,6 +185,10 @@ to how the Lisp interpreter does it (when it is following
     (if (symex-empty-list-p)
         (forward-char)
       (symex--go-up))  ; need to be inside the symex to emit and capture
+    ;; paredit captures 1 ((|2 3)) -> (1 (2 3))
+    ;; but we don't want to in this case since point indicates the
+    ;; inner symex, which cannot capture, rather than the outer
+    ;; one. Just a note for the future.
     (paredit-backward-slurp-sexp 1)
     (fixup-whitespace)
     (symex--go-down)))

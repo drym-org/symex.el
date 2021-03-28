@@ -182,6 +182,18 @@ as special cases here."
   "Check if the symex is a composite expression, i.e. a nonatom."
   (not (symex-atom-p)))
 
+(defun symex--intervening-comment-line-p (start end)
+  "Check if there is a comment line between the positions START and END."
+  (save-excursion
+    (goto-char end)
+    (catch 'stop
+      (forward-line -1)
+      (while (not (= (line-number-at-pos)
+                     (line-number-at-pos start)))
+        (when (symex-comment-line-p)
+          (throw 'stop t))
+        (forward-line -1)))))
+
 ;;; Navigation
 
 (defun symex--get-end-point (count)
@@ -196,19 +208,6 @@ symexes, returns the end point of the last one found."
           (forward-sexp)
         (error (point)))
       (symex--get-end-point (1- count)))))
-
-(defun symex--go-forward-to-start ()
-  "Go to the start of next symex.
-
-If point is already at the start of a symex, do nothing.
-Results in an error if there's no next symex."
-  (interactive)
-  (unless (symex--point-at-start-p)
-    (if (or (eolp) (looking-at-p "[[:space:]]"))
-        (progn (forward-sexp)
-               (backward-sexp))
-      (forward-sexp 2)
-      (backward-sexp))))
 
 (defun symex--forward-one ()
   "Forward one symex."
@@ -233,6 +232,13 @@ Results in an error if there's no next symex."
     (let ((current-location (point)))
       (when (= original-location current-location)
         ;; happens at end of buffer
+        (setq result 0))
+      (when (< current-location original-location)
+        ;; happens in whitespace at end of buffer
+        ;; where forward-sexp goes to eob
+        ;; better to revise the above logic so that
+        ;; point does not go backwards.
+        (goto-char original-location)
         (setq result 0)))
     result))
 
@@ -365,7 +371,7 @@ of symex mode (use the public `symex-go-down` instead)."
   "Join current position to the next symex, eliminating whitespace."
   (condition-case nil
       (let* ((start (point))
-             (end (save-excursion (symex--go-forward-to-start)
+             (end (save-excursion (symex--go-forward)
                                   (point))))
         (delete-region start end))))
 
