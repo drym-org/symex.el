@@ -304,14 +304,11 @@ by default, joins next symex to current one."
                 "\n")
                (t " "))))
     (save-excursion
-      (save-excursion
-        (forward-sexp)
-        (insert extra-to-prepend)
-        (evil-paste-before nil nil)
-        (forward-char))
-      (symex--go-forward)
-      (symex-tidy))
-    (symex--go-forward)))
+      (forward-sexp)
+      (insert extra-to-prepend)
+      (evil-paste-before nil nil))
+    (symex--go-forward)
+    (symex-tidy)))
 
 (defun symex-paste-after (count)
   "Paste after symex, COUNT times."
