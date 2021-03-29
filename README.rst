@@ -104,9 +104,13 @@ Movement
      - traverse forwards, backwards
      -
 
+   * - ``C-f``, ``C-b``
+     - traverse forwards, backwards more
+     - quicker ways to get around
+
    * - ``F``, ``B``
      - skip forwards, backwards
-     - a quick way to move forwards and backwards -- traverse, but don't enter nested expressions
+     - quick ways to move forwards and backwards -- traverse without entering nested expressions
 
    * - ``C-,``, ``C-/``
      - leap backwards, forwards
