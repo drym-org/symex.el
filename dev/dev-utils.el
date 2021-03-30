@@ -51,3 +51,22 @@
                  
                  
                  (etc))
+
+(blah
+  ;; hi
+  asdf
+  )
+
+
+(blah
+ sdf
+ ;; hello
+ )
+
+(blah ([abc (blahblah #'etc 'hello)]
+       [abc (blahblah #'etc 'hello)]
+       [abc (blahblah #'etc 'hello)]))
+
+(blah
+ "../blah.etc"
+ abc/pqr)
