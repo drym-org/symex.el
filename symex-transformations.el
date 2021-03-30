@@ -103,7 +103,7 @@ to how the Lisp interpreter does it (when it is following
         ((save-excursion (forward-char)                ; ... <>)
                          (lispy-right-p))
          (symex--go-backward))
-        (t (fixup-whitespace)))
+        (t (symex--go-forward)))
   (symex-select-nearest)
   (symex-tidy))
 

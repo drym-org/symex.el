@@ -191,12 +191,15 @@ as special cases here."
   (save-excursion
     (goto-char end)
     (catch 'stop
-      (forward-line -1)
+      (when (symex-comment-line-p)
+        (throw 'stop (progn (back-to-indentation)
+                            (point))))
       (while (not (= (line-number-at-pos)
                      (line-number-at-pos start)))
+        (forward-line -1)
         (when (symex-comment-line-p)
-          (throw 'stop t))
-        (forward-line -1)))))
+          (throw 'stop (progn (back-to-indentation)
+                              (point))))))))
 
 ;;; Navigation
 
@@ -217,7 +220,9 @@ symexes, returns the end point of the last one found."
   "Forward one symex."
   (let ((original-location (point))
         (result 0))
-    (if (thing-at-point 'sexp)
+    (if (and (thing-at-point 'sexp)
+             (not (or (eolp)
+                      (looking-at-p "[[:space:]]"))))
         (condition-case nil
             (progn (forward-sexp 2)
                    (setq result 2))
@@ -372,17 +377,24 @@ of symex mode (use the public `symex-go-down` instead)."
 ;;; Transformations
 
 (defun symex--join-to-next ()
-  "Join current position to the next symex, eliminating whitespace."
-  (condition-case nil
-      (let* ((start (point))
-             (end (save-excursion (symex--go-forward)
-                                  (point))))
-        (delete-region start end))))
+  "Join current position to the next symex, eliminating whitespace.
+
+If there is an intervening comment line, then join only up to that
+line."
+  (let* ((start (point))
+         (end (save-excursion (symex--go-forward)
+                              (point)))
+         (comment-line-position
+          (symex--intervening-comment-line-p start end)))
+    (if comment-line-position
+        (delete-region start comment-line-position)
+      (delete-region start end))))
 
 (defun symex--join-to-match (pattern)
   "Join current position to the next position matching PATTERN.
 
-This eliminates whitespace between the original position and the found match."
+This eliminates whitespace between the original position and the found
+match."
   (condition-case nil
       (let* ((start (point))
              (end (save-excursion (re-search-forward pattern)
