@@ -287,15 +287,6 @@ Version 2017-11-01"
               (save-excursion (forward-char) (lispy-right-p)))  ; |)
          (forward-char)
          (lispy-different))
-        ((symex-comment-line-p)
-         (symex-if-stuck (symex--go-backward)
-                         (symex--go-forward)))
-        ((looking-at-p "[[:space:]\n]")  ; <>| <> or <> |$
-         (condition-case nil
-             (progn (re-search-forward "[^[:space:]\n]")
-                    (backward-char))
-           (error (symex-if-stuck (symex--go-backward)
-                                  (symex--go-forward)))))
         ((thing-at-point 'sexp)  ; som|ething
          (beginning-of-thing 'sexp))
         (t (symex-if-stuck (symex--go-backward)
