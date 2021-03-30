@@ -112,7 +112,7 @@
 (defun symex-enter-mode ()
   "Take necessary action upon symex mode entry."
   (symex--ensure-minor-mode)
-  (symex--adjust-point)
+  (symex--adjust-point-on-entry)
   (when symex-remember-branch-positions-p
     (symex--clear-branch-memory))
   (symex-select-nearest)

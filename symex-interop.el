@@ -47,6 +47,20 @@
 (defvar-local symex--original-max-scroll-margin nil)
 
 (defun symex--adjust-point ()
+  "Helper to adjust point to indicate the correct symex."
+  (let ((just-inside-symex-p (save-excursion (backward-char)
+                                             (lispy-left-p)))
+        (after-quotes-p (save-excursion (backward-char)
+                                        (and (looking-at-p "\"")
+                                             (not (symex--point-at-start-p))))))
+    (unless (or (bobp)
+                (symex--point-at-start-p)
+                just-inside-symex-p)
+      (if after-quotes-p
+          (backward-sexp)
+        (backward-char)))))
+
+(defun symex--adjust-point-on-entry ()
   "Adjust point context from the Emacs to the Vim interpretation.
 
 If entering symex mode from Insert or Emacs mode, then translate point
@@ -58,12 +72,7 @@ right symex when we enter Symex mode."
   (when (or (not (symex--evil-installed-p))
             (symex--evil-disabled-p)
             (member evil-state '(insert emacs)))
-    (let ((just-inside-symex-p (save-excursion (backward-char)
-                                               (lispy-left-p))))
-      (unless (or (bobp)
-                  (symex--point-at-start-p)
-                  just-inside-symex-p)
-        (backward-char)))))
+    (symex--adjust-point)))
 
 (defun symex--rigpa-installed-p ()
   "Check if rigpa is installed."

@@ -99,7 +99,7 @@ to how the Lisp interpreter does it (when it is following
                                     t)
                            (error nil))
                    (symex--join-to-match lispy-right)
-                   (backward-char)))))))
+                   (symex--adjust-point)))))))
         ((save-excursion (forward-char)                ; ... <>)
                          (lispy-right-p))
          (symex--go-backward))
