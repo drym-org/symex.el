@@ -91,12 +91,16 @@
 (defun symex--point-at-start-p ()
   "Check if point is at the start of a symex."
   (and (not (eolp))
-       (or (lispy-left-p)
-           (symex--special-left-p)
+       (not (looking-at-p lispy-right))
+       (or (lispy-left-p)                           ; |(*
+           (symex--special-left-p)                  ; |'(*
+           ;; looking at the start of any non-whitespace:
            (and (not (looking-at-p "[[:space:]]"))
-                (or (bolp)
-                    (looking-back "[[:space:]]" (line-beginning-position))
-                    (looking-back lispy-left (line-beginning-position)))))))
+                (or (bolp)                          ; ^|.
+                    (looking-back "[[:space:]]"     ; _|.
+                                  (line-beginning-position))
+                    (looking-back lispy-left        ; (*|.
+                                  (line-beginning-position)))))))
 
 (defvar symex--re-comment-line "^[[:space:]]*;"
   "A comment line.")

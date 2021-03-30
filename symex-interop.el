@@ -58,11 +58,12 @@ right symex when we enter Symex mode."
   (when (or (not (symex--evil-installed-p))
             (symex--evil-disabled-p)
             (member evil-state '(insert emacs)))
-    (unless (bobp)
-      (let ((just-inside-symex-p (save-excursion (backward-char)
-                                                 (lispy-left-p))))
-        (unless just-inside-symex-p
-          (backward-char))))))
+    (let ((just-inside-symex-p (save-excursion (backward-char)
+                                               (lispy-left-p))))
+      (unless (or (bobp)
+                  (symex--point-at-start-p)
+                  just-inside-symex-p)
+        (backward-char)))))
 
 (defun symex--rigpa-installed-p ()
   "Check if rigpa is installed."
