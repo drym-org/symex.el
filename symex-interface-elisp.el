@@ -63,17 +63,19 @@
 (defun symex-repl-elisp ()
   "Enter elisp REPL, context-aware.
 
-If there is only one window, open REPL in a new window.  Otherwise
+If the REPL is already visible, switch to that window.  Otherwise,
+if there is only one window, open REPL in a new window.  Otherwise
 open in most recently used other window."
   (interactive)
-  (if (= (length (window-list))
-         1)
-      (progn (evil-window-vsplit)
-             (evil-window-right 1)
-             (ielm))
-    (evil-window-mru)
-    (ielm))
-  (goto-char (point-max)))
+  (let ((window (get-buffer-window "*ielm*")))
+    (cond (window (select-window window))
+          ((= 1 (length (window-list)))
+           (evil-window-vsplit)
+           (evil-window-right 1)
+           (ielm))
+          (t (evil-window-mru)  ; better LRU
+             (ielm)))
+    (goto-char (point-max))))
 
 (defun symex-run-elisp ()
   "Evaluate buffer."
