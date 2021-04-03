@@ -38,6 +38,7 @@
 (require 'symex-interface-clojure)
 (require 'symex-interface-common-lisp)
 (require 'symex-interface-arc)
+(require 'symex-interop)
 
 ;; These are customization or config variables defined elsewhere;
 ;; explicitly indicating them here to avoid byte compile warnings
@@ -217,7 +218,8 @@ executing it."
          (symex-repl-common-lisp))
         ((equal major-mode 'arc-mode)
          (symex-repl-arc))
-        (t (error "Symex mode: Lisp flavor not recognized!"))))
+        (t (error "Symex mode: Lisp flavor not recognized!")))
+  (symex-enter-lowest))
 
 (defun symex-run ()
   "Send to REPL."
