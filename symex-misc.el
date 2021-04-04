@@ -272,7 +272,7 @@ Version 2017-11-01"
                             (t (error "Symex mode: Lisp flavor not recognized!"))))
          (buf (get-buffer buffer-name)))
     (let ((buf (or buf (symex--new-scratch-buffer buffer-name))))
-      (switch-to-buffer-other-window buf))))
+      (switch-to-buffer buf))))
 
 (defun symex-switch-to-messages-buffer ()
   "Switch to messages buffer while retaining focus in original window."
