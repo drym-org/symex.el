@@ -48,17 +48,11 @@
 
 (defun symex--adjust-point ()
   "Helper to adjust point to indicate the correct symex."
-  (let ((just-inside-symex-p (save-excursion (backward-char)
-                                             (lispy-left-p)))
-        (after-quotes-p (save-excursion (backward-char)
-                                        (and (looking-at-p "\"")
-                                             (not (symex--point-at-start-p))))))
-    (unless (or (bobp)
-                (symex--point-at-start-p)
-                just-inside-symex-p)
-      (if after-quotes-p
-          (backward-sexp)
-        (backward-char)))))
+  (unless (or (bobp)
+              (symex--point-at-start-p)
+              (save-excursion (backward-char)  ; just inside symex
+                              (lispy-left-p)))
+    (backward-sexp)))
 
 (defun symex--adjust-point-on-entry ()
   "Adjust point context from the Emacs to the Vim interpretation.
