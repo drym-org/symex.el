@@ -262,9 +262,13 @@ by default, joins next symex to current one."
 (defun symex-yank (count)
   "Yank (copy) COUNT symexes."
   (interactive "p")
-  (let ((start (point))
-        (end (symex--get-end-point count)))
-    (copy-region-as-kill start end)))
+  ;; we set `last-command` here to avoid appending to the kill ring
+  ;; when it's a delete followed by a yank. We want to treat each as
+  ;; independent entries in the kill ring
+  (let ((last-command nil))
+    (let ((start (point))
+          (end (symex--get-end-point count)))
+      (copy-region-as-kill start end))))
 
 (defun symex--paste-before ()
   "Paste before symex."
