@@ -356,7 +356,8 @@ by default, joins next symex to current one."
 (defun symex-insert-at-beginning ()
   "Insert at beginning of symex."
   (interactive)
-  (if (lispy-left-p)
+  (if (or (lispy-left-p)
+          (symex-string-p))
       (progn (forward-char)
              (symex-enter-lowest))
     (symex-enter-lowest)))
@@ -364,7 +365,8 @@ by default, joins next symex to current one."
 (defun symex-insert-at-end ()
   "Insert at end of symex."
   (interactive)
-  (if (lispy-left-p)
+  (if (or (lispy-left-p)
+          (symex-string-p))
       (progn (forward-sexp)
              (backward-char)
              (symex-enter-lowest))

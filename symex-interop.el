@@ -51,7 +51,8 @@
   (unless (or (bobp)
               (symex--point-at-start-p)
               (save-excursion (backward-char)  ; just inside symex
-                              (lispy-left-p)))
+                              (or (lispy-left-p)
+                                  (symex-string-p))))
     (backward-sexp)))
 
 (defun symex--adjust-point-on-entry ()
