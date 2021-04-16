@@ -189,14 +189,14 @@ as special cases here."
 (defun symex--intervening-comment-line-p (start end)
   "Check if there is a comment line between the positions START and END."
   (save-excursion
-    (goto-char end)
+    (goto-char start)
     (catch 'stop
       (when (symex-comment-line-p)
         (throw 'stop (progn (back-to-indentation)
                             (point))))
       (while (not (= (line-number-at-pos)
-                     (line-number-at-pos start)))
-        (forward-line -1)
+                     (line-number-at-pos end)))
+        (forward-line 1)
         (when (symex-comment-line-p)
           (throw 'stop (progn (back-to-indentation)
                               (point))))))))
