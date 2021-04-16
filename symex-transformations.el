@@ -346,21 +346,23 @@ by default, joins next symex to current one."
   "Append after symex (instead of vim's default of line)."
   (interactive)
   (forward-sexp)  ; selected symexes will have the cursor on the starting paren
+  (insert " ")
   (symex-enter-lowest))
 
 (defun symex-insert-before ()
   "Insert before symex (instead of vim's default at the start of line)."
   (interactive)
+  (insert " ")
+  (backward-char)
   (symex-enter-lowest))
 
 (defun symex-insert-at-beginning ()
   "Insert at beginning of symex."
   (interactive)
-  (if (or (lispy-left-p)
-          (symex-string-p))
-      (progn (forward-char)
-             (symex-enter-lowest))
-    (symex-enter-lowest)))
+  (when (or (lispy-left-p)
+            (symex-string-p))
+    (forward-char))
+  (symex-enter-lowest))
 
 (defun symex-insert-at-end ()
   "Insert at end of symex."
@@ -368,10 +370,9 @@ by default, joins next symex to current one."
   (if (or (lispy-left-p)
           (symex-string-p))
       (progn (forward-sexp)
-             (backward-char)
-             (symex-enter-lowest))
-    (progn (forward-sexp)
-           (symex-enter-lowest))))
+             (backward-char))
+    (forward-sexp))
+  (symex-enter-lowest))
 
 (defun symex-create (type)
   "Create new symex (list).
