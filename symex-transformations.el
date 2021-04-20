@@ -516,10 +516,10 @@ then no action is taken."
   (interactive)
   (evil-surround-change (following-char)))
 
-(defun symex-comment ()
+(defun symex-comment (count)
   "Comment out symex."
-  (interactive)
-  (mark-sexp)
+  (interactive "p")
+  (mark-sexp count)
   (comment-dwim nil))
 
 (defun symex-tidy ()
