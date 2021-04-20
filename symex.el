@@ -4,7 +4,7 @@
 ;; URL: https://github.com/countvajhula/symex.el
 ;; Version: 1.0
 ;; Package-Requires: ((emacs "24.4") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (evil "1.2.14") (evil-surround "1.0.4") (hydra "0.15.0") (seq "2.22") (undo-tree "0.7.5"))
-;; Keywords: lisp, evil
+;; Keywords: lisp, convenience, languages
 
 ;; This program is "part of the world," in the sense described at
 ;; http://drym.org.  From your perspective, this is no different than
