@@ -71,7 +71,8 @@ to how the Lisp interpreter does it (when it is following
 (defun symex-delete (count)
   "Delete COUNT symexes."
   (interactive "p")
-  (let ((start (point))
+  (let ((last-command nil) ; see symex-yank re: last-command
+        (start (point))
         (end (symex--get-end-point count)))
     (kill-region start end))
   (cond ((or (symex--current-line-empty-p)             ; ^<>$
