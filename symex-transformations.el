@@ -517,7 +517,7 @@ then no action is taken."
   (evil-surround-change (following-char)))
 
 (defun symex-comment (count)
-  "Comment out symex."
+  "Comment out COUNT symexes."
   (interactive "p")
   (mark-sexp count)
   (comment-dwim nil))
@@ -560,22 +560,44 @@ then no action is taken."
                                 symex--traversal-postorder-in-tree)))
 
 (defun symex-collapse ()
-  "Collapse a symex to a single line."
+  "Collapse a symex to a single line.
+
+This operates on the subtree indicated by the selection, rather than
+on the entire tree.  Ordinarily this would require 'remembering' the
+initial location on the tree while traversing and collapsing the
+subexpressions, a feature (memory) that is absent in the Symex DSL.
+But the present implementation gets around the need for memory by
+copying the subtree into a temporary buffer and collapsing it as a
+complete tree, and then replacing the original symex with the
+collapsed version from the temporary buffer.
+
+When memory is added to the DSL, this would probably have a simpler
+implementation."
   (interactive)
-  (save-excursion
-    (let ((start (point)))
-      (symex-execute-traversal
-       (symex-traversal (circuit symex--traversal-preorder-in-tree)))
-      ;; do it once first since it will be executed as a side-effect
-      ;; _after_ each step in the traversal
-      (symex--join-lines t)
-      (symex--do-while-traversing
-       (apply-partially #'symex--join-lines t)
-       (symex-traversal
-        (precaution symex--traversal-postorder-in-tree
-                    (afterwards (lambda ()
-                                  (not (equal (line-number-at-pos (point))
-                                              (line-number-at-pos start)))))))))))
+  (let ((start (point)))
+    (symex-delete 1)
+    (kill-new
+     (with-temp-buffer
+       (yank)
+       (goto-char 0)
+       (symex-execute-traversal
+        (symex-traversal (circuit symex--traversal-preorder-in-tree)))
+       ;; do it once first since it will be executed as a side-effect
+       ;; _after_ each step in the traversal
+       (condition-case nil
+           (symex--join-lines t)
+         (error nil))
+       (condition-case nil
+           (symex--do-while-traversing
+            (apply-partially #'symex--join-lines t)
+            (symex-traversal
+             (precaution symex--traversal-postorder-in-tree
+                         (afterwards (not (at root))))))
+         (error nil))
+       (buffer-string)))
+    (if (< (point) start)
+        (symex-paste-after 1)
+      (symex-paste-before 1))))
 
 (provide 'symex-transformations)
 ;;; symex-transformations.el ends here
