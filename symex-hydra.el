@@ -150,6 +150,7 @@ to enter, and any of the standard exits to exit."
   ("=" symex-tidy "tidy/indent")
   ("<tab>" symex-tidy "tidy/indent")
   ("M-=" symex-tidy-proper "tidy/indent properly")
+  ("M-<tab>" symex-tidy-proper "tidy/indent properly")
   ("A" symex-append-after "append after symex" :exit t)
   ("a" symex-insert-at-end "append inside symex" :exit t)
   ("i" symex-insert-at-beginning "insert inside symex" :exit t)
