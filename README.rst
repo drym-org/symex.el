@@ -209,7 +209,7 @@ Editing
      - split, join/merge
      -
 
-   * - ``\\``
+   * - ``\``
      - splice
      - clip the delimiters, joining the symex to the containing expression
 
