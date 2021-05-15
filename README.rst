@@ -51,7 +51,7 @@ Installation
   (use-package symex
     :config
     (symex-initialize)
-    (global-set-key (kbd "s-;") 'symex-mode-interface)  ; or whatever keybinding you like
+    (global-set-key (kbd "s-;") 'symex-mode-interface))  ; or whatever keybinding you like
 
 This provides a keybinding to load the symex editing interface, and also enables the symex minor mode in all recognized lisp modes (the minor mode ensures that manual edits respect the tree structure, e.g. keeps parens balanced like paredit).
 
