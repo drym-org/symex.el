@@ -20,11 +20,10 @@
 ;;
 
 ;;; Commentary:
-;;
+
 ;; Interoperability with editing workflows, specifically towards supporting
 ;; either evil-based or vanilla Emacs editing in conjunction with
 ;; symex mode.
-;;
 
 ;;; Code:
 

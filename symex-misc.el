@@ -245,7 +245,7 @@ disposable, and it will not prompt to save if it is closed or
 if Emacs is exited.
 
 Modified from:
-URL `http://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
+URL `https://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
 Version 2017-11-01"
   (interactive)
   (let (($buf (generate-new-buffer buffer-name))

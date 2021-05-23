@@ -132,7 +132,7 @@ directly, e.g.:
 
   (beforehand <procedure>)."
   (append `(symex-make-precaution (symex-traversal ,traversal))
-          (apply 'append
+          (apply #'append
                  (mapcar #'symex--rewrite-precaution-condition-spec condition-specs))))
 
 (defmacro symex--compile-decision (condition consequent alternative)
