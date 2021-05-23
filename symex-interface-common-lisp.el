@@ -58,12 +58,12 @@ Accounts for different point location in evil vs Emacs mode."
 (defun symex-eval-print-common-lisp ()
   "Eval symex and print result in buffer."
   (interactive)
-  (call-interactively 'slime-eval-print-last-expression))
+  (call-interactively #'slime-eval-print-last-expression))
 
 (defun symex-describe-symbol-common-lisp ()
   "Describe symbol at point."
   (interactive)
-  (call-interactively 'slime-documentation))
+  (call-interactively #'slime-documentation))
 
 (defun symex-repl-common-lisp ()
   "Go to REPL."
