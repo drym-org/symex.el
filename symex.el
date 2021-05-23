@@ -3,11 +3,11 @@
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/countvajhula/symex.el
 ;; Version: 1.0
-;; Package-Requires: ((emacs "24.4") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (evil "1.2.14") (evil-surround "1.0.4") (hydra "0.15.0") (seq "2.22") (undo-tree "0.7.5"))
+;; Package-Requires: ((emacs "25.1") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (evil "1.2.14") (evil-surround "1.0.4") (hydra "0.15.0") (seq "2.22") (undo-tree "0.7.5"))
 ;; Keywords: lisp, convenience, languages
 
 ;; This program is "part of the world," in the sense described at
-;; http://drym.org.  From your perspective, this is no different than
+;; https://drym.org.  From your perspective, this is no different than
 ;; MIT or BSD or other such "liberal" licenses that you may be
 ;; familiar with, that is to say, you are free to do whatever you like
 ;; with this program.  It is much more than BSD or MIT, however, in
@@ -24,7 +24,7 @@
 ;;
 
 ;;; Commentary:
-;;
+
 ;; Symex mode (pronounced sym-ex, as in symbolic expression) is a vim-
 ;; inspired way of editing Lisp code as trees.  Entering symex mode
 ;; allows you to reason about your code in terms of its structure,
@@ -38,7 +38,6 @@
 ;; to provide much of its low level functionality.
 ;; In the future, this layer of primitives may be replaced with a layer
 ;; that explicitly uses the abstract syntax tree, for greater precision.
-;;
 
 ;;; Code:
 

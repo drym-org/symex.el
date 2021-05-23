@@ -52,5 +52,3 @@ If RECURSIVE is given and non-nil collect files recursively."
                             (flycheck/collect-el-files directory))))
     (seq-do (lambda (err) (message "%s" err)) errors)
     (kill-emacs (if errors 1 0))))
-
-(provide 'build-utils)

@@ -3,7 +3,7 @@
 ;; URL: https://github.com/countvajhula/symex.el
 
 ;; This program is "part of the world," in the sense described at
-;; http://drym.org.  From your perspective, this is no different than
+;; https://drym.org.  From your perspective, this is no different than
 ;; MIT or BSD or other such "liberal" licenses that you may be
 ;; familiar with, that is to say, you are free to do whatever you like
 ;; with this program.  It is much more than BSD or MIT, however, in
@@ -20,9 +20,8 @@
 ;;
 
 ;;; Commentary:
-;;
+
 ;; Syntax specification for the Symex DSL
-;;
 
 ;;; Code:
 
@@ -39,14 +38,14 @@ traversal specifications."
 
 OPTIONS - see underlying Lisp implementation."
   `(symex-make-protocol
-    ,@(mapcar 'symex--compile-traversal-helper options)))
+    ,@(mapcar #'symex--compile-traversal-helper options)))
 
 (defmacro symex--compile-maneuver (&rest phases)
   "Compile a maneuver from Symex DSL -> Lisp.
 
 PHASES - see underlying Lisp implementation."
   `(symex-make-maneuver
-    ,@(mapcar 'symex--compile-traversal-helper phases)))
+    ,@(mapcar #'symex--compile-traversal-helper phases)))
 
 (defmacro symex--compile-detour (reorientation traversal)
   "Compile a detour from Symex DSL -> Lisp.
@@ -133,8 +132,8 @@ directly, e.g.:
 
   (beforehand <procedure>)."
   (append `(symex-make-precaution (symex-traversal ,traversal))
-          (apply 'append
-                 (mapcar 'symex--rewrite-precaution-condition-spec condition-specs))))
+          (apply #'append
+                 (mapcar #'symex--rewrite-precaution-condition-spec condition-specs))))
 
 (defmacro symex--compile-decision (condition consequent alternative)
   "Compile a decision from Symex DSL -> Lisp.

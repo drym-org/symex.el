@@ -3,7 +3,7 @@
 ;; URL: https://github.com/countvajhula/symex.el
 
 ;; This program is "part of the world," in the sense described at
-;; http://drym.org.  From your perspective, this is no different than
+;; https://drym.org.  From your perspective, this is no different than
 ;; MIT or BSD or other such "liberal" licenses that you may be
 ;; familiar with, that is to say, you are free to do whatever you like
 ;; with this program.  It is much more than BSD or MIT, however, in
@@ -20,9 +20,8 @@
 ;;
 
 ;;; Commentary:
-;;
+
 ;; Interface for the Common Lisp language
-;;
 
 ;;; Code:
 
@@ -59,12 +58,12 @@ Accounts for different point location in evil vs Emacs mode."
 (defun symex-eval-print-common-lisp ()
   "Eval symex and print result in buffer."
   (interactive)
-  (call-interactively 'slime-eval-print-last-expression))
+  (call-interactively #'slime-eval-print-last-expression))
 
 (defun symex-describe-symbol-common-lisp ()
   "Describe symbol at point."
   (interactive)
-  (call-interactively 'slime-documentation))
+  (call-interactively #'slime-documentation))
 
 (defun symex-repl-common-lisp ()
   "Go to REPL."
