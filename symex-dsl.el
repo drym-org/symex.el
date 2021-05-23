@@ -38,14 +38,14 @@ traversal specifications."
 
 OPTIONS - see underlying Lisp implementation."
   `(symex-make-protocol
-    ,@(mapcar 'symex--compile-traversal-helper options)))
+    ,@(mapcar #'symex--compile-traversal-helper options)))
 
 (defmacro symex--compile-maneuver (&rest phases)
   "Compile a maneuver from Symex DSL -> Lisp.
 
 PHASES - see underlying Lisp implementation."
   `(symex-make-maneuver
-    ,@(mapcar 'symex--compile-traversal-helper phases)))
+    ,@(mapcar #'symex--compile-traversal-helper phases)))
 
 (defmacro symex--compile-detour (reorientation traversal)
   "Compile a detour from Symex DSL -> Lisp.
@@ -133,7 +133,7 @@ directly, e.g.:
   (beforehand <procedure>)."
   (append `(symex-make-precaution (symex-traversal ,traversal))
           (apply 'append
-                 (mapcar 'symex--rewrite-precaution-condition-spec condition-specs))))
+                 (mapcar #'symex--rewrite-precaution-condition-spec condition-specs))))
 
 (defmacro symex--compile-decision (condition consequent alternative)
   "Compile a decision from Symex DSL -> Lisp.
