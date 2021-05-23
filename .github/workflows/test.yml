@@ -42,5 +42,3 @@ jobs:
         run: make checkdoc
       - name: Byte Compile
         run: make build
-      - name: Run Tests
-        run: make test
