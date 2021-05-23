@@ -3,7 +3,7 @@
 ;; URL: https://github.com/countvajhula/symex.el
 
 ;; This program is "part of the world," in the sense described at
-;; http://drym.org.  From your perspective, this is no different than
+;; https://drym.org.  From your perspective, this is no different than
 ;; MIT or BSD or other such "liberal" licenses that you may be
 ;; familiar with, that is to say, you are free to do whatever you like
 ;; with this program.  It is much more than BSD or MIT, however, in
@@ -20,9 +20,8 @@
 ;;
 
 ;;; Commentary:
-;;
+
 ;; Interface for the Elisp language
-;;
 
 ;;; Code:
 
