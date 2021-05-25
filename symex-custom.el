@@ -20,9 +20,8 @@
 ;;
 
 ;;; Commentary:
-;;
+
 ;; User Customization configuration
-;;
 
 ;;; Code:
 

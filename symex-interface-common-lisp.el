@@ -32,6 +32,8 @@
 (declare-function slime-eval-defun "ext:slime")
 (declare-function slime-eval-buffer "ext:slime")
 (declare-function slime-repl "ext:slime-repl")
+(declare-function slime-eval-print-last-expression "ext:slime")
+(declare-function slime-documentation "ext:slime")
 
 (defun symex-eval-common-lisp ()
   "Eval last sexp.
