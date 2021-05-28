@@ -224,8 +224,16 @@ Editing
      - join with preceding line, join with next line
      -
 
-   * - ``M-J``
+   * - ``M-J`` / ``M-<``
      - collapse to a single line
+     -
+
+   * - ``M->``
+     - unfurl across multiple lines
+     -
+
+   * - ``C-M-<``, ``C-M->``
+     - collapse remaining, unfurl remaining
      -
 
    * - ``=``, ``<tab>``
