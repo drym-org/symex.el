@@ -387,7 +387,8 @@ New list delimiters are determined by the TYPE."
           ((equal type 'curly)
            (insert "{}"))
           ((equal type 'angled)
-           (insert "<>")))))
+           (insert "<>"))))
+  (symex-tidy))
 
 (defun symex-create-round ()
   "Create new symex with round delimiters."
