@@ -176,8 +176,8 @@ Editing
      - change, change remaining
      -
 
-   * - ``y``, ``p``, ``P``
-     - yank (copy), paste after, paste before
+   * - ``y``, ``Y``, ``p``, ``P``
+     - yank (copy), yank remaining, paste after, paste before
      -
 
    * - ``C--``, ``s``

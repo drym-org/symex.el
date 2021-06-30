@@ -282,6 +282,12 @@ by default, joins next symex to current one."
           (end (symex--get-end-point count)))
       (copy-region-as-kill start end))))
 
+(defun symex-yank-remaining ()
+  "Yank (copy) remaining symexes at this level."
+  (interactive)
+  (let ((count (symex--remaining-length)))
+    (symex-yank count)))
+
 (defun symex--paste-before ()
   "Paste before symex."
   (interactive)

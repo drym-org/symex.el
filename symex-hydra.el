@@ -95,6 +95,7 @@ to enter, and any of the standard exits to exit."
   ("C-k" symex-climb-branch "climb branch")
   ("C-j" symex-descend-branch "descend branch")
   ("y" symex-yank "yank (copy)")
+  ("Y" symex-yank-remaining "yank remaining")
   ("p" symex-paste-after "paste after")
   ("P" symex-paste-before "paste before")
   ("x" symex-delete "delete")

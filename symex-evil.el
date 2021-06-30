@@ -87,6 +87,7 @@ executing this command to get the expected behavior."
     ("C-k" . symex-climb-branch)
     ("C-j" . symex-descend-branch)
     ("y" . symex-yank)
+    ("Y" . symex-yank-remaining)
     ("p" . symex-paste-after)
     ("P" . symex-paste-before)
     ("x" . symex-delete)
