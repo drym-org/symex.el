@@ -98,6 +98,7 @@ to enter, and any of the standard exits to exit."
   ("p" symex-paste-after "paste after")
   ("P" symex-paste-before "paste before")
   ("x" symex-delete "delete")
+  ("D" symex-delete-remaining "delete remaining")
   ("c" symex-change "change" :exit t)
   ("C" symex-change-remaining "change remaining" :exit t)
   ("C--" symex-clear "clear")

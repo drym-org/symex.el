@@ -90,6 +90,7 @@ executing this command to get the expected behavior."
     ("p" . symex-paste-after)
     ("P" . symex-paste-before)
     ("x" . symex-delete)
+    ("D" . symex-delete-remaining)
     ("c" . symex-change)
     ("C" . symex-change-remaining)
     ("C--" . symex-clear)

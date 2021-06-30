@@ -168,8 +168,8 @@ Editing
      - wrap with parens and insert
      -
 
-   * - ``x``
-     - delete
+   * - ``x``, ``D``
+     - delete, delete remaining
      -
 
    * - ``c``, ``C``

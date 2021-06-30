@@ -107,6 +107,12 @@ to how the Lisp interpreter does it (when it is following
   (symex-select-nearest)
   (symex-tidy))
 
+(defun symex-delete-remaining ()
+  "Delete remaining symexes at this level."
+  (interactive)
+  (let ((count (symex--remaining-length)))
+    (symex-delete count)))
+
 (defun symex-change (count)
   "Change COUNT symexes."
   (interactive "p")
