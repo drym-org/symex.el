@@ -120,7 +120,7 @@ executing this command to get the expected behavior."
     ("X" . symex-run)
     ("|" . lispy-split)
     ("m" . symex-join)
-    ("\\" . symex-splice)
+    ("-" . symex-splice)
     ("o" . symex-open-line-after)
     ("O" . symex-open-line-before)
     (">" . symex-insert-newline)

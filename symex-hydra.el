@@ -128,7 +128,7 @@ to enter, and any of the standard exits to exit."
   ("X" symex-run "run buffer")
   ("|" lispy-split "split")
   ("m" symex-join "merge (join)")
-  ("\\" symex-splice "clip/splice")
+  ("-" symex-splice "clip/splice")
   (")" symex-wrap-round "wrap with ()")
   ("]" symex-wrap-square "wrap with []")
   ("}" symex-wrap-curly "wrap with {}")
