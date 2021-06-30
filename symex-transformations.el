@@ -542,6 +542,12 @@ then no action is taken."
   (mark-sexp count)
   (comment-dwim nil))
 
+(defun symex-comment-remaining ()
+  "Comment out remaining symexes at this level."
+  (interactive)
+  (let ((count (symex--remaining-length)))
+    (symex-comment count)))
+
 (defun symex-tidy ()
   "Auto-indent symex and fix any whitespace."
   (interactive)

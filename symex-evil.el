@@ -154,6 +154,7 @@ executing this command to get the expected behavior."
     ("w" . symex-wrap)
     ("C-d" . symex--evil-scroll-down)
     (";" . symex-comment)
+    ("M-;" . symex-comment-remaining)
     ("C-;" . symex-eval-print) ; weird pre-offset (in both)
     ("s-;" . symex-evaluate)
     ("H-h" . symex--toggle-highlight) ; treats visual as distinct mode

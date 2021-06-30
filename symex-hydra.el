@@ -165,6 +165,7 @@ to enter, and any of the standard exits to exit."
   ("g" evil-jump-to-tag "go to definition")
   ("G" evil-jump-backward "return to previous location")
   (";" symex-comment "comment out")
+  ("M-;" symex-comment-remaining "comment out remaining")
   ("C-;" symex-eval-print "eval + print")
   ;; canonical action
   ("s-;" symex-evaluate "evaluate" :exit t)
