@@ -115,6 +115,12 @@ to how the Lisp interpreter does it (when it is following
     (kill-region start end))
   (symex-enter-lowest))
 
+(defun symex-change-remaining ()
+  "Change remaining symexes at this level."
+  (interactive)
+  (let ((count (symex--remaining-length)))
+    (symex-change count)))
+
 (defun symex--clear ()
   "Helper to clear contents of symex."
   (cond ((symex-opening-round-p)

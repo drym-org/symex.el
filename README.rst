@@ -172,8 +172,8 @@ Editing
      - delete
      -
 
-   * - ``c``
-     - change
+   * - ``c``, ``C``
+     - change, change remaining
      -
 
    * - ``y``, ``p``, ``P``
