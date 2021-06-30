@@ -99,7 +99,7 @@ to enter, and any of the standard exits to exit."
   ("P" symex-paste-before "paste before")
   ("x" symex-delete "delete")
   ("c" symex-change "change" :exit t)
-  ("C" symex-clear "clear")
+  ("C--" symex-clear "clear")
   ("s" symex-replace "replace" :exit t)
   ("S" symex-change-delimiter "change surrounding delimiter")
   ("H" symex-shift-backward "move backward")

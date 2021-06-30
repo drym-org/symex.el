@@ -180,7 +180,7 @@ Editing
      - yank (copy), paste after, paste before
      -
 
-   * - ``C``, ``s``
+   * - ``C--``, ``s``
      - clear, replace/substitute
      -
 

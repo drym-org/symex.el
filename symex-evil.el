@@ -91,7 +91,7 @@ executing this command to get the expected behavior."
     ("P" . symex-paste-before)
     ("x" . symex-delete)
     ("c" . symex-change)
-    ("C" . symex-clear)
+    ("C--" . symex-clear)
     ("s" . symex-replace)
     ("S" . symex-change-delimiter)
     ("H" . symex-shift-backward)
