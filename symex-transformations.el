@@ -209,7 +209,8 @@ to how the Lisp interpreter does it (when it is following
   "Capture from behind, COUNT times."
   (interactive "p")
   (dotimes (_ count)
-    (symex--capture-backward)))
+    (symex--capture-backward))
+  (symex-tidy))
 
 (defun symex--capture-forward ()
   "Capture from the front."
@@ -553,7 +554,7 @@ then no action is taken."
   (interactive)
   (fixup-whitespace)
   (when (save-excursion (looking-at-p "[[:space:]]"))
-      (forward-char))
+    (forward-char))
   (condition-case nil
       (save-excursion
         (forward-sexp)
