@@ -227,6 +227,14 @@ to how the Lisp interpreter does it (when it is following
   (dotimes (_ count)
     (symex--capture-forward)))
 
+(defun symex-split ()
+  "Split symex into two."
+  (interactive)
+  (paredit-split-sexp)
+  (forward-char)
+  (symex-select-nearest)
+  (symex-tidy))
+
 (defun symex--join ()
   "Merge symexes at the same level."
   (save-excursion

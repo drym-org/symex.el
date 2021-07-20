@@ -212,7 +212,7 @@ Editing
      - swallow head, swallow tail
      -
 
-   * - ``|``, ``m``
+   * - ``|``, ``&``
      - split, join/merge
      -
 
