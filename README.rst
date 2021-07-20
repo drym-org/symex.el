@@ -164,6 +164,10 @@ Editing
      - wrap symex with indicated delimiter
      -
 
+   * - ``C-'``, ``C-```, ``,``
+     - toggle quoting, quasiquote, escape quoting
+     -
+
    * - ``w``
      - wrap with parens and insert
      -

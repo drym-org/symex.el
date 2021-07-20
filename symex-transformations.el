@@ -549,6 +549,26 @@ then no action is taken."
   (let ((count (symex--remaining-length)))
     (symex-comment count)))
 
+(defun symex-toggle-quote ()
+  "Quote/unquote symex."
+  (interactive)
+  (if (looking-at-p "['`,]")
+      (delete-char 1)
+      (insert "'"))
+  (symex-tidy))
+
+(defun symex-quasiquote ()
+  "Quasiquote symex."
+  (interactive)
+  (insert "`")
+  (symex-tidy))
+
+(defun symex-escape-quote ()
+  "Escape quote in quoted symex."
+  (interactive)
+  (insert ",")
+  (symex-tidy))
+
 (defun symex-tidy ()
   "Auto-indent symex and fix any whitespace."
   (interactive)
