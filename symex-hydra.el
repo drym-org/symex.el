@@ -158,6 +158,8 @@ to enter, and any of the standard exits to exit."
   ("M-k" symex-goto-highest "go to highest")
   ("=" symex-tidy "tidy/indent")
   ("<tab>" symex-tidy "tidy/indent")
+  ("C-=" symex-tidy-remaining "tidy remaining")
+  ("C-<tab>" symex-tidy-remaining "tidy remaining")
   ("M-=" symex-tidy-proper "tidy/indent properly")
   ("M-<tab>" symex-tidy-proper "tidy/indent properly")
   ("A" symex-append-after "append after symex" :exit t)

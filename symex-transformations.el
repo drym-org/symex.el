@@ -691,6 +691,20 @@ implementation."
     (symex--do-while-traversing (apply-partially #'symex-insert-newline 1)
                                 (symex-make-move 1 0))))
 
+(defun symex-tidy-remaining ()
+  "Tidy the remaining symexes."
+  (interactive)
+  (save-excursion
+    ;; do it once first since it will be executed as a side-effect
+    ;; _after_ each step in the traversal
+    (symex-tidy)
+    (symex--do-while-traversing #'symex-tidy
+                                (symex-make-move 1 0)))
+  ;; not sure why this nearest selection is needed, but eventually we may
+  ;; just want to wrap every command with this at the end anyway, so,
+  ;; in retrospect from that point, this wouldn't hurt
+  (symex-select-nearest))
+
 (defun symex-unfurl ()
   "Unfurl the constituent symexes so they each occupy separate lines."
   (interactive)

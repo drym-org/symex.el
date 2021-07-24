@@ -244,6 +244,10 @@ Editing
      - tidy
      - indent and remove extraneous whitespace
 
+   * - ``C-=``, ``C-<tab>``
+     - tidy remaining
+     - tidy remaining symexes at this level
+
    * - ``M-=`` / ``M-<tab>``
      - tidy recursively
      - tidies while traversing the symex from the highest branch to the root, for cases where a simple tidy isn't adequate

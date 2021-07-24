@@ -148,6 +148,8 @@ executing this command to get the expected behavior."
     ("M-k" . symex-goto-highest)
     ("=" . symex-tidy)
     ("<tab>" . symex-tidy)
+    ("C-=" . symex-tidy-remaining)
+    ("C-<tab>" . symex-tidy-remaining)
     ("M-=" . symex-tidy-proper)
     ("M-<tab>" . symex-tidy-proper)
     ("A" . symex-append-after)
