@@ -557,12 +557,115 @@ then no action is taken."
   (let ((count (symex--remaining-length)))
     (symex-comment count)))
 
-(defun symex-toggle-quote ()
-  "Quote/unquote symex."
+(defun symex--delete-prefix-helper (prefix-list)
+  "Delete the first prefix in PREFIX-LIST that matches the text at point.
+
+The index of the deleted prefix is returned, or a negative value if no prefix
+matched."
+  (if (null prefix-list)
+      -9999
+    (let ((prefix (car prefix-list))
+          (remaining-prefixes (cdr prefix-list)))
+      (if (looking-at-p prefix)
+          (progn
+            (delete-char (length prefix))
+            0)
+        (1+ (symex--delete-prefix-helper remaining-prefixes))))))
+
+(defun symex--delete-prefix (prefix-list)
+  "Delete the longest prefix in PREFIX-LIST that matches the text at point.
+
+The index of the deleted prefix is returned, or a negative value if no prefix
+matched."
+  ;; sort the prefix list by length so that we match the longest prefix
+  ;; when there are many possible matches, e.g. ,@(...) should match
+  ;; ,@ rather than ,
+  (let* ((sorted-prefix-list (sort (copy-list prefix-list)
+                                   (lambda (a b)
+                                     (> (length a) (length b)))))
+         (sorted-idx (symex--delete-prefix-helper sorted-prefix-list)))
+    (if (>= sorted-idx 0)
+        ;; since the sorted list is a permutation of the original
+        ;; prefix list, map the returned sorted index to the
+        ;; corresponding index on the original list
+        (position (elt sorted-prefix-list sorted-idx)
+                  prefix-list)
+      sorted-idx)))
+
+(defun symex--insert-prefix (prefix-list index)
+  "Insert a prefix at point selected from a user-customized list of prefixes.
+
+Inserts the prefix at position INDEX in PREFIX-LIST into the buffer at
+point.  If INDEX exceeds the length of the prefix list, then nothing
+is inserted.  This has the effect, when used in succession to
+symex--delete-prefix, of returning the content to an unprefixed state
+after it has cycled once through the prefixes."
+  (unless (>= index (length prefix-list))
+    (insert (elt prefix-list (max 0 index)))))
+
+(defun symex--cycle-prefix (prefix-list index)
+  "Cycle through (and insert into the buffer) prefixes in PREFIX-LIST.
+
+If INDEX is provided, insert the prefix at INDEX instead of cycling."
+  (save-excursion
+    (let ((deleted-index (symex--delete-prefix prefix-list)))
+      (if index
+          (symex--insert-prefix prefix-list index)
+        (symex--insert-prefix prefix-list (1+ deleted-index))))))
+
+(defun symex-cycle-quote (index)
+  "Cycle through configured quoting prefixes in `symex--quote-prefix-list`.
+
+If an INDEX is provided, then this replaces the existing prefix (if
+any) with the prefix at position INDEX in the quoting prefix list
+\(`symex--quote-prefix-list`).  If no index is specified, this replaces
+the existing prefix (if any) with the one that comes next in the
+prefix list.  If it goes past the end of the prefix list, the prefix is
+removed entirely, restarting the cycle.
+
+The INDEX begins at the 1st position in the prefix list, so the first
+prefix in the list should be indicated with 1 rather than 0.  This is
+because 0 has a different meaning in symex mode, and is an unusual
+prefix argument to use in Emacs functions.  1-indexed behavior is also
+the more natural choice here in any case."
+  (interactive "P")
+  (symex--cycle-prefix symex--quote-prefix-list (and index (1- index)))
+  (symex-tidy))
+
+(defun symex-cycle-unquote (index)
+  "Cycle through configured quoting prefixes in `symex--unquote-prefix-list`.
+
+If an INDEX is provided, then this replaces the existing prefix (if
+any) with the prefix at position INDEX in the unquoting prefix list
+\(`symex--unquote-prefix-list`).  If no index is specified, this
+replaces the existing prefix (if any) with the one that comes next in
+the prefix list.  If it goes past the end of the prefix list, the
+prefix is removed entirely, restarting the cycle.
+
+The INDEX begins at the 1st position in the prefix list, so the first
+prefix in the list should be indicated with 1 rather than 0.  This is
+because 0 has a different meaning in symex mode, and is an unusual
+prefix argument to use in Emacs functions.  1-indexed behavior is also
+the more natural choice here in any case."
+  (interactive "P")
+  (symex--cycle-prefix symex--unquote-prefix-list (and index (1- index)))
+  (symex-tidy))
+
+(defun symex-remove-quoting-level ()
+  "Remove any quoting prefix at point, if present.
+
+This removes either quoting or unquoting prefixes, and removes up to one
+layer of quoting."
   (interactive)
-  (if (looking-at-p "['`,]")
-      (delete-char 1)
-      (insert "'"))
+  (unless (>= (symex--delete-prefix symex--quote-prefix-list)
+              0)
+    (symex--delete-prefix symex--unquote-prefix-list))
+  (symex-tidy))
+
+(defun symex-add-quoting-level ()
+  "Add a quoting level."
+  (interactive)
+  (insert "'")
   (symex-tidy))
 
 (defun symex-quasiquote ()
