@@ -137,7 +137,7 @@ to enter, and any of the standard exits to exit."
   ("}" symex-wrap-curly "wrap with {}")
   (">" symex-wrap-angled "wrap with <>")
   ("C-'" symex-cycle-quote "cycle quoting prefix")
-  ("," symex-cycle-unquote "cycle unquoting prefix")
+  ("C-," symex-cycle-unquote "cycle unquoting prefix")
   ("`" symex-add-quoting-level "add quoting level")
   ("C-`" symex-remove-quoting-level "remove quoting level")
   ("o" symex-open-line-after "open line after" :exit t)

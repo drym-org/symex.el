@@ -73,7 +73,7 @@ executing this command to get the expected behavior."
     (")" . symex-wrap-round)
     ("]" . symex-wrap-square)
     ("C-'" . symex-cycle-quote)
-    ("," . symex-cycle-unquote)
+    ("C-," . symex-cycle-unquote)
     ("`" . symex-add-quoting-level)
     ("C-`" . symex-remove-quoting-level)
     ("f" . symex-traverse-forward)
