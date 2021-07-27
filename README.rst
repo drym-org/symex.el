@@ -115,11 +115,11 @@ Movement
      - skip forwards, backwards
      - quick ways to move forwards and backwards -- traverse without entering nested expressions
 
-   * - ``C-,``, ``C-/``
+   * - ``{``, ``}``
      - leap backwards, forwards
      - "leap" to adjacent branches in the current tree, preserving position on branch
 
-   * - ``C-M-,``, ``C-M-/``
+   * - ``M-{``, ``M-}``
      - soar backwards, forwards
      - leap, but crossing trees if necessary
 
@@ -156,11 +156,11 @@ Editing
      - open line below, above
      -
 
-   * - ``(``, ``[``, ``{``
+   * - ``(``, ``[``
      - create symex with indicated delimiter
      -
 
-   * - ``)``, ``]``, ``}``
+   * - ``)``, ``]``
      - wrap symex with indicated delimiter
      -
 
