@@ -200,6 +200,10 @@ Editing
      - move/shift symex backwards, forwards
      -
 
+   * - ``M-H``, ``M-L``
+     - move/shift symex backwards, forwards as far as possible on line or column
+     - Remember that usually the Meta prefix ``M-`` means "the most" and the Shift prefix ``S-`` means an action or "to shift" in a direction
+
    * - ``K``
      - raise
      -

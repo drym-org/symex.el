@@ -103,6 +103,8 @@ executing this command to get the expected behavior."
     ("S" . symex-change-delimiter)
     ("H" . symex-shift-backward)
     ("L" . symex-shift-forward)
+    ("M-H" . symex-shift-backward-most)
+    ("M-L" . symex-shift-forward-most)
     ("K" . paredit-raise-sexp) ; revisit kb
     ("C-S-j" . symex-emit-backward)
     ("C-(" . symex-capture-backward)

@@ -519,8 +519,10 @@ then no action is taken."
   (forward-sexp)
   (condition-case nil
       (progn (transpose-sexps 1)
-             (backward-sexp))
-    (error (backward-sexp))))
+             (backward-sexp)
+             t)
+    (error (backward-sexp)
+           nil)))
 
 (defun symex-shift-forward (count)
   "Move symex forward COUNT times in current tree level."
@@ -528,17 +530,46 @@ then no action is taken."
   (dotimes (_ count)
     (symex--shift-forward)))
 
+(defun symex-shift-forward-most ()
+  "Move symex backward COUNT times in current tree level."
+  (interactive)
+  (let ((col (current-column))
+        (row (line-number-at-pos))
+        (result t))
+    (while (and result
+                (or (= col (current-column))
+                    (= row (line-number-at-pos))))
+      (setq result (symex--shift-forward)))
+    (unless (or (= col (current-column))
+                (= row (line-number-at-pos)))
+      (symex--shift-backward))))
+
 (defun symex--shift-backward ()
   "Move symex backward in current tree level."
   (let ((move (symex--go-backward)))
     (when move
       (symex--shift-forward)
-      (symex--go-backward))))
+      (symex--go-backward)
+      t)))
 
 (defun symex-shift-backward (count)
   "Move symex backward COUNT times in current tree level."
   (interactive "p")
   (dotimes (_ count) (symex--shift-backward)))
+
+(defun symex-shift-backward-most ()
+  "Move symex backward COUNT times in current tree level."
+  (interactive)
+  (let ((col (current-column))
+        (row (line-number-at-pos))
+        (result t))
+    (while (and result
+                (or (= col (current-column))
+                    (= row (line-number-at-pos))))
+      (setq result (symex--shift-backward)))
+    (unless (or (= col (current-column))
+                (= row (line-number-at-pos)))
+      (symex--shift-forward))))
 
 (defun symex-change-delimiter ()
   "Change delimiter enclosing current symex, e.g. round -> square brackets."

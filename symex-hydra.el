@@ -109,6 +109,8 @@ to enter, and any of the standard exits to exit."
   ("S" symex-change-delimiter "change surrounding delimiter")
   ("H" symex-shift-backward "move backward")
   ("L" symex-shift-forward "move forward")
+  ("M-H" symex-shift-backward-most "move most backward")
+  ("M-L" symex-shift-forward-most "move most forward")
   ("K" paredit-raise-sexp "raise")
   ("C-S-j" symex-emit-backward "emit backward")
   ("C-(" symex-capture-backward "capture backward")
