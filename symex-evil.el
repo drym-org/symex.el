@@ -68,6 +68,8 @@ executing this command to get the expected behavior."
     ("j" . symex-go-down)
     ("k" . symex-go-up)
     ("l" . symex-go-forward)
+    ("gj" . symex-next-visual-line)
+    ("gk" . symex-previous-visual-line)
     ("(" . symex-create-round)
     ("[" . symex-create-square)
     (")" . symex-wrap-round)

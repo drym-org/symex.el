@@ -82,6 +82,8 @@ to enter, and any of the standard exits to exit."
   ("k" symex-go-up "up")
   ("j" symex-go-down "down")
   ("l" symex-go-forward "next")
+  ("gj" symex-next-visual-line "down (line)")
+  ("gk" symex-previous-visual-line "up (line)")
   ("f" symex-traverse-forward "flow forward")
   ("b" symex-traverse-backward "flow backward")
   ("C-f" symex-traverse-forward-more "flow forward more")

@@ -294,6 +294,18 @@ Version 2017-11-01"
                            (symex--go-forward))))
   (point))
 
+(defun symex-select-nearest-in-line ()
+  "Select symex nearest to point that's on the current line."
+  (interactive)
+  (unless (symex--current-line-empty-p)
+    (let ((original-pos (point)))
+      (symex-select-nearest)
+      (unless (= (line-number-at-pos)
+                 (line-number-at-pos original-pos))
+        (goto-char original-pos)
+        (beginning-of-line)
+        (symex-select-nearest)))))
+
 (defun symex-index ()  ; TODO: may be better framed as a computation
   "Get relative (from start of containing symex) index of current symex."
   (interactive)
@@ -321,6 +333,24 @@ Version 2017-11-01"
 
 This interface will be removed in a future version."
   (symex-height))
+
+(defun symex-next-visual-line (&optional count)
+  "Coordinate navigation to move down.
+
+This moves down COUNT lines in terms of buffer coordinates, rather than
+structurally in terms of the tree."
+  (interactive "p")
+  (evil-next-visual-line count)
+  (symex-select-nearest-in-line))
+
+(defun symex-previous-visual-line (&optional count)
+  "Coordinate navigation to move up.
+
+This moves up COUNT lines in terms of buffer coordinates, rather than
+structurally in terms of the tree."
+  (interactive "p")
+  (evil-previous-visual-line count)
+  (symex-select-nearest-in-line))
 
 (defun symex-soar-backward (count)
   "Leap backwards, crossing to a neighboring tree.

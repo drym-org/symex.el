@@ -103,6 +103,10 @@ Movement
      - backwards, down, up, forwards
      -
 
+   * - ``gj``, ``gk``
+     - linewise down, up
+     -
+
    * - ``f``, ``b``
      - traverse forwards, backwards
      -
