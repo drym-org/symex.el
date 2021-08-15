@@ -116,6 +116,16 @@
         (symex--go-forward)
         (setq i (1+ i))))))
 
+(defun symex-evaluate-remaining ()
+  "Evaluate the remaining symexes at this level."
+  (interactive)
+  (save-excursion
+    ;; do it once first since it will be executed as a side-effect
+    ;; _after_ each step in the traversal
+    (symex--evaluate)
+    (symex--do-while-traversing #'symex--evaluate
+                                (symex-make-move 1 0))))
+
 (defun symex-evaluate-definition ()
   "Evaluate entire containing symex definition."
   (interactive)

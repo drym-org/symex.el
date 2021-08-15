@@ -212,5 +212,16 @@ Executes the motion COUNT times."
   (dotimes (_ count)
     (symex-execute-traversal symex--traversal-descend-branch)))
 
+(defun symex--do-while-traversing (operation traversal)
+  "Traverse a symex using TRAVERSAL and do OPERATION at each step."
+  (let ((result (symex-execute-traversal traversal
+                                         nil
+                                         operation)))
+    (message "%s" result)
+    (when result
+      (symex--do-while-traversing operation
+                                  traversal))))
+
+
 (provide 'symex-traversals)
 ;;; symex-traversals.el ends here
