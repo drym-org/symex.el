@@ -269,8 +269,8 @@ Control
 
 .. list-table::
 
-   * - ``e``, ``E``, ``d``, ``M-e``, ``T``
-     - evaluate, pretty evaluate, evaluate definition, evaluate recursively, evaluate as "thunk"
+   * - ``e``, ``E``, ``d``, ``M-e``, ``C-M-e``, ``T``
+     - evaluate, evaluate remaining, evaluate definition, evaluate recursively, pretty evaluate, evaluate as "thunk"
      - ``T`` evaluates the indicated symex as if it were wrapped with parentheses, i.e. invoking it as a function, passing no arguments
 
    * - ``:``
