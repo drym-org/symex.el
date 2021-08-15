@@ -65,9 +65,8 @@
   :message "-- NORMALE --"
   :enable (normal))
 
-(defun symex-evaluate ()
-  "Evaluate Symex."
-  (interactive)
+(defun symex--evaluate ()
+  "Evaluate symex."
   (let ((original-evil-state evil-state))
     (unwind-protect
         (save-excursion
@@ -104,6 +103,18 @@
       ;; the right way to handle all this would be to avoid any state
       ;; transitions
       (funcall (intern (concat "evil-" (symbol-name original-evil-state) "-state"))))))
+
+(defun symex-evaluate (count)
+  "Evaluate COUNT symexes."
+  (interactive "p")
+  (save-excursion
+    (let ((i 0)
+          (movedp t))
+      (while (or (not movedp)
+                 (< i count))
+        (symex--evaluate)
+        (symex--go-forward)
+        (setq i (1+ i))))))
 
 (defun symex-evaluate-definition ()
   "Evaluate entire containing symex definition."
