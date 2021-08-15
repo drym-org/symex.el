@@ -116,6 +116,22 @@
         (symex--go-forward)
         (setq i (1+ i))))))
 
+(defun symex-eval-recursive ()
+  "Evaluate a symex recursively.
+
+Eval starting at the leaves and proceed down to the root, similarly
+to how the Lisp interpreter does it (when it is following
+'applicative-order evaluation')."
+  (interactive)
+  (save-excursion
+    (symex-execute-traversal (symex-traversal
+                              (circuit symex--traversal-preorder-in-tree)))
+    ;; do it once first since it will be executed as a side-effect
+    ;; _after_ each step in the traversal
+    (symex--evaluate)
+    (symex--do-while-traversing #'symex--evaluate
+                                symex--traversal-postorder-in-tree)))
+
 (defun symex-evaluate-remaining ()
   "Evaluate the remaining symexes at this level."
   (interactive)

@@ -25,6 +25,7 @@
 
 ;;; Code:
 
+(require 'cl-lib)
 
 (require 'paredit)
 (require 'lispy)
@@ -33,29 +34,12 @@
 (require 'evil-cleverparens)  ;; really only need cp-textobjects here
 (require 'symex-primitives)
 (require 'symex-utils)
-(require 'symex-misc)
 (require 'symex-traversals)
 (require 'symex-interop)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TRANSFORMATIONS ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun symex-eval-recursive ()
-  "Evaluate a symex recursively.
-
-Eval starting at the leaves and proceed down to the root, similarly
-to how the Lisp interpreter does it (when it is following
-'applicative-order evaluation')."
-  (interactive)
-  (save-excursion
-    (symex-execute-traversal (symex-traversal
-                              (circuit symex--traversal-preorder-in-tree)))
-    ;; do it once first since it will be executed as a side-effect
-    ;; _after_ each step in the traversal
-    (symex-evaluate)
-    (symex--do-while-traversing #'symex-evaluate
-                                symex--traversal-postorder-in-tree)))
 
 (defun symex-delete (count)
   "Delete COUNT symexes."
@@ -601,7 +585,7 @@ matched."
   ;; sort the prefix list by length so that we match the longest prefix
   ;; when there are many possible matches, e.g. ,@(...) should match
   ;; ,@ rather than ,
-  (let* ((sorted-prefix-list (sort (copy-list prefix-list)
+  (let* ((sorted-prefix-list (sort (cl-copy-list prefix-list)
                                    (lambda (a b)
                                      (> (length a) (length b)))))
          (sorted-idx (symex--delete-prefix-helper sorted-prefix-list)))
@@ -609,8 +593,8 @@ matched."
         ;; since the sorted list is a permutation of the original
         ;; prefix list, map the returned sorted index to the
         ;; corresponding index on the original list
-        (position (elt sorted-prefix-list sorted-idx)
-                  prefix-list)
+        (cl-position (elt sorted-prefix-list sorted-idx)
+                     prefix-list)
       sorted-idx)))
 
 (defun symex--insert-prefix (prefix-list index)
