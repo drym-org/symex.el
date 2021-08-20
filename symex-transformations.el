@@ -81,6 +81,13 @@
   (symex-select-nearest)
   (symex-tidy))
 
+(defun symex-delete-backwards (count)
+  "Delete COUNT symexes backwards."
+  (interactive "p")
+  (dotimes (_ count)
+    (when (symex--go-backward)
+      (symex-delete 1))))
+
 (defun symex-delete-remaining ()
   "Delete remaining symexes at this level."
   (interactive)

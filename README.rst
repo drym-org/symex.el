@@ -176,8 +176,8 @@ Editing
      - wrap with parens and insert
      -
 
-   * - ``x``, ``D``
-     - delete, delete remaining
+   * - ``x``, ``X``, ``D``
+     - delete, delete backwards, delete remaining
      -
 
    * - ``c``, ``C``
