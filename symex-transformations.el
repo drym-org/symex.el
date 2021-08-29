@@ -725,21 +725,34 @@ TRAVERSAL and performs SIDE-EFFECT at each step.  Note that the side
 effect is not performed during the pre-traversal."
   (kill-sexp 1)
   (kill-new
-   (with-temp-buffer
-     (yank)
-     (goto-char 0)
-     (symex-execute-traversal pre-traversal)
-     ;; do it once first since it will be executed as a side-effect
-     ;; _after_ each step in the traversal
-     (condition-case nil
-         (funcall side-effect)
-       (error nil))
-     (condition-case nil
-         (symex--do-while-traversing
-          side-effect
-          traversal)
-       (error nil))
-     (buffer-string)))
+   (let (original-syntax-table)
+     ;; In using a temp buffer to do the transformation here, we need to
+     ;; ensure that it uses the syntax table of the original buffer, since
+     ;; otherwise it doesn't necessarily treat characters the same way
+     ;; as the original buffer does, separating, for example, characters like
+     ;; `?` and `#` from the rest of the symbol during recursive indentation.
+     ;;
+     ;; The with-temp-buffer macro doesn't see the original syntax table
+     ;; when it is lexically defined here, not sure why. Defining a
+     ;; lexical scope here and then setting it dynamically via `setq`
+     ;; seems to work
+     (setq original-syntax-table (syntax-table))
+     (with-temp-buffer
+       (with-syntax-table original-syntax-table
+         (yank)
+         (goto-char 0)
+         (symex-execute-traversal pre-traversal)
+         ;; do it once first since it will be executed as a side-effect
+         ;; _after_ each step in the traversal
+         (condition-case nil
+             (funcall side-effect)
+           (error nil))
+         (condition-case nil
+             (symex--do-while-traversing
+              side-effect
+              traversal)
+           (error nil))
+         (buffer-string)))))
   (save-excursion (yank))
   (symex-tidy))
 
