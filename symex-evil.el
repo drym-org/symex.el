@@ -169,7 +169,6 @@ executing this command to get the expected behavior."
     ("H-h" . symex--toggle-highlight) ; treats visual as distinct mode
     ("?" . symex-describe)
     ("<return>" . symex-enter-lower)
-    ("C-<escape>" . symex-enter-lower)
     ("<escape>" . symex-escape-higher))
   "Key specification for symex evil state.")
 

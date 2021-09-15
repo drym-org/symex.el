@@ -191,7 +191,6 @@ to enter, and any of the standard exits to exit."
   ;; standard exits
   ("?" symex-describe "info")
   ("<return>" symex-enter-lower "enter lower" :exit t)
-  ("C-<escape>" symex-enter-lower "enter lower" :exit t)
   ("<escape>" symex-escape-higher "escape higher" :exit t)
   ("C-g" symex-escape-higher "escape higher" :exit t))
 
