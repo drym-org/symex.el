@@ -87,7 +87,9 @@ Depending on your choice, put one of these in the ``:custom`` `section <https://
 Key Bindings
 ------------
 
-The following table lists the key bindings in symex mode. You would only need this table for the evil frontend, as with the hydra frontend, you can lookup the keybindings at any time by pulling up the hydra menu (default binding: ``H-m``).
+The table below lists the key bindings in symex mode for Evil Symex users, and the section on `Optimizations`_ below that contains advice that may be relevant for all Symex users.
+
+With the hydra frontend, you can lookup the keybindings at any time by pulling up the hydra menu (default binding: ``H-m``). And for the evil frontend, while you don't have the menu, you can always use Emacs's ``C-h k`` to learn what a key does, as another way of learning the bindings.
 
 Movement
 ~~~~~~~~
@@ -105,7 +107,7 @@ Movement
 
    * - ``gj``, ``gk``
      - linewise down, up
-     -
+     - don't rely too heavily on these -- e.g. "leap branch" is often better
 
    * - ``f``, ``b``
      - traverse forwards, backwards
@@ -312,6 +314,22 @@ Control
    * - ``<escape>``
      - exit
      -
+
+Optimizations
+~~~~~~~~~~~~~
+
+In writing Lisp code, parentheses are among the most commonly typed characters, and yet, these require us to leave home position dramatically to type! I recommend a keybinding resembling the following to make it more efficient. Of course this applies only in Insert state (for Evil users) or in vanilla Emacs state, as you can insert and modulate delimiters in other ways while in Symex state:
+
+::
+
+   (define-key
+     symex-mode-map
+     (kbd "C-w")
+	 (lambda ()
+	   (interactive)
+	   (execute-kbd-macro (kbd "("))))
+
+You could think of "w" as "wrap" in this context, as in, "to wrap with parentheses," and it matches a similar binding in symex state (i.e. ``w`` to wrap an expression and enter insert state). For the closing parenthesis, you could just use Emacs's ``C-f`` to move forward a character -- since symex (via paredit) ensures that parentheses are balanced, you rarely need to actually type a closing delimiter. The binding ``C-w`` would be fine for Evil users, but vanilla Emacs users may need to find something else here. Of course it goes without saying that the Control key should be conveniently accessible without having to leave home position. I have Control under my right thumb, and Escape in place of Caps Lock.
 
 The Menu (Hydra-only)
 ---------------------
