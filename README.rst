@@ -1,5 +1,3 @@
-*Symex (pron. "sym-ex", pl. symexes): A Lisp symbolic expression, which describes a computation to be performed.*
-
 .. image:: https://github.com/countvajhula/symex.el/actions/workflows/test.yml/badge.svg
     :target: https://github.com/countvajhula/symex.el/actions
 
@@ -10,6 +8,8 @@
 .. image:: https://stable.melpa.org/packages/symex-badge.svg
     :alt: MELPA Stable
     :target: https://stable.melpa.org/#/symex
+
+*Symex (pron. "sym-ex", pl. symexes): A Lisp symbolic expression, which describes a computation to be performed.*
 
 symex.el
 ========
@@ -66,7 +66,7 @@ Evil or Hydra?
 
 Symex provides both an evil state as well as a hydra-based modal interface. Which one should you use?
 
-**TL;DR**: in the long term, use the evil option (this is the default, and it is available to both evil and vanilla emacs users). If you're learning and would like some hand-holding as you familiarize yourself with the keybindings, use the hydra option.
+**TL;DR**: Use the evil option -- this is the default, and it is available to both evil and vanilla emacs users. If you're learning and would like some hand-holding as you familiarize yourself with the keybindings, use the hydra option, but it is likely that hydra will eventually be deprecated here.
 
 The evil option is less obtrusive and allows you to, for instance, execute ``M-x`` commands without leaving symex mode. It should feel very similar to using Normal state, and doesn't interfere with normal Emacs usage including any custom keybindings you may be using.
 
@@ -325,9 +325,9 @@ In writing Lisp code, parentheses are among the most commonly typed characters, 
    (define-key
      symex-mode-map
      (kbd "C-w")
-	 (lambda ()
-	   (interactive)
-	   (execute-kbd-macro (kbd "("))))
+     (lambda ()
+       (interactive)
+       (execute-kbd-macro (kbd "("))))
 
 You could think of "w" as "wrap" in this context, as in, "to wrap with parentheses," and it matches a similar binding in symex state (i.e. ``w`` to wrap an expression and enter insert state). For the closing parenthesis, you could just use Emacs's ``C-f`` to move forward a character -- since symex (via paredit) ensures that parentheses are balanced, you rarely need to actually type a closing delimiter. The binding ``C-w`` would be fine for Evil users, but vanilla Emacs users may need to find something else here. Of course it goes without saying that the Control key should be conveniently accessible without having to leave home position. I have Control under my right thumb, and Escape in place of Caps Lock.
 
