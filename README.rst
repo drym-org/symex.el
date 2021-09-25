@@ -87,9 +87,7 @@ Depending on your choice, put one of these in the ``:custom`` `section <https://
 Key Bindings
 ------------
 
-The table below lists the key bindings in symex mode for Evil Symex users, and the section on `Optimizations`_ below that contains advice that may be relevant for all Symex users.
-
-With the hydra frontend, you can lookup the keybindings at any time by pulling up the hydra menu (default binding: ``H-m``). And for the evil frontend, while you don't have the menu, you can always use Emacs's ``C-h k`` to learn what a key does, as another way of learning the bindings.
+The table below lists the key bindings in Symex mode for Evil Symex users. You don't need this with the hydra frontend since you can lookup the keybindings at any time by pulling up the hydra menu (default binding: ``H-m``). Also for the evil frontend, while you don't have the menu, you can always use Emacs's ``C-h k`` to learn what a key does, as another way of learning the bindings.
 
 Movement
 ~~~~~~~~
@@ -315,22 +313,6 @@ Control
      - exit
      -
 
-Optimizations
-~~~~~~~~~~~~~
-
-In writing Lisp code, parentheses are among the most commonly typed characters, and yet, these require us to leave home position dramatically to type! I recommend a keybinding resembling the following to make it more efficient. Of course this applies only in Insert state (for Evil users) or in vanilla Emacs state, as you can insert and modulate delimiters in other ways while in Symex state:
-
-::
-
-   (define-key
-     symex-mode-map
-     (kbd "C-w")
-     (lambda ()
-       (interactive)
-       (execute-kbd-macro (kbd "("))))
-
-You could think of "w" as "wrap" in this context, as in, "to wrap with parentheses," and it matches a similar binding in symex state (i.e. ``w`` to wrap an expression and enter insert state). For the closing parenthesis, you could just use Emacs's ``C-f`` to move forward a character -- since symex (via paredit) ensures that parentheses are balanced, you rarely need to actually type a closing delimiter. The binding ``C-w`` would be fine for Evil users, but vanilla Emacs users may need to find something else here. Of course it goes without saying that the Control key should be conveniently accessible without having to leave home position. I have Control under my right thumb, and Escape in place of Caps Lock.
-
 The Menu (Hydra-only)
 ---------------------
 
@@ -388,6 +370,22 @@ Macros
 ------
 
 When you define macros in symex mode (e.g. via ``q`` for evil users), make sure that the commands you use are those that have the same effect in every situation. For instance, the "up" and "down" motions (default: ``k`` and ``j``) could vary based on "branch memory" - up may sometimes move you to the first position on the higher level, but at other times it may move you to the third position, if that happens to be your most recent position. Using up and down in your macro would mean that it could have different results in each tree depending on your activities in the tree, unless you remember to reset the frame of reference by using something like ``0`` or ``$``. Instead, it may be more natural to use the "flow" traversal commands (default: ``f`` and ``b``), repeating them or prefixing them with count arguments if necessary, to move around in a fully deterministic way. This will ensure that your macros behave the same way in every case.
+
+Keybindings
+-----------
+
+In writing Lisp code, parentheses are among the most commonly typed characters, and yet, these require us to leave home position dramatically to type! I recommend a keybinding resembling the following to make it more efficient. Of course this applies only in Insert state (for Evil users) or in vanilla Emacs state, as you can insert and modulate delimiters in other ways while in Symex state:
+
+::
+
+   (define-key
+     symex-mode-map
+     (kbd "C-w")
+     (lambda ()
+       (interactive)
+       (execute-kbd-macro (kbd "("))))
+
+You could think of "w" as "wrap" in this context, as in, "to wrap with parentheses," and it matches a similar binding in symex state (i.e. ``w`` to wrap an expression and enter insert state). For the closing parenthesis, you could just use Emacs's ``C-f`` to move forward a character -- since symex (via paredit) ensures that parentheses are balanced, you rarely need to actually type a closing delimiter. The binding ``C-w`` would be fine for Evil users, but vanilla Emacs users may need to find something else here. Of course it goes without saying that the Control key should be conveniently accessible without having to leave home position. I have Control under my right thumb, and Escape in place of Caps Lock.
 
 Learn More
 ==========
