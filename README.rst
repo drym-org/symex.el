@@ -174,8 +174,8 @@ Editing
      - cycle quoting, cycle unquoting, add quoting level, remove quoting level
      -
 
-   * - ``w``
-     - wrap with parens and insert
+   * - ``w``, ``W``
+     - wrap with parens and insert, wrap and append
      -
 
    * - ``x``, ``X``, ``D``

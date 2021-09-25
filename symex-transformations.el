@@ -495,6 +495,12 @@ then no action is taken."
   (symex-wrap-round)
   (symex-insert-at-beginning))
 
+(defun symex-wrap-and-append ()
+  "Wrap with containing symex and append."
+  (interactive)
+  (symex-wrap-round)
+  (symex-insert-at-end))
+
 (defun symex--shift-forward ()
   "Move symex forward in current tree level."
   (forward-sexp)
