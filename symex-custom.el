@@ -50,12 +50,12 @@
   :type 'symbol
   :group 'symex)
 
-(defcustom symex--quote-prefix-list (list "'" "`")
+(defcustom symex-quote-prefix-list (list "'" "`")
   "List of prefixes to cycle through while using `symex-cycle-quote`."
   :type 'list
   :group 'symex)
 
-(defcustom symex--unquote-prefix-list (list "," ",@")
+(defcustom symex-unquote-prefix-list (list "," ",@")
   "List of prefixes to cycle through while using `symex-cycle-unquote`."
   :type 'list
   :group 'symex)

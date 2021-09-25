@@ -632,11 +632,11 @@ If INDEX is provided, insert the prefix at INDEX instead of cycling."
         (symex--insert-prefix prefix-list (1+ deleted-index))))))
 
 (defun symex-cycle-quote (index)
-  "Cycle through configured quoting prefixes in `symex--quote-prefix-list`.
+  "Cycle through configured quoting prefixes in `symex-quote-prefix-list`.
 
 If an INDEX is provided, then this replaces the existing prefix (if
 any) with the prefix at position INDEX in the quoting prefix list
-\(`symex--quote-prefix-list`).  If no index is specified, this replaces
+\(`symex-quote-prefix-list`).  If no index is specified, this replaces
 the existing prefix (if any) with the one that comes next in the
 prefix list.  If it goes past the end of the prefix list, the prefix is
 removed entirely, restarting the cycle.
@@ -647,15 +647,15 @@ because 0 has a different meaning in symex mode, and is an unusual
 prefix argument to use in Emacs functions.  1-indexed behavior is also
 the more natural choice here in any case."
   (interactive "P")
-  (symex--cycle-prefix symex--quote-prefix-list (and index (1- index)))
+  (symex--cycle-prefix symex-quote-prefix-list (and index (1- index)))
   (symex-tidy))
 
 (defun symex-cycle-unquote (index)
-  "Cycle through configured quoting prefixes in `symex--unquote-prefix-list`.
+  "Cycle through configured quoting prefixes in `symex-unquote-prefix-list`.
 
 If an INDEX is provided, then this replaces the existing prefix (if
 any) with the prefix at position INDEX in the unquoting prefix list
-\(`symex--unquote-prefix-list`).  If no index is specified, this
+\(`symex-unquote-prefix-list`).  If no index is specified, this
 replaces the existing prefix (if any) with the one that comes next in
 the prefix list.  If it goes past the end of the prefix list, the
 prefix is removed entirely, restarting the cycle.
@@ -666,7 +666,7 @@ because 0 has a different meaning in symex mode, and is an unusual
 prefix argument to use in Emacs functions.  1-indexed behavior is also
 the more natural choice here in any case."
   (interactive "P")
-  (symex--cycle-prefix symex--unquote-prefix-list (and index (1- index)))
+  (symex--cycle-prefix symex-unquote-prefix-list (and index (1- index)))
   (symex-tidy))
 
 (defun symex-remove-quoting-level ()
@@ -675,9 +675,9 @@ the more natural choice here in any case."
 This removes either quoting or unquoting prefixes, and removes up to one
 layer of quoting."
   (interactive)
-  (unless (>= (symex--delete-prefix symex--quote-prefix-list)
+  (unless (>= (symex--delete-prefix symex-quote-prefix-list)
               0)
-    (symex--delete-prefix symex--unquote-prefix-list))
+    (symex--delete-prefix symex-unquote-prefix-list))
   (symex-tidy))
 
 (defun symex-add-quoting-level ()
