@@ -366,7 +366,7 @@ When going up and down, the choice of initial position on the branch is arbitrar
 Quoting Styles
 --------------
 
-By default, ``C-'`` and ``C-,`` cycle through standard quoting and unquoting prefixes (``'``, ````` and ``,``, ``,@``, respectively) recognizable to all Lisps. But some Lisps, such as Racket, provide additional quoting styles that you may want to add here. You could also technically add any string prefixes here that you may find yourself using often, and it doesn't have to have anything to do with quoting. To add custom prefixes, add something like this to the ``:custom`` `section <https://github.com/jwiegley/use-package#customizing-variables>`__ (not the ``:config`` section) of your ``use-package`` form:
+By default, ``C-'`` and ``C-,`` cycle through standard quoting and unquoting prefixes (``'``, ````` and ``,``, ``,@``, respectively) recognizable to all Lisps. But some Lisps, such as Racket, provide additional quoting styles that you may want to add here. You could also technically add any prefixes here that you may find yourself using often, and they don't have to have anything to do with quoting. To add custom prefixes, add something like this to the ``:custom`` `section <https://github.com/jwiegley/use-package#customizing-variables>`__ (not the ``:config`` section) of your ``use-package`` form:
 
 ::
 
