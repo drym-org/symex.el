@@ -462,8 +462,9 @@ putting its contents in the parent symex.  If the symex is an atom,
 then no action is taken."
   (interactive)
   (when (lispy-left-p)
-    (symex--go-up)
-    (paredit-splice-sexp-killing-backward)))
+    (if (symex--go-up)
+        (paredit-splice-sexp-killing-backward)
+      (symex-delete 1))))
 
 (defun symex-wrap-round ()
   "Wrap with ()."
