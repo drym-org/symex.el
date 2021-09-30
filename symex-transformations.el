@@ -433,25 +433,28 @@ New list delimiters are determined by the TYPE."
     (symex-tidy)))
 
 (defun symex-swallow ()
-  "Swallow symex.
+  "Swallow the head of the symex.
 
 This consumes the head of the symex, putting the rest of its contents
 in the parent symex."
   (interactive)
-  (symex--go-up)
-  (symex--go-forward)
-  (paredit-splice-sexp-killing-backward))
+  (save-excursion
+    (symex--go-up)
+    (symex--go-forward)
+    (paredit-splice-sexp-killing-backward))
+  (symex-tidy))
 
 (defun symex-swallow-tail ()
-  "Swallow-tail symex.
+  "Swallow the tail of the symex.
 
 This consumes the tail of the symex, putting the head
 in the parent symex."
   (interactive)
-  (symex--go-up)
-  (symex--go-forward)
-  (paredit-splice-sexp-killing-forward)
-  (symex--go-backward)
+  (save-excursion
+    (symex--go-up)
+    (symex--go-forward)
+    (paredit-splice-sexp-killing-forward)
+    (symex--go-backward))
   (symex-tidy))
 
 (defun symex-splice ()
