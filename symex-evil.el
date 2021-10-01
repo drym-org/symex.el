@@ -186,10 +186,7 @@ executing this command to get the expected behavior."
     ;; without rigpa (which would handle this for us), we need to
     ;; manage the editing minor mode and ensure that it is active
     ;; while in symex evil state and inactive when in other states
-    (add-hook 'evil-normal-state-entry-hook #'symex-disable-editing-minor-mode)
-    (add-hook 'evil-insert-state-entry-hook #'symex-disable-editing-minor-mode)
-    (add-hook 'evil-emacs-state-entry-hook #'symex-disable-editing-minor-mode)
-    (add-hook 'evil-replace-state-entry-hook #'symex-disable-editing-minor-mode)))
+    (add-hook 'evil-symex-state-exit-hook #'symex-disable-editing-minor-mode)))
 
 (defun symex-enable-editing-minor-mode ()
   "Enable symex minor mode."
