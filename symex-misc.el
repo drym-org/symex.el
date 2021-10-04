@@ -38,6 +38,8 @@
 (require 'symex-interface-common-lisp)
 (require 'symex-interface-arc)
 (require 'symex-interop)
+(require 'tree-sitter)
+(require 'symex-ts)
 
 ;; These are customization or config variables defined elsewhere;
 ;; explicitly indicating them here to avoid byte compile warnings
@@ -679,6 +681,8 @@ ORIG-FN applied to ARGS is the invocation being advised."
   (unless (member evil-next-state '(emacslike normallike))
     ;; these are "internal" state transitions, used in e.g. symex-evaluate
     (deactivate-mark)
+    (when tree-sitter-mode
+      (symex-ts--delete-overlay))
     (when symex-refocus-p
       (symex--restore-scroll-margin))))
 
