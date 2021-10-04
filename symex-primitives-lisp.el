@@ -1,4 +1,4 @@
-;;; symex-primitives.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
+;;; symex-primitives-lisp.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
 
 ;; URL: https://github.com/countvajhula/symex.el
 
@@ -421,5 +421,5 @@ match."
         (delete-region start end))))
 
 
-(provide 'symex-primitives)
-;;; symex-primitives.el ends here
+(provide 'symex-primitives-lisp)
+;;; symex-primitives-lisp.el ends here

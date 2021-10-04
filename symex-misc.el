@@ -28,7 +28,7 @@
 
 (require 'lispy)
 (require 'evil)
-(require 'symex-primitives)
+(require 'symex-primitives-lisp)
 (require 'symex-evaluator)
 (require 'symex-traversals)
 (require 'symex-interface-elisp)
