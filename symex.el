@@ -48,6 +48,8 @@
 (require 'symex-interop)
 (require 'symex-misc)
 (require 'symex-custom)
+(require 'tree-sitter)
+(require 'symex-ts)
 
 ;;;###autoload
 (define-minor-mode symex-mode
@@ -114,6 +116,8 @@
   (symex--adjust-point-on-entry)
   (when symex-remember-branch-positions-p
     (symex--clear-branch-memory))
+  (when tree-sitter-mode
+    (symex-ts-set-current-node-from-point))
   (symex-select-nearest)
   (when symex-refocus-p
     ;; smooth scrolling currently not supported
