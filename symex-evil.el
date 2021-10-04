@@ -194,7 +194,9 @@ executing this command to get the expected behavior."
 
 (defun symex-disable-editing-minor-mode ()
   "Disable symex minor mode."
-  (symex-editing-mode -1))
+  (unless (member evil-next-state '(emacslike normallike))
+    ;; these are "internal" state transitions, used in e.g. symex-evaluate
+    (symex-editing-mode -1)))
 
 
 
