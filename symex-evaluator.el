@@ -28,7 +28,7 @@
 (require 'cl-lib)
 
 (require 'symex-data)
-(require 'symex-primitives-lisp)
+(require 'symex-primitives)
 (require 'symex-computations)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
