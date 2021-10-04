@@ -27,7 +27,7 @@
 
 
 (require 'symex-data)
-(require 'symex-primitives)
+(require 'symex-primitives-lisp)
 (require 'symex-evaluator)
 (require 'symex-dsl)
 
