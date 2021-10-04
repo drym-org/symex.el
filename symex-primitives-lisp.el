@@ -52,30 +52,30 @@
   "Check if point is at a root symex."
   (save-excursion
     (symex-if-stuck t
-                    (symex--exit)
+                    (symex-lisp--exit)
                     nil)))
 
 (defun symex--point-at-first-symex-p ()
   "Check if point is at the first symex at some level."
   (save-excursion
     (symex-if-stuck t
-                    (symex--backward)
+                    (symex-lisp--backward)
                     nil)))
 
 (defun symex--point-at-last-symex-p ()
   "Check if point is at the last symex at some level."
   (save-excursion
     (symex-if-stuck t
-                    (symex--forward)
+                    (symex-lisp--forward)
                     nil)))
 
 (defun symex--point-at-final-symex-p ()
   "Check if point is at the last symex in the buffer."
   (save-excursion
     (symex-if-stuck (progn (symex-if-stuck t
-                                           (symex--exit)
+                                           (symex-lisp--exit)
                                            nil))
-                    (symex--forward)
+                    (symex-lisp--forward)
                     nil)))
 
 (defun symex--point-at-initial-symex-p ()
@@ -265,7 +265,7 @@ symexes, returns the end point of the last one found."
         (error (point)))
       (symex--get-end-point (1- count)))))
 
-(defun symex--forward-one ()
+(defun symex-lisp--forward-one ()
   "Forward one symex."
   (let ((original-location (point))
         (result 0))
@@ -300,7 +300,7 @@ symexes, returns the end point of the last one found."
         (setq result 0)))
     result))
 
-(defun symex--forward (&optional count)
+(defun symex-lisp--forward (&optional count)
   "Forward symex.
 
 Go forward COUNT times, defaulting to one.
@@ -314,12 +314,12 @@ of symex mode (use the public `symex-go-forward` instead)."
   (let ((count (or count 1))
         (result 0))
     (dotimes (_ count)
-      (let ((res (symex--forward-one)))
+      (let ((res (symex-lisp--forward-one)))
         (setq result (+ res result))))
     (when (> result 0)
       (symex-make-move result 0))))
 
-(defun symex--backward-one ()
+(defun symex-lisp--backward-one ()
   "Backward one symex."
   (let ((result 0))
     (unless (symex--point-at-initial-symex-p)
@@ -329,7 +329,7 @@ of symex mode (use the public `symex-go-forward` instead)."
         (error nil)))
     result))
 
-(defun symex--backward (&optional count)
+(defun symex-lisp--backward (&optional count)
   "Backward symex.
 
 Go backward COUNT times, defaulting to one.
@@ -343,7 +343,7 @@ of symex mode (use the public `symex-go-backward` instead)."
   (let ((count (or count 1))
         (result 0))
     (dotimes (_ count)
-      (let ((res (symex--backward-one)))
+      (let ((res (symex-lisp--backward-one)))
         (setq result (+ res result))))
     (when (> result 0)
       (symex-make-move (- result) 0))))
@@ -353,7 +353,7 @@ of symex mode (use the public `symex-go-backward` instead)."
   (re-search-forward symex--re-symex-line)
   (back-to-indentation))
 
-(defun symex--enter-one ()
+(defun symex-lisp--enter-one ()
   "Enter one level."
   (let ((result 1))
     (cond ((or (symex-empty-list-p)
@@ -378,7 +378,7 @@ of symex mode (use the public `symex-go-backward` instead)."
           (t (setq result 0)))
     result))
 
-(defun symex--enter (&optional count)
+(defun symex-lisp--enter (&optional count)
   "Enter higher symex level.
 
 Enter COUNT times, defaulting to one.
@@ -392,12 +392,12 @@ of symex mode (use the public `symex-go-up` instead)."
   (let ((count (or count 1))
         (result 0))
     (dotimes (_ count)
-      (let ((res (symex--enter-one)))
+      (let ((res (symex-lisp--enter-one)))
         (setq result (+ res result))))
     (when (> result 0)
       (symex-make-move 0 result))))
 
-(defun symex--exit-one ()
+(defun symex-lisp--exit-one ()
   "Exit one level."
   (condition-case nil
       (progn (paredit-backward-up 1)
@@ -416,7 +416,7 @@ of symex mode (use the public `symex-go-up` instead)."
              1)
     (error 0)))
 
-(defun symex--exit (&optional count)
+(defun symex-lisp--exit (&optional count)
   "Exit to lower symex level.
 
 Exit COUNT times, defaulting to one.
@@ -430,7 +430,7 @@ of symex mode (use the public `symex-go-down` instead)."
   (let ((count (or count 1))
         (result 0))
     (dotimes (_ count)
-      (let ((res (symex--exit-one)))
+      (let ((res (symex-lisp--exit-one)))
         (setq result (+ res result))))
     (when (> result 0)
       (symex-make-move 0 (- result)))))
