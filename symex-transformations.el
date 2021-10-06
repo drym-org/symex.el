@@ -568,7 +568,10 @@ then no action is taken."
 (defun symex-change-delimiter ()
   "Change delimiter enclosing current symex, e.g. round -> square brackets."
   (interactive)
-  (evil-surround-change (following-char)))
+  (if (or (lispy-left-p) (symex-string-p))
+      (evil-surround-change (following-char))
+    (let ((bounds (bounds-of-thing-at-point 'sexp)))
+      (evil-surround-region (car bounds) (cdr bounds) 'inclusive 40))))
 
 (defun symex-comment (count)
   "Comment out COUNT symexes."
