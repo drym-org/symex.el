@@ -168,7 +168,7 @@ executing this command to get the expected behavior."
     ("C-;" . symex-eval-print) ; weird pre-offset (in both)
     ("s-;" . symex-evaluate)
     ("H-h" . symex--toggle-highlight) ; treats visual as distinct mode
-    ("?" . symex-describe)
+    ("C-?" . symex-describe)
     ("<return>" . symex-enter-lower)
     ("<escape>" . symex-escape-higher))
   "Key specification for symex evil state.")
