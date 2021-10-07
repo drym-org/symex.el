@@ -61,6 +61,11 @@ This provides a keybinding to load the symex editing interface, and also enables
 Usage and Customization
 =======================
 
+The Animated Guide
+------------------
+
+The best way to learn how to use Symex is to read the `Animated Guide <https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/>`_. Besides animations, it also contains lots of helpful field notes. Go check it out!
+
 Evil or Hydra?
 --------------
 
