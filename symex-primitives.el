@@ -45,7 +45,7 @@ This procedure is not to be used except in the low-level internals
 of symex mode (use the public `symex-go-forward` instead)."
   (interactive)
   (if tree-sitter-mode
-      (symex-ts-move-next-sibling)
+      (symex-ts-move-next-sibling count)
     (symex-lisp--forward count)))
 
 (defun symex--backward (&optional count)
@@ -60,7 +60,7 @@ This procedure is not to be used except in the low-level internals
 of symex mode (use the public `symex-go-backward` instead)."
   (interactive)
   (if tree-sitter-mode
-      (symex-ts-move-prev-sibling)
+      (symex-ts-move-prev-sibling count)
     (symex-lisp--backward count)))
 
 (defun symex--enter (&optional count)
@@ -75,7 +75,7 @@ This procedure is not to be used except in the low-level internals
 of symex mode (use the public `symex-go-up` instead)."
   (interactive)
   (if tree-sitter-mode
-      (symex-ts-move-child)
+      (symex-ts-move-child count)
     (symex-lisp--enter count)))
 
 (defun symex--exit (&optional count)
@@ -90,7 +90,7 @@ This procedure is not to be used except in the low-level internals
 of symex mode (use the public `symex-go-down` instead)."
   (interactive)
   (if tree-sitter-mode
-      (symex-ts-move-parent)
+      (symex-ts-move-parent count)
     (symex-lisp--exit count)))
 
 
