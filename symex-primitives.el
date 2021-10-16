@@ -142,6 +142,13 @@
          (progn (forward-char 2) ;; need to go forward by 2 for some reason
                 (lispy-right-p)))))
 
+(defun symex-empty-string-p ()
+  "Check if we're looking at an empty list."
+  (save-excursion
+    (and (symex-string-p)
+         (progn (forward-char 1)
+                (symex-string-p)))))
+
 (defun symex--racket-syntax-object-p ()
   "Check if the symex is a racket syntax object."
   (looking-at (concat "#['`]" lispy-left)))

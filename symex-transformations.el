@@ -464,8 +464,9 @@ If the symex is a nested list, this operation eliminates the symex,
 putting its contents in the parent symex.  If the symex is an atom,
 then no action is taken."
   (interactive)
-  (when (lispy-left-p)
-    (if (symex-empty-list-p)
+  (when (or (lispy-left-p) (symex-string-p))
+    (if (or (symex-empty-list-p)
+            (symex-empty-string-p))
         (symex-delete 1)
       (save-excursion
         (evil-surround-delete (char-after))
