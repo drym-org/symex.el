@@ -35,8 +35,7 @@
     (delete-overlay symex-ts--current-overlay)))
 
 (defun symex-ts--update-overlay (node)
-  "Update the highlight overlay to match the start/end position
-of NODE."
+  "Update the highlight overlay to match the start/end position of NODE."
   (when symex-ts--current-overlay
     (delete-overlay symex-ts--current-overlay))
   (setq-local symex-ts--current-overlay (make-overlay (tsc-node-start-position node) (tsc-node-end-position node)))
@@ -49,8 +48,10 @@ of NODE."
   (symex-ts--update-overlay symex-ts--current-node))
 
 (defun symex-ts--get-topmost-node (node)
-  "Return the highest node in the tree starting from NODE that
-has the same start position."
+  "Return the highest node in the tree starting from NODE.
+
+The returned node is the highest possible node that has the same
+start position as NODE."
   (let ((node-start-pos (tsc-node-start-position node))
         (parent (tsc-get-parent node)))
     (if parent
@@ -75,8 +76,10 @@ only two more nodes), the last node is returned instead."
       (symex-ts--get-nth-sibling-from-node next-node traversal-fn (1- n)))))
 
 (defun symex-ts--descend-to-child-with-sibling (node)
-  "Descend from NODE to first child recursively until the child
-node has a sibling or is a leaf."
+  "Descend from NODE to the first child recursively.
+
+Recursion will end when the child node has a sibling or is a
+leaf."
   (let ((child (tsc-get-nth-named-child node 0)))
     (if child
         (if (or (tsc-get-prev-named-sibling child) (tsc-get-next-named-sibling child))
@@ -85,8 +88,10 @@ node has a sibling or is a leaf."
       node)))
 
 (defun symex-ts--ascend-to-parent-with-sibling (node)
-  "Ascend from NODE to parent recursively until the parent node has
-a sibling or is the root."
+  "Ascend from NODE to parent recursively.
+
+Recursion will end when the parent node has a sibling or is the
+root."
   (let ((parent (tsc-get-parent node)))
     (if parent
         (if (or (tsc-get-prev-named-sibling parent) (tsc-get-next-named-sibling parent))
@@ -213,7 +218,7 @@ Move COUNT times, defaulting to 1."
   (symex-ts--delete-overlay))
 
 (defhydra hydra-symex-ts (:post (symex-ts--hydra-exit))
-  "Symex-TS"
+  "Symex-TS."
   ("d" symex-ts-current-node-sexp "DEBUG NODE")
 
   ("h" symex-ts-move-prev-sibling "prev")
@@ -236,4 +241,4 @@ Move COUNT times, defaulting to 1."
 
 
 (provide 'symex-ts)
-;; symex-ts.el ends here
+;;; symex-ts.el ends here
