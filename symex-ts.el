@@ -94,36 +94,35 @@ a sibling or is the root."
           (symex-ts--ascend-to-parent-with-sibling parent))
       node)))
 
-(defun symex-ts--add-move (init-move move-delta)
-  "Add MOVE-DELTA to INIT-MOVE, each being a list with two integer
-elements."
-  (list (+ (nth 0 init-move) (nth 0 move-delta))
-        (+ (nth 1 init-move) (nth 1 move-delta))))
-
 (defun symex-ts--move-with-count (fn move-delta &optional count)
   "Move the point from the current node if possible.
 
 Movement is defined by FN, which should be a function which
 returns the appropriate neighbour node.
 
+MOVE-DELTA is a two-element list describing the desired x and y
+point movement.
+
 Move COUNT times, defaulting to 1.
 
 Return a Symex move (list with x,y node offsets tagged with
 'move) or nil if no movement was performed."
   (let ((target-node nil)
-        (move '(0 0))
+        (move symex--move-zero)
         (cursor (symex-ts-get-current-node)))
     (dotimes (_ (or count 1))
       (let ((new-node (funcall fn cursor)))
         (when (and new-node (not (eq new-node cursor)))
-          (setq move (symex-ts--add-move move move-delta))
+          (setq move (symex--add-moves
+                      (list move
+                            (symex-make-move (car move-delta) (cadr move-delta)))))
           (setq cursor new-node
                 target-node cursor))))
     (when target-node (symex-ts--set-current-node target-node))
 
     ;; Return the Symex move that was executed, or nil to signify that
     ;; the movement failed
-    (when (not (equal '(0 0) move)) (flatten-list (list 'move move)))))
+    (when (not (symex--are-moves-equal-p move symex--move-zero)) move)))
 
 (defun symex-ts--after-tree-modification ()
   "Handle any tree modification."
