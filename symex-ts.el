@@ -200,32 +200,6 @@ Move COUNT times, defaulting to 1."
   (interactive "p")
   (symex-ts--move-with-count #'symex-ts--descend-to-child-with-sibling (symex-make-move 0 1) count))
 
-(defun symex-ts-delete-node-backward (&optional count)
-  "Delete COUNT nodes backward from the current node."
-  (interactive "p")
-  (let* ((count (or count 1))
-         (node (symex-ts-get-current-node))
-         (end-pos (tsc-node-end-position node))
-         (start-pos (tsc-node-start-position
-                     (if (> count 1)
-                         (symex-ts--get-nth-sibling-from-node node #'tsc-get-prev-named-sibling count)
-                       node))))
-    (delete-region start-pos end-pos))
-  (symex-ts--after-tree-modification))
-
-(defun symex-ts-delete-node-forward (&optional count)
-  "Delete COUNT nodes forward from the current node."
-  (interactive "p")
-  (let* ((count (or count 1))
-         (node (symex-ts-get-current-node))
-         (start-pos (tsc-node-start-position node))
-         (end-pos (tsc-node-end-position
-                   (if (> count 1)
-                       (symex-ts--get-nth-sibling-from-node node #'tsc-get-next-named-sibling count)
-                     node))))
-    (delete-region start-pos end-pos))
-  (symex-ts--after-tree-modification))
-
 
 (provide 'symex-ts)
 ;;; symex-ts.el ends here
