@@ -28,10 +28,7 @@
   ("h" symex-ts-move-prev-sibling "prev")
   ("l" symex-ts-move-next-sibling "next")
   ("j" symex-ts-move-parent "parent")
-  ("k" symex-ts-move-child "child")
-
-  ("X" symex-ts-delete-node-backward "delete node (backward)")
-  ("x" symex-ts-delete-node-forward "delete node (forward)"))
+  ("k" symex-ts-move-child "child"))
 
 (defun symex-ts-launch ()
   "Start the Symex-TS hydra."
