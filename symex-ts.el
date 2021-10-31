@@ -122,8 +122,8 @@ root."
 Movement is defined by FN, which should be a function which
 returns the appropriate neighbour node.
 
-MOVE-DELTA is a two-element list describing the desired x and y
-point movement.
+MOVE-DELTA is a Symex \"move\" describing the desired x and y
+point movement (e.g. `(move -1 0)' for a move \"upward\").
 
 Move COUNT times, defaulting to 1.
 
@@ -135,9 +135,7 @@ Return a Symex move (list with x,y node offsets tagged with
     (dotimes (_ (or count 1))
       (let ((new-node (funcall fn cursor)))
         (when (and new-node (not (eq new-node cursor)))
-          (setq move (symex--add-moves
-                      (list move
-                            (symex-make-move (car move-delta) (cadr move-delta)))))
+          (setq move (symex--add-moves (list move move-delta)))
           (setq cursor new-node
                 target-node cursor))))
     (when target-node (symex-ts--set-current-node target-node))
@@ -180,28 +178,28 @@ Automatically set it to the node at point if necessary."
 
 Move COUNT times, defaulting to 1."
   (interactive "p")
-  (symex-ts--move-with-count #'tsc-get-prev-named-sibling '(-1 0) count))
+  (symex-ts--move-with-count #'tsc-get-prev-named-sibling (symex-make-move -1 0) count))
 
 (defun symex-ts-move-next-sibling (&optional count)
   "Move the point to the current node's next sibling if possible.
 
 Move COUNT times, defaulting to 1."
   (interactive "p")
-  (symex-ts--move-with-count #'tsc-get-next-named-sibling '(1 0) count))
+  (symex-ts--move-with-count #'tsc-get-next-named-sibling (symex-make-move 1 0) count))
 
 (defun symex-ts-move-parent (&optional count)
   "Move the point to the current node's parent if possible.
 
 Move COUNT times, defaulting to 1."
   (interactive "p")
-  (symex-ts--move-with-count #'symex-ts--ascend-to-parent-with-sibling '(0 -1) count))
+  (symex-ts--move-with-count #'symex-ts--ascend-to-parent-with-sibling (symex-make-move 0 -1) count))
 
 (defun symex-ts-move-child (&optional count)
   "Move the point to the current node's first child if possible.
 
 Move COUNT times, defaulting to 1."
   (interactive "p")
-  (symex-ts--move-with-count #'symex-ts--descend-to-child-with-sibling '(0 1) count))
+  (symex-ts--move-with-count #'symex-ts--descend-to-child-with-sibling (symex-make-move 0 1) count))
 
 (defun symex-ts-delete-node-backward (&optional count)
   "Delete COUNT nodes backward from the current node."
