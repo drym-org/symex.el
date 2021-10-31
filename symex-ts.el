@@ -31,7 +31,6 @@
 
 ;;; Code:
 
-(require 'hydra)
 (require 'tree-sitter)
 
 
@@ -226,33 +225,6 @@ Move COUNT times, defaulting to 1."
                      node))))
     (delete-region start-pos end-pos))
   (symex-ts--after-tree-modification))
-
-
-(defun symex-ts--hydra-exit ()
-  "Handle Hydra exit."
-  (symex-ts--delete-overlay))
-
-(defhydra hydra-symex-ts (:post (symex-ts--hydra-exit))
-  "Symex-TS."
-  ("d" symex-ts-current-node-sexp "DEBUG NODE")
-
-  ("h" symex-ts-move-prev-sibling "prev")
-  ("l" symex-ts-move-next-sibling "next")
-  ("j" symex-ts-move-parent "parent")
-  ("k" symex-ts-move-child "child")
-
-  ("X" symex-ts-delete-node-backward "delete node (backward)")
-  ("x" symex-ts-delete-node-forward "delete node (forward)"))
-
-(defun symex-ts-launch ()
-  "Start the Symex-TS hydra."
-  (interactive)
-
-  ;; Set the current node to the top-most node at point
-  (symex-ts-set-current-node-from-point)
-
-  ;; Launch hydra
-  (hydra-symex-ts/body))
 
 
 (provide 'symex-ts)
