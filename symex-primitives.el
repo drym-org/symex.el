@@ -169,8 +169,12 @@
   "Check if the symex is an unquoted list."
   (looking-at (concat "," lispy-left)))
 
+(defun symex--clojure-deref-reader-macro-p ()
+  "Check if the symex is a clojure(script) deref reader macro."
+  (looking-at (concat "@" lispy-left)))
+
 (defun symex--clojure-literal-lambda-p ()
-  "Check if the symex is a clojurescript anonymous function literal."
+  "Check if the symex is a clojure(script) anonymous function literal."
   (looking-at (concat "#" lispy-left)))
 
 (defun symex--special-left-p ()
@@ -186,6 +190,7 @@ as special cases here."
       (symex--racket-syntax-object-p)
       (symex--splicing-unquote-p)
       (symex--racket-splicing-unsyntax-p)
+      (symex--clojure-deref-reader-macro-p)
       (symex--clojure-literal-lambda-p)))
 
 (defun symex--special-empty-list-p ()
