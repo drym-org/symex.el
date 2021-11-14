@@ -79,7 +79,7 @@ Accounts for different point location in evil vs Emacs mode."
   "Comment out remaining symexes at this level using clojure's comment reader macro."
   (interactive)
   (let ((count (symex--remaining-length)))
-    (my-symex-comment-reader-macro count)))
+    (symex-clojure-comment-reader-macro count)))
 
 (defun symex-clojure-comment-reader-macro (count)
   "Comment symex using clojure's comment reader macro"
