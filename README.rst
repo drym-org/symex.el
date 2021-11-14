@@ -381,6 +381,11 @@ By default, ``C-'`` and ``C-,`` cycle through standard quoting and unquoting pre
 Tips
 ====
 
+Escaping to Symex Instead of Normal State
+=========================================
+
+For evil users, when you "escape" from Insert state, you may prefer to enter Symex state rather than Normal state while in Lisp buffers. You could write one-off keybindings to do this, but if you'd like a more structured alternative, use `Rigpa <https://github.com/countvajhula/rigpa>`_.
+
 Macros
 ------
 
