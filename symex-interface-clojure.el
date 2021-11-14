@@ -75,6 +75,20 @@ Accounts for different point location in evil vs Emacs mode."
   "Evaluate buffer."
   (cider-eval-buffer))
 
+(defun symex-clojure-comment-remaining-reader-macro ()
+  "Comment out remaining symexes at this level using clojure's comment reader macro."
+  (interactive)
+  (let ((count (symex--remaining-length)))
+    (my-symex-comment-reader-macro count)))
+
+(defun symex-clojure-comment-reader-macro (count)
+  "Comment symex using clojure's comment reader macro"
+  (interactive "p")
+  (dotimes (_ count)
+    (insert "#_")
+    (when (not (symex--go-forward))
+      (backward-char 2))))
+
 
 (provide 'symex-interface-clojure)
 ;;; symex-interface-clojure.el ends here
