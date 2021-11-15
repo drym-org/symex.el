@@ -35,15 +35,15 @@
 ;;; TRAVERSALS ;;;
 ;;;;;;;;;;;;;;;;;;
 
-(deftraversal symex--traversal-goto-first
+(symex-deftraversal symex--traversal-goto-first
   (circuit (move backward))
   "Go to first symex on the present branch.")
 
-(deftraversal symex--traversal-goto-last
+(symex-deftraversal symex--traversal-goto-last
   (circuit (move forward))
   "Go to last symex on the present branch.")
 
-(deftraversal symex--traversal-goto-lowest
+(symex-deftraversal symex--traversal-goto-lowest
   (circuit (move down))
   "Go to lowest (root) symex in present tree.")
 
@@ -74,7 +74,7 @@
                                                          (move up))))))
   (point))
 
-(deftraversal symex--traversal-preorder
+(symex-deftraversal symex--traversal-preorder
   (protocol (protocol (move up)
                       (move forward))
             (detour (precaution (move down)
@@ -82,7 +82,7 @@
                     (move forward)))
   "Pre-order tree traversal, continuing to other trees.")
 
-(deftraversal symex--traversal-preorder-in-tree
+(symex-deftraversal symex--traversal-preorder-in-tree
   (protocol (protocol (move up)
                       (move forward))
             (detour (precaution (move down)
@@ -90,14 +90,14 @@
                     (move forward)))
   "Pre-order tree traversal.")
 
-(deftraversal symex--traversal-postorder
+(symex-deftraversal symex--traversal-postorder
   (protocol (maneuver (move backward)
                       (circuit (maneuver (move up)
                                          (circuit (move forward)))))
             (move down))
   "Post-order tree traversal, continuing to other trees.")
 
-(deftraversal symex--traversal-postorder-in-tree
+(symex-deftraversal symex--traversal-postorder-in-tree
   (protocol (precaution (maneuver (move backward)
                                   (circuit (maneuver (move up)
                                                      (circuit (move forward)))))
@@ -105,7 +105,7 @@
             (move down))
   "Post-order tree traversal.")
 
-(deftraversal symex--traversal-skip-forward
+(symex-deftraversal symex--traversal-skip-forward
   (protocol (move forward)
             (detour (precaution (move down)
                                 (afterwards (not (at final))))
@@ -113,19 +113,19 @@
   "Tree traversal focused on moving forward, leveraging preorder backtracking
 when the way is blocked.")
 
-(deftraversal symex--traversal-skip-backward
+(symex-deftraversal symex--traversal-skip-backward
   (protocol (move backward)
             (move down))
   "Tree traversal focused on moving backwards, leveraging postorder backtracking
 when the way is blocked.")
 
-(deftraversal symex--traversal-climb-branch
+(symex-deftraversal symex--traversal-climb-branch
   (protocol (move up)
             (detour (circuit (move forward))
                     (move up))
             (circuit (move forward))))
 
-(deftraversal symex--traversal-descend-branch
+(symex-deftraversal symex--traversal-descend-branch
   (protocol (precaution symex--traversal-goto-first
                         (beforehand (not (at root))))
             (maneuver (move down)

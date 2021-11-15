@@ -188,7 +188,7 @@ forward, backward, up, or down."
 
 This defines an anonymous traversal, much like `lambda` defines an
 anonymous function.  To give the traversal a name, either assign it to
-a variable, or use the `deftraversal` form (analogous to `defun`).
+a variable, or use the `symex-deftraversal` form (analogous to `defun`).
 
 TRAVERSAL could be any traversal specification, e.g. a maneuver,
 a detour, a move, etc., which is specified using the Symex DSL."
@@ -209,7 +209,7 @@ a detour, a move, etc., which is specified using the Symex DSL."
          `(symex--compile-move ,@(cdr traversal)))
         (t traversal)))  ; function-valued symbols wind up here
 
-(defmacro deftraversal (name traversal &optional docstring)
+(defmacro symex-deftraversal (name traversal &optional docstring)
   "Define a symex traversal using the Symex DSL.
 
 NAME is the name of the traversal.  The defined traversal will be
