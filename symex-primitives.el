@@ -170,11 +170,11 @@
   (looking-at (concat "," lispy-left)))
 
 (defun symex--clojure-deref-reader-macro-p ()
-  "Check if the symex is a clojure(script) deref reader macro."
+  "Check if the symex is a clojure deref reader macro."
   (looking-at (concat "@" lispy-left)))
 
 (defun symex--clojure-literal-lambda-p ()
-  "Check if the symex is a clojure(script) anonymous function literal."
+  "Check if the symex is a clojure anonymous function literal."
   (looking-at (concat "#" lispy-left)))
 
 (defun symex--special-left-p ()
