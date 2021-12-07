@@ -200,7 +200,9 @@ as special cases here."
              (progn (forward-char 4)
                     (lispy-right-p))))
       (save-excursion
-        (and (or (symex--quoted-list-p) (symex--clojure-literal-lambda-p))
+        (and (or (symex--quoted-list-p)
+                 (symex--clojure-deref-reader-macro-p)
+                 (symex--clojure-literal-lambda-p))
              (progn (forward-char 3)
                     (lispy-right-p))))))
 
@@ -348,6 +350,7 @@ of symex mode (use the public `symex-go-backward` instead)."
            (forward-char 4))
           ((and (or (symex--quoted-list-p)
                     (symex--unquoted-list-p)
+                    (symex--clojure-deref-reader-macro-p)
                     (symex--clojure-literal-lambda-p))
                 (not (symex--special-empty-list-p)))
            (forward-char 2))
@@ -382,6 +385,8 @@ of symex mode (use the public `symex-go-up` instead)."
              (cond ((looking-back "#['`]" (line-beginning-position))
                     (backward-char 2))
                    ((looking-back "[#'`]" (line-beginning-position))
+                    (backward-char))
+                   ((looking-back "@" (line-beginning-position))
                     (backward-char)))
              1)
     (error 0)))
