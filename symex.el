@@ -129,11 +129,15 @@
 (defvar symex-racket-modes (list 'racket-mode
                                  'racket-repl-mode))
 
+(defvar symex-clojure-modes (list 'clojure-mode
+                                  'clojurescript-mode
+                                  'clojurec-mode))
+
 (defvar symex-lisp-modes (append symex-elisp-modes
                                  symex-racket-modes
+                                 symex-clojure-modes
                                  (list 'scheme-mode
                                        'arc-mode
-                                       'clojure-mode
                                        'lisp-mode)))
 
 ;;;###autoload
