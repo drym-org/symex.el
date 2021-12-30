@@ -677,9 +677,11 @@ ORIG-FN applied to ARGS is the invocation being advised."
 
 (defun symex-exit-mode ()
   "Take necessary action upon symex mode exit."
-  (deactivate-mark)
-  (when symex-refocus-p
-    (symex--restore-scroll-margin)))
+  (unless (member evil-next-state '(emacslike normallike))
+    ;; these are "internal" state transitions, used in e.g. symex-evaluate
+    (deactivate-mark)
+    (when symex-refocus-p
+      (symex--restore-scroll-margin))))
 
 (provide 'symex-misc)
 ;;; symex-misc.el ends here
