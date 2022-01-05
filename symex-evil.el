@@ -123,7 +123,7 @@ executing this command to get the expected behavior."
     ("d" . symex-evaluate-definition)
     ("M-e" . symex-eval-recursive)
     ("T" . symex-evaluate-thunk)
-    (":" . eval-expression)
+    (":" . evil-ex)
     ("t" . symex-switch-to-scratch-buffer)
     ("M" . symex-switch-to-messages-buffer)
     ("r" . symex-repl)
