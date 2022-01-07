@@ -26,6 +26,7 @@
 ;;; Code:
 
 (require 'evil)
+(require 'symex-interop)
 
 (defun symex-eval-elisp ()
   "Eval Elisp symex."
@@ -74,7 +75,8 @@ open in most recently used other window."
            (ielm))
           (t (evil-window-mru)  ; better LRU
              (ielm)))
-    (goto-char (point-max))))
+    (goto-char (point-max))
+    (symex-enter-lowest)))
 
 (defun symex-run-elisp ()
   "Evaluate buffer."

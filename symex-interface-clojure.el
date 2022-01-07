@@ -26,6 +26,7 @@
 ;;; Code:
 
 (require 'cider nil 'noerror)
+(require 'symex-interop)
 
 (declare-function cider-eval-last-sexp "ext:cider")
 (declare-function cider-eval-defun-at-point "ext:cider")
@@ -69,7 +70,8 @@ Accounts for different point location in evil vs Emacs mode."
   "Go to REPL."
   ;; this already goes to the active repl prompt
   ;; so there's no need to move point there
-  (cider-switch-to-repl-buffer))
+  (cider-switch-to-repl-buffer)
+  (symex-enter-lowest))
 
 (defun symex-run-clojure ()
   "Evaluate buffer."

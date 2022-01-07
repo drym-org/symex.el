@@ -26,6 +26,7 @@
 ;;; Code:
 
 (require 'geiser-mode nil 'noerror)
+(require 'symex-interop)
 
 (declare-function geiser-eval-last-sexp "ext:geiser-mode")
 (declare-function geiser-eval-definition "ext:geiser-mode")
@@ -65,7 +66,8 @@
 (defun symex-repl-scheme ()
   "Go to REPL."
   (geiser-mode-switch-to-repl nil)
-  (goto-char (point-max)))
+  (goto-char (point-max))
+  (symex-enter-lowest))
 
 (defun symex-run-scheme ()
   "Evaluate buffer."

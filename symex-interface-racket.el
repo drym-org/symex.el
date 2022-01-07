@@ -27,6 +27,7 @@
 
 (require 'racket-mode nil 'noerror)
 (require 'subr-x)
+(require 'symex-interop)
 
 ;; from racket-mode - avoid byte-compile warnings
 (defvar racket-repl-buffer-name)
@@ -120,8 +121,13 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-repl-racket ()
   "Go to REPL."
-  (racket-repl)
-  (goto-char (point-max)))
+  (let ((original-window (selected-window)))
+    (racket-repl)
+    (unless (eq original-window (selected-window))
+      ;; if the REPL window is currently being created
+      ;; then don't attempt to go to the bottom
+      (goto-char (point-max))
+      (symex-enter-lowest))))
 
 (defun symex-run-racket ()
   "Evaluate buffer."

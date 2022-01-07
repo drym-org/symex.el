@@ -254,8 +254,7 @@ executing it."
          (symex-repl-common-lisp))
         ((equal major-mode 'arc-mode)
          (symex-repl-arc))
-        (t (error "Symex mode: Lisp flavor not recognized!")))
-  (symex-enter-lowest))
+        (t (error "Symex mode: Lisp flavor not recognized!"))))
 
 (defun symex-run ()
   "Send to REPL."

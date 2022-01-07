@@ -27,6 +27,7 @@
 
 (require 'slime nil 'noerror)
 (require 'slime-repl nil 'noerror)
+(require 'symex-interop)
 
 (declare-function slime-eval-last-expression "ext:slime")
 (declare-function slime-eval-defun "ext:slime")
@@ -71,7 +72,8 @@ Accounts for different point location in evil vs Emacs mode."
   "Go to REPL."
   ;; this already goes to the active repl prompt
   ;; so there's no need to move point there
-  (slime-repl))
+  (slime-repl)
+  (symex-enter-lowest))
 
 (defun symex-run-common-lisp ()
   "Evaluate buffer."

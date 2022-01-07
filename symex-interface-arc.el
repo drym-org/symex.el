@@ -26,6 +26,7 @@
 ;;; Code:
 
 (require 'arc nil 'noerror)
+(require 'symex-interop)
 
 (declare-function arc-send-last-sexp "ext:arc")
 (declare-function arc-send-definition "ext:arc")
@@ -72,7 +73,8 @@ Accounts for different point location in evil vs Emacs mode."
 (defun symex-repl-arc ()
   "Go to REPL."
   (arc-repl)
-  (goto-char (point-max)))
+  (goto-char (point-max))
+  (symex-enter-lowest))
 
 (defun symex-run-arc ()
   "Evaluate buffer."
