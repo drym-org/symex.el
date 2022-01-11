@@ -56,6 +56,10 @@ forward-backward axis, and the Y or in-out axis."
     (error nil)))
 
 (defconst symex--move-zero (symex-make-move 0 0))
+(defconst symex--move-forward (symex-make-move 1 0))
+(defconst symex--move-backward (symex-make-move -1 0))
+(defconst symex--move-down (symex-make-move 0 -1))
+(defconst symex--move-up (symex-make-move 0 1))
 
 (defun symex--are-moves-equal-p (m1 m2)
   "Check if two moves M1 and M2 are identical."
