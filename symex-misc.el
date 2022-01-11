@@ -400,33 +400,9 @@ location (e.g. non-symex-based languages like Python)."
 (defun symex-height ()  ; TODO: may be better framed as a computation
   "Get height (above root) of current symex."
   (interactive)
-  (save-excursion
-    (symex-select-nearest)
-    (let ((moves (symex-execute-traversal symex--traversal-goto-lowest)))
-      (length moves))))
-
-;; (defun symex-height ()  ; TODO: may be better framed as a computation
-;;   "Get height (above root) of current symex."
-;;   (interactive)
-;;   (let ((result (save-excursion
-;;                   (symex-select-nearest)
-;;                   (let ((moves (symex-execute-traversal symex--traversal-goto-lowest)))
-;;                     (length moves)))))
-;;     (when tree-sitter-mode
-;;       (symex-ts-set-current-node-from-point)
-;;       (let ((result2 (save-excursion
-;;                        (symex-select-nearest)
-;;                        (let ((moves (symex-execute-traversal symex--traversal-goto-lowest)))
-;;                          (length moves)))))
-;;         (symex-ts-set-current-node-from-point)
-;;         (symex--go-up (- result result2))))
-;;     result))
-
-(defun symex-depth ()
-  "DEPRECATED.  Renamed to `symex-height`.
-
-This interface will be removed in a future version."
-  (symex-height))
+  (symex-save-excursion
+   (let ((moves (symex-execute-traversal symex--traversal-goto-lowest)))
+     (length moves))))
 
 (defun symex-next-visual-line (&optional count)
   "Coordinate navigation to move down.
