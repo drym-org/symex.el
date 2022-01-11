@@ -358,6 +358,43 @@ Version 2017-11-01"
           (setq result (1+ result)))
         result))))
 
+(defun symex--point-height-offset-helper (orig-pos)
+  "Compute the height offset of the current symex from the lowest one indicated by point."
+  (cond ((symex-ts-at-root-p) (if (= orig-pos (point))
+                                  0
+                                -1))
+        ((not (= (point) orig-pos)) -1)
+        (t (symex--go-down)
+           (1+ (symex--point-height-offset-helper orig-pos)))))
+
+(defun symex--point-height-offset (&optional orig-pos)
+  "Compute the height offset of the current symex from the lowest one indicated by point."
+  (if tree-sitter-mode
+      (let ((orig-pos (or orig-pos (point))))
+        (symex--point-height-offset-helper orig-pos))
+    0))
+
+(defmacro symex-save-excursion (&rest body)
+  "Execute BODY while preserving position in the tree.
+
+Like `save-excursion`, but in addition to preserving the point
+position, this also preserves the structural position in the tree, for
+languages where point position doesn't uniquely identify a tree
+location (e.g. non-symex-based languages like Python)."
+  `(let ((offset 0))
+      (when tree-sitter-mode
+        (setq offset (save-excursion
+                       (symex--point-height-offset)))
+        (symex-select-nearest)
+        (symex--go-up offset))
+      (let ((result
+             (save-excursion
+               ,@body)))
+        (when tree-sitter-mode
+          (symex-select-nearest)
+          (symex--go-up offset))
+        result)))
+
 (defun symex-height ()  ; TODO: may be better framed as a computation
   "Get height (above root) of current symex."
   (interactive)
