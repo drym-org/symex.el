@@ -350,7 +350,6 @@ Version 2017-11-01"
   "Get relative (from start of containing symex) index of current symex."
   (interactive)
   (save-excursion
-    (symex-select-nearest)
     (let ((original-location (point)))
       (let ((current-location (symex-goto-first))
             (result 0))
