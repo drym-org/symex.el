@@ -496,31 +496,30 @@ approach is the one employed here."
         (index (symex-index)))
     (let* ((find-neighboring-branch
             (symex-traversal
-             (circuit (precaution traverse
-                                  (afterwards (not (lambda ()
-                                                     (= (symex-height)
-                                                        height))))))))
-           (run-along-neighboring-branch
-            (symex-traversal
              (maneuver (decision (at first)
-                                 find-neighboring-branch
-                                 (maneuver symex--traversal-goto-first
-                                           find-neighboring-branch))
+                                 symex--move-zero
+                                 symex--traversal-goto-first)
+                       (circuit (precaution traverse
+                                            (afterwards (not (lambda ()
+                                                               (= (symex-height)
+                                                                  height))))))
                        traverse
-                       symex--traversal-goto-first
-                       (circuit (precaution (move forward)
-                                            (beforehand (lambda ()
-                                                          (< (symex-index)
-                                                             index)))))))))
+                       symex--traversal-goto-first)))
+           (run-along-branch
+            (symex-traversal
+             (circuit (precaution (move forward)
+                                  (beforehand (lambda ()
+                                                (< (symex-index)
+                                                   index)))))))
+           (leap-backward
+            (symex-traversal
+             (maneuver find-neighboring-branch
+                       run-along-branch))))
       (symex-execute-traversal
        (symex-traversal
-        (precaution (maneuver run-along-neighboring-branch
+        (precaution (maneuver leap-backward
                               (circuit
-                               (precaution (decision (lambda ()
-                                                       (< (symex-index)
-                                                          index))
-                                                     run-along-neighboring-branch
-                                                     symex--move-zero)
+                               (precaution leap-backward
                                            (beforehand (lambda ()
                                                          (< (symex-index)
                                                             index))))))
@@ -546,30 +545,29 @@ the implementation."
         (index (symex-index)))
     (let* ((find-neighboring-branch
             (symex-traversal
-             (circuit (precaution traverse
-                                  (afterwards (not (lambda ()
-                                                     (= (symex-height)
-                                                        height))))))))
-           (run-along-neighboring-branch
-            (symex-traversal
              (maneuver (decision (at last)
-                                 find-neighboring-branch
-                                 (maneuver symex--traversal-goto-last
-                                           find-neighboring-branch))
-                       traverse
-                       (circuit (precaution (move forward)
-                                            (beforehand (lambda ()
-                                                          (< (symex-index)
-                                                             index)))))))))
+                                 symex--move-zero
+                                 symex--traversal-goto-last)
+                       (circuit (precaution traverse
+                                            (afterwards (not (lambda ()
+                                                               (= (symex-height)
+                                                                  height))))))
+                       traverse)))
+           (run-along-branch
+            (symex-traversal
+             (circuit (precaution (move forward)
+                                  (beforehand (lambda ()
+                                                (< (symex-index)
+                                                   index)))))))
+           (leap-forward
+            (symex-traversal
+             (maneuver find-neighboring-branch
+                       run-along-branch))))
       (symex-execute-traversal
        (symex-traversal
-        (precaution (maneuver run-along-neighboring-branch
+        (precaution (maneuver leap-forward
                               (circuit
-                               (precaution (decision (lambda ()
-                                                       (< (symex-index)
-                                                          index))
-                                                     run-along-neighboring-branch
-                                                     symex--move-zero)
+                               (precaution leap-forward
                                            (beforehand (lambda ()
                                                          (< (symex-index)
                                                             index))))))
