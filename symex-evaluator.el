@@ -56,7 +56,8 @@ requiring changes to higher-level code that uses the present interface."
           ((> move-y 0)
            (symex--enter move-y))
           ((< move-y 0)
-           (symex--exit (abs move-y))))))
+           (symex--exit (abs move-y)))
+          (t symex--move-zero))))
 
 (defun symex-execute-move (move &optional computation)
   "Execute the MOVE as a traversal.
