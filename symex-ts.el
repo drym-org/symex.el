@@ -165,6 +165,12 @@ Automatically set it to the node at point if necessary."
   "Set the current node to the top-most node at point."
   (symex-ts--set-current-node (symex-ts-get-topmost-node-at-point)))
 
+(defun symex-ts-at-root-p ()
+  "Check whether the current node is the root node."
+  (let ((root (tsc-root-node tree-sitter-tree))
+        (cur (symex-ts-get-current-node)))
+    (tsc-node-eq cur root)))
+
 (defun symex-ts-get-topmost-node-at-point ()
   "Return the top-most node at the current point."
   (let ((root (tsc-root-node tree-sitter-tree))
