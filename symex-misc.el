@@ -322,14 +322,16 @@ Version 2017-11-01"
 (defun symex-select-nearest ()
   "Select symex nearest to point."
   (interactive)
-  (cond ((and (not (eobp))
-              (save-excursion (forward-char) (lispy-right-p)))  ; |)
-         (forward-char)
-         (lispy-different))
-        ((thing-at-point 'sexp)  ; som|ething
-         (beginning-of-thing 'sexp))
-        (t (symex-if-stuck (symex--go-backward)
-                           (symex--go-forward))))
+  (if tree-sitter-mode
+      (symex-ts-set-current-node-from-point)
+    (cond ((and (not (eobp))
+                (save-excursion (forward-char) (lispy-right-p))) ; |)
+           (forward-char)
+           (lispy-different))
+          ((thing-at-point 'sexp)       ; som|ething
+           (beginning-of-thing 'sexp))
+          (t (symex-if-stuck (symex--go-backward)
+                             (symex--go-forward)))))
   (point))
 
 (defun symex-select-nearest-in-line ()
