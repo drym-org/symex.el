@@ -165,18 +165,70 @@ Automatically set it to the node at point if necessary."
   "Set the current node to the top-most node at point."
   (symex-ts--set-current-node (symex-ts-get-topmost-node-at-point)))
 
-(defun symex-ts-at-root-p ()
-  "Check whether the current node is the root node."
-  (let ((root (tsc-root-node tree-sitter-tree))
-        (cur (symex-ts-get-current-node)))
-    (tsc-node-eq cur root)))
-
 (defun symex-ts-get-topmost-node-at-point ()
   "Return the top-most node at the current point."
   (let ((root (tsc-root-node tree-sitter-tree))
         (p (point)))
     (symex-ts--get-topmost-node (tsc-get-named-descendant-for-position-range root p p))))
 
+;;; Predicates
+
+(defmacro symex-ts--if-stuck (do-what operation &rest body)
+  "Attempt OPERATION and if it fails, then do DO-WHAT."
+  (let ((orig (gensym))
+        (cur (gensym)))
+    `(let ((,orig (symex-ts-get-current-node)))
+       ,operation
+       (let ((,cur (symex-ts-get-current-node)))
+         (if (ts-node-eq ,cur ,orig)
+             ,do-what
+           ,@body)))))
+
+(defun symex-ts--at-root-p ()
+  "Check whether the current node is the global root node."
+  (let ((root (tsc-root-node tree-sitter-tree))
+        (cur (symex-ts-get-current-node)))
+    (tsc-node-eq cur root)))
+
+(defun symex-ts--at-tree-root-p ()
+  "Check whether the current node is the root node of a tree.
+
+Note that this does not consider global root to be a tree root."
+  (let ((root (tsc-root-node tree-sitter-tree))
+        (cur (symex-ts-get-current-node)))
+    (let ((parent (tsc-get-parent cur)))
+      (and parent (tsc-node-eq parent root)))))
+
+(defun symex-ts--at-first-p ()
+  "Check if the current node is the first one at some level."
+  (symex-ts--if-stuck t
+                      (symex-ts-move-prev-sibling)
+                      (symex-ts-move-next-sibling)
+                      nil))
+
+(defun symex-ts--at-last-p ()
+  "Check if the current node is at the last one at some level."
+  (symex-ts--if-stuck t
+                      (symex-ts-move-next-sibling)
+                      (symex-ts-move-prev-sibling)
+                      nil))
+
+(defun symex-ts--at-final-p ()
+  "Check if the current node is at the last one in the buffer."
+  (and (symex-ts--at-tree-root-p)
+       (symex-ts--at-last-p)))
+
+(defun symex-ts--at-initial-p ()
+  "Check if the current node is at the first one in the buffer."
+  (and (symex-ts--at-tree-root-p)
+       (symex-ts--at-first-p)))
+
+(defun symex-ts--point-at-start-p ()
+  "Check if point is at the start of a node."
+  (let ((cur (symex-ts-get-current-node)))
+    (= (point) (tsc-node-start-position cur))))
+
+;;; Navigations
 
 (defun symex-ts-move-prev-sibling (&optional count)
   "Move the point to the current node's previous sibling if possible.
