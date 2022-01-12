@@ -324,14 +324,7 @@ Version 2017-11-01"
   (interactive)
   (if tree-sitter-mode
       (symex-ts-set-current-node-from-point)
-    (cond ((and (not (eobp))
-                (save-excursion (forward-char) (lispy-right-p))) ; |)
-           (forward-char)
-           (lispy-different))
-          ((thing-at-point 'sexp)       ; som|ething
-           (beginning-of-thing 'sexp))
-          (t (symex-if-stuck (symex--go-backward)
-                             (symex--go-forward)))))
+    (symex-lisp--select-nearest))
   (point))
 
 (defun symex-select-nearest-in-line ()
@@ -361,9 +354,10 @@ Version 2017-11-01"
 
 (defun symex--point-height-offset-helper (orig-pos)
   "Compute the height offset of the current symex from the lowest one indicated by point."
-  (cond ((symex-ts-at-root-p) (if (= orig-pos (point))
-                                  0
-                                -1))
+  (cond ((symex-ts--point-at-root-symex-p)
+         (if (= orig-pos (point))
+             0
+           -1))
         ((not (= (point) orig-pos)) -1)
         (t (symex--go-down)
            (1+ (symex--point-height-offset-helper orig-pos)))))

@@ -40,54 +40,47 @@
 
 ;;; Predicates
 
-(defmacro symex-if-stuck (do-what operation &rest body)
+(defmacro symex-lisp--if-stuck (do-what operation &rest body)
   "Attempt OPERATION and if it fails, then do DO-WHAT."
-  `(let ((orig-pt (point)))
-     ,operation
-     (if (= orig-pt (point))
-         ,do-what
-       ,@body)))
+  (let ((orig-pt (gensym)))
+    `(let ((,orig-pt (point)))
+       ,operation
+       (if (= ,orig-pt (point))
+           ,do-what
+         ,@body))))
 
-(defun symex--point-at-root-symex-p ()
+(defun symex-lisp--point-at-root-symex-p ()
   "Check if point is at a root symex."
   (save-excursion
-    (symex-if-stuck t
-                    (symex-lisp--exit)
-                    nil)))
+    (symex-lisp--if-stuck t
+                          (symex-lisp--exit)
+                          nil)))
 
-(defun symex--point-at-first-symex-p ()
+(defun symex-lisp--point-at-first-symex-p ()
   "Check if point is at the first symex at some level."
   (save-excursion
-    (symex-if-stuck t
-                    (symex-lisp--backward)
-                    nil)))
+    (symex-lisp--if-stuck t
+                          (symex-lisp--backward)
+                          nil)))
 
-(defun symex--point-at-last-symex-p ()
+(defun symex-lisp--point-at-last-symex-p ()
   "Check if point is at the last symex at some level."
   (save-excursion
-    (symex-if-stuck t
-                    (symex-lisp--forward)
-                    nil)))
+    (symex-lisp--if-stuck t
+                          (symex-lisp--forward)
+                          nil)))
 
-(defun symex--point-at-final-symex-p ()
+(defun symex-lisp--point-at-final-symex-p ()
   "Check if point is at the last symex in the buffer."
-  (save-excursion
-    (symex-if-stuck (progn (symex-if-stuck t
-                                           (symex-lisp--exit)
-                                           nil))
-                    (symex-lisp--forward)
-                    nil)))
+  (and (symex-lisp--point-at-last-symex-p)
+       (symex-lisp--point-at-root-symex-p)))
 
-(defun symex--point-at-initial-symex-p ()
+(defun symex-lisp--point-at-initial-symex-p ()
   "Check if point is at the first symex in the buffer."
-  (save-excursion
-    (condition-case nil
-        (or (bobp)
-            (progn (backward-sexp 1)
-                   (not (thing-at-point 'sexp))))
-      (error nil))))
+  (and (symex-lisp--point-at-first-symex-p)
+       (symex-lisp--point-at-root-symex-p)))
 
-(defun symex--point-at-start-p ()
+(defun symex-lisp--point-at-start-p ()
   "Check if point is at the start of a symex."
   (and (not (eolp))
        (not (looking-at-p lispy-right))
@@ -242,6 +235,17 @@ as special cases here."
                               (point))))))))
 
 ;;; Navigation
+
+(defun symex-lisp--select-nearest ()
+  "Select the appropriate symex nearest to point."
+  (cond ((and (not (eobp))
+              (save-excursion (forward-char) (lispy-right-p))) ; |)
+         (forward-char)
+         (lispy-different))
+        ((thing-at-point 'sexp)       ; som|ething
+         (beginning-of-thing 'sexp))
+        (t (symex-lisp--if-stuck (symex--go-backward)
+                                 (symex--go-forward)))))
 
 (defun symex--get-end-point (count)
   "Get the point value after COUNT symexes.
