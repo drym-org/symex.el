@@ -266,7 +266,14 @@ Evaluates to a COMPUTATION on the traversal actually executed."
         (side-effect (if side-effect
                          side-effect
                        #'symex--side-effect-noop)))
+    ;; TODO: a macro similar to `symex-save-excursion`
+    ;; where it conditionally returns to the original
+    ;; point / node depending on whether BODY succeeds
+    ;; or which tests for success before moving point
     (let ((original-location (point))
+          (original-point-height-offset
+           (symex-save-excursion
+            (symex--point-height-offset)))
           (executed-traversal (cond ((symex-maneuver-p traversal)
                                      (symex-execute-maneuver traversal
                                                              computation))
@@ -295,6 +302,14 @@ Evaluates to a COMPUTATION on the traversal actually executed."
             (progn (funcall side-effect)
                    result)
           (goto-char original-location)
+          (let* ((current-point-height-offset
+                  (symex-save-excursion
+                   (symex--point-height-offset)))
+                 (height-differential (- original-point-height-offset
+                                         current-point-height-offset)))
+            ;; necessary because point does not uniquely identify
+            ;; a node for non-symex (i.e. tree-sitter) languages
+            (symex--go-up height-differential))
           result)))))
 
 
