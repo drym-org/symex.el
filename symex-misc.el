@@ -349,7 +349,7 @@ Version 2017-11-01"
 (defun symex-index ()  ; TODO: may be better framed as a computation
   "Get relative (from start of containing symex) index of current symex."
   (interactive)
-  (save-excursion
+  (symex-save-excursion
     (let ((original-location (point)))
       (let ((current-location (symex-goto-first))
             (result 0))
@@ -382,19 +382,21 @@ Like `save-excursion`, but in addition to preserving the point
 position, this also preserves the structural position in the tree, for
 languages where point position doesn't uniquely identify a tree
 location (e.g. non-symex-based languages like Python)."
-  `(let ((offset 0))
-      (when tree-sitter-mode
-        (setq offset (save-excursion
-                       (symex--point-height-offset)))
-        (symex-select-nearest)
-        (symex--go-up offset))
-      (let ((result
-             (save-excursion
-               ,@body)))
-        (when tree-sitter-mode
-          (symex-select-nearest)
-          (symex--go-up offset))
-        result)))
+  (let ((offset (gensym))
+        (result (gensym)))
+    `(let ((,offset 0))
+       (when tree-sitter-mode
+         (setq ,offset (save-excursion
+                         (symex--point-height-offset)))
+         (symex-select-nearest)
+         (symex--go-up ,offset))
+       (let ((,result
+              (save-excursion
+                ,@body)))
+         (when tree-sitter-mode
+           (symex-select-nearest)
+           (symex--go-up ,offset))
+         ,result))))
 
 (defun symex-height ()  ; TODO: may be better framed as a computation
   "Get height (above root) of current symex."
