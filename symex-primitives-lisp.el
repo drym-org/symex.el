@@ -77,8 +77,15 @@
 
 (defun symex-lisp--point-at-initial-symex-p ()
   "Check if point is at the first symex in the buffer."
-  (and (symex-lisp--point-at-first-symex-p)
-       (symex-lisp--point-at-root-symex-p)))
+  ;; this is used in the primitive motions, so it cannot
+  ;; be defined in terms of them, as the other predicates
+  ;; above are
+  (save-excursion
+    (condition-case nil
+        (or (bobp)
+            (progn (backward-sexp 1)
+                   (not (thing-at-point 'sexp))))
+      (error nil)))))
 
 (defun symex-lisp--point-at-start-p ()
   "Check if point is at the start of a symex."
@@ -317,7 +324,7 @@ of symex mode (use the public `symex-go-forward` instead)."
 (defun symex-lisp--backward-one ()
   "Backward one symex."
   (let ((result 0))
-    (unless (symex--point-at-initial-symex-p)
+    (unless (symex-lisp--point-at-initial-symex-p)
       (condition-case nil
           (progn (backward-sexp 1)
                  (setq result (1+ result)))
