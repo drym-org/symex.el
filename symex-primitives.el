@@ -33,6 +33,50 @@
 (require 'symex-primitives-lisp)
 (require 'symex-ts)
 
+;;; Predicates
+
+(defun symex--point-at-root-symex-p ()
+  "Check if point is at a root symex."
+  (if tree-sitter-mode
+      ;; note that tree-sitter has a global
+      ;; root for the whole file -- that's
+      ;; not the one we mean here, but
+      ;; rather, top level definitions
+      (symex-ts--at-tree-root-p)
+    (symex-lisp--point-at-root-symex-p)))
+
+(defun symex--point-at-first-symex-p ()
+  "Check if point is at the first symex at some level."
+  (if tree-sitter-mode
+      (symex-ts--at-first-p)
+    (symex-lisp--point-at-first-symex-p)))
+
+(defun symex--point-at-last-symex-p ()
+  "Check if point is at the last symex at some level."
+  (if tree-sitter-mode
+      (symex-ts--at-last-p)
+    (symex-lisp--point-at-last-symex-p)))
+
+(defun symex--point-at-final-symex-p ()
+  "Check if point is at the last symex in the buffer."
+  (if tree-sitter-mode
+      (symex-ts--at-final-p)
+    (symex-lisp--point-at-final-symex-p)))
+
+(defun symex--point-at-initial-symex-p ()
+  "Check if point is at the first symex in the buffer."
+  (if tree-sitter-mode
+      (symex-ts--at-initial-p)
+    (symex-lisp--point-at-initial-symex-p)))
+
+(defun symex--point-at-start-p ()
+  "Check if point is at the start of a symex."
+  (if tree-sitter-mode
+      (symex-ts--point-at-start-p)
+    (symex-lisp--point-at-start-p)))
+
+;;; Navigation
+
 (defun symex--forward (&optional count)
   "Forward symex.
 

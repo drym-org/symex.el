@@ -47,6 +47,7 @@
 
 (defun symex--adjust-point ()
   "Helper to adjust point to indicate the correct symex."
+  ;; TODO: needs review for tree-sitter
   (unless (or (bobp)
               (symex--point-at-start-p)
               (save-excursion (backward-char)  ; just inside symex
