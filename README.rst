@@ -410,6 +410,8 @@ You could think of "w" as "wrap" in this context, as in, "to wrap with parenthes
 Learn More
 ==========
 
+Read the documentation for the `Symex DSL <https://github.com/countvajhula/symex.el/blob/master/README.rst>`_.
+
 Learn more about the implementation and see some usage examples in the video overview (given at an `Emacs SF <https://www.meetup.com/Emacs-SF/>`_ meetup in 2019):
 
 .. raw:: html
