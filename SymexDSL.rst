@@ -1,17 +1,24 @@
 Symex DSL
 =========
 
-.. contents:: :depth: 2
+.. contents:: :depth: 1
 
 Introduction
 ------------
 
+The Symex.el Emacs package consists of three things: (1) A high-level language (or DSL) for tree operations, (2) A low-level tree abstraction layer, and (3) An Evil modal UI. The modal UI is documented in the README, and the low-level abstraction layer is fulfilled by third party packages like Paredit and Lispy. This is the documentation for the DSL.
+
 The Symex DSL allows you to specify arbitrary tree traversals in a cursor-oriented manner. That is, instead of describing traversals from an absolute reference point such as a root node, it allows you to describe traversals from the first-person vantage point of the cursor -- what would you do if you were where this cursor is right now? It allows you to describe what you'd like to do in intuitive terms that make sense for movement in a tree. Symex is the language a squirrel might use to describe a traversal to another squirrel.
+
+Usage
+-----
+
+The main entry point to Symex from ELisp is the ``symex-traversal`` form, which can also be used via the definition form, ``symex-deftraversal``. Within these forms, traversals may be specified using the Symex language. Traversals defined this way may be executed via ``symex-execute-traversal`` and would affect the active Emacs cursor. Side effects may be attached to traversals, so that an action (which could be any function) may be repeatedly taken as part of traversal execution. Some Symex features are implemented this way.
 
 Movement
 --------
 
-Any action that moves your cursor from one node in the tree to another is called a traversal. Symex gives you several linguistic forms with which to describe traversals. You can describe traversals using this language via the ``symex-traversal`` macro, which serves as an entry point into the Symex language -- that is, within the interior of this form, the language is Symex instead of ELisp. A traversal described in this way yields a traversal specification which can be executed by using ``symex-execute-traversal``.
+Any action that moves your cursor from one node in the tree to another is called a traversal. Symex gives you several linguistic forms with which to describe traversals.
 
 Each form of the language has its own syntax, and typically the clauses of these forms are expected to be traversals themselves. For instance, the ``maneuver`` form specifies a traversal as a sequence of other traversals to be executed in order.
 
