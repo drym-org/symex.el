@@ -1,7 +1,7 @@
 Symex DSL
 =========
 
-.. contents:: :depth: 3
+.. contents:: :depth: 2
 
 Introduction
 ------------
