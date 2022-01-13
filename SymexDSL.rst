@@ -118,14 +118,12 @@ Examples
 detour
 ~~~~~~
 
-Try executing a traversal. If it fails, execute an alternative traversal ("take a detour") and then try the main one again. Keep repeating this until either the main one succeeds, or the alternative fails.
-
-A detour is useful in cases where you are interested in doing traversal A, but if it fails, you have a backup plan in traversal B that will allow you to try A again. You are still mainly interested in doing A, and B is just the way you'd like to reorient yourself in the tree before trying again.
+Try executing a traversal by first reorienting yourself. If the traversal fails, reorient yourself ("take a detour") and then try again. Keep repeating this until either the main traversal succeeds, or the reorientation fails. Both the main traversal as well as the reorientation can be any traversal.
 
 Examples
 ````````
 
-"Try going forward, and if that fails try again by first going down."
+"Attempt to go forward by first going down, and keep going down to try again."
 
 ::
 
@@ -134,7 +132,7 @@ Examples
       (detour (move down)
               (move forward))))
 
-"Try going forward, and if that fails try again by first going down, but only as long as we don't descend to the root of the tree."
+"Attempt to go forward by first going down, and keep going down to try again as long as we don't descend to the root of the tree."
 
 ::
 
