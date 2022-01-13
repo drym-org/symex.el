@@ -20,6 +20,8 @@ In general, if a traversal succeeds, it returns a list of executed moves which i
 move
 ~~~~
 
+**Syntax**: ``(move forward/backward/up/down)``
+
 The most basic movement, a move simply takes a single step in a particular direction, to a neighboring node in the tree.
 
 Examples
@@ -62,6 +64,8 @@ Note that in the Symex language, "up" and "down" are defined in relation to the 
 maneuver
 ~~~~~~~~
 
+**Syntax**: ``(maneuver traversal ...)``
+
 Execute a sequence of traversals in order. If the maneuver is partially completed, i.e. if at least one traversal was executed, then the maneuver is treated as successful. Otherwise it is considered to have failed.
 
 Examples
@@ -89,6 +93,8 @@ Examples
 
 protocol
 ~~~~~~~~
+
+**Syntax**: ``(protocol traversal ...)``
 
 Try executing traversals, in order, until one succeeds (and then stop).
 
@@ -118,6 +124,8 @@ Examples
 detour
 ~~~~~~
 
+**Syntax**: ``(detour reorientation-traversal main-traversal)``
+
 Try executing a traversal by first reorienting yourself. If the traversal fails, reorient yourself ("take a detour") and then try again. Keep repeating this until either the main traversal succeeds, or the reorientation fails. Both the main traversal as well as the reorientation can be any traversal.
 
 Note that the reorientation is always executed first, prior to trying the main traversal, even the first time.
@@ -146,6 +154,8 @@ Examples
 
 decision
 ~~~~~~~~
+
+**Syntax**: ``(decision condition traversal-A traversal-B)``
 
 Do either traversal A or traversal B, depending on whether a condition holds.
 
@@ -178,6 +188,8 @@ Examples
 
 circuit
 ~~~~~~~
+
+**Syntax**: ``(circuit traversal [times])``
 
 Repeat a traversal a given number of times or as long as it succeeds. When it fails, stop.
 
@@ -214,6 +226,8 @@ Examples
 
 precaution
 ~~~~~~~~~~
+
+**Syntax**: ``(precaution traversal [(beforehand condition)|(afterwards condition)])``
 
 Execute a traversal, but ensure that certain conditions hold either before or after executing the traversal (or both). If a condition does not hold, then abort the traversal, considering it to have failed.
 
