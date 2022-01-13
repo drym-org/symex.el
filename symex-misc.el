@@ -541,14 +541,17 @@ the implementation."
         (index (symex-index)))
     (let* ((find-neighboring-branch
             (symex-traversal
-             (maneuver (decision (at last)
-                                 symex--move-zero
-                                 symex--traversal-goto-last)
-                       (circuit (precaution traverse
-                                            (afterwards (not (lambda ()
-                                                               (= (symex-height)
-                                                                  height))))))
-                       traverse)))
+             (precaution (maneuver (decision (at last)
+                                             symex--move-zero
+                                             symex--traversal-goto-last)
+                                   (circuit (precaution traverse
+                                                        (afterwards (not (lambda ()
+                                                                           (= (symex-height)
+                                                                              height))))))
+                                   traverse)
+                         (afterwards (lambda ()
+                                       (= (symex-height)
+                                          height))))))
            (run-along-branch
             (symex-traversal
              (circuit (precaution (move forward)
