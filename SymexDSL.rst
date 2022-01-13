@@ -120,6 +120,8 @@ detour
 
 Try executing a traversal by first reorienting yourself. If the traversal fails, reorient yourself ("take a detour") and then try again. Keep repeating this until either the main traversal succeeds, or the reorientation fails. Both the main traversal as well as the reorientation can be any traversal.
 
+Note that the reorientation is always executed first, prior to trying the main traversal, even the first time.
+
 Examples
 ````````
 
@@ -271,4 +273,4 @@ Examples
   (symex--do-while-traversing #'symex--evaluate
                               symex--move-forward)
 
-``symex--move-forward`` used here is a traversal provided for convenience that simply moves forward by one step. It is defined as ``(symex-make-move 1 0)``.
+``symex--move-forward`` used here is a traversal provided for convenience that simply moves forward by one step. It is defined as ``(symex-make-move 1 0)`` and is equivalent to ``(symex-traversal (move forward))``.
