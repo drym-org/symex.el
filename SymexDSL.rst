@@ -11,11 +11,11 @@ The Symex DSL allows you to specify arbitrary tree traversals in a cursor-orient
 Movement
 --------
 
-Any action that moves your cursor from one node in the tree to another is called a traversal. Symex gives you several linguistic forms with which to describe traversals. You can describe traversals using this language via the `symex-traversal` macro, which serves as an entry point into the Symex language -- that is, within the interior of this form, the language is Symex instead of ELisp. A traversal described in this way yields a traversal specification which can be executed by using `symex-execute-traversal`.
+Any action that moves your cursor from one node in the tree to another is called a traversal. Symex gives you several linguistic forms with which to describe traversals. You can describe traversals using this language via the ``symex-traversal`` macro, which serves as an entry point into the Symex language -- that is, within the interior of this form, the language is Symex instead of ELisp. A traversal described in this way yields a traversal specification which can be executed by using ``symex-execute-traversal``.
 
-Each form of the language has its own syntax, and typically the clauses of these forms are expected to be traversals themselves. For instance, the `maneuver` form specifies a traversal as a sequence of other traversals to be executed in order.
+Each form of the language has its own syntax, and typically the clauses of these forms are expected to be traversals themselves. For instance, the ``maneuver`` form specifies a traversal as a sequence of other traversals to be executed in order.
 
-In general, if a traversal succeeds, it returns a list of executed moves which if replayed manually from the starting position would have the same effect as running the traversal did. If the traversal fails, it returns `nil`.
+In general, if a traversal succeeds, it returns a list of executed moves which if replayed manually from the starting position would have the same effect as running the traversal did. If the traversal fails, it returns ``nil``.
 
 move
 ~~~~
@@ -174,7 +174,7 @@ Examples
                 (move forward)
                 symex--move-zero)))
 
-`symex--move-zero` is just a convenient traversal for cases where you need to indicate a traversal but would like to not move at all. It is defined as `(symex-make-move 0 0)`.
+``symex--move-zero`` is just a convenient traversal for cases where you need to indicate a traversal but would like to not move at all. It is defined as ``(symex-make-move 0 0)``.
 
 circuit
 ~~~~~~~
@@ -246,22 +246,22 @@ Note that this executes a *single* traversal while taking precautions. It is not
 Predicates
 ----------
 
-Symex offers a few standard predicates to use as conditions. In addition to these, you may also use any lambda as a predicate, so that you can specify arbitrary conditions to use in e.g. the `decision` and `precaution` forms.
+Symex offers a few standard predicates to use as conditions. In addition to these, you may also use any lambda as a predicate, so that you can specify arbitrary conditions to use in e.g. the ``decision`` and ``precaution`` forms.
 
-* `(at root)` -- Are we (i.e. is the cursor) at the root node? Any toplevel form in the source file is considered to be a root node.
-* `(at first)` -- Are we at the first node at the present level / on the current branch of the tree?
-* `(at last)` -- Are we at the last node at the present level / on the current branch of the tree?
-* `(at initial)` -- Are we at the first root-level node in the entire file?
-* `(at final)` -- Are we at the last root-level node in the entire file?
+* ``(at root)`` -- Are we (i.e. is the cursor) at the root node? Any toplevel form in the source file is considered to be a root node.
+* ``(at first)`` -- Are we at the first node at the present level / on the current branch of the tree?
+* ``(at last)`` -- Are we at the last node at the present level / on the current branch of the tree?
+* ``(at initial)`` -- Are we at the first root-level node in the entire file?
+* ``(at final)`` -- Are we at the last root-level node in the entire file?
 
-There is also the modifier `not` which can be used with any of the above predicates. E.g. `(not (at root))` returns true if cursor is not at the root node of the tree.
+There is also the modifier ``not`` which can be used with any of the above predicates. E.g. ``(not (at root))`` returns true if cursor is not at the root node of the tree.
 
 Side Effects
 ------------
 
 Traversals may be executed with arbitrary side effects. A side effect is simply a function (e.g. specified via a lambda expression) that is executed *after* the conclusion of a traversal, if that traversal succeeds.
 
-Typically, we are interested in attaching such side effects to a repeated traversal so that the side effect is performed at each step of the traversal as long as it succeeds. For this purpose, you can use the `symex--do-while-traversing` function.
+Typically, we are interested in attaching such side effects to a repeated traversal so that the side effect is performed at each step of the traversal as long as it succeeds. For this purpose, you can use the ``symex--do-while-traversing`` function.
 
 Examples
 ~~~~~~~~
@@ -273,4 +273,4 @@ Examples
   (symex--do-while-traversing #'symex--evaluate
                               symex--move-forward)
 
-`symex--move-forward` used here is a traversal provided for convenience that simply moves forward by one step. It is defined as `(symex-make-move 1 0)`.
+``symex--move-forward`` used here is a traversal provided for convenience that simply moves forward by one step. It is defined as ``(symex-make-move 1 0)``.
