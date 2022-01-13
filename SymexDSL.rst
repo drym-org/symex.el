@@ -17,10 +17,19 @@ Each form of the language has its own syntax, and typically the clauses of these
 
 In general, if a traversal succeeds, it returns a list of executed moves which if replayed manually from the starting position would have the same effect as running the traversal did. If the traversal fails, it returns ``nil``.
 
+.. contents:: :local:
+    :depth: 2
+
 move
 ~~~~
 
-**Syntax**: ``(move forward|backward|up|down)``
+Syntax
+``````
+
+``(move forward|backward|up|down)``
+
+Description
+```````````
 
 The most basic movement, a move simply takes a single step in a particular direction, to a neighboring node in the tree.
 
@@ -64,7 +73,13 @@ Note that in the Symex language, "up" and "down" are defined in relation to the 
 maneuver
 ~~~~~~~~
 
-**Syntax**: ``(maneuver traversal ...)``
+Syntax
+``````
+
+``(maneuver traversal ...)``
+
+Description
+```````````
 
 Execute a sequence of traversals in order. If the maneuver is partially completed, i.e. if at least one traversal was executed, then the maneuver is treated as successful. Otherwise it is considered to have failed.
 
@@ -94,7 +109,13 @@ Examples
 protocol
 ~~~~~~~~
 
-**Syntax**: ``(protocol traversal ...)``
+Syntax
+``````
+
+``(protocol traversal ...)``
+
+Description
+```````````
 
 Try executing traversals, in order, until one succeeds (and then stop).
 
@@ -124,7 +145,13 @@ Examples
 detour
 ~~~~~~
 
-**Syntax**: ``(detour reorientation-traversal main-traversal)``
+Syntax
+``````
+
+``(detour reorientation-traversal main-traversal)``
+
+Description
+```````````
 
 Try executing a traversal by first reorienting yourself. If the main traversal fails, reorient yourself ("take a detour") and then try again. Keep repeating this until either the main traversal succeeds, or the reorientation fails. Both the main traversal as well as the reorientation can be any traversal.
 
@@ -155,7 +182,13 @@ Examples
 decision
 ~~~~~~~~
 
-**Syntax**: ``(decision condition traversal-A traversal-B)``
+Syntax
+``````
+
+``(decision condition traversal-A traversal-B)``
+
+Description
+```````````
 
 Do either traversal A or traversal B, depending on whether a condition holds.
 
@@ -189,7 +222,13 @@ Examples
 circuit
 ~~~~~~~
 
-**Syntax**: ``(circuit traversal [times])``
+Syntax
+``````
+
+``(circuit traversal [times])``
+
+Description
+```````````
 
 Repeat a traversal a given number of times or as long as it succeeds. When it fails, stop.
 
@@ -227,12 +266,17 @@ Examples
 precaution
 ~~~~~~~~~~
 
-**Syntax**: ``(precaution traversal [(beforehand condition)|(afterwards condition)])``
+Syntax
+``````
+
+``(precaution traversal [(beforehand condition)|(afterwards condition)])``
+
+Description
+```````````
 
 Execute a traversal, but ensure that certain conditions hold either before or after executing the traversal (or both). If a condition does not hold, then abort the traversal, considering it to have failed.
 
 Each of the conditions can be any predicate -- either a built-in predicate form, or an arbitrary lambda. See `Predicates`_ for details.
-
 
 Examples
 ````````
