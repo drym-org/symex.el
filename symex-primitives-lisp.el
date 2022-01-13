@@ -85,7 +85,7 @@
         (or (bobp)
             (progn (backward-sexp 1)
                    (not (thing-at-point 'sexp))))
-      (error nil)))))
+      (error nil))))
 
 (defun symex-lisp--point-at-start-p ()
   "Check if point is at the start of a symex."
