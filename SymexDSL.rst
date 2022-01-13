@@ -162,7 +162,7 @@ Examples
                 (move forward)
                 (move down))))
 
-"If we are at a position in the buffer less than previously-stored-position, then go forward, otherwise don't move."
+"If we are somewhere before a previously stored position in the buffer, then go forward, otherwise don't move."
 
 ::
 
