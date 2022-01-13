@@ -20,7 +20,7 @@ In general, if a traversal succeeds, it returns a list of executed moves which i
 move
 ~~~~
 
-**Syntax**: ``(move forward/backward/up/down)``
+**Syntax**: ``(move forward|backward|up|down)``
 
 The most basic movement, a move simply takes a single step in a particular direction, to a neighboring node in the tree.
 
@@ -126,9 +126,9 @@ detour
 
 **Syntax**: ``(detour reorientation-traversal main-traversal)``
 
-Try executing a traversal by first reorienting yourself. If the traversal fails, reorient yourself ("take a detour") and then try again. Keep repeating this until either the main traversal succeeds, or the reorientation fails. Both the main traversal as well as the reorientation can be any traversal.
+Try executing a traversal by first reorienting yourself. If the main traversal fails, reorient yourself ("take a detour") and then try again. Keep repeating this until either the main traversal succeeds, or the reorientation fails. Both the main traversal as well as the reorientation can be any traversal.
 
-Note that the reorientation is always executed first, prior to trying the main traversal, even the first time.
+Note that the reorientation is always executed prior to trying the main traversal, even the first time.
 
 Examples
 ````````
