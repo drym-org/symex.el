@@ -40,11 +40,11 @@ OPTIONS - see underlying Lisp implementation."
   `(symex-make-protocol
     ,@(mapcar #'symex--compile-traversal-helper options)))
 
-(defmacro symex--compile-maneuver (&rest phases)
-  "Compile a maneuver from Symex DSL -> Lisp.
+(defmacro symex--compile-venture (&rest phases)
+  "Compile a venture from Symex DSL -> Lisp.
 
 PHASES - see underlying Lisp implementation."
-  `(symex-make-maneuver
+  `(symex-make-venture
     ,@(mapcar #'symex--compile-traversal-helper phases)))
 
 (defmacro symex--compile-detour (reorientation traversal)
@@ -195,8 +195,8 @@ a detour, a move, etc., which is specified using the Symex DSL."
   (cond ((not (listp traversal)) traversal)  ; e.g. a variable containing a traversal
         ((equal 'protocol (car traversal))
          `(symex--compile-protocol ,@(cdr traversal)))
-        ((equal 'maneuver (car traversal))
-         `(symex--compile-maneuver ,@(cdr traversal)))
+        ((equal 'venture (car traversal))
+         `(symex--compile-venture ,@(cdr traversal)))
         ((equal 'detour (car traversal))
          `(symex--compile-detour ,@(cdr traversal)))
         ((equal 'circuit (car traversal))
