@@ -157,6 +157,10 @@
   "Check if the symex is a spliced unquoted list."
   (looking-at (concat ",@" lispy-left)))
 
+(defun symex--racket-unquote-syntax-p ()
+  "Check if the symex is a racket unquoted syntax list."
+  (looking-at (concat "#," lispy-left)))
+
 (defun symex--racket-splicing-unsyntax-p ()
   "Check if the symex is a racket spliced unsyntaxed list."
   (looking-at (concat "#,@" lispy-left)))
@@ -190,13 +194,15 @@ as special cases here."
       (symex--racket-syntax-object-p)
       (symex--splicing-unquote-p)
       (symex--racket-splicing-unsyntax-p)
+      (symex--racket-unquote-syntax-p)
       (symex--clojure-deref-reader-macro-p)
       (symex--clojure-literal-lambda-p)))
 
 (defun symex--special-empty-list-p ()
   "Check if we're looking at a 'special' empty list."
   (or (save-excursion
-        (and (symex--racket-syntax-object-p)
+        (and (or (symex--racket-syntax-object-p)
+                 (symex--racket-unquote-syntax-p))
              (progn (forward-char 4)
                     (lispy-right-p))))
       (save-excursion
@@ -344,7 +350,8 @@ of symex mode (use the public `symex-go-backward` instead)."
           ;; worth it to support those cases naively, without an AST
           ((or (and (symex--racket-syntax-object-p)
                     (not (symex--special-empty-list-p)))
-               (symex--splicing-unquote-p))
+               (symex--splicing-unquote-p)
+               (symex--racket-unquote-syntax-p))
            (forward-char 3))
           ((symex--racket-splicing-unsyntax-p)
            (forward-char 4))
@@ -382,7 +389,7 @@ of symex mode (use the public `symex-go-up` instead)."
       (progn (paredit-backward-up 1)
              ;; one-off - better to recognize these as delimiters
              ;; at the AST level
-             (cond ((looking-back "#['`]" (line-beginning-position))
+             (cond ((looking-back "#['`,]" (line-beginning-position))
                     (backward-char 2))
                    ((looking-back "[#'`]" (line-beginning-position))
                     (backward-char))
