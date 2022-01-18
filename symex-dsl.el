@@ -219,6 +219,7 @@ This can be thought of as the 'program' written in the DSL, which
 will be compiled into Lisp and can be executed when needed.
 An optional DOCSTRING will be used as documentation for the variable
 NAME to which the traversal is assigned."
+  (declare (indent 1))
   `(defvar ,name (symex-traversal ,traversal) ,docstring))
 
 
