@@ -136,49 +136,44 @@ The aggregate result is constructed according to the specified COMPUTATION."
 (defun symex-execute-maneuver (maneuver computation)
   "Attempt to execute a given MANEUVER.
 
-Attempts the maneuver in the order of its phases, accepting partial completion
-of phases.  If any phase fails entirely, then the maneuver it is part of is
-terminated at that step.
+Attempts the maneuver in the order of its phases.  If any phase fails,
+then the maneuver is terminated at that step.  The maneuver succeeds
+if at least one phase succeeds, and otherwise fails.
 
-Evaluates to a COMPUTATION on the maneuver actually executed."
-  (let ((phases (symex--maneuver-phases maneuver)))
-    (when phases
-      (let ((current-phase (car phases))
-            (remaining-phases (cdr phases)))
-        (let ((executed-phase (symex-execute-traversal current-phase
-                                                       computation)))
-          (when executed-phase
-            (let ((executed-remaining-phases
-                   (symex-execute-traversal (apply #'symex-make-maneuver
-                                                   remaining-phases)
-                                            computation)))
-              (symex--compute-results executed-phase
-                                      executed-remaining-phases
-                                      computation))))))))
+Evaluates to a COMPUTATION on the traversal actually executed."
+  (unless (symex--maneuver-null-p maneuver)
+    (let ((current-phase (symex--maneuver-first maneuver))
+          (remaining-maneuver (symex--maneuver-rest maneuver)))
+      (let ((executed-phase (symex-execute-traversal current-phase
+                                                     computation)))
+        (when executed-phase
+          (let ((executed-remaining-phases
+                 (symex-execute-traversal remaining-maneuver
+                                          computation)))
+            (symex--compute-results executed-phase
+                                    executed-remaining-phases
+                                    computation)))))))
 
 (defun symex-execute-circuit (circuit computation)
   "Execute a CIRCUIT.
 
 This repeats some traversal as specified.
 
-Evaluates to a COMPUTATION on the maneuver actually executed."
+Evaluates to a COMPUTATION on the traversal actually executed."
   (let ((traversal (symex--circuit-traversal circuit))
-        (times (symex--circuit-times circuit)))
+        (times (symex--circuit-times circuit))
+        (remaining-circuit (symex--circuit-rest circuit)))
     (when (or (not times)  ; loop indefinitely
               (> times 0))
       (let ((result (symex-execute-traversal traversal
                                              computation)))
         (when result
-          (let ((times (if times
-                           (1- times)
-                         times)))
-            (let ((remaining-circuit
-                   (symex-execute-traversal (symex-make-circuit traversal
-                                                                times)
-                                            computation)))
-              (symex--compute-results result
-                                      remaining-circuit
-                                      computation))))))))
+          (let ((executed-remaining-circuit
+                 (symex-execute-traversal remaining-circuit
+                                          computation)))
+            (symex--compute-results result
+                                    executed-remaining-circuit
+                                    computation)))))))
 
 (defun symex-execute-detour (detour computation)
   "Execute the DETOUR.
@@ -188,7 +183,7 @@ Apply a reorientation and then attempt the traversal.
 If the traversal fails, then the reorientation is attempted as many times as
 necessary until either it succeeds, or the reorientation fails.
 
-Evaluates to a COMPUTATION on the maneuver actually executed."
+Evaluates to a COMPUTATION on the traversal actually executed."
   (let ((reorientation (symex--detour-reorientation detour))
         (traversal (symex--detour-traversal detour)))
     (let ((executed-reorientation (symex-execute-traversal reorientation)))
@@ -208,7 +203,7 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
 The traversal is only executed if PRE-CONDITION holds, and is reversed if
 POST-CONDITION does not hold after the provisional execution of the traversal.
 
-Evaluates to a COMPUTATION on the maneuver actually executed."
+Evaluates to a COMPUTATION on the traversal actually executed."
   (let ((traversal (symex--precaution-traversal precaution))
         (pre-condition (symex--precaution-pre-condition precaution))
         (post-condition (symex--precaution-post-condition precaution)))
@@ -224,18 +219,16 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
 Given a protocol including a set of options, attempt to execute them
 in order until one succeeds.
 
-Evaluates to a COMPUTATION on the maneuver actually executed."
-  (let ((options (symex--protocol-options protocol)))
-    (when options
-      (let ((option (car options))
-            (remaining-options (cdr options)))
-        (let ((executed-option (symex-execute-traversal option
-                                                        computation)))
-          (if executed-option
-              executed-option
-            (symex-execute-traversal (apply #'symex-make-protocol
-                                            remaining-options)
-                                     computation)))))))
+Evaluates to a COMPUTATION on the traversal actually executed."
+  (unless (symex--protocol-null-p protocol)
+    (let ((option (symex--protocol-first protocol))
+          (remaining-protocol (symex--protocol-rest protocol)))
+      (let ((executed-option (symex-execute-traversal option
+                                                      computation)))
+        (if executed-option
+            executed-option
+          (symex-execute-traversal remaining-protocol
+                                   computation))))))
 
 (defun symex-execute-decision (decision computation)
   "Attempt to execute a given DECISION.
