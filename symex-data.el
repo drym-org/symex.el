@@ -134,6 +134,13 @@ If TIMES is nil, repeat indefinitely until the traversal fails."
         traversal
         times))
 
+(defun symex-circuit-p (obj)
+  "Check if OBJ specifies a circuit."
+  (condition-case nil
+      (equal 'circuit
+             (nth 0 obj))
+    (error nil)))
+
 (defun symex--circuit-traversal (circuit)
   "Get the traversal component of the CIRCUIT.
 
@@ -146,23 +153,23 @@ This is the traversal that is intended to be looped."
 This is the number of times the traversal should be repeated."
   (nth 2 circuit))
 
-(defun symex-circuit-p (obj)
-  "Check if OBJ specifies a circuit."
-  (condition-case nil
-      (equal 'circuit
-             (nth 0 obj))
-    (error nil)))
+(defun symex--circuit-null-p (circuit)
+  "Check if CIRCUIT is empty or null."
+  (let ((times (symex--circuit-times circuit)))
+    (and times (zerop times))))
+
+(defun symex--circuit-rest (circuit)
+  "A circuit defined from the remaining repetitions of the traversal in CIRCUIT, not counting the first.
+
+This is useful for structural recursion during circuit execution."
+  (let ((traversal (symex--circuit-traversal circuit))
+        (times (symex--circuit-times circuit)))
+    (symex-make-circuit traversal (when times (1- times)))))
 
 (defun symex-make-maneuver (&rest phases)
   "Construct a maneuver from the given PHASES."
   (list 'maneuver
         phases))
-
-(defun symex--maneuver-phases (maneuver)
-  "Get the phases of a MANEUVER.
-
-Each phase could be any traversal."
-  (nth 1 maneuver))
 
 (defun symex-maneuver-p (obj)
   "Check if OBJ specifies a maneuver."
@@ -170,6 +177,29 @@ Each phase could be any traversal."
       (equal 'maneuver
              (nth 0 obj))
     (error nil)))
+
+(defun symex--maneuver-phases (maneuver)
+  "Get the phases of a MANEUVER.
+
+Each phase could be any traversal."
+  (nth 1 maneuver))
+
+(defun symex--maneuver-null-p (maneuver)
+  "Check if MANEUVER is empty or null."
+  (null (symex--maneuver-phases maneuver)))
+
+(defun symex--maneuver-first (maneuver)
+  "Get the first phase of a MANEUVER.
+
+This is useful for structural recursion during maneuver execution."
+  (car (symex--maneuver-phases maneuver)))
+
+(defun symex--maneuver-rest (maneuver)
+  "A maneuver defined from the remaining phases in MANEUVER not counting the first.
+
+This is useful for structural recursion during maneuver execution."
+  (apply #'symex-make-maneuver
+         (cdr (symex--maneuver-phases maneuver))))
 
 (defun symex-make-detour (reorientation traversal)
   "Construct a detour.
@@ -208,16 +238,33 @@ An option could be either a maneuver, or a protocol itself."
   (list 'protocol
         options))
 
-(defun symex--protocol-options (protocol)
-  "Get the set of options that are part of the PROTOCOL."
-  (nth 1 protocol))
-
 (defun symex-protocol-p (obj)
   "Check if OBJ specifies a protocol."
   (condition-case nil
       (equal 'protocol
              (nth 0 obj))
     (error nil)))
+
+(defun symex--protocol-options (protocol)
+  "Get the set of options that are part of the PROTOCOL."
+  (nth 1 protocol))
+
+(defun symex--protocol-null-p (protocol)
+  "Check if PROTOCOL is null or empty."
+  (null (symex--protocol-options protocol)))
+
+(defun symex--protocol-first (protocol)
+  "Get the first option in the PROTOCOL.
+
+This is useful for structural recursion during protocol execution."
+  (car (symex--protocol-options protocol)))
+
+(defun symex--protocol-rest (protocol)
+  "A protocol containing the remaining options in PROTOCOL, not counting the first.
+
+This is useful for structural recursion during protocol execution."
+  (apply #'symex-make-protocol
+         (cdr (symex--protocol-options protocol))))
 
 (defun symex-make-decision (condition consequent alternative)
   "A specification to choose between two traversals.
