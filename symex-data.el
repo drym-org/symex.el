@@ -22,8 +22,8 @@
 ;;; Commentary:
 
 ;; Data abstractions for symex mode.  Defines the linguistic primitives
-;; of the symex DSL: moves, maneuvers, precautions, protocols,
-;; circuits, and detours.
+;; of the symex DSL: moves, maneuvers, ventures, precautions, protocols,
+;; decisions, circuits, and detours.
 
 ;;; Code:
 
@@ -166,40 +166,40 @@ This is useful for structural recursion during circuit execution."
         (times (symex--circuit-times circuit)))
     (symex-make-circuit traversal (when times (1- times)))))
 
-(defun symex-make-maneuver (&rest phases)
-  "Construct a maneuver from the given PHASES."
-  (list 'maneuver
+(defun symex-make-venture (&rest phases)
+  "Construct a venture from the given PHASES."
+  (list 'venture
         phases))
 
-(defun symex-maneuver-p (obj)
-  "Check if OBJ specifies a maneuver."
+(defun symex-venture-p (obj)
+  "Check if OBJ specifies a venture."
   (condition-case nil
-      (equal 'maneuver
+      (equal 'venture
              (nth 0 obj))
     (error nil)))
 
-(defun symex--maneuver-phases (maneuver)
-  "Get the phases of a MANEUVER.
+(defun symex--venture-phases (venture)
+  "Get the phases of a VENTURE.
 
 Each phase could be any traversal."
-  (nth 1 maneuver))
+  (nth 1 venture))
 
-(defun symex--maneuver-null-p (maneuver)
-  "Check if MANEUVER is empty or null."
-  (null (symex--maneuver-phases maneuver)))
+(defun symex--venture-null-p (venture)
+  "Check if VENTURE is empty or null."
+  (null (symex--venture-phases venture)))
 
-(defun symex--maneuver-first (maneuver)
-  "Get the first phase of a MANEUVER.
+(defun symex--venture-first (venture)
+  "Get the first phase of a VENTURE.
 
-This is useful for structural recursion during maneuver execution."
-  (car (symex--maneuver-phases maneuver)))
+This is useful for structural recursion during venture execution."
+  (car (symex--venture-phases venture)))
 
-(defun symex--maneuver-rest (maneuver)
-  "A maneuver defined from the remaining phases in MANEUVER not counting the first.
+(defun symex--venture-rest (venture)
+  "A venture defined from the remaining phases in VENTURE not counting the first.
 
-This is useful for structural recursion during maneuver execution."
-  (apply #'symex-make-maneuver
-         (cdr (symex--maneuver-phases maneuver))))
+This is useful for structural recursion during venture execution."
+  (apply #'symex-make-venture
+         (cdr (symex--venture-phases venture))))
 
 (defun symex-make-detour (reorientation traversal)
   "Construct a detour.
@@ -234,7 +234,7 @@ fails as well."
 (defun symex-make-protocol (&rest options)
   "Construct a protocol abstraction for the given OPTIONS.
 
-An option could be either a maneuver, or a protocol itself."
+Each option could be any traversal."
   (list 'protocol
         options))
 
@@ -307,7 +307,7 @@ This is the traversal that will be chosen if the condition is false."
 (defun symex-traversal-p (obj)
   "Check if OBJ specifies a traversal."
   (or (symex-move-p obj)
-      (symex-maneuver-p obj)
+      (symex-venture-p obj)
       (symex-circuit-p obj)
       (symex-detour-p obj)
       (symex-precaution-p obj)
