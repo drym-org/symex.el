@@ -133,12 +133,35 @@ The aggregate result is constructed according to the specified COMPUTATION."
            a
            b))
 
+(defun symex-execute-maneuver (maneuver computation)
+  "Attempt to execute a given MANEUVER.
+
+Attempts the maneuver in the order of its phases.  The maneuver
+succeeds only if all of the phases succeed, and otherwise fails.
+
+Evaluates to a COMPUTATION on the traversal actually executed."
+  (unless (symex--maneuver-null-p maneuver)
+    (let ((current-phase (symex--maneuver-first maneuver))
+          (remaining-maneuver (symex--maneuver-rest maneuver)))
+      (let ((executed-phase (symex-execute-traversal current-phase
+                                                     computation)))
+        (when executed-phase
+          (let ((executed-remaining-phases
+                 (symex-execute-traversal remaining-maneuver
+                                          computation)))
+            (when executed-remaining-phases
+              (symex--compute-results executed-phase
+                                      executed-remaining-phases
+                                      computation))))))))
+
 (defun symex-execute-venture (venture computation)
   "Attempt to execute a given VENTURE.
 
-Attempts the venture in the order of its phases.  If any phase fails,
-then the venture is terminated at that step.  The venture succeeds
-if at least one phase succeeds, and otherwise fails.
+Similar to maneuver execution, except that it accepts partial
+completion.  That is, this attempts the venture in the order of its
+phases.  If any phase fails, then the venture is terminated at that
+step.  The venture succeeds if at least one phase succeeds, and
+otherwise fails.
 
 Evaluates to a COMPUTATION on the traversal actually executed."
   (unless (symex--venture-null-p venture)
@@ -267,7 +290,10 @@ Evaluates to a COMPUTATION on the traversal actually executed."
           (original-point-height-offset
            (symex-save-excursion
             (symex--point-height-offset)))
-          (executed-traversal (cond ((symex-venture-p traversal)
+          (executed-traversal (cond ((symex-maneuver-p traversal)
+                                     (symex-execute-maneuver traversal
+                                                             computation))
+                                    ((symex-venture-p traversal)
                                      (symex-execute-venture traversal
                                                             computation))
                                     ((symex-circuit-p traversal)
