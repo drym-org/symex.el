@@ -69,9 +69,8 @@
   "Select highest symex."
   (interactive)
   (symex-execute-traversal (symex-traversal
-                            (venture (move up)
-                                     (circuit (protocol (circuit (move forward))
-                                                        (move up))))))
+                            (circuit (venture (move up)
+                                              (circuit (move forward))))))
   (point))
 
 (symex-deftraversal symex--traversal-preorder
