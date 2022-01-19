@@ -369,7 +369,10 @@ difference from the lowest such level."
 
 (defun symex--point-height-offset (&optional orig-pos)
   "Compute the height offset of the current symex from the lowest one indicated by point."
-  (if tree-sitter-mode
+  (if (and tree-sitter-mode (not (symex-ts--at-root-p)))
+      ;; don't attempt to calculate offset at the "real" root
+      ;; since offsets are typically computed while ignoring it
+      ;; i.e. they are wrt. "tree root"
       (let ((orig-pos (or orig-pos (point))))
         (symex--point-height-offset-helper orig-pos))
     0))
