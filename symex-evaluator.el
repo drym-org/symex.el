@@ -140,7 +140,8 @@ Attempts the maneuver in the order of its phases.  The maneuver
 succeeds only if all of the phases succeed, and otherwise fails.
 
 Evaluates to a COMPUTATION on the traversal actually executed."
-  (unless (symex--maneuver-null-p maneuver)
+  (if (symex--maneuver-null-p maneuver)
+      symex--move-zero
     (let ((current-phase (symex--maneuver-first maneuver))
           (remaining-maneuver (symex--maneuver-rest maneuver)))
       (let ((executed-phase (symex-execute-traversal current-phase
@@ -151,7 +152,10 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                                           computation)))
             (when executed-remaining-phases
               (symex--compute-results executed-phase
-                                      executed-remaining-phases
+                                      (if (equal executed-remaining-phases
+                                                 (list symex--move-zero))
+                                          nil
+                                          executed-remaining-phases)
                                       computation))))))))
 
 (defun symex-execute-venture (venture computation)
