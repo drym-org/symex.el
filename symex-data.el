@@ -166,6 +166,41 @@ This is useful for structural recursion during circuit execution."
         (times (symex--circuit-times circuit)))
     (symex-make-circuit traversal (when times (1- times)))))
 
+(defun symex-make-maneuver (&rest phases)
+  "Construct a maneuver from the given PHASES."
+  (list 'maneuver
+        phases))
+
+(defun symex-maneuver-p (obj)
+  "Check if OBJ specifies a maneuver."
+  (condition-case nil
+      (equal 'maneuver
+             (nth 0 obj))
+    (error nil)))
+
+(defun symex--maneuver-phases (maneuver)
+  "Get the phases of a MANEUVER.
+
+Each phase could be any traversal."
+  (nth 1 maneuver))
+
+(defun symex--maneuver-null-p (maneuver)
+  "Check if MANEUVER is empty or null."
+  (null (symex--maneuver-phases maneuver)))
+
+(defun symex--maneuver-first (maneuver)
+  "Get the first phase of a MANEUVER.
+
+This is useful for structural recursion during maneuver execution."
+  (car (symex--maneuver-phases maneuver)))
+
+(defun symex--maneuver-rest (maneuver)
+  "A maneuver defined from the remaining phases in MANEUVER not counting the first.
+
+This is useful for structural recursion during maneuver execution."
+  (apply #'symex-make-maneuver
+         (cdr (symex--maneuver-phases maneuver))))
+
 (defun symex-make-venture (&rest phases)
   "Construct a venture from the given PHASES."
   (list 'venture
@@ -307,6 +342,7 @@ This is the traversal that will be chosen if the condition is false."
 (defun symex-traversal-p (obj)
   "Check if OBJ specifies a traversal."
   (or (symex-move-p obj)
+      (symex-maneuver-p obj)
       (symex-venture-p obj)
       (symex-circuit-p obj)
       (symex-detour-p obj)
