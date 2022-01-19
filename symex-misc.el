@@ -353,8 +353,13 @@ Version 2017-11-01"
         result))))
 
 (defun symex--point-height-offset-helper (orig-pos)
-  "Compute the height offset of the current symex from the lowest one indicated by point."
-  (cond ((symex-ts--point-at-root-symex-p)
+  "A helper to compute the height offset of the current symex.
+
+This will always be zero for symex-oriented languages such as Lisp,
+but in languages like Python where the same point position could
+correspond to multiple hierarchy levels, this function computes the
+difference from the lowest such level."
+  (cond ((symex--point-at-root-symex-p)
          (if (= orig-pos (point))
              0
            -1))
