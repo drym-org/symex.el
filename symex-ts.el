@@ -258,6 +258,10 @@ Move COUNT times, defaulting to 1."
   (interactive "p")
   (symex-ts--move-with-count #'symex-ts--descend-to-child-with-sibling (symex-make-move 0 1) count))
 
+(defun symex-ts--exit ()
+  "Take necessary tree-sitter related actions upon exiting Symex mode."
+  (symex-ts--delete-overlay))
+
 
 (provide 'symex-ts)
 ;;; symex-ts.el ends here
