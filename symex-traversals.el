@@ -120,15 +120,14 @@ when the way is blocked.")
 
 (symex-deftraversal symex--traversal-climb-branch
   (protocol (move up)
-            (detour (circuit (move forward))
-                    (move up))
-            (circuit (move forward))))
+            (venture (circuit (move forward))
+                     (move up))))
 
 (symex-deftraversal symex--traversal-descend-branch
   (protocol (precaution symex--traversal-goto-first
                         (beforehand (not (at root))))
             (venture (move down)
-                     (precaution (circuit (move backward))
+                     (precaution symex--traversal-goto-first
                                  (beforehand (not (at root)))))))
 
 (defun symex-traverse-forward (count)
