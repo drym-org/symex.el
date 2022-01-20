@@ -28,7 +28,7 @@
 
 (require 'lispy)
 (require 'evil)
-(require 'symex-primitives-lisp)
+(require 'symex-primitives)
 (require 'symex-evaluator)
 (require 'symex-traversals)
 (require 'symex-interface-elisp)
@@ -319,14 +319,6 @@ Version 2017-11-01"
   (recenter)
   (evil-window-mru))
 
-(defun symex-select-nearest ()
-  "Select symex nearest to point."
-  (interactive)
-  (if tree-sitter-mode
-      (symex-ts-set-current-node-from-point)
-    (symex-lisp--select-nearest))
-  (point))
-
 (defun symex-select-nearest-in-line ()
   "Select symex nearest to point that's on the current line."
   (interactive)
@@ -351,54 +343,6 @@ Version 2017-11-01"
           (setq current-location (point))
           (setq result (1+ result)))
         result))))
-
-(defun symex--point-height-offset-helper (orig-pos)
-  "A helper to compute the height offset of the current symex.
-
-This will always be zero for symex-oriented languages such as Lisp,
-but in languages like Python where the same point position could
-correspond to multiple hierarchy levels, this function computes the
-difference from the lowest such level."
-  (cond ((symex--point-at-root-symex-p)
-         (if (= orig-pos (point))
-             0
-           -1))
-        ((not (= (point) orig-pos)) -1)
-        (t (symex--go-down)
-           (1+ (symex--point-height-offset-helper orig-pos)))))
-
-(defun symex--point-height-offset (&optional orig-pos)
-  "Compute the height offset of the current symex from the lowest one indicated by point."
-  (if (and tree-sitter-mode (not (symex-ts--at-root-p)))
-      ;; don't attempt to calculate offset at the "real" root
-      ;; since offsets are typically computed while ignoring it
-      ;; i.e. they are wrt. "tree root"
-      (let ((orig-pos (or orig-pos (point))))
-        (symex--point-height-offset-helper orig-pos))
-    0))
-
-(defmacro symex-save-excursion (&rest body)
-  "Execute BODY while preserving position in the tree.
-
-Like `save-excursion`, but in addition to preserving the point
-position, this also preserves the structural position in the tree, for
-languages where point position doesn't uniquely identify a tree
-location (e.g. non-symex-based languages like Python)."
-  (let ((offset (gensym))
-        (result (gensym)))
-    `(let ((,offset 0))
-       (when tree-sitter-mode
-         (setq ,offset (save-excursion
-                         (symex--point-height-offset)))
-         (symex-select-nearest)
-         (symex--go-up ,offset))
-       (let ((,result
-              (save-excursion
-                ,@body)))
-         (when tree-sitter-mode
-           (symex-select-nearest)
-           (symex--go-up ,offset))
-         ,result))))
 
 (defun symex-height ()  ; TODO: may be better framed as a computation
   "Get height (above root) of current symex."
