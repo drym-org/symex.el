@@ -77,65 +77,57 @@
 
 ;;; Navigation
 
-(defun symex--forward (&optional count)
+(defun symex--go-forward (&optional count)
   "Forward symex.
 
 Go forward COUNT times, defaulting to one.
 
-This is a primitive operation that is provided below the public
-abstraction level of symex.el.  It currently uses built-in Emacs
-commands and third party tools like paredit to perform its function.
-This procedure is not to be used except in the low-level internals
-of symex mode (use the public `symex-go-forward` instead)."
+This is an internal utility that avoids any user-level concerns
+such as symex selection via advice.  This should be used in all
+internal operations that are not primarily user-directed."
   (interactive)
   (if tree-sitter-mode
       (symex-ts-move-next-sibling count)
     (symex-lisp--forward count)))
 
-(defun symex--backward (&optional count)
+(defun symex--go-backward (&optional count)
   "Backward symex.
 
 Go backward COUNT times, defaulting to one.
 
-This is a primitive operation that is provided below the public
-abstraction level of symex.el.  It currently uses built-in Emacs
-commands and third party tools like paredit to perform its function.
-This procedure is not to be used except in the low-level internals
-of symex mode (use the public `symex-go-backward` instead)."
+This is an internal utility that avoids any user-level concerns
+such as symex selection via advice.  This should be used in all
+internal operations that are not primarily user-directed."
   (interactive)
   (if tree-sitter-mode
       (symex-ts-move-prev-sibling count)
     (symex-lisp--backward count)))
 
-(defun symex--enter (&optional count)
+(defun symex--go-up (&optional count)
   "Enter higher symex level.
 
 Enter COUNT times, defaulting to one.
 
-This is a primitive operation that is provided below the public
-abstraction level of symex.el.  It currently uses built-in Emacs
-commands and third party tools like paredit to perform its function.
-This procedure is not to be used except in the low-level internals
-of symex mode (use the public `symex-go-up` instead)."
+This is an internal utility that avoids any user-level concerns
+such as symex selection via advice.  This should be used in all
+internal operations that are not primarily user-directed."
   (interactive)
   (if tree-sitter-mode
       (symex-ts-move-child count)
-    (symex-lisp--enter count)))
+    (symex-lisp--go-up count)))
 
-(defun symex--exit (&optional count)
+(defun symex--go-down (&optional count)
   "Exit to lower symex level.
 
 Exit COUNT times, defaulting to one.
 
-This is a primitive operation that is provided below the public
-abstraction level of symex.el.  It currently uses built-in Emacs
-commands and third party tools like paredit to perform its function.
-This procedure is not to be used except in the low-level internals
-of symex mode (use the public `symex-go-down` instead)."
+This is an internal utility that avoids any user-level concerns
+such as symex selection via advice.  This should be used in all
+internal operations that are not primarily user-directed."
   (interactive)
   (if tree-sitter-mode
       (symex-ts-move-parent count)
-    (symex-lisp--exit count)))
+    (symex-lisp--go-down count)))
 
 ;;; Utilities
 
@@ -151,7 +143,7 @@ difference from the lowest such level."
              0
            -1))
         ((not (= (point) orig-pos)) -1)
-        (t (symex--exit)
+        (t (symex--go-down)
            (1+ (symex--point-height-offset-helper orig-pos)))))
 
 (defun symex--point-height-offset (&optional orig-pos)
@@ -178,13 +170,13 @@ location (e.g. non-symex-based languages like Python)."
          (setq ,offset (save-excursion
                          (symex--point-height-offset)))
          (symex-select-nearest)
-         (symex--enter ,offset))
+         (symex--go-up ,offset))
        (let ((,result
               (save-excursion
                 ,@body)))
          (when tree-sitter-mode
            (symex-select-nearest)
-           (symex--enter ,offset))
+           (symex--go-up ,offset))
          ,result))))
 
 (defun symex-select-nearest ()
@@ -194,6 +186,13 @@ location (e.g. non-symex-based languages like Python)."
       (symex-ts-set-current-node-from-point)
     (symex-lisp--select-nearest))
   (point))
+
+(defun symex--primitive-exit ()
+  "Take any necessary actions as part of exiting Symex mode, at a
+primitive level."
+  (if tree-sitter-mode
+      (symex-ts--exit)
+    (symex-lisp--exit)))
 
 
 (provide 'symex-primitives)

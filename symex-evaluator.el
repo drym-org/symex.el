@@ -50,13 +50,13 @@ requiring changes to higher-level code that uses the present interface."
   (let ((move-x (symex--move-x move))
         (move-y (symex--move-y move)))
     (cond ((> move-x 0)
-           (symex--forward move-x))
+           (symex--go-forward move-x))
           ((< move-x 0)
-           (symex--backward (abs move-x)))
+           (symex--go-backward (abs move-x)))
           ((> move-y 0)
-           (symex--enter move-y))
+           (symex--go-up move-y))
           ((< move-y 0)
-           (symex--exit (abs move-y)))
+           (symex--go-down (abs move-y)))
           (t symex--move-zero))))
 
 (defun symex-execute-move (move &optional computation)
@@ -68,38 +68,6 @@ Optional argument COMPUTATION currently unused."
   (let ((executed-move (symex--execute-tree-move move computation)))
     (when executed-move
       (list executed-move))))
-
-(cl-defun symex--go-forward (&optional (count 1))
-  "Move forward COUNT symexes.
-
-This is an internal utility that avoids any user-level concerns
-such as symex selection via advice.  This should be used in all
-internal operations that are not primarily user-directed."
-  (symex--execute-tree-move (symex-make-move count 0)))
-
-(cl-defun symex--go-backward (&optional (count 1))
-  "Move backwards COUNT symexes.
-
-This is an internal utility that avoids any user-level concerns
-such as symex selection via advice.  This should be used in all
-internal operations that are not primarily user-directed."
-  (symex--execute-tree-move (symex-make-move (- count) 0)))
-
-(cl-defun symex--go-up (&optional (count 1))
-  "Move up COUNT symexes.
-
-This is an internal utility that avoids any user-level concerns
-such as symex selection via advice.  This should be used in all
-internal operations that are not primarily user-directed."
-  (symex--execute-tree-move (symex-make-move 0 count)))
-
-(cl-defun symex--go-down (&optional (count 1))
-  "Move down COUNT symexes.
-
-This is an internal utility that avoids any user-level concerns
-such as symex selection via advice.  This should be used in all
-internal operations that are not primarily user-directed."
-  (symex--execute-tree-move (symex-make-move 0 (- count))))
 
 (cl-defun symex-go-forward (&optional (count 1))
   "Move forward COUNT symexes."
