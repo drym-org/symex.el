@@ -32,6 +32,7 @@
 (require 'evil)
 (require 'evil-surround)
 (require 'evil-cleverparens)  ;; really only need cp-textobjects here
+(require 'symex-primitives)
 (require 'symex-primitives-lisp)
 (require 'symex-utils)
 (require 'symex-traversals)

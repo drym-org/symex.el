@@ -47,6 +47,7 @@
 (require 'symex-evil)
 (require 'symex-interop)
 (require 'symex-misc)
+(require 'symex-primitives)
 (require 'symex-custom)
 (require 'tree-sitter)
 (require 'symex-ts)
