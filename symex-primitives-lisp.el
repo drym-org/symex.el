@@ -53,7 +53,7 @@
   "Check if point is at a root symex."
   (save-excursion
     (symex-lisp--if-stuck t
-                          (symex-lisp--exit)
+                          (symex-lisp--go-down)
                           nil)))
 
 (defun symex-lisp--point-at-first-symex-p ()
@@ -251,8 +251,8 @@ as special cases here."
          (lispy-different))
         ((thing-at-point 'sexp)       ; som|ething
          (beginning-of-thing 'sexp))
-        (t (symex-lisp--if-stuck (symex--go-backward)
-                                 (symex--go-forward)))))
+        (t (symex-lisp--if-stuck (symex-lisp--backward)
+                                 (symex-lisp--forward)))))
 
 (defun symex--get-end-point (count)
   "Get the point value after COUNT symexes.
@@ -355,8 +355,8 @@ of symex mode (use the public `symex-go-backward` instead)."
   (re-search-forward symex--re-symex-line)
   (back-to-indentation))
 
-(defun symex-lisp--enter-one ()
-  "Enter one level."
+(defun symex-lisp--go-up-by-one ()
+  "Go up one level."
   (let ((result 1))
     (cond ((or (symex-empty-list-p)
                (symex--special-empty-list-p))
@@ -380,10 +380,10 @@ of symex mode (use the public `symex-go-backward` instead)."
           (t (setq result 0)))
     result))
 
-(defun symex-lisp--enter (&optional count)
-  "Enter higher symex level.
+(defun symex-lisp--go-up (&optional count)
+  "Go up to a higher level.
 
-Enter COUNT times, defaulting to one.
+Go up COUNT times, defaulting to one.
 
 This is a primitive operation that is provided below the public
 abstraction level of symex.el.  It currently uses built-in Emacs
@@ -394,13 +394,13 @@ of symex mode (use the public `symex-go-up` instead)."
   (let ((count (or count 1))
         (result 0))
     (dotimes (_ count)
-      (let ((res (symex-lisp--enter-one)))
+      (let ((res (symex-lisp--go-up-by-one)))
         (setq result (+ res result))))
     (when (> result 0)
       (symex-make-move 0 result))))
 
-(defun symex-lisp--exit-one ()
-  "Exit one level."
+(defun symex-lisp--go-down-by-one ()
+  "Go down one level."
   (condition-case nil
       (progn (paredit-backward-up 1)
              ;; one-off - better to recognize these as delimiters
@@ -418,10 +418,10 @@ of symex mode (use the public `symex-go-up` instead)."
              1)
     (error 0)))
 
-(defun symex-lisp--exit (&optional count)
-  "Exit to lower symex level.
+(defun symex-lisp--go-down (&optional count)
+  "Go down to a lower level.
 
-Exit COUNT times, defaulting to one.
+Go down COUNT times, defaulting to one.
 
 This is a primitive operation that is provided below the public
 abstraction level of symex.el.  It currently uses built-in Emacs
@@ -432,7 +432,7 @@ of symex mode (use the public `symex-go-down` instead)."
   (let ((count (or count 1))
         (result 0))
     (dotimes (_ count)
-      (let ((res (symex-lisp--exit-one)))
+      (let ((res (symex-lisp--go-down-by-one)))
         (setq result (+ res result))))
     (when (> result 0)
       (symex-make-move 0 (- result)))))
@@ -445,7 +445,7 @@ of symex mode (use the public `symex-go-down` instead)."
 If there is an intervening comment line, then join only up to that
 line."
   (let* ((start (point))
-         (end (save-excursion (symex--go-forward)
+         (end (save-excursion (symex-lisp--forward)
                               (point)))
          (comment-line-position
           (symex--intervening-comment-line-p start end)))
@@ -463,6 +463,16 @@ match."
              (end (save-excursion (re-search-forward pattern)
                                   (match-beginning 0))))
         (delete-region start end))))
+
+;;; Utilities
+
+(defun symex-lisp--exit ()
+  "Take necessary actions upon Symex mode exit.
+
+There are no Lisp-specific actions to take, at the present time, so
+this function does nothing. It is only here for completeness and
+symmetry with the tree-sitter primitives."
+  nil)
 
 
 (provide 'symex-primitives-lisp)
