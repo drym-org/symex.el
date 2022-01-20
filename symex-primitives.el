@@ -146,14 +146,21 @@ difference from the lowest such level."
         (t (symex--go-down)
            (1+ (symex--point-height-offset-helper orig-pos)))))
 
-(defun symex--point-height-offset (&optional orig-pos)
-  "Compute the height offset of the current symex from the lowest one indicated by point."
-  (if (and tree-sitter-mode (not (symex-ts--at-root-p)))
-      ;; don't attempt to calculate offset at the "real" root
-      ;; since offsets are typically computed while ignoring it
-      ;; i.e. they are wrt. "tree root"
-      (let ((orig-pos (or orig-pos (point))))
-        (symex--point-height-offset-helper orig-pos))
+(defun symex--point-height-offset ()
+  "Compute the height offset of the current symex from the lowest one
+indicated by point."
+  (if tree-sitter-mode
+      (cond ((symex-ts--at-root-p) 0)
+            ((symex-ts--at-initial-p) 1)
+            ;; don't attempt to calculate offset at the "real" root
+            ;; since offsets are typically computed while ignoring it
+            ;; i.e. they are wrt. "tree root"
+            (t (let* ((orig-pos (point))
+                      (offset (symex--point-height-offset-helper orig-pos)))
+                 (goto-char orig-pos)
+                 (symex-select-nearest)
+                 (symex--go-up offset)
+                 offset)))
     0))
 
 (defmacro symex-save-excursion (&rest body)
@@ -165,18 +172,12 @@ languages where point position doesn't uniquely identify a tree
 location (e.g. non-symex-based languages like Python)."
   (let ((offset (gensym))
         (result (gensym)))
-    `(let ((,offset 0))
-       (when tree-sitter-mode
-         (setq ,offset (save-excursion
-                         (symex--point-height-offset)))
-         (symex-select-nearest)
-         (symex--go-up ,offset))
+    `(let ((,offset (symex--point-height-offset)))
        (let ((,result
               (save-excursion
                 ,@body)))
-         (when tree-sitter-mode
-           (symex-select-nearest)
-           (symex--go-up ,offset))
+         (symex-select-nearest)
+         (symex--go-up ,offset)
          ,result))))
 
 (defun symex-select-nearest ()
