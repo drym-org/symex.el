@@ -91,6 +91,11 @@ only two more nodes), the last node is returned instead."
         src-node
       (symex-ts--get-nth-sibling-from-node next-node traversal-fn (1- n)))))
 
+(defun symex-ts--node-has-sibling-p (node)
+  "Check if NODE has a sibling."
+  (or (tsc-get-prev-named-sibling node)
+      (tsc-get-next-named-sibling node)))
+
 (defun symex-ts--descend-to-child-with-sibling (node)
   "Descend from NODE to the first child recursively.
 
@@ -98,10 +103,12 @@ Recursion will end when the child node has a sibling or is a
 leaf."
   (let ((child (tsc-get-nth-named-child node 0)))
     (if child
-        (if (or (tsc-get-prev-named-sibling child) (tsc-get-next-named-sibling child))
+        (if (or (symex-ts--node-has-sibling-p child)
+                (not (= (tsc-node-start-position node)
+                        (tsc-node-start-position child))))
             child
           (symex-ts--descend-to-child-with-sibling child))
-      node)))
+      nil)))
 
 (defun symex-ts--ascend-to-parent-with-sibling (node)
   "Ascend from NODE to parent recursively.
@@ -110,7 +117,7 @@ Recursion will end when the parent node has a sibling or is the
 root."
   (let ((parent (tsc-get-parent node)))
     (if parent
-        (if (or (tsc-get-prev-named-sibling parent) (tsc-get-next-named-sibling parent))
+        (if (symex-ts--node-has-sibling-p parent)
             parent
           (symex-ts--ascend-to-parent-with-sibling parent))
       node)))
@@ -133,7 +140,7 @@ Return a Symex move (list with x,y node offsets tagged with
         (cursor (symex-ts-get-current-node)))
     (dotimes (_ (or count 1))
       (let ((new-node (funcall fn cursor)))
-        (when (and new-node (not (eq new-node cursor)))
+        (when (and new-node (not (ts-node-eq new-node cursor)))
           (setq move (symex--add-moves (list move move-delta)))
           (setq cursor new-node
                 target-node cursor))))
@@ -147,7 +154,6 @@ Return a Symex move (list with x,y node offsets tagged with
   "Handle any tree modification."
   (symex-ts--delete-overlay)
   (setq-local symex-ts--current-node nil))
-
 
 (defun symex-ts-current-node-sexp ()
   "Print the current node as an s-expression."
@@ -257,6 +263,8 @@ Move COUNT times, defaulting to 1."
 Move COUNT times, defaulting to 1."
   (interactive "p")
   (symex-ts--move-with-count #'symex-ts--descend-to-child-with-sibling (symex-make-move 0 1) count))
+
+;;; Utilities
 
 (defun symex-ts--exit ()
   "Take necessary tree-sitter related actions upon exiting Symex mode."
