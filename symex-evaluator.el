@@ -260,8 +260,7 @@ Evaluates to a COMPUTATION on the traversal actually executed."
     ;; or which tests for success before moving point
     (let ((original-location (point))
           (original-point-height-offset
-           (symex-save-excursion
-            (symex--point-height-offset)))
+           (symex--point-height-offset))
           (executed-traversal (cond ((symex-maneuver-p traversal)
                                      (symex-execute-maneuver traversal
                                                              computation))
@@ -293,9 +292,7 @@ Evaluates to a COMPUTATION on the traversal actually executed."
             (progn (funcall side-effect)
                    result)
           (goto-char original-location)
-          (let* ((current-point-height-offset
-                  (symex-save-excursion
-                   (symex--point-height-offset)))
+          (let* ((current-point-height-offset (symex--point-height-offset))
                  (height-differential (- original-point-height-offset
                                          current-point-height-offset)))
             ;; necessary because point does not uniquely identify
