@@ -292,6 +292,7 @@ Evaluates to a COMPUTATION on the traversal actually executed."
             (progn (funcall side-effect)
                    result)
           (goto-char original-location)
+          (symex-select-nearest)
           (let* ((current-point-height-offset (symex--point-height-offset))
                  (height-differential (- original-point-height-offset
                                          current-point-height-offset)))
