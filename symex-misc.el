@@ -440,17 +440,20 @@ approach is the one employed here."
                     symex--traversal-postorder-in-tree))
         (height (symex-height))
         (index (symex-index)))
-    (let* ((find-neighboring-branch
+    (let* ((ensure-at-first-node
             (symex-traversal
-             (maneuver (decision (at first)
-                                 symex--move-zero
-                                 symex--traversal-goto-first)
+             (decision (at first)
+                       symex--move-zero
+                       symex--traversal-goto-first)))
+           (find-neighboring-branch
+            (symex-traversal
+             (maneuver ensure-at-first-node
                        (circuit (precaution traverse
                                             (afterwards (not (lambda ()
                                                                (= (symex-height)
                                                                   height))))))
                        traverse
-                       symex--traversal-goto-first)))
+                       ensure-at-first-node)))
            (run-along-branch
             (symex-traversal
              (circuit (precaution (move forward)
@@ -469,7 +472,12 @@ approach is the one employed here."
                                           (beforehand (lambda ()
                                                         (< (symex-index)
                                                            index))))))
-                    (beforehand (not (at root)))))))))
+                    (beforehand (not (at root)))
+                    (afterwards (lambda ()
+                                  (and (= (symex-index)
+                                          index)
+                                       (= (symex-height)
+                                          height))))))))))
 
 (defun symex--leap-forward (&optional soar)
   "Leap forward to a neighboring branch, preserving height and position.
@@ -512,7 +520,12 @@ the implementation."
                                           (beforehand (lambda ()
                                                         (< (symex-index)
                                                            index))))))
-                    (beforehand (not (at root)))))))))
+                    (beforehand (not (at root)))
+                    (afterwards (lambda ()
+                                  (and (= (symex-index)
+                                          index)
+                                       (= (symex-height)
+                                          height))))))))))
 
 (defun symex--selection-side-effects ()
   "Things to do as part of symex selection, e.g. after navigations."
