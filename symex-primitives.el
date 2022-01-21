@@ -149,6 +149,9 @@ difference from the lowest such level."
 (defun symex--point-height-offset ()
   "Compute the height offset of the current symex from the lowest one
 indicated by point."
+  ;; TODO: probably make this a tree-sitter utility instead, so that
+  ;; it uses tree-sitter APIs to determine point-height offset instead
+  ;; of doing it at the level of traversals.
   (if tree-sitter-mode
       ;; don't attempt to calculate offset at the "real" root
       ;; since offsets are typically computed while ignoring it
