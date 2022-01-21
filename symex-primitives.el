@@ -150,13 +150,21 @@ difference from the lowest such level."
   "Compute the height offset of the current symex from the lowest one
 indicated by point."
   (if tree-sitter-mode
+      ;; don't attempt to calculate offset at the "real" root
+      ;; since offsets are typically computed while ignoring it
+      ;; i.e. they are wrt. "tree root"
       (cond ((symex-ts--at-root-p) 0)
+            ;; at the "tree root" of the first symex in the buffer,
+            ;; point-height offset must account for "true" root
+            ;; and so it's 1 rather than 0 here
             ((symex-ts--at-initial-p) 1)
-            ;; don't attempt to calculate offset at the "real" root
-            ;; since offsets are typically computed while ignoring it
-            ;; i.e. they are wrt. "tree root"
+            ;; aside from the above special cases, compute point-height
+            ;; offset by just descending as long as point does not change,
+            ;; and counting the number of steps taken
             (t (let* ((orig-pos (point))
                       (offset (symex--point-height-offset-helper orig-pos)))
+                 ;; return to original tree position
+                 ;; before returning the result
                  (goto-char orig-pos)
                  (symex-select-nearest)
                  (symex--go-up offset)
