@@ -319,7 +319,7 @@ Symex offers a few standard predicates to use as conditions. In addition to thes
 * ``(at initial)`` -- Are we at the first root-level node in the entire file?
 * ``(at final)`` -- Are we at the last root-level node in the entire file?
 
-There is also the modifier ``not`` which can be used with any of the above predicates. E.g. ``(not (at root))`` returns true if cursor is not at the root node of the tree.
+There is also the modifier ``not`` which can be used with any of the above predicates (or with arbitrary lambdas). E.g. ``(not (at root))`` returns true if cursor is not at the root node of the tree.
 
 Side Effects
 ------------
@@ -331,7 +331,7 @@ Typically, we are interested in attaching such side effects to a repeated traver
 Examples
 ~~~~~~~~
 
-"Evaluate the remaining expressions at this level in tree." (e.g. if at the root level, this will evaluate the remaining top-level expressions in the file).
+"Evaluate the remaining expressions at this level in the tree." (e.g. if at the root level, this will evaluate the remaining top-level expressions in the file).
 
 ::
 
