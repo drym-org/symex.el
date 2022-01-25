@@ -38,6 +38,18 @@
 ;;; PRIMITIVES ;;;
 ;;;;;;;;;;;;;;;;;;
 
+;;; User Interface
+
+(defun symex-lisp--adjust-point ()
+  "Helper to adjust point to indicate the correct symex."
+  (unless (or (bobp)
+              (symex-lisp--point-at-start-p)
+              (looking-back "," (line-beginning-position))
+              (save-excursion (backward-char)  ; just inside symex
+                              (or (lispy-left-p)
+                                  (symex-string-p))))
+    (backward-sexp)))
+
 ;;; Predicates
 
 (defmacro symex-lisp--if-stuck (do-what operation &rest body)

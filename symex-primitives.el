@@ -33,6 +33,14 @@
 (require 'symex-primitives-lisp)
 (require 'symex-ts)
 
+;;; User Interface
+
+(defun symex--adjust-point ()
+  "Helper to adjust point to indicate the correct symex."
+  (if tree-sitter-mode
+      (symex-ts--adjust-point)
+    (symex-lisp--adjust-point)))
+
 ;;; Predicates
 
 (defun symex--point-at-root-symex-p ()
