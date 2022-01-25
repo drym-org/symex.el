@@ -177,6 +177,12 @@ Automatically set it to the node at point if necessary."
         (p (point)))
     (symex-ts--get-topmost-node (tsc-get-named-descendant-for-position-range root p p))))
 
+;;; User Interface
+
+(defun symex-ts--adjust-point ()
+  "Helper to adjust point to indicate the correct symex."
+  nil)
+
 ;;; Predicates
 
 (defmacro symex-ts--if-stuck (do-what operation &rest body)
