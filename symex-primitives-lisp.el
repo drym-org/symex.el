@@ -44,7 +44,7 @@
   "Helper to adjust point to indicate the correct symex."
   (unless (or (bobp)
               (symex-lisp--point-at-start-p)
-              (looking-back "," (line-beginning-position))
+              (looking-back "[,'`]" (line-beginning-position))
               (save-excursion (backward-char)  ; just inside symex
                               (or (lispy-left-p)
                                   (symex-string-p))))
