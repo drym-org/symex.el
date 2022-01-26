@@ -247,12 +247,13 @@ If BACKWARDS is true, then joins current symex to previous one, otherwise,
 by default, joins next symex to current one."
   (let ((original-column (current-column)))
     (if backwards
-        (progn (evil-previous-line)
-               (if (symex--current-line-empty-p)
+        (when (symex--point-at-indentation-p)
+          (progn (evil-previous-line)
+                 (if (symex--current-line-empty-p)
+                     (evil-join (line-beginning-position)
+                                (1+ (line-beginning-position)))
                    (evil-join (line-beginning-position)
-                              (1+ (line-beginning-position)))
-                 (evil-join (line-beginning-position)
-                            (line-end-position))))
+                              (line-end-position)))))
       (save-excursion (forward-sexp)
                       (evil-join (line-beginning-position)
                                  (line-end-position))))
