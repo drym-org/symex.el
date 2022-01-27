@@ -15,8 +15,11 @@ Usage
 
 The main entry point to Symex from ELisp is the ``symex-traversal`` form, which can also be used via the definition form, ``symex-deftraversal``. Within these forms, traversals may be specified using the Symex language. Traversals defined this way may be executed via ``symex-execute-traversal`` and would affect the active Emacs cursor. Side effects may be attached to traversals, so that an action (which could be any function) may be repeatedly taken as part of traversal execution. Some Symex features are implemented this way.
 
-Movement
+Language
 --------
+
+Movement
+^^^^^^^^
 
 Any action that moves your cursor from one node in the tree to another is called a traversal. Symex gives you several linguistic forms with which to describe traversals.
 
@@ -309,7 +312,7 @@ Examples
 Note that this executes a *single* traversal while taking precautions. It is not repeated unless wrapped in a circuit or employed as a detour.
 
 Predicates
-----------
+^^^^^^^^^^
 
 Symex offers a few standard predicates to use as conditions. In addition to these, you may also use any lambda as a predicate, so that you can specify arbitrary conditions to use in e.g. the ``decision`` and ``precaution`` forms.
 
@@ -322,7 +325,7 @@ Symex offers a few standard predicates to use as conditions. In addition to thes
 There is also the modifier ``not`` which can be used with any of the above predicates (or with arbitrary lambdas). E.g. ``(not (at root))`` returns true if cursor is not at the root node of the tree.
 
 Side Effects
-------------
+^^^^^^^^^^^^
 
 Traversals may be executed with arbitrary side effects. A side effect is simply a function (e.g. specified via a lambda expression) that is executed *after* the conclusion of a traversal, if that traversal succeeds.
 
@@ -339,3 +342,96 @@ Examples
                               symex--move-forward)
 
 ``symex--move-forward`` used here is a traversal provided for convenience that simply moves forward by one step. It is defined as ``(symex-make-move 1 0)`` and is equivalent to ``(symex-traversal (move forward))``.
+
+API
+---
+
+This section documents the ELisp interface to defining and executing Symex traversals.
+
+symex-traversal
+^^^^^^^^^^^^^^^
+
+Syntax
+~~~~~~
+
+``(symex-traversal <traversal>)``
+
+Description
+~~~~~~~~~~~
+
+Define a symex traversal. This form accepts a *single* traversal argument. If you'd like to do more than one thing, then wrap the steps in a `maneuver`_.
+
+symex-deftraversal
+^^^^^^^^^^^^^^^^^^
+
+Syntax
+~~~~~~
+
+``(symex-deftraversal <name> <traversal>)``
+
+Description
+~~~~~~~~~~~
+
+Define a symex traversal and give it a name. This is equivalent to ``(defvar name (symex-traversal traversal))``. Note that, as it uses ``defvar``, once defined, you cannot use the same form to redefine the traversal (e.g. if you are debugging it). You will need to use ``setq`` directly -- e.g. replace ``defvar`` with ``setq`` in the expanded version of this form.
+
+symex-execute-traversal
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Syntax
+~~~~~~
+
+``(symex-execute-traversal <traversal> &optional <computation> <side-effect>)``
+
+Description
+~~~~~~~~~~~
+
+Execute a Symex traversal. This moves point (the cursor) structurally as specified by the traversal. The traversal itself is the only required argument.
+
+At the moment, executing a traversal returns a list of `moves <move>`_ performed, which can be thought of as a simple computation performed as part of the traversal. In the future we may be interested in supporting other types of computations, such as returning the *number* of steps taken, or something else. The ``computation`` argument is reserved for this purpose, to modulate the return value. But it is currently unused - it may be left out entirely, or you could pass ``nil`` here.
+
+The ``side-effect`` could be any function, and this function will be called after each step of traversal execution. See `Side Effects`_ below for more.
+
+Debugging
+---------
+
+Directly Evaluating Expressions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You can always run traversals in a source buffer by using ``M-:`` to evaluate an ELisp expression. This can be a cumbersome way to try things out, however.
+
+Using a REPL
+^^^^^^^^^^^^
+
+Another strategy is to open a REPL in an adjacent window and run code in the REPL while having it take effect in the source buffer alongside.
+
+To do this, open an ielm buffer in a window next to a source buffer, and use this snippet in the REPL:
+
+::
+
+  (with-current-buffer (window-buffer (other-window 1))
+    (symex-execute-traversal
+     (symex-traversal
+      (maneuver (move forward)
+                (move up))))
+    (other-window 1))
+
+Here, you can substitute the contents of ``(symex-traversal ...)`` with whatever traversal you like.
+
+Using a Debugger (EDebug)
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Another way is to use the ELisp Debugger, EDebug. This can be helpful to see the exact steps the DSL evaluator goes through in executing a traversal, and can be helpful for cases where the traversal isn't doing what you think it should be and you want to understand why (or even if you just want to understand how the evaluator works).
+
+To use it, first evaluate the ``symex-execute-traversal`` function for debugging by placing point somewhere within it and then invoking ``M-x edebug-defun`` (I personally have this bound in an ELisp specific leader / Hydra). Now, if you execute a traversal (e.g. via the REPL as in the recipe above), it will put you in the debugger and allow you to step through the code. Handy commands for EDebug:
+
+* ``s`` -- step forward
+* ``i`` -- step in
+* ``o`` -- step out
+* ``c`` -- continue
+* ``q`` -- quit
+
+There are also lots of other features like setting and unsetting breakpoints (``b`` and ``u``), seeing a backtrace (``d``), evaluating expressions in the evaluation context (``e``), and lots more, making it an indispensible tool for ELisp debugging.
+
+When you're done debugging, you can remove the debugger hooks by just evaluating the debugged functions in the usual way (e.g. via ``M-x eval-defun``).
+
+Also see `this series on ELisp debugging <https://endlessparentheses.com/debugging-emacs-lisp-part-1-earn-your-independence.html>`__ for more tips.
