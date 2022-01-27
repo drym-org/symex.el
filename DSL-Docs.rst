@@ -324,12 +324,28 @@ Symex offers a few standard predicates to use as conditions. In addition to thes
 
 There is also the modifier ``not`` which can be used with any of the above predicates (or with arbitrary lambdas). E.g. ``(not (at root))`` returns true if cursor is not at the root node of the tree.
 
+Evaluation Model
+----------------
+
+Evaluation of Symex traversals involves:
+
+1. Executing the traversal
+
+2. Performing any side effects at each step of traversal execution
+
+3. Performing a computation while traversing
+
+Traversal Execution
+^^^^^^^^^^^^^^^^^^^
+
+See `Language`_.
+
 Side Effects
 ^^^^^^^^^^^^
 
 Traversals may be executed with arbitrary side effects. A side effect is simply a function (e.g. specified via a lambda expression) that is executed *after* the conclusion of a traversal, if that traversal succeeds.
 
-Typically, we are interested in attaching such side effects to a repeated traversal so that the side effect is performed at each step of the traversal as long as it succeeds. For this purpose, you can use the ``symex--do-while-traversing`` function.
+Typically, we are interested in attaching such side effects to a repeated traversal so that the side effect is performed at each step of the traversal as long as it succeeds. For this purpose, you can use the ``symex--do-while-traversing`` function, which simply takes care of calling ``symex-execute-traversal`` repeatedly with your specified traversal and side effect.
 
 Examples
 ~~~~~~~~
@@ -342,6 +358,13 @@ Examples
                               symex--move-forward)
 
 ``symex--move-forward`` used here is a traversal provided for convenience that simply moves forward by one step. It is defined as ``(symex-make-move 1 0)`` and is equivalent to ``(symex-traversal (move forward))``.
+
+Computations
+^^^^^^^^^^^^
+
+At the moment, executing a traversal returns a list of `moves <move>`_ performed, which can be thought of as a simple computation performed as part of traversal execution. In the future we may be interested in supporting other types of computations, such as returning the *number* of steps taken, or perhaps something related to the contents of traversed nodes and not just the structure.
+
+As an analogy, a squirrel could explore a tree and then, upon returning, could relate the exact trajectory of its explorations which could convey the structure of the tree to another squirrel, or it could report on the number of pine cones it found along the way. The ``computation`` argument in ``symex-execute-traversal`` is reserved for this purpose, to modulate the return value. But it is currently unused - it may be left out entirely, or you could pass ``nil`` here.
 
 Debugging
 ---------
