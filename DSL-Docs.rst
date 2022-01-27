@@ -343,54 +343,6 @@ Examples
 
 ``symex--move-forward`` used here is a traversal provided for convenience that simply moves forward by one step. It is defined as ``(symex-make-move 1 0)`` and is equivalent to ``(symex-traversal (move forward))``.
 
-API
----
-
-This section documents the ELisp interface to defining and executing Symex traversals.
-
-symex-traversal
-^^^^^^^^^^^^^^^
-
-Syntax
-~~~~~~
-
-``(symex-traversal <traversal>)``
-
-Description
-~~~~~~~~~~~
-
-Define a symex traversal. This form accepts a *single* traversal argument. If you'd like to do more than one thing, then wrap the steps in a `maneuver`_.
-
-symex-deftraversal
-^^^^^^^^^^^^^^^^^^
-
-Syntax
-~~~~~~
-
-``(symex-deftraversal <name> <traversal>)``
-
-Description
-~~~~~~~~~~~
-
-Define a symex traversal and give it a name. This is equivalent to ``(defvar name (symex-traversal traversal))``. Note that, as it uses ``defvar``, once defined, you cannot use the same form to redefine the traversal (e.g. if you are debugging it). You will need to use ``setq`` directly -- e.g. replace ``defvar`` with ``setq`` in the expanded version of this form.
-
-symex-execute-traversal
-^^^^^^^^^^^^^^^^^^^^^^^
-
-Syntax
-~~~~~~
-
-``(symex-execute-traversal <traversal> &optional <computation> <side-effect>)``
-
-Description
-~~~~~~~~~~~
-
-Execute a Symex traversal. This moves point (the cursor) structurally as specified by the traversal. The traversal itself is the only required argument.
-
-At the moment, executing a traversal returns a list of `moves <move>`_ performed, which can be thought of as a simple computation performed as part of the traversal. In the future we may be interested in supporting other types of computations, such as returning the *number* of steps taken, or something else. The ``computation`` argument is reserved for this purpose, to modulate the return value. But it is currently unused - it may be left out entirely, or you could pass ``nil`` here.
-
-The ``side-effect`` could be any function, and this function will be called after each step of traversal execution. See `Side Effects`_ below for more.
-
 Debugging
 ---------
 
@@ -435,3 +387,10 @@ There are also lots of other features like setting and unsetting breakpoints (``
 When you're done debugging, you can remove the debugger hooks by just evaluating the debugged functions in the usual way (e.g. via ``M-x eval-defun``).
 
 Also see `this series on ELisp debugging <https://endlessparentheses.com/debugging-emacs-lisp-part-1-earn-your-independence.html>`__ for more tips.
+
+Gotchas
+^^^^^^^
+
+The ``symex-traversal`` form accepts a *single* traversal argument. If you'd like to do more than one thing, then wrap the steps in a `maneuver`_.
+
+``symex-deftraversal`` is equivalent to ``(defvar name (symex-traversal traversal))``. As it uses ``defvar``, once defined, you cannot use the same form to redefine the traversal (e.g. if you are debugging it). You will need to use ``setq`` directly -- e.g. replace ``defvar`` with ``setq`` in the expanded version of this form.
