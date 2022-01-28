@@ -402,7 +402,7 @@ To use it, first evaluate the ``symex-execute-traversal`` function for debugging
 * ``s`` -- step forward
 * ``i`` -- step in
 * ``o`` -- step out
-* ``c`` -- continue
+* ``g`` -- go until next breakpoint
 * ``q`` -- quit
 
 There are also lots of other features like setting and unsetting breakpoints (``b`` and ``u``), seeing a backtrace (``d``), evaluating expressions in the evaluation context (``e``), and lots more, making it an indispensible tool for ELisp debugging.
