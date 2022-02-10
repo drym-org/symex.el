@@ -391,7 +391,7 @@ of symex mode (use the public `symex-go-up` instead)."
              ;; at the AST level
              (cond ((looking-back "#['`,]" (line-beginning-position))
                     (backward-char 2))
-                   ((looking-back "[#'`]" (line-beginning-position))
+                   ((looking-back "[#'`,]" (line-beginning-position))
                     (backward-char))
                    ((looking-back "@" (line-beginning-position))
                     (backward-char)))
