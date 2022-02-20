@@ -60,6 +60,10 @@
   :type 'list
   :group 'symex)
 
+(defcustom symex-common-lisp-backend 'slime
+  "Backend provider for Common Lisp interactive features; defaults to SLIME."
+  :type 'symbol
+  :group 'symex)
 
 (provide 'symex-custom)
 ;;; symex-custom.el ends here

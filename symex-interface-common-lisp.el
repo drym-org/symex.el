@@ -25,26 +25,42 @@
 
 ;;; Code:
 
-(require 'slime nil 'noerror)
+(require 'slime      nil 'noerror)
 (require 'slime-repl nil 'noerror)
+(require 'sly        nil 'noerror)
+(require 'sly-repl   nil 'noerror)
 (require 'symex-interop)
+(require 'symex-custom)
 
+;; Make the bytecompiler aware of slime
 (declare-function slime-eval-last-expression "ext:slime")
-(declare-function slime-eval-defun "ext:slime")
-(declare-function slime-eval-buffer "ext:slime")
-(declare-function slime-repl "ext:slime-repl")
+(declare-function slime-eval-defun           "ext:slime")
+(declare-function slime-eval-buffer          "ext:slime")
+(declare-function slime-repl                 "ext:slime-repl")
 (declare-function slime-eval-print-last-expression "ext:slime")
-(declare-function slime-documentation "ext:slime")
+(declare-function slime-documentation        "ext:slime")
+
+;; Make the bytecompiler aware of sly
+(declare-function sly-eval-last-expression "ext:sly")
+(declare-function sly-eval-defun           "ext:sly")
+(declare-function sly-eval-buffer          "ext:sly")
+(declare-function sly-repl                 "ext:sly-repl")
+(declare-function sly-eval-print-last-expression "ext:sly")
+(declare-function sly-documentation        "ext:sly")
 
 (defun symex-eval-common-lisp ()
   "Eval last sexp.
 
 Accounts for different point location in evil vs Emacs mode."
   (interactive)
+  (when (eq symex-common-lisp-backend 'sly)
+    (sly-eval-last-expression))
   (slime-eval-last-expression))
 
 (defun symex-eval-definition-common-lisp ()
   "Eval entire containing definition."
+  (when (eq symex-common-lisp-backend 'sly)
+    (sly-eval-defun))
   (slime-eval-defun))
 
 (defun symex-eval-pretty-common-lisp ()
@@ -61,22 +77,32 @@ Accounts for different point location in evil vs Emacs mode."
 (defun symex-eval-print-common-lisp ()
   "Eval symex and print result in buffer."
   (interactive)
-  (call-interactively #'slime-eval-print-last-expression))
+  (call-interactively
+   (if (eq symex-common-lisp-backend 'sly)
+       #'sly-eval-print-last-expression
+       #'slime-eval-print-last-expression)))
 
 (defun symex-describe-symbol-common-lisp ()
   "Describe symbol at point."
   (interactive)
-  (call-interactively #'slime-documentation))
+  (call-interactively
+   (if (eq symex-common-lisp-backend 'sly)
+       #'sly-documentation
+       #'slime-documentation)))
 
 (defun symex-repl-common-lisp ()
   "Go to REPL."
   ;; this already goes to the active repl prompt
   ;; so there's no need to move point there
-  (slime-repl)
+  (if (eq symex-common-lisp-backend 'sly)
+      (sly-repl)
+      (slime-repl))
   (symex-enter-lowest))
 
 (defun symex-run-common-lisp ()
   "Evaluate buffer."
+  (when (eq symex-common-lisp-backend 'sly)
+    (sly-eval-buffer))
   (slime-eval-buffer))
 
 
