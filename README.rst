@@ -378,6 +378,32 @@ By default, ``C-'`` and ``C-,`` cycle through standard quoting and unquoting pre
    (symex-quote-prefix-list (list "'" "`" "#'" "#`"))
    (symex-unquote-prefix-list (list "," ",@" "#,@"))
 
+Lisp Flavors
+------------
+Symex supports the following lisps:
+
+.. list-table::
+
+   * - Racket
+     - Repl interaction and docs through `racket-mode`.
+
+   * - EmacsLisp
+
+   * - Clojure
+
+   * - Common Lisp
+     - Support for Slime or Sly through `symex-common-lisp-backend`. This
+       defaults to Slime, set to `'sly` to use Sly for Symex repl interaction
+       and doc lookup. For example:
+       ::
+          (use-package symex
+            :config
+            (symex-initialize)
+            (global-set-key (kbd "s-;") 'symex-mode-interface))  ; or whatever keybinding you like
+            (setq symex-common-lisp-backend 'sly)
+
+   * - Arc
+
 Tips
 ====
 
