@@ -60,6 +60,13 @@
   :type 'list
   :group 'symex)
 
+(defcustom symex-common-lisp-backend 'slime
+  "Backend provider for Common Lisp interactive features. One of:
+
+  - SLIME: The Superior Lisp Interaction Mode for Emacs.
+  - SLY: Sylvestors Common Lisp IDE for Emacs. A fork of SLIME."
+  :type 'symbol
+  :group 'symex)
 
 (provide 'symex-custom)
 ;;; symex-custom.el ends here
