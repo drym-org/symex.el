@@ -207,6 +207,7 @@ as special cases here."
                     (lispy-right-p))))
       (save-excursion
         (and (or (symex--quoted-list-p)
+                 (symex--unquoted-list-p)
                  (symex--clojure-deref-reader-macro-p)
                  (symex--clojure-literal-lambda-p))
              (progn (forward-char 3)
