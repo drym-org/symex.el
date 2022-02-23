@@ -201,8 +201,13 @@ as special cases here."
 (defun symex--special-empty-list-p ()
   "Check if we're looking at a 'special' empty list."
   (or (save-excursion
+        (symex--racket-splicing-unsyntax-p)
+        (progn (forward-char 5)
+               (lispy-right-p)))
+      (save-excursion
         (and (or (symex--racket-syntax-object-p)
-                 (symex--racket-unquote-syntax-p))
+                 (symex--racket-unquote-syntax-p)
+                 (symex--splicing-unquote-p))
              (progn (forward-char 4)
                     (lispy-right-p))))
       (save-excursion
@@ -393,6 +398,10 @@ of symex mode (use the public `symex-go-up` instead)."
                     (backward-char 2))
                    ((looking-back "[#'`,]" (line-beginning-position))
                     (backward-char))
+                   ((looking-back "#,@" (line-beginning-position))
+                    (backward-char 3))
+                   ((looking-back ",@" (line-beginning-position))
+                    (backward-char 2))
                    ((looking-back "@" (line-beginning-position))
                     (backward-char)))
              1)
