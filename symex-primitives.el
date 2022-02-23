@@ -342,27 +342,24 @@ of symex mode (use the public `symex-go-backward` instead)."
 (defun symex--enter-one ()
   "Enter one level."
   (let ((result 1))
-    (cond ((and (lispy-left-p)
-                (not (symex-empty-list-p)))
-           (forward-char))
+    (cond ((or (symex-empty-list-p)
+               (symex--special-empty-list-p))
+           (setq result 0))
+          ((lispy-left-p) (forward-char))
           ;; note that at least some symex features would benefit by
           ;; treating these special cases as "symex-left-p" but it
           ;; would likely be too much special case handling to be
           ;; worth it to support those cases naively, without an AST
-          ((or (and (symex--racket-syntax-object-p)
-                    (not (symex--special-empty-list-p)))
+          ((or (symex--racket-syntax-object-p)
                (symex--splicing-unquote-p)
-               ;; TODO: exclude special empty first
-               (and (symex--racket-unquote-syntax-p)
-                    (not (symex--special-empty-list-p))))
+               (symex--racket-unquote-syntax-p))
            (forward-char 3))
           ((symex--racket-splicing-unsyntax-p)
            (forward-char 4))
-          ((and (or (symex--quoted-list-p)
-                    (symex--unquoted-list-p)
-                    (symex--clojure-deref-reader-macro-p)
-                    (symex--clojure-literal-lambda-p))
-                (not (symex--special-empty-list-p)))
+          ((or (symex--quoted-list-p)
+               (symex--unquoted-list-p)
+               (symex--clojure-deref-reader-macro-p)
+               (symex--clojure-literal-lambda-p))
            (forward-char 2))
           (t (setq result 0)))
     result))
