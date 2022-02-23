@@ -352,7 +352,9 @@ of symex mode (use the public `symex-go-backward` instead)."
           ((or (and (symex--racket-syntax-object-p)
                     (not (symex--special-empty-list-p)))
                (symex--splicing-unquote-p)
-               (symex--racket-unquote-syntax-p))
+               ;; TODO: exclude special empty first
+               (and (symex--racket-unquote-syntax-p)
+                    (not (symex--special-empty-list-p))))
            (forward-char 3))
           ((symex--racket-splicing-unsyntax-p)
            (forward-char 4))
