@@ -201,9 +201,9 @@ as special cases here."
 (defun symex--special-empty-list-p ()
   "Check if we're looking at a 'special' empty list."
   (or (save-excursion
-        (symex--racket-splicing-unsyntax-p)
-        (progn (forward-char 5)
-               (lispy-right-p)))
+        (and (symex--racket-splicing-unsyntax-p)
+             (progn (forward-char 5)
+                    (lispy-right-p))))
       (save-excursion
         (and (or (symex--racket-syntax-object-p)
                  (symex--racket-unquote-syntax-p)
