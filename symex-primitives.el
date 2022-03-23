@@ -157,6 +157,10 @@
   "Check if the symex is a spliced unquoted list."
   (looking-at (concat ",@" lispy-left)))
 
+(defun symex--racket-unquote-syntax-p ()
+  "Check if the symex is a racket unquoted syntax list."
+  (looking-at (concat "#," lispy-left)))
+
 (defun symex--racket-splicing-unsyntax-p ()
   "Check if the symex is a racket spliced unsyntaxed list."
   (looking-at (concat "#,@" lispy-left)))
@@ -190,17 +194,25 @@ as special cases here."
       (symex--racket-syntax-object-p)
       (symex--splicing-unquote-p)
       (symex--racket-splicing-unsyntax-p)
+      (symex--racket-unquote-syntax-p)
       (symex--clojure-deref-reader-macro-p)
       (symex--clojure-literal-lambda-p)))
 
 (defun symex--special-empty-list-p ()
   "Check if we're looking at a 'special' empty list."
   (or (save-excursion
-        (and (symex--racket-syntax-object-p)
+        (and (symex--racket-splicing-unsyntax-p)
+             (progn (forward-char 5)
+                    (lispy-right-p))))
+      (save-excursion
+        (and (or (symex--racket-syntax-object-p)
+                 (symex--racket-unquote-syntax-p)
+                 (symex--splicing-unquote-p))
              (progn (forward-char 4)
                     (lispy-right-p))))
       (save-excursion
         (and (or (symex--quoted-list-p)
+                 (symex--unquoted-list-p)
                  (symex--clojure-deref-reader-macro-p)
                  (symex--clojure-literal-lambda-p))
              (progn (forward-char 3)
@@ -335,24 +347,24 @@ of symex mode (use the public `symex-go-backward` instead)."
 (defun symex--enter-one ()
   "Enter one level."
   (let ((result 1))
-    (cond ((and (lispy-left-p)
-                (not (symex-empty-list-p)))
-           (forward-char))
+    (cond ((or (symex-empty-list-p)
+               (symex--special-empty-list-p))
+           (setq result 0))
+          ((lispy-left-p) (forward-char))
           ;; note that at least some symex features would benefit by
           ;; treating these special cases as "symex-left-p" but it
           ;; would likely be too much special case handling to be
           ;; worth it to support those cases naively, without an AST
-          ((or (and (symex--racket-syntax-object-p)
-                    (not (symex--special-empty-list-p)))
-               (symex--splicing-unquote-p))
+          ((or (symex--racket-syntax-object-p)
+               (symex--splicing-unquote-p)
+               (symex--racket-unquote-syntax-p))
            (forward-char 3))
           ((symex--racket-splicing-unsyntax-p)
            (forward-char 4))
-          ((and (or (symex--quoted-list-p)
-                    (symex--unquoted-list-p)
-                    (symex--clojure-deref-reader-macro-p)
-                    (symex--clojure-literal-lambda-p))
-                (not (symex--special-empty-list-p)))
+          ((or (symex--quoted-list-p)
+               (symex--unquoted-list-p)
+               (symex--clojure-deref-reader-macro-p)
+               (symex--clojure-literal-lambda-p))
            (forward-char 2))
           (t (setq result 0)))
     result))
@@ -382,10 +394,14 @@ of symex mode (use the public `symex-go-up` instead)."
       (progn (paredit-backward-up 1)
              ;; one-off - better to recognize these as delimiters
              ;; at the AST level
-             (cond ((looking-back "#['`]" (line-beginning-position))
+             (cond ((looking-back "#['`,]" (line-beginning-position))
                     (backward-char 2))
-                   ((looking-back "[#'`]" (line-beginning-position))
+                   ((looking-back "[#'`,]" (line-beginning-position))
                     (backward-char))
+                   ((looking-back "#,@" (line-beginning-position))
+                    (backward-char 3))
+                   ((looking-back ",@" (line-beginning-position))
+                    (backward-char 2))
                    ((looking-back "@" (line-beginning-position))
                     (backward-char)))
              1)
