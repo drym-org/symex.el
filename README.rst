@@ -395,6 +395,8 @@ Symex supports the following lisps:
      - CIDER
    * - Common Lisp
      - Slime or Sly. This defaults to Slime, but you can use Sly by putting this in the ``:custom`` (not ``:config``) section of your ``use-package`` declaration: ``(symex-common-lisp-backend 'sly)``
+   * - Scheme
+     - Geiser
    * - Arc
      - Arc.el
    * - Other
