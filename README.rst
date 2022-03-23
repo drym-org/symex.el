@@ -383,26 +383,22 @@ Lisp Flavors
 Symex supports the following lisps:
 
 .. list-table::
+   :header-rows: 1
 
+   * - Flavor
+     - Runtime and docs
    * - Racket
-     - Repl interaction and docs through `racket-mode`.
-
-   * - EmacsLisp
-
+     - Racket Mode
+   * - Emacs Lisp
+     - Native/IELM
    * - Clojure
-
+     - CIDER
    * - Common Lisp
-     - Support for Slime or Sly through `symex-common-lisp-backend`. This
-       defaults to Slime, set to `'sly` to use Sly for Symex repl interaction
-       and doc lookup. For example:
-       ::
-          (use-package symex
-            :config
-            (symex-initialize)
-            (global-set-key (kbd "s-;") 'symex-mode-interface))  ; or whatever keybinding you like
-            (setq symex-common-lisp-backend 'sly)
-
+     - Slime or Sly. This defaults to Slime, but you can use Sly by putting this in the ``:custom`` (not ``:config``) section of your ``use-package`` declaration: ``(symex-common-lisp-backend 'sly)``
    * - Arc
+     - Arc.el
+   * - Other
+     - Structural editing only (no runtime). Please create an issue if you need additional support for your Lisp.
 
 Tips
 ====
