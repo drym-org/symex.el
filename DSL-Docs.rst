@@ -447,6 +447,18 @@ When you're done debugging, you can remove the debugger hooks by just evaluating
 
 Also see `this series on ELisp debugging <https://endlessparentheses.com/debugging-emacs-lisp-part-1-earn-your-independence.html>`__ for more tips.
 
+Print Statements and Asserts
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Don't hesitate to add print statements (e.g. ``message``) to trace the execution path. Such trace logs can also serve as evidence from which to form hypotheses about bugs. You could also use ``cl-assert`` to assert assumptions at specific points.
+
+Minimizing Complexity
+^^^^^^^^^^^^^^^^^^^^^
+
+Symex uses advice to implement some features such as branch memory. To minimize complexity while debugging, it may be advisable (so to speak) to disable such advice. To do this, find the place in the code where the advice is added and execute the corresponding function to remove it, something like ``(advice-remove #'symex-go-down #'symex--remember-branch-position)``. Of course, if disabling the advice causes the error to go away, then you can focus your efforts on debugging the advice itself in isolation.
+
+It may also be advisable to comment out macros like ``symex-save-excursion`` to see if the problem persists.
+
 Gotchas
 ^^^^^^^
 
