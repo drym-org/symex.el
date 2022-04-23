@@ -110,16 +110,22 @@ leaf."
           (symex-ts--descend-to-child-with-sibling child))
       nil)))
 
-(defun symex-ts--ascend-to-parent-with-sibling (node)
+(defun symex-ts--ascend-to-parent-with-sibling (node &optional initial)
   "Ascend from NODE to parent recursively.
 
 Recursion will end when the parent node has a sibling or is the
 root."
-  (let ((parent (tsc-get-parent node)))
+  (let ((parent (tsc-get-parent node))
+        (initial (or initial node)))
     (if parent
-        (if (symex-ts--node-has-sibling-p parent)
-            parent
-          (symex-ts--ascend-to-parent-with-sibling parent))
+        ;; visit node if it either has no siblings or changes point,
+        ;; for symmetry with "descend" behavior
+        (cond ((and (not (= (tsc-node-start-position node)
+                            (tsc-node-start-position parent)))
+                    (not (tsc-node-eq node initial)))
+               node)
+              ((symex-ts--node-has-sibling-p parent) parent)
+              (t (symex-ts--ascend-to-parent-with-sibling parent node)))
       node)))
 
 (defun symex-ts--move-with-count (fn move-delta &optional count)
