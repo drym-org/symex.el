@@ -335,9 +335,11 @@ Version 2017-11-01"
   (symex-save-excursion
     (let ((original-location (point)))
       (let ((current-location (symex-goto-first))
+            (move-made symex--move-zero)
             (result 0))
-        (while (< current-location original-location)
-          (symex--execute-tree-move (symex-make-move 1 0))
+        (while (and move-made
+                    (< current-location original-location))
+          (setq move-made (symex--execute-tree-move (symex-make-move 1 0)))
           (setq current-location (point))
           (setq result (1+ result)))
         result))))
