@@ -83,6 +83,19 @@ in symex state as well."
         (evil-repeat-stop)))))
 (put 'symex-evil-repeat-post-hook-advice 'permanent-local-hook t)
 
+(defun symex-evil-repeat-preserve-state-advice (orig-fun &rest args)
+  "Return to symex state if necessary after calling ORIG-FUN.
+
+This function is meant to advise `evil-repeat' which sets the
+buffer to normal state after repeating a command. This first
+checks whether the buffer is starting in symex state and, if so,
+returns to symex after invoking ORIG-FUN with ARGS."
+  (let ((symex-state-p (evil-symex-state-p)))
+    (apply orig-fun args)
+    (when symex-state-p
+      (evil-symex-state))))
+(put 'symex-evil-repeat-preserve-state-advice 'permanent-local-hook t)
+
 (defun symex--evil-scroll-down ()
   "Scroll down half a page.
 
@@ -263,6 +276,8 @@ executing this command to get the expected behavior."
               :after #'symex-evil-repeat-pre-hook-advice)
   (advice-add 'evil-repeat-post-hook
               :after #'symex-evil-repeat-post-hook-advice)
+  (advice-add 'evil-repeat
+              :around #'symex-evil-repeat-preserve-state-advice)
   (dolist (fn symex--evil-repeatable-commands)
     (evil-add-command-properties fn :repeat t)))
 
