@@ -69,7 +69,7 @@ state."
 (defun symex-evil-repeat-post-hook-advice (&rest _)
   "Finish recording of repeat information for the current command.
 
-This function is ment to advice `evil-repeat-post-hook' which
+This function is meant to advise `evil-repeat-post-hook' which
 cleans up a recording during the `post-command-hook', but assumes
 no recording was started unless the buffer is in normal or visual
 state. This calls `evil-repeat-stop' if the buffer is currently
