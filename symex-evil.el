@@ -209,6 +209,45 @@ executing this command to get the expected behavior."
 (defvar symex--user-evil-keyspec nil
   "User key specification overrides for symex evil state.")
 
+(defvar symex--evil-repeatable-commands
+  '(symex-create-round
+    symex-create-square
+    symex-wrap-round
+    symex-wrap-square
+    symex-cycle-quote
+    symex-cycle-unquote
+    symex-add-quoting-level
+    symex-remove-quoting-level
+    symex-paste-after
+    symex-paste-before
+    symex-delete
+    symex-delete-backwards
+    symex-delete-remaining
+    symex-clear
+    symex-shift-backward
+    symex-shift-forward
+    symex-shift-backward-most
+    symex-shift-forward-most
+    paredit-raise-sexp
+    symex-capture-backward
+    symex-emit-backward
+    symex-capture-forward
+    symex-emit-forward
+    symex-swallow
+    symex-swallow-tail
+    symex-split
+    symex-join
+    symex-splice
+    symex-insert-newline
+    symex-join-lines-backwards
+    symex-append-newline
+    symex-join-lines
+    symex-tidy
+    symex-wrap
+    symex-comment
+    symex-comment-remaining)
+  "Commands which should have their `:repeat' property set to `t'.")
+
 (defun symex-evil-initialize ()
   "Initialize evil modal interface."
   (let ((keyspec (symex--combine-alists symex--user-evil-keyspec
@@ -223,7 +262,9 @@ executing this command to get the expected behavior."
   (advice-add 'evil-repeat-pre-hook
               :after #'symex-evil-repeat-pre-hook-advice)
   (advice-add 'evil-repeat-post-hook
-              :after #'symex-evil-repeat-post-hook-advice))
+              :after #'symex-evil-repeat-post-hook-advice)
+  (dolist (fn symex--evil-repeatable-commands)
+    (evil-add-command-properties fn :repeat t)))
 
 (defun symex-enable-editing-minor-mode ()
   "Enable symex minor mode."
