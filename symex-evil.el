@@ -49,6 +49,40 @@
   :enable (normal)
   :exit-hook (symex-exit-mode))
 
+(defun symex-evil-repeat-pre-hook-advice (&rest _)
+  "Prepare the current command for recording the repeation.
+
+This function is meant to advise `evil-repeat-pre-hook' which
+starts recording a repeation during the `pre-command-hook', but
+only records a repition when in normal or visual state. This
+calls `evil-repeat-start' if the buffer is currently in symex
+state."
+  (when evil-local-mode
+    (let ((repeat-type (evil-repeat-type this-command t)))
+      (when (and (not (evil-repeat-force-abort-p repeat-type))
+                 (not (or (null repeat-type)
+                          (evil-mouse-events-p (this-command-keys))))
+                 (evil-symex-state-p))
+        (evil-repeat-start)))))
+(put 'symex-evil-repeat-pre-hook-advice 'permanent-local-hook t)
+
+(defun symex-evil-repeat-post-hook-advice (&rest _)
+  "Finish recording of repeat information for the current command.
+
+This function is ment to advice `evil-repeat-post-hook' which
+cleans up a recording during the `post-command-hook', but assumes
+no recording was started unless the buffer is in normal or visual
+state. This calls `evil-repeat-stop' if the buffer is currently
+in symex state as well."
+  (when (and evil-local-mode evil-recording-repeat)
+    (let ((repeat-type (evil-repeat-type this-command t)))
+      (when (and (not (evil-repeat-force-abort-p repeat-type))
+                 (not (or (null repeat-type)
+                          (evil-mouse-events-p (this-command-keys))))
+                 (evil-symex-state-p))
+        (evil-repeat-stop)))))
+(put 'symex-evil-repeat-post-hook-advice 'permanent-local-hook t)
+
 (defun symex--evil-scroll-down ()
   "Scroll down half a page.
 
@@ -185,7 +219,11 @@ executing this command to get the expected behavior."
     ;; without rigpa (which would handle this for us), we need to
     ;; manage the editing minor mode and ensure that it is active
     ;; while in symex evil state and inactive when in other states
-    (add-hook 'evil-symex-state-exit-hook #'symex-disable-editing-minor-mode)))
+    (add-hook 'evil-symex-state-exit-hook #'symex-disable-editing-minor-mode))
+  (advice-add 'evil-repeat-pre-hook
+              :after #'symex-evil-repeat-pre-hook-advice)
+  (advice-add 'evil-repeat-post-hook
+              :after #'symex-evil-repeat-post-hook-advice))
 
 (defun symex-enable-editing-minor-mode ()
   "Enable symex minor mode."
