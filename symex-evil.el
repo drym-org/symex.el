@@ -58,7 +58,7 @@ only records a repition when in normal or visual state. This
 calls `evil-repeat-start' if the buffer is currently in symex
 state."
   (when evil-local-mode
-    (let ((repeat-type (evil-repeat-type this-command t)))
+    (let ((repeat-type (evil-repeat-type this-command nil)))
       (when (and (not (evil-repeat-force-abort-p repeat-type))
                  (not (or (null repeat-type)
                           (evil-mouse-events-p (this-command-keys))))
