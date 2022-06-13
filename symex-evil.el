@@ -64,7 +64,6 @@ state."
                           (evil-mouse-events-p (this-command-keys))))
                  (evil-symex-state-p))
         (evil-repeat-start)))))
-(put 'symex-evil-repeat-pre-hook-advice 'permanent-local-hook t)
 
 (defun symex-evil-repeat-post-hook-advice (&rest _)
   "Finish recording of repeat information for the current command.
@@ -81,7 +80,6 @@ in symex state as well."
                           (evil-mouse-events-p (this-command-keys))))
                  (evil-symex-state-p))
         (evil-repeat-stop)))))
-(put 'symex-evil-repeat-post-hook-advice 'permanent-local-hook t)
 
 (defun symex-evil-repeat-preserve-state-advice (orig-fun &rest args)
   "Return to symex state if necessary after calling ORIG-FUN.
@@ -94,7 +92,6 @@ returns to symex after invoking ORIG-FUN with ARGS."
     (apply orig-fun args)
     (when symex-state-p
       (evil-symex-state))))
-(put 'symex-evil-repeat-preserve-state-advice 'permanent-local-hook t)
 
 (defun symex--evil-scroll-down ()
   "Scroll down half a page.
