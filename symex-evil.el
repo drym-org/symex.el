@@ -50,7 +50,7 @@
   :exit-hook (symex-exit-mode))
 
 (defun symex-evil-repeat-pre-hook-advice (&rest _)
-  "Prepare the current command for recording the repeation.
+  "Prepare the current command for recording the repetition.
 
 This function is meant to advise `evil-repeat-pre-hook' which
 starts recording a repeation during the `pre-command-hook', but
