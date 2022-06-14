@@ -89,9 +89,10 @@ buffer to normal state after repeating a command. This first
 checks whether the buffer is starting in symex state and, if so,
 returns to symex after invoking ORIG-FUN with ARGS."
   (let ((symex-state-p (evil-symex-state-p)))
-    (apply orig-fun args)
-    (when symex-state-p
-      (evil-symex-state))))
+    (unwind-protect
+        (apply orig-fun args)
+      (when symex-state-p
+        (evil-symex-state)))))
 
 (defun symex--evil-scroll-down ()
   "Scroll down half a page.
