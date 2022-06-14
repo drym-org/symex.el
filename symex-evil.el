@@ -49,7 +49,7 @@
   :enable (normal)
   :exit-hook (symex-exit-mode))
 
-(defun symex-evil-repeat-pre-hook-advice (&rest _)
+(defun symex-evil-repeat-start-recording-advice (&rest _)
   "Prepare the current command for recording the repetition.
 
 This function is meant to advise `evil-repeat-pre-hook' which
@@ -65,7 +65,7 @@ state."
                  (evil-symex-state-p))
         (evil-repeat-start)))))
 
-(defun symex-evil-repeat-post-hook-advice (&rest _)
+(defun symex-evil-repeat-stop-recording-advice (&rest _)
   "Finish recording of repeat information for the current command.
 
 This function is meant to advise `evil-repeat-post-hook' which
@@ -270,9 +270,9 @@ executing this command to get the expected behavior."
     ;; while in symex evil state and inactive when in other states
     (add-hook 'evil-symex-state-exit-hook #'symex-disable-editing-minor-mode))
   (advice-add 'evil-repeat-pre-hook
-              :after #'symex-evil-repeat-pre-hook-advice)
+              :after #'symex-evil-repeat-start-recording-advice)
   (advice-add 'evil-repeat-post-hook
-              :after #'symex-evil-repeat-post-hook-advice)
+              :after #'symex-evil-repeat-stop-recording-advice)
   (advice-add 'evil-repeat
               :around #'symex-evil-repeat-preserve-state-advice)
   (dolist (fn symex--evil-repeatable-commands)
