@@ -59,9 +59,19 @@ calls `evil-repeat-start' if the buffer is currently in symex
 state."
   (when evil-local-mode
     (let ((repeat-type (evil-repeat-type this-command nil)))
-      (when (and (not (evil-repeat-force-abort-p repeat-type))
-                 (not (or (null repeat-type)
-                          (evil-mouse-events-p (this-command-keys))))
+      ;; `evil-repeat-pre-hook' has several paths that it can take and only one
+      ;; of them results in `evil-repeat-start' being called. We only need to
+      ;; account for the conditions which would have started recording repeat
+      ;; information if the buffer were in normal state. That is to say, we only
+      ;; start recording if:
+      ;;
+      ;; 1. The current command has a `:repeat' property that is non-`nil' and
+      ;; not set to force abort a repitition
+      ;; 2. The current command is not a mouse event
+      ;; 3. The buffer is currently in symex state
+      (when (and repeat-type
+                 (not (evil-repeat-force-abort-p repeat-type))
+                 (not (evil-mouse-events-p (this-command-keys)))
                  (evil-symex-state-p))
         (evil-repeat-start)))))
 
@@ -75,9 +85,18 @@ state. This calls `evil-repeat-stop' if the buffer is currently
 in symex state as well."
   (when (and evil-local-mode evil-recording-repeat)
     (let ((repeat-type (evil-repeat-type this-command t)))
-      (when (and (not (evil-repeat-force-abort-p repeat-type))
-                 (not (or (null repeat-type)
-                          (evil-mouse-events-p (this-command-keys))))
+      ;; We only need to call `evil-repeat-stop' if recording would have been
+      ;; started by `symex-evil-repeat-start-recording-advice'. If recording was
+      ;; started for any other reason, then it will already have been turned off
+      ;; by `post-command-hook'. That is to say, we only stop recording if:
+      ;;
+      ;; 1. The current command has a `:repeat' property that is non-`nil' and
+      ;; not set to force abort a repitition
+      ;; 2. The current command is not a mouse event
+      ;; 3. The buffer is currently in symex state
+      (when (and repeat-type
+                 (not (evil-repeat-force-abort-p repeat-type))
+                 (not (evil-mouse-events-p (this-command-keys)))
                  (evil-symex-state-p))
         (evil-repeat-stop)))))
 
