@@ -21,7 +21,7 @@
 
 ;;; Commentary:
 
-;; Standard mutative operations to be performed on symexes.
+;; Standard mutative operations to be performed on Lisp symexes.
 
 ;;; Code:
 
