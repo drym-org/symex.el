@@ -28,7 +28,7 @@
 (require 'cl-lib)
 
 (require 'symex-transformations-lisp)
-(require 'symex-ts)
+(require 'symex-transformations-ts)
 
 ;; TODO: Remove dependencies after moving to symex-transformations-lisp.el
 (require 'paredit)
