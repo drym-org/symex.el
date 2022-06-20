@@ -97,5 +97,57 @@
     (kill-region start end))
   (symex-enter-lowest))
 
+(defun symex-lisp--append-after ()
+  "Append after symex (instead of vim's default of line)."
+  (interactive)
+  (forward-sexp)  ; selected symexes will have the cursor on the starting paren
+  (insert " ")
+  (symex-enter-lowest))
+
+(defun symex-lisp--open-line-after ()
+  "Open new line after symex."
+  (interactive)
+  (forward-sexp)
+  (newline-and-indent)
+  (symex-enter-lowest))
+
+(defun symex-lisp--open-line-before ()
+  "Open new line before symex."
+  (interactive)
+  (newline-and-indent)
+  (evil-previous-line)
+  (indent-according-to-mode)
+  (evil-move-end-of-line)
+  (unless (or (symex--current-line-empty-p)
+              (save-excursion (backward-char)
+                              (lispy-left-p)))
+    (insert " "))
+  (symex-enter-lowest))
+
+(defun symex-lisp--insert-before ()
+  "Insert before symex (instead of vim's default at the start of line)."
+  (interactive)
+  (insert " ")
+  (backward-char)
+  (symex-enter-lowest))
+
+(defun symex-lisp--insert-at-beginning ()
+  "Insert at beginning of symex."
+  (interactive)
+  (when (or (lispy-left-p)
+            (symex-string-p))
+    (forward-char))
+  (symex-enter-lowest))
+
+(defun symex-lisp--insert-at-end ()
+  "Insert at end of symex."
+  (interactive)
+  (if (or (lispy-left-p)
+          (symex-string-p))
+      (progn (forward-sexp)
+             (backward-char))
+    (forward-sexp))
+  (symex-enter-lowest))
+
 (provide 'symex-transformations-lisp)
 ;;; symex-transformations-lisp.el ends here
