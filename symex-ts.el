@@ -267,6 +267,66 @@ Move COUNT times, defaulting to 1."
   (interactive "p")
   (symex-ts--move-with-count #'symex-ts--descend-to-child-with-sibling (symex-make-move 0 1) count))
 
+(defun symex-ts-delete-node-backward (&optional count)
+  "Delete COUNT nodes backward from the current node."
+  (interactive "p")
+  (let* ((count (or count 1))
+         (node (tsc-get-prev-named-sibling (symex-ts-get-current-node))))
+    (when node
+      (let ((end-pos (tsc-node-end-position node))
+            (start-pos (tsc-node-start-position
+                        (if (> count 1)
+                            (symex-ts--get-nth-sibling-from-node node #'tsc-get-prev-named-sibling count)
+                          node))))
+        (kill-region start-pos end-pos)
+        (symex-ts--delete-current-line-if-empty start-pos)
+        (symex-ts-set-current-node-from-point)))))
+
+(defun symex-ts-delete-node-forward (&optional count keep-empty-lines)
+  "Delete COUNT nodes forward from the current node.
+
+If KEEP-EMPTY-LINES is set then if the deletion results in an
+empty line it will be kept. By default empty lines are deleted
+too."
+  (interactive "p")
+  (let* ((count (or count 1))
+         (node (symex-ts-get-current-node))
+         (next-node (symex-ts--get-nth-sibling-from-node node #'tsc-get-next-named-sibling count))
+         (start-pos (tsc-node-start-position node))
+         (end-pos (tsc-node-end-position
+                   (if (> count 1)
+                       (symex-ts--get-nth-sibling-from-node node #'tsc-get-next-named-sibling count)
+                     node))))
+
+    (if next-node
+        (symex-ts--set-current-node next-node)
+      (symex-ts-set-current-node-from-point))
+    (kill-region start-pos end-pos)
+
+    (when (not keep-empty-lines) (symex-ts--delete-current-line-if-empty start-pos))
+    (symex-ts-set-current-node-from-point)))
+
+;; TODO: TS: append after node
+;; TODO: TS: capture node
+;; TODO: TS: change node
+;; TODO: TS: clear node
+;; TODO: TS: comment node
+;; TODO: TS: delete remaining nodes
+;; TODO: TS: emit node
+;; TODO: TS: insert at beginning/end of node
+;; TODO: TS: insert before node
+;; TODO: TS: open line before/after node
+;; TODO: TS: paste node
+;; TODO: TS: replace node
+;; TODO: TS: shift forward/backward node
+;; TODO: TS: splice node
+;; TODO: TS: swallow node
+;; TODO: TS: wrap node
+;; TODO: TS: yank node
+
+;; TODO: TS: join node ?
+;; TODO: TS: split node ?
+
 ;;; Utilities
 
 (defmacro symex-ts-save-excursion (&rest body)
@@ -340,6 +400,14 @@ indicated by point."
 (defun symex-ts--exit ()
   "Take necessary tree-sitter related actions upon exiting Symex mode."
   (setq-local symex-ts--current-node nil))
+
+(defun symex-ts--delete-current-line-if-empty (point)
+  "Delete the line containing POINT if it is empty."
+  (save-excursion (goto-char point)
+                  (when (string-match "^[[:space:]]*$" (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
+                    (kill-whole-line)
+                    (pop kill-ring)
+                    (setq kill-ring-yank-pointer kill-ring))))
 
 
 (provide 'symex-ts)

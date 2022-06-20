@@ -27,6 +27,10 @@
 
 (require 'cl-lib)
 
+(require 'symex-transformations-lisp)
+(require 'symex-ts)
+
+;; TODO: Remove dependencies after moving to symex-transformations-lisp.el
 (require 'paredit)
 (require 'lispy)
 (require 'evil)
@@ -45,49 +49,16 @@
 (defun symex-delete (count)
   "Delete COUNT symexes."
   (interactive "p")
-  (let ((last-command nil) ; see symex-yank re: last-command
-        (start (point))
-        (end (symex--get-end-point count)))
-    (kill-region start end))
-  (cond ((or (symex--current-line-empty-p)             ; ^<>$
-             (save-excursion (evil-last-non-blank)     ; (<>$
-                             (lispy-left-p))
-             (looking-at-p "\n"))                      ; (abc <>
-         (symex--join-to-next))
-        ((save-excursion (back-to-indentation)         ; ^<>)
-                         (forward-char)
-                         (lispy-right-p))
-         ;; Cases 2 and 3 in issue #18
-         ;; if the deleted symex is preceded by a comment line
-         ;; or if the preceding symex is followed by a comment
-         ;; on the same line, then don't attempt to join lines
-         (let ((original-position (point)))
-           (when (symex--go-backward)
-             (let ((previous-symex-end-pos (symex--get-end-point 1)))
-               (unless (symex--intervening-comment-line-p previous-symex-end-pos
-                                                          original-position)
-                 (goto-char previous-symex-end-pos)
-                 ;; ensure that there isn't a comment on the
-                 ;; preceding line before joining lines
-                 (unless (condition-case nil
-                             (progn (evil-find-char 1 ?\;)
-                                    t)
-                           (error nil))
-                   (symex--join-to-match lispy-right)
-                   (symex--adjust-point)))))))
-        ((save-excursion (forward-char)                ; ... <>)
-                         (lispy-right-p))
-         (symex--go-backward))
-        (t (symex--go-forward)))
-  (symex-select-nearest)
-  (symex-tidy))
+  (if tree-sitter-mode
+      (symex-ts-delete-node-forward count)
+    (symex-lisp--delete count)))
 
 (defun symex-delete-backwards (count)
   "Delete COUNT symexes backwards."
   (interactive "p")
-  (dotimes (_ count)
-    (when (symex--go-backward)
-      (symex-delete 1))))
+  (if tree-sitter-mode
+      (symex-ts-delete-node-backward count)
+    (symex-lisp--delete-backwards count)))
 
 (defun symex-delete-remaining ()
   "Delete remaining symexes at this level."
