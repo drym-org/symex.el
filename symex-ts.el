@@ -306,9 +306,14 @@ too."
     (when (not keep-empty-lines) (symex-ts--delete-current-line-if-empty start-pos))
     (symex-ts-set-current-node-from-point)))
 
+(defun symex-ts-change-node-forward (&optional count)
+  "Delete COUNT nodes forward from the current node and enter Insert state."
+  (interactive "p")
+  (save-excursion (symex-ts-delete-node-forward count t))
+  (evil-insert-state 1))
+
 ;; TODO: TS: append after node
 ;; TODO: TS: capture node
-;; TODO: TS: change node
 ;; TODO: TS: clear node
 ;; TODO: TS: comment node
 ;; TODO: TS: delete remaining nodes

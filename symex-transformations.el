@@ -66,13 +66,14 @@
   (let ((count (symex--remaining-length)))
     (symex-delete count)))
 
+;; TODO: Modify remaining transformations
+
 (defun symex-change (count)
   "Change COUNT symexes."
   (interactive "p")
-  (let ((start (point))
-        (end (symex--get-end-point count)))
-    (kill-region start end))
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-change-node-forward count)
+    (symex-lisp--change count)))
 
 (defun symex-change-remaining ()
   "Change remaining symexes at this level."
