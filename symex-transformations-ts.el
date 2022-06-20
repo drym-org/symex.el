@@ -28,6 +28,19 @@
 
 (require 'tree-sitter)
 
+(defun symex-ts-append-after ()
+  "Append after symex (instead of vim's default of line)."
+  (when (symex-ts-get-current-node)
+    (goto-char (tsc-node-end-position (symex-ts-get-current-node)))
+    (insert " ")
+    (evil-insert-state)))
+
+(defun symex-ts-change-node-forward (&optional count)
+  "Delete COUNT nodes forward from the current node and enter Insert state."
+  (interactive "p")
+  (save-excursion (symex-ts-delete-node-forward count t))
+  (evil-insert-state 1))
+
 (defun symex-ts-delete-node-backward (&optional count)
   "Delete COUNT nodes backward from the current node."
   (interactive "p")
@@ -67,21 +80,53 @@ too."
     (when (not keep-empty-lines) (symex-ts--delete-current-line-if-empty start-pos))
     (symex-ts-set-current-node-from-point)))
 
-(defun symex-ts-change-node-forward (&optional count)
-  "Delete COUNT nodes forward from the current node and enter Insert state."
-  (interactive "p")
-  (save-excursion (symex-ts-delete-node-forward count t))
-  (evil-insert-state 1))
+(defun symex-ts-insert-at-beginning ()
+  "Insert at beginning of symex."
+  (interactive)
+  (when (symex-ts-get-current-node)
+    (goto-char (tsc-node-start-position (symex-ts-get-current-node)))
+    (evil-insert-state)))
 
-;; TODO: TS: append after node
+(defun symex-ts-insert-at-end ()
+  "Insert at end of symex."
+  (interactive)
+  (when (symex-ts-get-current-node)
+    (goto-char (tsc-node-end-position (symex-ts-get-current-node)))
+    (evil-insert-state)))
+
+(defun symex-ts-insert-before ()
+  "Insert before symex (instead of vim's default at the start of line)."
+  (interactive)
+  (when (symex-ts-get-current-node)
+    (goto-char (tsc-node-start-position (symex-ts-get-current-node)))
+    (insert " ")
+    (backward-char)
+    (evil-insert-state)))
+
+(defun symex-ts-open-line-after ()
+  "Open new line after symex."
+  (interactive)
+  (when (symex-ts-get-current-node)
+    (goto-char (tsc-node-end-position (symex-ts-get-current-node)))
+    (newline-and-indent)
+    (evil-insert-state)))
+
+(defun symex-ts-open-line-before ()
+  "Open new line before symex."
+  (interactive)
+  (when (symex-ts-get-current-node)
+    (goto-char (tsc-node-start-position (symex-ts-get-current-node)))
+    (newline-and-indent)
+    (evil-previous-line)
+    (indent-according-to-mode)
+    (evil-append-line 1)))
+
+
 ;; TODO: TS: capture node
 ;; TODO: TS: clear node
 ;; TODO: TS: comment node
 ;; TODO: TS: delete remaining nodes
 ;; TODO: TS: emit node
-;; TODO: TS: insert at beginning/end of node
-;; TODO: TS: insert before node
-;; TODO: TS: open line before/after node
 ;; TODO: TS: paste node
 ;; TODO: TS: replace node
 ;; TODO: TS: shift forward/backward node

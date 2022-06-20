@@ -308,54 +308,44 @@ by default, joins next symex to current one."
 (defun symex-open-line-after ()
   "Open new line after symex."
   (interactive)
-  (forward-sexp)
-  (newline-and-indent)
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-open-line-after)
+    (symex-lisp--open-line-after)))
 
 (defun symex-open-line-before ()
   "Open new line before symex."
   (interactive)
-  (newline-and-indent)
-  (evil-previous-line)
-  (indent-according-to-mode)
-  (evil-move-end-of-line)
-  (unless (or (symex--current-line-empty-p)
-              (save-excursion (backward-char)
-                              (lispy-left-p)))
-    (insert " "))
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-open-line-before)
+    (symex-lisp--open-line-before)))
 
 (defun symex-append-after ()
   "Append after symex (instead of vim's default of line)."
   (interactive)
-  (forward-sexp)  ; selected symexes will have the cursor on the starting paren
-  (insert " ")
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-append-after)
+    (symex-lisp--append-after)))
 
 (defun symex-insert-before ()
   "Insert before symex (instead of vim's default at the start of line)."
   (interactive)
-  (insert " ")
-  (backward-char)
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-insert-before)
+    (symex-lisp--insert-before)))
 
 (defun symex-insert-at-beginning ()
   "Insert at beginning of symex."
   (interactive)
-  (when (or (lispy-left-p)
-            (symex-string-p))
-    (forward-char))
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-insert-at-beginning)
+    (symex-lisp--insert-at-beginning)))
 
 (defun symex-insert-at-end ()
   "Insert at end of symex."
   (interactive)
-  (if (or (lispy-left-p)
-          (symex-string-p))
-      (progn (forward-sexp)
-             (backward-char))
-    (forward-sexp))
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-insert-at-end)
+    (symex-lisp--insert-at-end)))
 
 (defun symex-create (type)
   "Create new symex (list).
