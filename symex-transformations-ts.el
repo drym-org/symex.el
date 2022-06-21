@@ -121,19 +121,55 @@ too."
     (indent-according-to-mode)
     (evil-append-line 1)))
 
+(defun symex-ts-paste-after (count)
+  "Paste after symex, COUNT times."
+  (interactive)
+  (when (symex-ts-get-current-node)
+    (let* ((node (symex-ts-get-current-node))
+           (end (tsc-node-end-position node)))
+      (goto-char end)
+      (dotimes (_ count) (yank))
+      (forward-char -1)
+      (symex-ts-set-current-node-from-point))))
+
+(defun symex-ts-paste-before (count)
+  "Paste before symex, COUNT times."
+  (interactive)
+  (when (symex-ts-get-current-node)
+    (let* ((node (symex-ts-get-current-node))
+           (start (tsc-node-start-position node)))
+      (goto-char start)
+      (evil-paste-before count)
+      (symex-ts-set-current-node-from-point))))
+
+(defun symex-ts-yank (count)
+  "Yank (copy) COUNT symexes."
+  (interactive "p")
+  ;; we set `last-command` here to avoid appending to the kill ring
+  ;; when it's a delete followed by a yank. We want to treat each as
+  ;; independent entries in the kill ring
+  (when (symex-ts-get-current-node)
+    (let* ((last-command nil)
+           (node (symex-ts-get-current-node))
+           (start (tsc-node-start-position node))
+           (end (tsc-node-end-position
+                 (if (> count 1)
+                     (symex-ts--get-nth-sibling-from-node node #'tsc-get-next-named-sibling count)
+                   node))))
+      (copy-region-as-kill start end))))
+
 
 ;; TODO: TS: capture node
 ;; TODO: TS: clear node
 ;; TODO: TS: comment node
 ;; TODO: TS: delete remaining nodes
 ;; TODO: TS: emit node
-;; TODO: TS: paste node
 ;; TODO: TS: replace node
 ;; TODO: TS: shift forward/backward node
 ;; TODO: TS: splice node
 ;; TODO: TS: swallow node
 ;; TODO: TS: wrap node
-;; TODO: TS: yank node
+;; TODO: TS: yank remaining nodes
 
 ;; TODO: TS: join node ?
 ;; TODO: TS: split node ?
