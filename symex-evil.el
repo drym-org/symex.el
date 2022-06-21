@@ -47,7 +47,8 @@
   :tag " <λ> "
   :message "-- SYMEX --"
   :enable (normal)
-  :exit-hook (symex-exit-mode))
+  :entry-hook (evil-repeat-stop)
+  :exit-hook (evil-repeat-start-hook symex-exit-mode))
 
 (defun symex-evil-repeat-start-recording-advice (&rest _)
   "Prepare the current command for recording the repetition.
@@ -240,42 +241,60 @@ executing this command to get the expected behavior."
   "User key specification overrides for symex evil state.")
 
 (defvar symex--evil-repeatable-commands
-  '(symex-create-round
+  '(paredit-raise-sexp
+    symex-add-quoting-level
+    symex-append-newline
+    symex-capture-backward
+    symex-capture-forward
+    symex-change
+    symex-clear
+    symex-comment
+    symex-comment-remaining
+    symex-create-round
     symex-create-square
-    symex-wrap-round
-    symex-wrap-square
     symex-cycle-quote
     symex-cycle-unquote
-    symex-add-quoting-level
-    symex-remove-quoting-level
-    symex-paste-after
-    symex-paste-before
     symex-delete
     symex-delete-backwards
     symex-delete-remaining
-    symex-clear
-    symex-shift-backward
-    symex-shift-forward
-    symex-shift-backward-most
-    symex-shift-forward-most
-    paredit-raise-sexp
-    symex-capture-backward
     symex-emit-backward
-    symex-capture-forward
     symex-emit-forward
+    symex-insert-newline
+    symex-join
+    symex-join-lines
+    symex-join-lines-backwards
+    symex-open-line-after
+    symex-open-line-before
+    symex-paste-after
+    symex-paste-before
+    symex-remove-quoting-level
+    symex-shift-backward
+    symex-shift-backward-most
+    symex-shift-forward
+    symex-shift-forward-most
+    symex-splice
+    symex-split
     symex-swallow
     symex-swallow-tail
-    symex-split
-    symex-join
-    symex-splice
-    symex-insert-newline
-    symex-join-lines-backwards
-    symex-append-newline
-    symex-join-lines
     symex-tidy
     symex-wrap
-    symex-comment
-    symex-comment-remaining)
+    symex-wrap-round
+    symex-wrap-square
+    symex-append-after
+    symex-change-delimiter
+    symex-change-remaining
+    symex-collapse
+    symex-collapse-remaining
+    symex-insert-at-beginning
+    symex-insert-at-end
+    symex-insert-before
+    symex-open-line-after
+    symex-open-line-before
+    symex-tidy-proper
+    symex-tidy-remaining
+    symex-unfurl
+    symex-unfurl-remaining
+    symex-wrap-and-append)
   "Commands which should have their `:repeat' property set to `t'.")
 
 (defun symex-evil-initialize ()
