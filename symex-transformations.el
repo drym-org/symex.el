@@ -60,13 +60,12 @@
       (symex-ts-delete-node-backward count)
     (symex-lisp--delete-backwards count)))
 
+;; TODO: symex-delete-remaining: fix symex--remaining-length for TS
 (defun symex-delete-remaining ()
   "Delete remaining symexes at this level."
   (interactive)
   (let ((count (symex--remaining-length)))
     (symex-delete count)))
-
-;; TODO: Modify remaining transformations
 
 (defun symex-change (count)
   "Change COUNT symexes."
@@ -234,72 +233,36 @@ by default, joins next symex to current one."
 (defun symex-yank (count)
   "Yank (copy) COUNT symexes."
   (interactive "p")
-  ;; we set `last-command` here to avoid appending to the kill ring
-  ;; when it's a delete followed by a yank. We want to treat each as
-  ;; independent entries in the kill ring
-  (let ((last-command nil))
-    (let ((start (point))
-          (end (symex--get-end-point count)))
-      (copy-region-as-kill start end))))
+  (if tree-sitter-mode
+    (symex-ts-yank count)
+    (symex-lisp--yank count)))
 
+;; TODO: symex-yank-remaining: fix symex--remaining-length for TS
 (defun symex-yank-remaining ()
   "Yank (copy) remaining symexes at this level."
   (interactive)
   (let ((count (symex--remaining-length)))
     (symex-yank count)))
 
-(defun symex--paste-before ()
-  "Paste before symex."
-  (interactive)
-  (let ((extra-to-append
-         (cond ((or (and (symex--point-at-indentation-p)
-                         (not (bolp)))
-                    (save-excursion (forward-sexp)
-                                    (eolp)))
-                "\n")
-               (t " "))))
-    (save-excursion
-      (save-excursion
-        (evil-paste-before nil nil)
-        (when evil-move-cursor-back
-          (forward-char))
-        (insert extra-to-append))
-      (symex--go-forward)
-      (symex-tidy))
-    (symex-tidy)))
-
 (defun symex-paste-before (count)
   "Paste before symex, COUNT times."
   (interactive "p")
   (setq this-command 'evil-paste-before)
-  (symex--with-undo-collapse
-    (dotimes (_ count)
-      (symex--paste-before))))
-
-(defun symex--paste-after ()
-  "Paste after symex."
-  (interactive)
-  (let ((extra-to-prepend
-         (cond ((or (and (symex--point-at-indentation-p)
-                         (not (bolp)))
-                    (save-excursion (forward-sexp)
-                                    (eolp)))
-                "\n")
-               (t " "))))
-    (save-excursion
-      (forward-sexp)
-      (insert extra-to-prepend)
-      (evil-paste-before nil nil))
-    (symex--go-forward)
-    (symex-tidy)))
+  (if tree-sitter-mode
+      (symex-ts-paste-before count)
+    (symex--with-undo-collapse
+      (dotimes (_ count)
+        (symex-lisp--paste-before)))))
 
 (defun symex-paste-after (count)
   "Paste after symex, COUNT times."
   (interactive "p")
   (setq this-command 'evil-paste-after)
-  (symex--with-undo-collapse
-    (dotimes (_ count)
-      (symex--paste-after))))
+  (if tree-sitter-mode
+      (symex-ts-paste-after count)
+    (symex--with-undo-collapse
+      (dotimes (_ count)
+        (symex-lisp--paste-after)))))
 
 (defun symex-open-line-after ()
   "Open new line after symex."

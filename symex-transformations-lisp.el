@@ -149,5 +149,53 @@
     (forward-sexp))
   (symex-enter-lowest))
 
+(defun symex-lisp--paste-after ()
+  "Paste after symex."
+  (interactive)
+  (let ((extra-to-prepend
+         (cond ((or (and (symex--point-at-indentation-p)
+                         (not (bolp)))
+                    (save-excursion (forward-sexp)
+                                    (eolp)))
+                "\n")
+               (t " "))))
+    (save-excursion
+      (forward-sexp)
+      (insert extra-to-prepend)
+      (evil-paste-before nil nil))
+    (symex--go-forward)
+    (symex-tidy)))
+
+(defun symex-lisp--paste-before ()
+  "Paste before symex."
+  (interactive)
+  (let ((extra-to-append
+         (cond ((or (and (symex--point-at-indentation-p)
+                         (not (bolp)))
+                    (save-excursion (forward-sexp)
+                                    (eolp)))
+                "\n")
+               (t " "))))
+    (save-excursion
+      (save-excursion
+        (evil-paste-before nil nil)
+        (when evil-move-cursor-back
+          (forward-char))
+        (insert extra-to-append))
+      (symex--go-forward)
+      (symex-tidy))
+    (symex-tidy)))
+
+(defun symex-lisp--yank (count)
+  "Yank (copy) COUNT symexes."
+  (interactive "p")
+  ;; we set `last-command` here to avoid appending to the kill ring
+  ;; when it's a delete followed by a yank. We want to treat each as
+  ;; independent entries in the kill ring
+  (let ((last-command nil))
+    (let ((start (point))
+          (end (symex--get-end-point count)))
+      (copy-region-as-kill start end))))
+
 (provide 'symex-transformations-lisp)
 ;;; symex-transformations-lisp.el ends here
