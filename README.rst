@@ -408,15 +408,40 @@ Tips
 Escaping to Symex Instead of Normal State
 -----------------------------------------
 
-For evil users, when you "escape" from Insert state, you may prefer to enter Symex state rather than Normal state while in Lisp buffers. You could write one-off keybindings to do this, but if you'd like a more structured alternative, use `Rigpa <https://github.com/countvajhula/rigpa>`_.
+For evil users, when you "escape" from Insert state, you may prefer to enter Symex state rather than Normal state while in Lisp buffers. You could write one-off keybindings to do this (e.g. `this recipe <https://github.com/countvajhula/symex.el/issues/24#issuecomment-815110143>`__ by user @tommy-mor), but if you'd like a more structured and flexible alternative, use `Rigpa <https://github.com/countvajhula/rigpa>`_.
+
+Also see `Easy Entry Into Symex State`_, below, for another option.
 
 Macros
 ------
 
 When you define macros in symex mode (e.g. via ``q`` for evil users), make sure that the commands you use are those that have the same effect in every situation. For instance, the "up" and "down" motions (default: ``k`` and ``j``) could vary based on "branch memory" - up may sometimes move you to the first position on the higher level, but at other times it may move you to the third position, if that happens to be your most recent position. Using up and down in your macro would mean that it could have different results in each tree depending on your activities in the tree, unless you remember to reset the frame of reference by using something like ``0`` or ``$``. Instead, it may be more natural to use the "flow" traversal commands (default: ``f`` and ``b``), repeating them or prefixing them with count arguments if necessary, to move around in a fully deterministic way. This will ensure that your macros behave the same way in every case.
 
+Mode Line Enhancements
+----------------------
+
+The vanilla mode line in Emacs does show some textual indication of your current evil state, e.g. ``<N>`` for Normal state, and ``<λ>`` for Symex state, and this kind of visual feedback is helpful, yet also subtle. If you'd like more pronounced visual feedback, you might try extensions such as `powerline <https://github.com/milkypostman/powerline>`_ or `telephone-line <https://github.com/dbordak/telephone-line>`_, which provide customizable color coded indicators for each evil state in the mode line. For example, for telephone-line, you could use the following config in the ``config`` section of the ``use-package`` declaration for telephone-line:
+
+::
+
+   (defface telephone-line-evil-symex
+       '((t (:background "SlateBlue3" :inherit telephone-line-evil)))
+       "Face used in evil color-coded segments when in Symex state."
+       :group 'telephone-line-evil)
+
+
 Keybindings
 -----------
+
+Easy Entry Into Symex State
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+User @doyougnu suggests binding your local leader to ``,`` (instead of the default, ``\``), which frees up ``\`` to be used as entry into Symex Mode. This is convenient as ``\`` feels like another ``Esc`` but dedicated to Symex state instead of Normal state. The drawback is that ``,`` is an otherwise useful key in Normal mode (for in-line repeat search backwards). Although, using it for the local leader is a widely used pattern by Vim and Evil users, and if you are one of them, then this might be a good option for you.
+
+With this option, entering Symex from Normal state is convenient, but you'd still need to visit Normal state on your way to Symex state from Insert state. If you'd like to avoid this, see `Escaping to Symex Instead of Normal State`_, above.
+
+Making Parentheses Convenient
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In writing Lisp code, parentheses are among the most commonly typed characters, and yet, these require us to leave home position dramatically to type! I recommend a keybinding resembling the following to make it more efficient. Of course this applies only in Insert state (for Evil users) or in vanilla Emacs state, as you can insert and modulate delimiters in other ways while in Symex state:
 
