@@ -49,6 +49,70 @@
   :enable (normal)
   :exit-hook (symex-exit-mode))
 
+(defun symex-evil-repeat-start-recording-advice (&rest _)
+  "Prepare the current command for recording the repetition.
+
+This function is meant to advise `evil-repeat-pre-hook' which
+starts recording a repeation during the `pre-command-hook', but
+only records a repition when in normal or visual state. This
+calls `evil-repeat-start' if the buffer is currently in symex
+state."
+  (when evil-local-mode
+    (let ((repeat-type (evil-repeat-type this-command nil)))
+      ;; `evil-repeat-pre-hook' has several paths that it can take and only one
+      ;; of them results in `evil-repeat-start' being called. We only need to
+      ;; account for the conditions which would have started recording repeat
+      ;; information if the buffer were in normal state. That is to say, we only
+      ;; start recording if:
+      ;;
+      ;; 1. The current command has a `:repeat' property that is non-`nil' and
+      ;; not set to force abort a repitition
+      ;; 2. The current command is not a mouse event
+      ;; 3. The buffer is currently in symex state
+      (when (and repeat-type
+                 (not (evil-repeat-force-abort-p repeat-type))
+                 (not (evil-mouse-events-p (this-command-keys)))
+                 (evil-symex-state-p))
+        (evil-repeat-start)))))
+
+(defun symex-evil-repeat-stop-recording-advice (&rest _)
+  "Finish recording of repeat information for the current command.
+
+This function is meant to advise `evil-repeat-post-hook' which
+cleans up a recording during the `post-command-hook', but assumes
+no recording was started unless the buffer is in normal or visual
+state. This calls `evil-repeat-stop' if the buffer is currently
+in symex state as well."
+  (when (and evil-local-mode evil-recording-repeat)
+    (let ((repeat-type (evil-repeat-type this-command t)))
+      ;; We only need to call `evil-repeat-stop' if recording would have been
+      ;; started by `symex-evil-repeat-start-recording-advice'. If recording was
+      ;; started for any other reason, then it will already have been turned off
+      ;; by `post-command-hook'. That is to say, we only stop recording if:
+      ;;
+      ;; 1. The current command has a `:repeat' property that is non-`nil' and
+      ;; not set to force abort a repitition
+      ;; 2. The current command is not a mouse event
+      ;; 3. The buffer is currently in symex state
+      (when (and repeat-type
+                 (not (evil-repeat-force-abort-p repeat-type))
+                 (not (evil-mouse-events-p (this-command-keys)))
+                 (evil-symex-state-p))
+        (evil-repeat-stop)))))
+
+(defun symex-evil-repeat-preserve-state-advice (orig-fun &rest args)
+  "Return to symex state if necessary after calling ORIG-FUN.
+
+This function is meant to advise `evil-repeat' which sets the
+buffer to normal state after repeating a command. This first
+checks whether the buffer is starting in symex state and, if so,
+returns to symex after invoking ORIG-FUN with ARGS."
+  (let ((symex-state-p (evil-symex-state-p)))
+    (unwind-protect
+        (apply orig-fun args)
+      (when symex-state-p
+        (evil-symex-state)))))
+
 (defun symex--evil-scroll-down ()
   "Scroll down half a page.
 
@@ -175,6 +239,63 @@ executing this command to get the expected behavior."
 (defvar symex--user-evil-keyspec nil
   "User key specification overrides for symex evil state.")
 
+(defvar symex--evil-repeatable-commands
+  '(paredit-raise-sexp
+    symex-add-quoting-level
+    symex-append-newline
+    symex-capture-backward
+    symex-capture-forward
+    symex-change
+    symex-clear
+    symex-comment
+    symex-comment-remaining
+    symex-create-round
+    symex-create-square
+    symex-cycle-quote
+    symex-cycle-unquote
+    symex-delete
+    symex-delete-backwards
+    symex-delete-remaining
+    symex-emit-backward
+    symex-emit-forward
+    symex-insert-newline
+    symex-join
+    symex-join-lines
+    symex-join-lines-backwards
+    symex-open-line-after
+    symex-open-line-before
+    symex-paste-after
+    symex-paste-before
+    symex-remove-quoting-level
+    symex-shift-backward
+    symex-shift-backward-most
+    symex-shift-forward
+    symex-shift-forward-most
+    symex-splice
+    symex-split
+    symex-swallow
+    symex-swallow-tail
+    symex-tidy
+    symex-wrap
+    symex-wrap-round
+    symex-wrap-square
+    symex-append-after
+    symex-change-delimiter
+    symex-change-remaining
+    symex-collapse
+    symex-collapse-remaining
+    symex-insert-at-beginning
+    symex-insert-at-end
+    symex-insert-before
+    symex-open-line-after
+    symex-open-line-before
+    symex-tidy-proper
+    symex-tidy-remaining
+    symex-unfurl
+    symex-unfurl-remaining
+    symex-wrap-and-append)
+  "Commands which should have their `:repeat' property set to `t'.")
+
 (defun symex-evil-initialize ()
   "Initialize evil modal interface."
   (let ((keyspec (symex--combine-alists symex--user-evil-keyspec
@@ -185,7 +306,15 @@ executing this command to get the expected behavior."
     ;; without rigpa (which would handle this for us), we need to
     ;; manage the editing minor mode and ensure that it is active
     ;; while in symex evil state and inactive when in other states
-    (add-hook 'evil-symex-state-exit-hook #'symex-disable-editing-minor-mode)))
+    (add-hook 'evil-symex-state-exit-hook #'symex-disable-editing-minor-mode))
+  (advice-add 'evil-repeat-pre-hook
+              :after #'symex-evil-repeat-start-recording-advice)
+  (advice-add 'evil-repeat-post-hook
+              :after #'symex-evil-repeat-stop-recording-advice)
+  (advice-add 'evil-repeat
+              :around #'symex-evil-repeat-preserve-state-advice)
+  (dolist (fn symex--evil-repeatable-commands)
+    (evil-add-command-properties fn :repeat t)))
 
 (defun symex-enable-editing-minor-mode ()
   "Enable symex minor mode."
