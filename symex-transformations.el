@@ -687,9 +687,8 @@ the more natural choice here in any case."
 This removes either quoting or unquoting prefixes, and removes up to one
 layer of quoting."
   (interactive)
-  (unless (>= (symex--delete-prefix symex-quote-prefix-list)
-              0)
-    (symex--delete-prefix symex-unquote-prefix-list))
+  (symex--delete-prefix (append symex-quote-prefix-list
+                                symex-unquote-prefix-list))
   (symex-tidy))
 
 (defun symex-add-quoting-level ()
