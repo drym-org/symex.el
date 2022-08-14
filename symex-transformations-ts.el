@@ -121,26 +121,38 @@ too."
     (indent-according-to-mode)
     (evil-append-line 1)))
 
-(defun symex-ts-paste-after (count)
-  "Paste after symex, COUNT times."
+(defun symex-ts--paste (count direction)
+  "Paste before or after symex, COUNT times, according to DIRECTION.
+
+DIRECTION should be either the symbol `before' or `after'."
   (interactive)
   (when (symex-ts-get-current-node)
     (let* ((node (symex-ts-get-current-node))
-           (end (tsc-node-end-position node)))
-      (goto-char end)
-      (dotimes (_ count) (yank))
-      (forward-char -1)
-      (symex-ts-set-current-node-from-point))))
+           (start (tsc-node-start-position node))
+           (end (tsc-node-end-position node))
+           (indent-start (save-excursion (back-to-indentation) (point)))
+           (block-node (or (not (= (line-number-at-pos start) (line-number-at-pos end)))
+                           (and (= start indent-start)
+                                (= end (line-end-position))))))
+      (goto-char (if (eq direction 'before) start end))
+      (dotimes (_ count)
+        (when (eq direction 'after) (insert (if block-node "\n" " ")))
+        (yank)
+        (when (eq direction 'before) (insert (if block-node "\n" " "))
+              (indent-according-to-mode)))
+      (backward-char (* count (- end start)))
+      (symex-ts-set-current-node-from-point)
+      (indent-according-to-mode))))
+
+(defun symex-ts-paste-after (count)
+  "Paste after symex, COUNT times."
+  (interactive)
+  (symex-ts--paste count 'after))
 
 (defun symex-ts-paste-before (count)
   "Paste before symex, COUNT times."
   (interactive)
-  (when (symex-ts-get-current-node)
-    (let* ((node (symex-ts-get-current-node))
-           (start (tsc-node-start-position node)))
-      (goto-char start)
-      (evil-paste-before count)
-      (symex-ts-set-current-node-from-point))))
+  (symex-ts--paste count 'before))
 
 (defun symex-ts-yank (count)
   "Yank (copy) COUNT symexes."
