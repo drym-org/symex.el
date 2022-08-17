@@ -28,12 +28,38 @@
 
 (require 'symex-custom)
 
+(defface symex--current-node-face
+  '((t :inherit highlight :extend nil))
+  "Face used to highlight the current tree node."
+  :group 'symex-faces)
+
+(defvar symex--current-overlay nil "The current overlay which highlights the current node.")
+
+(defun symex--delete-overlay ()
+  "Delete the highlight overlay."
+  (when symex--current-overlay
+    (delete-overlay symex--current-overlay)))
+
+(defun symex--update-overlay ()
+  "Update the highlight overlay to match the start/end position of NODE."
+  (when symex--current-overlay
+    (delete-overlay symex--current-overlay))
+  (setq-local symex--current-overlay
+              (make-overlay (symex--get-starting-point)
+                            (symex--get-end-point 1)))
+  (overlay-put symex--current-overlay 'face 'symex--current-node-face))
+
+(defun symex--overlay-active-p ()
+  "Is the overlay active?"
+  (and symex--current-overlay
+       (overlay-start symex--current-overlay)))
+
 (defun symex--toggle-highlight ()
   "Toggle highlighting of selected symex."
   (interactive)
-  (if mark-active
-      (deactivate-mark)
-    (mark-sexp))
+  (if (symex--overlay-active-p)
+      (symex--delete-overlay)
+    (symex--update-overlay))
   (setq symex-highlight-p
         (not symex-highlight-p)))
 

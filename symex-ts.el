@@ -68,8 +68,7 @@ symexes, returns the end point of the last one found."
 (defun symex-ts--set-current-node (node)
   "Set the current node to NODE and update internal references."
   (setq-local symex-ts--current-node node)
-  (goto-char (tsc-node-start-position node))
-  (symex-ts--update-overlay symex-ts--current-node))
+  (goto-char (tsc-node-start-position node)))
 
 (defun symex-ts--get-topmost-node (node)
   "Return the highest node in the tree starting from NODE.
@@ -163,11 +162,6 @@ Return a Symex move (list with x,y node offsets tagged with
     ;; Return the Symex move that was executed, or nil to signify that
     ;; the movement failed
     (when (not (symex--are-moves-equal-p move symex--move-zero)) move)))
-
-(defun symex-ts--after-tree-modification ()
-  "Handle any tree modification."
-  (symex-ts--delete-overlay)
-  (setq-local symex-ts--current-node nil))
 
 (defun symex-ts-current-node-sexp ()
   "Print the current node as an s-expression."
@@ -288,7 +282,7 @@ Move COUNT times, defaulting to 1."
 
 (defun symex-ts--exit ()
   "Take necessary tree-sitter related actions upon exiting Symex mode."
-  (symex-ts--delete-overlay))
+  (setq-local symex-ts--current-node nil))
 
 
 (provide 'symex-ts)
