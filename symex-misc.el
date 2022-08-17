@@ -38,6 +38,7 @@
 (require 'symex-interface-common-lisp)
 (require 'symex-interface-arc)
 (require 'symex-interop)
+(require 'symex-ui)
 
 ;; These are customization or config variables defined elsewhere;
 ;; explicitly indicating them here to avoid byte compile warnings
@@ -533,7 +534,7 @@ the implementation."
   "Things to do as part of symex selection, e.g. after navigations."
   (interactive)
   (when symex-highlight-p
-    (mark-sexp)))
+    (symex--update-overlay)))
 
 (defun symex-selection-advice (orig-fn &rest args)
   "Attach symex selection side effects to a given function.
