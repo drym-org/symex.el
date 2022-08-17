@@ -214,7 +214,7 @@ Automatically set it to the node at point if necessary."
 Note that this does not consider global root to be a tree root."
   (let ((root (tsc-root-node tree-sitter-tree))
         (cur (symex-ts-get-current-node)))
-    (let ((parent (tsc-get-parent cur)))
+    (let ((parent (symex-ts--ascend-to-parent-with-sibling cur)))
       (and parent (tsc-node-eq parent root)))))
 
 (defun symex-ts--at-first-p ()
