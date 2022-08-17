@@ -199,6 +199,21 @@ location (e.g. non-symex-based languages like Python)."
          (symex--go-up ,offset)
          ,result))))
 
+(defun symex--get-starting-point ()
+  "Get the point value at the start of the current symex."
+  (if tree-sitter-mode
+      (symex-ts--get-starting-point)
+    (symex-lisp--get-starting-point)))
+
+(defun symex--get-end-point (count)
+  "Get the point value after COUNT symexes.
+
+If the containing expression terminates earlier than COUNT
+symexes, returns the end point of the last one found."
+  (if tree-sitter-mode
+      (symex-ts--get-end-point count)
+    (symex-lisp--get-end-point count)))
+
 (defun symex-select-nearest ()
   "Select symex nearest to point."
   (interactive)

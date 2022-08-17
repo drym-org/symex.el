@@ -42,8 +42,16 @@
 
 (defvar symex-ts--current-node nil "The current Tree Sitter node.")
 
-(defvar symex-ts--current-overlay nil "The current overlay which highlights the current node.")
+(defun symex-ts--get-starting-point ()
+  "Get the point value at the start of the current symex."
+  (tsc-node-start-position symex-ts--current-node))
 
+(defun symex-ts--get-end-point (count)
+  "Get the point value after COUNT symexes.
+
+If the containing expression terminates earlier than COUNT
+symexes, returns the end point of the last one found."
+  (tsc-node-end-position symex-ts--current-node))
 
 (defun symex-ts--delete-overlay ()
   "Delete the highlight overlay."
