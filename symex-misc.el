@@ -532,7 +532,8 @@ the implementation."
 
 (defun symex-select-nearest-advice (&rest _)
   "Advice to select the nearest symex."
-  (symex-select-nearest))
+  (when (evil-symex-state-p)
+    (symex-select-nearest)))
 
 (defun symex--selection-side-effects ()
   "Things to do as part of symex selection, e.g. after navigations."
