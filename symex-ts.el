@@ -42,17 +42,6 @@
 
 (defvar symex-ts--current-node nil "The current Tree Sitter node.")
 
-(defun symex-ts--get-starting-point ()
-  "Get the point value at the start of the current symex."
-  (tsc-node-start-position symex-ts--current-node))
-
-(defun symex-ts--get-end-point (count)
-  "Get the point value after COUNT symexes.
-
-If the containing expression terminates earlier than COUNT
-symexes, returns the end point of the last one found."
-  (tsc-node-end-position symex-ts--current-node))
-
 (defun symex-ts--delete-overlay ()
   "Delete the highlight overlay."
   (when symex-ts--current-overlay
@@ -279,6 +268,74 @@ Move COUNT times, defaulting to 1."
   (symex-ts--move-with-count #'symex-ts--descend-to-child-with-sibling (symex-make-move 0 1) count))
 
 ;;; Utilities
+
+(defmacro symex-ts-save-excursion (&rest body)
+  "Execute BODY while preserving position in the tree.
+
+Like `save-excursion`, but in addition to preserving the point
+position, this also preserves the structural position in the tree, for
+languages where point position doesn't uniquely identify a tree
+location (e.g. non-symex-based languages like Python).
+
+This is tree-sitter specific and meant for internal, primitive use."
+  (let ((offset (gensym))
+        (result (gensym)))
+    `(let ((,offset (symex-ts--point-height-offset)))
+       (let ((,result
+              (save-excursion
+                ,@body)))
+         (symex-ts-set-current-node-from-point)
+         (symex-ts-move-child ,offset)
+         ,result))))
+
+(defun symex-ts--get-starting-point ()
+  "Get the point value at the start of the current symex."
+  (tsc-node-start-position symex-ts--current-node))
+
+(defun symex-ts--get-end-point (count)
+  "Get the point value after COUNT symexes.
+
+If the containing expression terminates earlier than COUNT
+symexes, returns the end point of the last one found."
+  (symex-ts-save-excursion
+   (symex-ts-move-next-sibling (1- count))
+   (tsc-node-end-position symex-ts--current-node)))
+
+(defun symex-ts--point-height-offset-helper (orig-pos)
+  "A helper to compute the height offset of the current symex."
+  (cond ((symex-ts--at-tree-root-p)
+         (if (= orig-pos (point))
+             0
+           -1))
+        ((not (= (point) orig-pos)) -1)
+        (t (symex-ts-move-parent)
+           (1+ (symex-ts--point-height-offset-helper orig-pos)))))
+
+(defun symex-ts--point-height-offset ()
+  "Compute the height offset of the current symex from the lowest one
+indicated by point."
+  ;; TODO: probably make this a tree-sitter utility instead, so that
+  ;; it uses tree-sitter APIs to determine point-height offset instead
+  ;; of doing it at the level of traversals.
+  ;; don't attempt to calculate offset at the "real" root
+  ;; since offsets are typically computed while ignoring it
+  ;; i.e. they are wrt. "tree root"
+  (cond ((symex-ts--at-root-p) 0)
+        ;; at the "tree root" of the first symex in the buffer,
+        ;; point-height offset must account for "true" root
+        ;; and so it's 1 rather than 0 here
+        ((symex-ts--at-initial-p) 1)
+        ;; aside from the above special cases, compute point-height
+        ;; offset by just descending as long as point does not change,
+        ;; and counting the number of steps taken
+        (t (let* ((orig-pos (point))
+                  (offset (symex-ts--point-height-offset-helper orig-pos)))
+             ;; return to original tree position
+             ;; before returning the result
+             (goto-char orig-pos)
+             (symex-ts-set-current-node-from-point)
+             (symex-ts-move-child offset)
+             offset))))
 
 (defun symex-ts--exit ()
   "Take necessary tree-sitter related actions upon exiting Symex mode."
