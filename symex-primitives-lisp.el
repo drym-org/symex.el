@@ -270,7 +270,9 @@ as special cases here."
   "Get the point value at the start of the current symex."
   (save-excursion
     (unless (symex--point-at-start-p)
-      (backward-sexp))
+      (condition-case nil
+          (backward-sexp)
+        (error nil)))
     (point)))
 
 (defun symex-lisp--get-end-point-helper (count)
