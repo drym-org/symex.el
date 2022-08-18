@@ -215,7 +215,7 @@ Note that this does not consider global root to be a tree root."
   (let ((root (tsc-root-node tree-sitter-tree))
         (cur (symex-ts-get-current-node)))
     (let ((parent (tsc-get-parent cur)))
-      (and parent (tsc-node-eq parent root)))))
+      (or (not parent) (tsc-node-eq parent root)))))
 
 (defun symex-ts--at-first-p ()
   "Check if the current node is the first one at some level."
