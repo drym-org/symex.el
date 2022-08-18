@@ -295,6 +295,13 @@ symexes, returns the end point of the last one found."
   (save-excursion
     (symex-lisp--get-end-point-helper count)))
 
+(defun symex-lisp--point-height-offset ()
+  "Compute the height offset of the current symex from the lowest one
+indicated by point.
+
+For symex-oriented languages like Lisp, this is always zero."
+  0)
+
 (defun symex-lisp--forward-one ()
   "Forward one symex."
   (let ((original-location (point))
