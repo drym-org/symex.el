@@ -28,12 +28,40 @@
 
 (require 'tree-sitter)
 
-(defun symex-ts-append-after ()
-  "Append after symex (instead of vim's default of line)."
-  (when (symex-ts-get-current-node)
-    (goto-char (tsc-node-end-position (symex-ts-get-current-node)))
-    (insert " ")
-    (evil-insert-state)))
+(defmacro symex-ts--handle-tree-modification (&rest body)
+  "Handle modifications to the current Tree Sitter tree after executing BODY.
+
+The buffer's current Tree Sitter tree is saved before BODY is
+evaluated. The new tree is then compared and the current node is
+selected according to the ranges that have changed."
+  (let ((prev-tree (gensym))
+        (res (gensym))
+        (changed-ranges (gensym)))
+
+    `(let ((,prev-tree tree-sitter-tree))
+
+       ;; Execute BODY, bind to RES
+       (let ((,res ,@body))
+
+         ;; Get changes from previous to current tree
+         (let ((,changed-ranges (tsc-changed-ranges ,prev-tree tree-sitter-tree)))
+
+           ;; Move point to the first changed range if possible
+           (when (and (> (length ,changed-ranges) 0)
+                      (> (length (elt ,changed-ranges 0)) 0))
+             (goto-char (elt (elt ,changed-ranges 0) 0))
+
+             ;; If the change starts on a carriage return, move
+             ;; forward one character
+             (when (char-equal ?\C-j (char-after))
+               (forward-char 1)))
+
+           ;; Update current node from point and reindent if necessary
+           (symex-ts-set-current-node-from-point)
+           (indent-according-to-mode))
+
+         ;; Return the result of evaluating BODY
+         ,res))))
 
 (defun symex-ts-change-node-forward (&optional count)
   "Delete COUNT nodes forward from the current node and enter Insert state."
@@ -127,22 +155,19 @@ too."
 DIRECTION should be either the symbol `before' or `after'."
   (interactive)
   (when (symex-ts-get-current-node)
-    (let* ((node (symex-ts-get-current-node))
-           (start (tsc-node-start-position node))
-           (end (tsc-node-end-position node))
-           (indent-start (save-excursion (back-to-indentation) (point)))
-           (block-node (or (not (= (line-number-at-pos start) (line-number-at-pos end)))
-                           (and (= start indent-start)
-                                (= end (line-end-position))))))
-      (goto-char (if (eq direction 'before) start end))
-      (dotimes (_ count)
-        (when (eq direction 'after) (insert (if block-node "\n" " ")))
-        (yank)
-        (when (eq direction 'before) (insert (if block-node "\n" " "))
-              (indent-according-to-mode)))
-      (backward-char (* count (- end start)))
-      (symex-ts-set-current-node-from-point)
-      (indent-according-to-mode))))
+    (symex-ts--handle-tree-modification (let* ((node (symex-ts-get-current-node))
+            (start (tsc-node-start-position node))
+            (end (tsc-node-end-position node))
+            (indent-start (save-excursion (back-to-indentation) (point)))
+            (block-node (or (not (= (line-number-at-pos start) (line-number-at-pos end)))
+                            (and (= start indent-start)
+                                 (= end (line-end-position))))))
+       (goto-char (if (eq direction 'before) start end))
+       (dotimes (_ count)
+         (when (eq direction 'after) (insert (if block-node "\n" " ")))
+         (yank)
+         (when (eq direction 'before) (insert (if block-node "\n" " "))
+               (indent-according-to-mode)))))))
 
 (defun symex-ts-paste-after (count)
   "Paste after symex, COUNT times."
