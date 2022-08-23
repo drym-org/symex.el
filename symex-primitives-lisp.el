@@ -266,18 +266,43 @@ as special cases here."
         (t (symex-lisp--if-stuck (symex-lisp--backward)
                                  (symex-lisp--forward)))))
 
-(defun symex--get-end-point (count)
+(defun symex-lisp--get-starting-point ()
+  "Get the point value at the start of the current symex."
+  (save-excursion
+    (unless (symex--point-at-start-p)
+      (condition-case nil
+          (backward-sexp)
+        (error nil)))
+    (point)))
+
+(defun symex-lisp--get-end-point-helper (count)
+  "Helper to get the point value after COUNT symexes.
+
+If the containing expression terminates earlier than COUNT
+symexes, returns the end point of the last one found.
+
+Note that this mutates point - it should not be called directly."
+  (if (= count 0)
+      (point)
+    (condition-case nil
+        (forward-sexp)
+      (error (point)))
+    (symex-lisp--get-end-point-helper (1- count))))
+
+(defun symex-lisp--get-end-point (count)
   "Get the point value after COUNT symexes.
 
 If the containing expression terminates earlier than COUNT
 symexes, returns the end point of the last one found."
   (save-excursion
-    (if (= count 0)
-        (point)
-      (condition-case nil
-          (forward-sexp)
-        (error (point)))
-      (symex--get-end-point (1- count)))))
+    (symex-lisp--get-end-point-helper count)))
+
+(defun symex-lisp--point-height-offset ()
+  "Compute the height offset of the current symex from the lowest one
+indicated by point.
+
+For symex-oriented languages like Lisp, this is always zero."
+  0)
 
 (defun symex-lisp--forward-one ()
   "Forward one symex."

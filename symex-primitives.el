@@ -139,49 +139,6 @@ internal operations that are not primarily user-directed."
 
 ;;; Utilities
 
-(defun symex--point-height-offset-helper (orig-pos)
-  "A helper to compute the height offset of the current symex.
-
-This will always be zero for symex-oriented languages such as Lisp,
-but in languages like Python where the same point position could
-correspond to multiple hierarchy levels, this function computes the
-difference from the lowest such level."
-  (cond ((symex--point-at-root-symex-p)
-         (if (= orig-pos (point))
-             0
-           -1))
-        ((not (= (point) orig-pos)) -1)
-        (t (symex--go-down)
-           (1+ (symex--point-height-offset-helper orig-pos)))))
-
-(defun symex--point-height-offset ()
-  "Compute the height offset of the current symex from the lowest one
-indicated by point."
-  ;; TODO: probably make this a tree-sitter utility instead, so that
-  ;; it uses tree-sitter APIs to determine point-height offset instead
-  ;; of doing it at the level of traversals.
-  (if tree-sitter-mode
-      ;; don't attempt to calculate offset at the "real" root
-      ;; since offsets are typically computed while ignoring it
-      ;; i.e. they are wrt. "tree root"
-      (cond ((symex-ts--at-root-p) 0)
-            ;; at the "tree root" of the first symex in the buffer,
-            ;; point-height offset must account for "true" root
-            ;; and so it's 1 rather than 0 here
-            ((symex-ts--at-initial-p) 1)
-            ;; aside from the above special cases, compute point-height
-            ;; offset by just descending as long as point does not change,
-            ;; and counting the number of steps taken
-            (t (let* ((orig-pos (point))
-                      (offset (symex--point-height-offset-helper orig-pos)))
-                 ;; return to original tree position
-                 ;; before returning the result
-                 (goto-char orig-pos)
-                 (symex-select-nearest)
-                 (symex--go-up offset)
-                 offset)))
-    0))
-
 (defmacro symex-save-excursion (&rest body)
   "Execute BODY while preserving position in the tree.
 
@@ -199,6 +156,33 @@ location (e.g. non-symex-based languages like Python)."
          (symex--go-up ,offset)
          ,result))))
 
+(defun symex--point-height-offset ()
+  "Compute the height offset of the current symex from the lowest one
+indicated by point.
+
+This will always be zero for symex-oriented languages such as Lisp,
+but in languages like Python where the same point position could
+correspond to multiple hierarchy levels, this function computes the
+difference from the lowest such level."
+  (if tree-sitter-mode
+      (symex-ts--point-height-offset)
+    (symex-lisp--point-height-offset)))
+
+(defun symex--get-starting-point ()
+  "Get the point value at the start of the current symex."
+  (if tree-sitter-mode
+      (symex-ts--get-starting-point)
+    (symex-lisp--get-starting-point)))
+
+(defun symex--get-end-point (count)
+  "Get the point value after COUNT symexes.
+
+If the containing expression terminates earlier than COUNT
+symexes, returns the end point of the last one found."
+  (if tree-sitter-mode
+      (symex-ts--get-end-point count)
+    (symex-lisp--get-end-point count)))
+
 (defun symex-select-nearest ()
   "Select symex nearest to point."
   (interactive)
@@ -210,6 +194,7 @@ location (e.g. non-symex-based languages like Python)."
 (defun symex--primitive-exit ()
   "Take any necessary actions as part of exiting Symex mode, at a
 primitive level."
+  (symex--delete-overlay)
   (if tree-sitter-mode
       (symex-ts--exit)
     (symex-lisp--exit)))
