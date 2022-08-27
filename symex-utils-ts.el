@@ -31,7 +31,8 @@
                   (when (string-match "^[[:space:]]*$" (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
                     (kill-whole-line)
                     (pop kill-ring)
-                    (setq kill-ring-yank-pointer kill-ring))))
+                    (setq kill-ring-yank-pointer kill-ring)
+                    t)))
 
 (provide 'symex-utils-ts)
 ;;; symex-utils-ts.el ends here

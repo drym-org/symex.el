@@ -93,22 +93,24 @@ If KEEP-EMPTY-LINES is set then if the deletion results in an
 empty line it will be kept. By default empty lines are deleted
 too."
   (interactive "p")
-  (let* ((count (or count 1))
-         (node (symex-ts-get-current-node))
-         (next-node (symex-ts--get-nth-sibling-from-node node #'tsc-get-next-named-sibling count))
-         (start-pos (tsc-node-start-position node))
-         (end-pos (tsc-node-end-position
-                   (if (> count 1)
-                       (symex-ts--get-nth-sibling-from-node node #'tsc-get-next-named-sibling count)
-                     node))))
+  (symex-ts--handle-tree-modification
+   (let* ((count (or count 1))
+          (node (symex-ts-get-current-node))
+          (start-pos (tsc-node-start-position node))
+          (end-pos (tsc-node-end-position
+                    (if (> count 1)
+                        (symex-ts--get-nth-sibling-from-node
+                         node
+                         #'tsc-get-next-named-sibling count)
+                      node))))
 
-    (if next-node
-        (symex-ts--set-current-node next-node)
-      (symex-ts-set-current-node-from-point))
-    (kill-region start-pos end-pos)
+     ;; Delete the node's region
+     (kill-region start-pos end-pos)
 
-    (when (not keep-empty-lines) (symex-ts--delete-current-line-if-empty start-pos))
-    (symex-ts-set-current-node-from-point)))
+     ;; Remove all empty lines following the deletion
+     (when (not keep-empty-lines)
+       (let ((cont t))
+         (while cont (setq cont (symex-ts--delete-current-line-if-empty start-pos))))))))
 
 (defun symex-ts-insert-at-beginning ()
   "Insert at beginning of symex."
