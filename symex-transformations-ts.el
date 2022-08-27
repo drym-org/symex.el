@@ -58,6 +58,8 @@ selected according to the ranges that have changed."
 
            ;; Update current node from point and reindent if necessary
            (symex-ts-set-current-node-from-point)
+           (when symex-highlight-p
+             (symex--update-overlay))
            (indent-according-to-mode))
 
          ;; Return the result of evaluating BODY
