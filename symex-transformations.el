@@ -507,8 +507,11 @@ then no action is taken."
 (defun symex-comment (count)
   "Comment out COUNT symexes."
   (interactive "p")
-  (mark-sexp count)
-  (comment-dwim nil))
+  (if tree-sitter-mode
+      (symex-ts-comment count)
+    (progn
+      (mark-sexp count)
+      (comment-dwim nil))))
 
 (defun symex-comment-remaining ()
   "Comment out remaining symexes at this level."

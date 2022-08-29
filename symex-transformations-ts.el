@@ -85,6 +85,22 @@ selected according to the ranges that have changed."
             (kill-region (tsc-node-start-position first-child) (tsc-node-end-position last-child))))
         (symex-ts-delete-node-forward 1 t)))))
 
+(defun symex-ts-comment (&optional count)
+  (when tree-sitter-mode
+    (let* ((count (or count 1))
+           (node (symex-ts-get-current-node))
+           (start-pos (tsc-node-start-position node))
+           (end-pos (tsc-node-end-position
+                     (if (> count 1)
+                         (symex-ts--get-nth-sibling-from-node
+                          node
+                          #'tsc-get-next-named-sibling count)
+                       node))))
+      (save-excursion (set-mark start-pos)
+                      (goto-char end-pos)
+                      (comment-dwim nil))
+      (symex-ts-set-current-node-from-point))))
+
 (defun symex-ts-delete-node-backward (&optional count)
   "Delete COUNT nodes backward from the current node."
   (interactive "p")
@@ -215,7 +231,6 @@ DIRECTION should be either the symbol `before' or `after'."
 
 
 ;; TODO: TS: capture node
-;; TODO: TS: comment node
 ;; TODO: TS: delete remaining nodes
 ;; TODO: TS: emit node
 ;; TODO: TS: replace node
