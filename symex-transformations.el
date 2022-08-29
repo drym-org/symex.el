@@ -103,9 +103,12 @@
 (defun symex-clear ()
   "Clear contents of symex."
   (interactive)
-  (symex--clear)
-  (symex-select-nearest)
-  (symex-tidy))
+  (if tree-sitter-mode
+      (symex-ts-clear)
+    (progn
+      (symex--clear)
+      (symex-select-nearest)
+      (symex-tidy))))
 
 (defun symex--emit-backward ()
   "Emit backward."

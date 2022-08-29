@@ -71,6 +71,20 @@ selected according to the ranges that have changed."
   (save-excursion (symex-ts-delete-node-forward count t))
   (evil-insert-state 1))
 
+(defun symex-ts-clear ()
+  "Clear contents of symex."
+  (when symex-ts--current-node
+    (let ((child-count (tsc-count-named-children symex-ts--current-node)))
+
+      ;; If the node has children, delete them. Otherwise, just delete
+      ;; the current node using `symex-ts-delete-node-forward'.
+      (if (> child-count 0)
+        (let ((first-child (tsc-get-nth-named-child symex-ts--current-node 0))
+              (last-child (tsc-get-nth-named-child symex-ts--current-node (1- child-count))))
+          (when (and first-child last-child)
+            (kill-region (tsc-node-start-position first-child) (tsc-node-end-position last-child))))
+        (symex-ts-delete-node-forward 1 t)))))
+
 (defun symex-ts-delete-node-backward (&optional count)
   "Delete COUNT nodes backward from the current node."
   (interactive "p")
@@ -201,7 +215,6 @@ DIRECTION should be either the symbol `before' or `after'."
 
 
 ;; TODO: TS: capture node
-;; TODO: TS: clear node
 ;; TODO: TS: comment node
 ;; TODO: TS: delete remaining nodes
 ;; TODO: TS: emit node
