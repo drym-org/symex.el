@@ -213,6 +213,22 @@ DIRECTION should be either the symbol `before' or `after'."
   (interactive)
   (symex-ts--paste count 'before))
 
+(defun symex-ts-replace ()
+  "Replace contents of symex."
+  (when symex-ts--current-node
+    (let* ((child-count (tsc-count-named-children symex-ts--current-node))
+
+           ;; Get new position for insertion: if the node has children
+           ;; then the start of the first child node, otherwise the
+           ;; current point.
+           (new-pos (if (> child-count 0)
+                        (tsc-node-start-position (tsc-get-nth-named-child symex-ts--current-node 0))
+                      (point))))
+
+      (symex-ts-clear)
+      (goto-char new-pos)
+      (evil-insert-state 1))))
+
 (defun symex-ts-yank (count)
   "Yank (copy) COUNT symexes."
   (interactive "p")
@@ -233,7 +249,6 @@ DIRECTION should be either the symbol `before' or `after'."
 ;; TODO: TS: capture node
 ;; TODO: TS: delete remaining nodes
 ;; TODO: TS: emit node
-;; TODO: TS: replace node
 ;; TODO: TS: shift forward/backward node
 ;; TODO: TS: splice node
 ;; TODO: TS: swallow node
