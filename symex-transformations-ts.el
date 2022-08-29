@@ -41,7 +41,7 @@ selected according to the ranges that have changed."
     `(let ((,prev-tree tree-sitter-tree))
 
        ;; Execute BODY, bind to RES
-       (let ((,res ,@body))
+       (let ((,res (progn ,@body)))
 
          ;; Get changes from previous to current tree
          (let ((,changed-ranges (tsc-changed-ranges ,prev-tree tree-sitter-tree)))
