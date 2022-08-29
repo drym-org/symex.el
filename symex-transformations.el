@@ -95,10 +95,12 @@
 (defun symex-replace ()
   "Replace contents of symex."
   (interactive)
-  (symex--clear)
-  (when (or (symex-form-p) (symex-string-p))
-    (forward-char))
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-replace)
+    (progn (symex--clear)
+           (when (or (symex-form-p) (symex-string-p))
+             (forward-char))
+           (symex-enter-lowest))))
 
 (defun symex-clear ()
   "Clear contents of symex."
