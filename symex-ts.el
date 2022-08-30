@@ -36,6 +36,8 @@
 (require 'symex-utils-ts)
 
 
+(defvar-local symex-ts--current-node nil "The current Tree Sitter node.")
+
 (defun symex-ts--set-current-node (node)
   "Set the current node to NODE and update internal references."
   (setq-local symex-ts--current-node node)
