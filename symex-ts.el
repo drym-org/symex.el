@@ -32,6 +32,8 @@
 ;;; Code:
 
 (require 'tree-sitter)
+(require 'symex-transformations-ts)
+(require 'symex-utils-ts)
 
 
 (defface symex-ts-current-node-face
@@ -53,6 +55,10 @@
     (delete-overlay symex-ts--current-overlay))
   (setq-local symex-ts--current-overlay (make-overlay (tsc-node-start-position node) (tsc-node-end-position node)))
   (overlay-put symex-ts--current-overlay 'face 'symex-ts-current-node-face))
+
+(defun symex-ts--exit ()
+  "Take necessary tree-sitter related actions upon exiting Symex mode."
+  (symex-ts--delete-overlay))
 
 (defun symex-ts--set-current-node (node)
   "Set the current node to NODE and update internal references."
@@ -266,6 +272,7 @@ Move COUNT times, defaulting to 1."
 Move COUNT times, defaulting to 1."
   (interactive "p")
   (symex-ts--move-with-count #'symex-ts--descend-to-child-with-sibling (symex-make-move 0 1) count))
+
 
 ;;; Utilities
 
