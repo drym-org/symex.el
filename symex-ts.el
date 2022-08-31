@@ -36,29 +36,7 @@
 (require 'symex-utils-ts)
 
 
-(defface symex-ts-current-node-face
-  '((t :inherit highlight :extend nil))
-  "Face used to highlight the current tree node."
-  :group 'symex-faces)
-
-
-(defvar symex-ts--current-node nil "The current Tree Sitter node.")
-
-(defun symex-ts--delete-overlay ()
-  "Delete the highlight overlay."
-  (when symex-ts--current-overlay
-    (delete-overlay symex-ts--current-overlay)))
-
-(defun symex-ts--update-overlay (node)
-  "Update the highlight overlay to match the start/end position of NODE."
-  (when symex-ts--current-overlay
-    (delete-overlay symex-ts--current-overlay))
-  (setq-local symex-ts--current-overlay (make-overlay (tsc-node-start-position node) (tsc-node-end-position node)))
-  (overlay-put symex-ts--current-overlay 'face 'symex-ts-current-node-face))
-
-(defun symex-ts--exit ()
-  "Take necessary tree-sitter related actions upon exiting Symex mode."
-  (symex-ts--delete-overlay))
+(defvar-local symex-ts--current-node nil "The current Tree Sitter node.")
 
 (defun symex-ts--set-current-node (node)
   "Set the current node to NODE and update internal references."
