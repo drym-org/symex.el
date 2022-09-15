@@ -80,24 +80,12 @@
   (let ((count (symex--remaining-length)))
     (symex-change count)))
 
-(defun symex--clear ()
-  "Helper to clear contents of symex."
-  (cond ((symex-opening-round-p)
-         (apply #'evil-delete (evil-inner-paren)))
-        ((symex-opening-square-p)
-         (apply #'evil-delete (evil-inner-bracket)))
-        ((symex-opening-curly-p)
-         (apply #'evil-delete (evil-inner-curly)))
-        ((symex-string-p)
-         (apply #'evil-delete (evil-inner-double-quote)))
-        (t (kill-sexp))))
-
 (defun symex-replace ()
   "Replace contents of symex."
   (interactive)
   (if tree-sitter-mode
       (symex-ts-replace)
-    (progn (symex--clear)
+    (progn (symex-lisp-clear)
            (when (or (symex-form-p) (symex-string-p))
              (forward-char))
            (symex-enter-lowest))))
@@ -121,7 +109,7 @@
   (interactive)
   (if tree-sitter-mode
       (symex-ts-clear)
-    (symex--clear)))
+    (symex-lisp-clear)))
 
 (defun symex--emit-backward ()
   "Emit backward."
