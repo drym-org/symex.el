@@ -412,6 +412,12 @@ Leaps COUNT times, defaulting to once."
   (dotimes (_ count)
     (symex--leap-forward)))
 
+(defun symex--tree-index ()
+  "Index of current tree."
+  (symex-save-excursion
+   (symex-goto-lowest)
+   (symex-index)))
+
 (defun symex--leap-backward (&optional soar)
   "Leap backward to a neighboring branch, preserving height and position.
 
@@ -442,7 +448,8 @@ approach is the one employed here."
                       symex--traversal-postorder
                     symex--traversal-postorder-in-tree))
         (height (symex-height))
-        (index (symex-index)))
+        (index (symex-index))
+        (original-tree-index (symex--tree-index)))
     (let* ((ensure-at-first-node
             (symex-traversal
              (decision (at first)
@@ -452,9 +459,13 @@ approach is the one employed here."
             (symex-traversal
              (maneuver ensure-at-first-node
                        (circuit (precaution traverse
-                                            (afterwards (not (lambda ()
-                                                               (= (symex-height)
-                                                                  height))))))
+                                            (afterwards (lambda ()
+                                                          (or (not (= (symex-height)
+                                                                      height))
+                                                              (if soar
+                                                                  (= original-tree-index
+                                                                     (symex--tree-index))
+                                                                nil))))))
                        traverse
                        ensure-at-first-node)))
            (run-along-branch
@@ -494,16 +505,21 @@ the implementation."
                       symex--traversal-preorder
                     symex--traversal-preorder-in-tree))
         (height (symex-height))
-        (index (symex-index)))
+        (index (symex-index))
+        (original-tree-index (symex--tree-index)))
     (let* ((find-neighboring-branch
             (symex-traversal
              (maneuver (decision (at last)
                                  symex--move-zero
                                  symex--traversal-goto-last)
                        (circuit (precaution traverse
-                                            (afterwards (not (lambda ()
-                                                               (= (symex-height)
-                                                                  height))))))
+                                            (afterwards (lambda ()
+                                                          (or (not (= (symex-height)
+                                                                      height))
+                                                              (if soar
+                                                                  (= original-tree-index
+                                                                     (symex--tree-index))
+                                                                nil))))))
                        traverse)))
            (run-along-branch
             (symex-traversal

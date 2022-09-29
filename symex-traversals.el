@@ -44,7 +44,9 @@
   "Go to last symex on the present branch.")
 
 (symex-deftraversal symex--traversal-goto-lowest
-  (circuit (move down))
+  (circuit
+   (precaution (move down)
+               (beforehand (not (at root)))))
   "Go to lowest (root) symex in present tree.")
 
 (defun symex-goto-first ()
