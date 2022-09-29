@@ -142,17 +142,17 @@ to how the Lisp interpreter does it (when it is following
     (symex--do-while-traversing #'symex--evaluate
                                 (symex-make-move 1 0))))
 
-(defun symex-evaluate-definition ()
+(defun symex-evaluate-definition (&optional debug-it)
   "Evaluate entire containing symex definition."
-  (interactive)
+  (interactive "P")
   (cond ((member major-mode symex-racket-modes)
          (symex-eval-definition-racket))
         ((member major-mode symex-elisp-modes)
-         (symex-eval-definition-elisp))
+         (symex-eval-definition-elisp debug-it))
         ((equal major-mode 'scheme-mode)
          (symex-eval-definition-scheme))
         ((member major-mode symex-clojure-modes)
-         (symex-eval-definition-clojure))
+         (symex-eval-definition-clojure debug-it))
         ((equal major-mode 'lisp-mode)
          (symex-eval-definition-common-lisp))
         ((equal major-mode 'arc-mode)

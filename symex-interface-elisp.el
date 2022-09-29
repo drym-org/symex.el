@@ -33,9 +33,9 @@
   (interactive)
   (eval-last-sexp nil))
 
-(defun symex-eval-definition-elisp ()
+(defun symex-eval-definition-elisp (debug-it)
   "Eval entire containing definition."
-  (eval-defun nil))
+  (eval-defun debug-it))
 
 (defun symex-eval-pretty-elisp ()
   "Evaluate symex and render the result in a useful string form."
