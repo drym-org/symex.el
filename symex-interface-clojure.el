@@ -49,7 +49,7 @@ Accounts for different point location in evil vs Emacs mode."
 (defun symex-eval-pretty-clojure ()
   "Evaluate symex and render the result in a useful string form."
   (interactive)
-  (symex-eval-clojure))
+  (cider-pprint-eval-last-sexp))
 
 (defun symex-eval-thunk-clojure ()
   "Evaluate symex as a 'thunk,' i.e. as a function taking no arguments."
