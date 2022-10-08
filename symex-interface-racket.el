@@ -28,6 +28,7 @@
 (require 'racket-mode nil 'noerror)
 (require 'subr-x)
 (require 'symex-interop)
+(require 'symex-primitives)
 
 ;; from racket-mode - avoid byte-compile warnings
 (defvar racket-repl-buffer-name)
@@ -38,7 +39,6 @@
 (declare-function with-racket-repl-buffer "ext:racket-mode")
 (declare-function racket-send-last-sexp "ext:racket-mode")
 (declare-function racket-send-definition "ext:racket-mode")
-(declare-function racket--repl-last-sexp-start "ext:racket-mode")
 (declare-function racket-xp-describe "ext:racket-mode")
 (declare-function racket-repl-describe "ext:racket-mode")
 (declare-function racket-run "ext:racket-mode")
@@ -87,7 +87,7 @@ Accounts for different point location in evil vs Emacs mode."
   (interactive)
   (let ((pretty-code (string-join
                       `("(let ([result "
-                        ,(buffer-substring (racket--repl-last-sexp-start)
+                        ,(buffer-substring (symex--get-starting-point)
                                            (point))
                         "])"
                         " (cond [(stream? result) (stream->list result)]
@@ -100,7 +100,7 @@ Accounts for different point location in evil vs Emacs mode."
   (interactive)
   (let ((thunk-code (string-join
                       `("("
-                        ,(buffer-substring (racket--repl-last-sexp-start)
+                        ,(buffer-substring (symex--get-starting-point)
                                            (point))
                         ")"))))
     (symex--racket-send-to-repl thunk-code)))

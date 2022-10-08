@@ -243,6 +243,15 @@ as special cases here."
 
 ;;; Navigation
 
+(defun symex--get-starting-point ()
+  "Get the point value at the start of the current symex."
+  (save-excursion
+    (unless (symex--point-at-start-p)
+      (condition-case nil
+          (backward-sexp)
+        (error nil)))
+    (point)))
+
 (defun symex--get-end-point (count)
   "Get the point value after COUNT symexes.
 
