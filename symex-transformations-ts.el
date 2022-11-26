@@ -36,36 +36,47 @@
 The buffer's current Tree Sitter tree is saved before BODY is
 evaluated. The new tree is then compared and the current node is
 selected according to the ranges that have changed."
-  (let ((prev-tree (gensym))
-        (res (gensym))
-        (changed-ranges (gensym))
-        (orig-pos (gensym)))
+  (if (eq (symex-ts--current-ts-library) 'internal)
+      ;; TODO: Implement symex-ts--handle-tree-modification for the internal tree sitter library
+      '(error "Unable to perform edit: the Emacs internal tree sitter library is not yet supported")
 
-    `(let ((,prev-tree tree-sitter-tree)
-           (,orig-pos (point)))
+    (let ((prev-tree (gensym))
+          (res (gensym))
+          (changed-ranges (gensym))
+          (orig-pos (gensym)))
 
-       ;; Execute BODY, bind to RES
-       (let ((,res (progn ,@body)))
+      `(let ((,prev-tree tree-sitter-tree)
+             (,orig-pos (point)))
 
-         ;; Get changes from previous to current tree
-         (let ((,changed-ranges (tsc-changed-ranges ,prev-tree tree-sitter-tree)))
+         ;; Execute BODY, bind to RES
+         (let ((,res (progn ,@body)))
 
-           ;; Move point to the first changed range if possible
-           (when (and (> (length ,changed-ranges) 0)
-                      (> (length (elt ,changed-ranges 0)) 0))
-             (let ((new-pos (elt (elt ,changed-ranges 0) 0)))
-               ;; don't move point to before the
-               ;; original point location
-               (if (< new-pos ,orig-pos)
-                   (goto-char ,orig-pos)
-                 (goto-char new-pos)
-                 ;; If the change starts on a carriage return, move
-                 ;; forward one character
-                 (when (char-equal ?\C-j (char-after))
-                   (forward-char 1))))))
+           ;; Get changes from previous to current tree
+           (let ((,changed-ranges (tsc-changed-ranges ,prev-tree tree-sitter-tree)))
 
-         ;; Return the result of evaluating BODY
-         ,res))))
+             ;; Move point to the first changed range if possible
+             ;; Move point to the first changed range if possible
+             (when (and (> (length ,changed-ranges) 0)
+                        (> (length (elt ,changed-ranges 0)) 0))
+               (let ((new-pos (elt (elt ,changed-ranges 0) 0)))
+                 ;; don't move point to before the
+                 ;; original point location
+                 (if (< new-pos ,orig-pos)
+                     (goto-char ,orig-pos)
+                   (goto-char new-pos)
+                   ;; If the change starts on a carriage return, move
+                   ;; forward one character
+                   (when (char-equal ?\C-j (char-after))
+                     (forward-char 1)))))
+
+             ;; Update current node from point and reindent if necessary
+             (symex-ts-set-current-node-from-point)
+             (when symex-highlight-p
+               (symex--update-overlay))
+             (indent-according-to-mode))
+
+           ;; Return the result of evaluating BODY
+           ,res)))))
 
 (defun symex-ts-clear ()
   "Clear contents of symex."
