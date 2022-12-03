@@ -502,7 +502,7 @@ Lisp has inherited a few oddball names from its deep prehistory, including the i
 Supporting the Project
 ======================
 
-Please make any financial contributions by Venmo to Sid-K.
+Please make any financial contributions by Venmo to ``@Sid-K``.
 
 This project follows Attribution-Based Economics as described in `drym-org/foundation <https://github.com/drym-org/foundation>`_. Any financial contributions will be distributed to contributors and antecedents as agreed-upon in a collective process that anyone may participate in. To see the current distributions, take a look at abe/attributions.txt (TBD).
 
