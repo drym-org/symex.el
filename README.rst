@@ -508,7 +508,7 @@ Please make any financial contributions by Venmo to ``@Sid-K`` and mention "Syme
 
 This project follows Attribution-Based Economics as described in `drym-org/foundation <https://github.com/drym-org/foundation>`_. Any financial contributions will be distributed to contributors and antecedents as agreed-upon in a collective process that anyone may participate in. To see the current distributions, take a look at `abe/attributions.txt <https://github.com/drym-org/symex.el/blob/main/abe/attributions.txt>`__ [TBD]. To see payments made into and out of the project, see the `abe <https://github.com/drym-org/symex.el/blob/main/abe/>`_ folder [TBD].
 
-Additionally, if your voluntary payments exceed the agreed-upon "market price" of the project (see `price.txt <https://github.com/drym-org/old-abe/blob/main/abe/price.txt>`_ - TBD), that additional amount will be treated as an investment, entitling you to a share in future revenues, including payments made to the project in the future or attributive revenue from other projects.
+Additionally, if your voluntary payments exceed the agreed-upon "market price" of the project (see `price.txt <https://github.com/drym-org/symex.el/blob/main/abe/price.txt>`_ - TBD), that additional amount will be treated as an investment, entitling you to a share in future revenues, including payments made to the project in the future or attributive revenue from other projects.
 
 "License"
 ==========
