@@ -513,4 +513,4 @@ Additionally, if your voluntary payments exceed the agreed-upon "market price" o
 Non-Ownership
 =============
 
-This work is not owned by anyone. Please see the [Declaration of Non-Ownership](https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md).
+This work is not owned by anyone. Please see the `Declaration of Non-Ownership <https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md>`_.
