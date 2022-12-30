@@ -504,7 +504,7 @@ Supporting this Project
 
 Please make any financial contributions by Venmo to ``@Sid-K`` and mention "Symex" in your message.
 
-**NOTE**: This project is now accepting voluntary payments, and will distribute them according to ABE guidelines after the First Congress is held on Jan 14, 2023, to leave enough time to come up with attribution proportions and other community appraisal.
+**NOTE**: This project is now accepting voluntary payments, and will distribute them according to ABE guidelines after the `First DIA Congress <https://www.reddit.com/r/emacs/comments/zrgtu5/you_are_invited_to_the_first_congress_for/>`_ is held on Jan 14, 2023.
 
 This project follows Attribution-Based Economics as described in `drym-org/foundation <https://github.com/drym-org/foundation>`_. Any financial contributions will be distributed to contributors and antecedents as agreed-upon in a collective process that anyone may participate in. To see the current distributions, take a look at `abe/attributions.txt <https://github.com/drym-org/symex.el/blob/main/abe/attributions.txt>`__ [TBD]. To see payments made into and out of the project, see the `abe <https://github.com/drym-org/symex.el/blob/main/abe/>`_ folder [TBD].
 
