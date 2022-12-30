@@ -27,7 +27,6 @@
 
 (require 'hydra)
 (require 'evil)
-(require 'undo-tree)
 
 (require 'symex-ui)
 (require 'symex-misc)
@@ -185,8 +184,6 @@ to enter, and any of the standard exits to exit."
   ("H-h" symex--toggle-highlight "toggle highlight")
   ("H-m" symex-toggle-menu "show/hide this menu")
   ;; explicit "pass through" so hydra persists
-  ("u" undo-tree-undo nil)
-  ("C-r" undo-tree-redo nil)
   ("C-e" symex--scroll-down nil)
   ("C-y" symex--scroll-up nil)
   ;; standard exits
