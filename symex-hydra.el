@@ -70,8 +70,8 @@ to enter, and any of the standard exits to exit."
 ;; likewise, we might want to disable and re-enable highlighting,
 ;; if active, on each command
 (defhydra hydra-symex (:columns 4
-                       :post (symex-hydra-exit)
-                       :after-exit (symex--signal-exit))
+                                :post (symex-hydra-exit)
+                                :after-exit (symex--signal-exit))
   "Symex mode"
   ("(" symex-create-round "()")
   ("[" symex-create-square "[]")
@@ -184,6 +184,8 @@ to enter, and any of the standard exits to exit."
   ("H-h" symex--toggle-highlight "toggle highlight")
   ("H-m" symex-toggle-menu "show/hide this menu")
   ;; explicit "pass through" so hydra persists
+  ("u" undo-only nil)
+  ("C-r" undo-redo ni)
   ("C-e" symex--scroll-down nil)
   ("C-y" symex--scroll-up nil)
   ;; standard exits
