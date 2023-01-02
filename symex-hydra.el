@@ -185,7 +185,7 @@ to enter, and any of the standard exits to exit."
   ("H-m" symex-toggle-menu "show/hide this menu")
   ;; explicit "pass through" so hydra persists
   ("u" undo-only nil)
-  ("C-r" undo-redo ni)
+  ("C-r" undo-redo nil)
   ("C-e" symex--scroll-down nil)
   ("C-y" symex--scroll-up nil)
   ;; standard exits
