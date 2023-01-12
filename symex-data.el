@@ -159,9 +159,11 @@ This is the number of times the traversal should be repeated."
     (and times (zerop times))))
 
 (defun symex--circuit-rest (circuit)
-  "A circuit defined from the remaining repetitions of the traversal in CIRCUIT, not counting the first.
+  "A circuit defined from the remaining repetitions of the traversal.
 
-This is useful for structural recursion during circuit execution."
+This includes the remaining repetitions in CIRCUIT, not counting the
+first. This is useful for structural recursion during circuit
+execution."
   (let ((traversal (symex--circuit-traversal circuit))
         (times (symex--circuit-times circuit)))
     (symex-make-circuit traversal (when times (1- times)))))

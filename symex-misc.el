@@ -46,6 +46,7 @@
 (defvar symex-highlight-p)
 (defvar symex-racket-modes)
 (defvar symex-elisp-modes)
+(defvar symex-clojure-modes)
 
 ;; buffer-local branch memory stack
 (defvar-local symex--branch-memory nil)
@@ -548,7 +549,8 @@ the implementation."
 
 (defun symex-select-nearest-advice (&rest _)
   "Advice to select the nearest symex."
-  (when (evil-symex-state-p)
+  (when (and (fboundp 'evil-symex-state-p)
+             (evil-symex-state-p))
     (symex-select-nearest)))
 
 (defun symex--selection-side-effects ()

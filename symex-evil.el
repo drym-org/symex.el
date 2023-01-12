@@ -294,7 +294,7 @@ executing this command to get the expected behavior."
     symex-unfurl
     symex-unfurl-remaining
     symex-wrap-and-append)
-  "Commands which should have their `:repeat' property set to `t'.")
+  "Commands which should have their `:repeat' property set to t.")
 
 (defun symex-evil-initialize ()
   "Initialize evil modal interface."

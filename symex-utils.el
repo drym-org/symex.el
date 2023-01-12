@@ -44,9 +44,9 @@ From: https://stackoverflow.com/a/13313091"
                      (point))
      (point)))
 
-;;; `with-undo-collapse` macro, to treat a sequence of operations
-;;; as a single entry in the undo list.
-;;; From: https://emacs.stackexchange.com/questions/7558/collapsing-undo-history/7560#7560
+;; `with-undo-collapse` macro, to treat a sequence of operations
+;; as a single entry in the undo list.
+;; From: https://emacs.stackexchange.com/questions/7558/collapsing-undo-history/7560#7560
 (defun symex--undo-collapse-begin (marker)
   "Mark the beginning of a collapsible undo block.
 

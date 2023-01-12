@@ -94,7 +94,8 @@ leaf."
   "Ascend from NODE to parent recursively.
 
 Recursion will end when the parent node has a sibling or is the
-root."
+root. The INITIAL node is used to ensure that a parent is selected
+even if it doesn't have siblings if it changes point (TODO: clarify)."
   (let ((parent (tsc-get-parent node))
         (initial (or initial node)))
     (if parent
@@ -126,7 +127,7 @@ Return a Symex move (list with x,y node offsets tagged with
         (cursor (symex-ts-get-current-node)))
     (dotimes (_ (or count 1))
       (let ((new-node (funcall fn cursor)))
-        (when (and new-node (not (ts-node-eq new-node cursor)))
+        (when (and new-node (not (tsc-node-eq new-node cursor)))
           (setq move (symex--add-moves (list move move-delta)))
           (setq cursor new-node
                 target-node cursor))))
@@ -173,7 +174,7 @@ Automatically set it to the node at point if necessary."
     `(let ((,orig (symex-ts-get-current-node)))
        ,operation
        (let ((,cur (symex-ts-get-current-node)))
-         (if (ts-node-eq ,cur ,orig)
+         (if (tsc-node-eq ,cur ,orig)
              ,do-what
            ,@body)))))
 
@@ -287,7 +288,10 @@ symexes, returns the end point of the last one found."
    (tsc-node-end-position symex-ts--current-node)))
 
 (defun symex-ts--point-height-offset-helper (orig-pos)
-  "A helper to compute the height offset of the current symex."
+  "A helper to compute the height offset of the current symex.
+
+The height offset is determined as soon as point differs from the
+original point position ORIG-POS upon repeatedly going down."
   (cond ((symex-ts--at-tree-root-p)
          (if (= orig-pos (point))
              0
@@ -297,8 +301,9 @@ symexes, returns the end point of the last one found."
            (1+ (symex-ts--point-height-offset-helper orig-pos)))))
 
 (defun symex-ts--point-height-offset ()
-  "Compute the height offset of the current symex from the lowest one
-indicated by point."
+  "Compute the height offset of the current symex.
+
+This is measured from the lowest symex indicated by point."
   ;; TODO: probably make this a tree-sitter utility instead, so that
   ;; it uses tree-sitter APIs to determine point-height offset instead
   ;; of doing it at the level of traversals.

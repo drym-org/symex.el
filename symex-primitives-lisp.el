@@ -299,10 +299,10 @@ symexes, returns the end point of the last one found."
     (symex-lisp--get-end-point-helper count)))
 
 (defun symex-lisp--point-height-offset ()
-  "Compute the height offset of the current symex from the lowest one
-indicated by point.
+  "Compute the height offset of the current symex.
 
-For symex-oriented languages like Lisp, this is always zero."
+This is measured from the lowest symex indicated by point. For
+symex-oriented languages like Lisp, this is always zero."
   0)
 
 (defun symex-lisp--forward-one ()

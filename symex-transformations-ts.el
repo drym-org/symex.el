@@ -86,6 +86,7 @@ selected according to the ranges that have changed."
         (symex-ts-delete-node-forward 1 t)))))
 
 (defun symex-ts-comment (&optional count)
+  "Comment out COUNT expressions."
   (when tree-sitter-mode
     (let* ((count (or count 1))
            (node (symex-ts-get-current-node))

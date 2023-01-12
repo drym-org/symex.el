@@ -157,8 +157,9 @@ location (e.g. non-symex-based languages like Python)."
          ,result))))
 
 (defun symex--point-height-offset ()
-  "Compute the height offset of the current symex from the lowest one
-indicated by point.
+  "Compute the height offset of the current symex.
+
+This is measured from the lowest symex indicated by point.
 
 This will always be zero for symex-oriented languages such as Lisp,
 but in languages like Python where the same point position could
@@ -192,8 +193,7 @@ symexes, returns the end point of the last one found."
   (point))
 
 (defun symex--primitive-exit ()
-  "Take any necessary actions as part of exiting Symex mode, at a
-primitive level."
+  "Take necessary actions as part of exiting Symex mode, at a primitive level."
   (symex--delete-overlay)
   (if tree-sitter-mode
       (symex-ts--exit)

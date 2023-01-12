@@ -558,7 +558,7 @@ matched."
 Inserts the prefix at position INDEX in PREFIX-LIST into the buffer at
 point.  If INDEX exceeds the length of the prefix list, then nothing
 is inserted.  This has the effect, when used in succession to
-symex--delete-prefix, of returning the content to an unprefixed state
+`symex--delete-prefix`, of returning the content to an unprefixed state
 after it has cycled once through the prefixes."
   (unless (>= index (length prefix-list))
     (insert (elt prefix-list (max 0 index)))))
