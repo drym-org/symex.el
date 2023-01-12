@@ -166,6 +166,14 @@ too."
     (backward-char)
     (evil-insert-state)))
 
+(defun symex-ts-append-after ()
+  "Append after symex (instead of vim's default of line)."
+  (interactive)
+  (when (symex-ts-get-current-node)
+    (goto-char (tsc-node-end-position (symex-ts-get-current-node)))
+    (insert " ")
+    (evil-insert-state)))
+
 (defun symex-ts-open-line-after ()
   "Open new line after symex."
   (interactive)
