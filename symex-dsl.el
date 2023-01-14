@@ -47,6 +47,13 @@ PHASES - see underlying Lisp implementation."
   `(symex-make-maneuver
     ,@(mapcar #'symex--compile-traversal-helper phases)))
 
+(defmacro symex--compile-venture (&rest phases)
+  "Compile a venture from Symex DSL -> Lisp.
+
+PHASES - see underlying Lisp implementation."
+  `(symex-make-venture
+    ,@(mapcar #'symex--compile-traversal-helper phases)))
+
 (defmacro symex--compile-detour (reorientation traversal)
   "Compile a detour from Symex DSL -> Lisp.
 
@@ -197,6 +204,8 @@ a detour, a move, etc., which is specified using the Symex DSL."
          `(symex--compile-protocol ,@(cdr traversal)))
         ((equal 'maneuver (car traversal))
          `(symex--compile-maneuver ,@(cdr traversal)))
+        ((equal 'venture (car traversal))
+         `(symex--compile-venture ,@(cdr traversal)))
         ((equal 'detour (car traversal))
          `(symex--compile-detour ,@(cdr traversal)))
         ((equal 'circuit (car traversal))
@@ -219,6 +228,7 @@ This can be thought of as the 'program' written in the DSL, which
 will be compiled into Lisp and can be executed when needed.
 An optional DOCSTRING will be used as documentation for the variable
 NAME to which the traversal is assigned."
+  (declare (indent 1))
   `(defvar ,name (symex-traversal ,traversal) ,docstring))
 
 

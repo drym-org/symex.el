@@ -27,7 +27,7 @@
 
 
 (require 'symex-data)
-(require 'symex-primitives)
+(require 'symex-primitives-lisp)
 (require 'symex-evaluator)
 (require 'symex-dsl)
 
@@ -44,7 +44,9 @@
   "Go to last symex on the present branch.")
 
 (symex-deftraversal symex--traversal-goto-lowest
-  (circuit (move down))
+  (circuit
+   (precaution (move down)
+               (beforehand (not (at root)))))
   "Go to lowest (root) symex in present tree.")
 
 (defun symex-goto-first ()
@@ -69,9 +71,8 @@
   "Select highest symex."
   (interactive)
   (symex-execute-traversal (symex-traversal
-                            (maneuver (move up)
-                                      (circuit (protocol (circuit (move forward))
-                                                         (move up))))))
+                            (circuit (venture (move up)
+                                              (circuit (move forward))))))
   (point))
 
 (symex-deftraversal symex--traversal-preorder
@@ -91,16 +92,16 @@
   "Pre-order tree traversal.")
 
 (symex-deftraversal symex--traversal-postorder
-  (protocol (maneuver (move backward)
-                      (circuit (maneuver (move up)
-                                         (circuit (move forward)))))
+  (protocol (venture (move backward)
+                     (circuit (venture (move up)
+                                       (circuit (move forward)))))
             (move down))
   "Post-order tree traversal, continuing to other trees.")
 
 (symex-deftraversal symex--traversal-postorder-in-tree
-  (protocol (precaution (maneuver (move backward)
-                                  (circuit (maneuver (move up)
-                                                     (circuit (move forward)))))
+  (protocol (precaution (venture (move backward)
+                                 (circuit (venture (move up)
+                                                   (circuit (move forward)))))
                         (beforehand (not (at root))))
             (move down))
   "Post-order tree traversal.")
@@ -121,16 +122,15 @@ when the way is blocked.")
 
 (symex-deftraversal symex--traversal-climb-branch
   (protocol (move up)
-            (detour (circuit (move forward))
-                    (move up))
-            (circuit (move forward))))
+            (venture (circuit (move forward))
+                     (move up))))
 
 (symex-deftraversal symex--traversal-descend-branch
   (protocol (precaution symex--traversal-goto-first
                         (beforehand (not (at root))))
-            (maneuver (move down)
-                      (precaution (circuit (move backward))
-                                  (beforehand (not (at root)))))))
+            (venture (move down)
+                     (precaution symex--traversal-goto-first
+                                 (beforehand (not (at root)))))))
 
 (defun symex-traverse-forward (count)
   "Traverse symex as a tree, using pre-order traversal.

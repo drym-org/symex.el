@@ -27,12 +27,17 @@
 
 (require 'cl-lib)
 
+(require 'symex-transformations-lisp)
+(require 'symex-transformations-ts)
+
+;; TODO: Remove dependencies after moving to symex-transformations-lisp.el
 (require 'paredit)
 (require 'lispy)
 (require 'evil)
 (require 'evil-surround)
 (require 'evil-cleverparens)  ;; really only need cp-textobjects here
 (require 'symex-primitives)
+(require 'symex-primitives-lisp)
 (require 'symex-utils)
 (require 'symex-traversals)
 (require 'symex-interop)
@@ -44,50 +49,18 @@
 (defun symex-delete (count)
   "Delete COUNT symexes."
   (interactive "p")
-  (let ((last-command nil) ; see symex-yank re: last-command
-        (start (point))
-        (end (symex--get-end-point count)))
-    (kill-region start end))
-  (cond ((or (symex--current-line-empty-p)             ; ^<>$
-             (save-excursion (evil-last-non-blank)     ; (<>$
-                             (lispy-left-p))
-             (looking-at-p "\n"))                      ; (abc <>
-         (symex--join-to-next))
-        ((save-excursion (back-to-indentation)         ; ^<>)
-                         (forward-char)
-                         (lispy-right-p))
-         ;; Cases 2 and 3 in issue #18
-         ;; if the deleted symex is preceded by a comment line
-         ;; or if the preceding symex is followed by a comment
-         ;; on the same line, then don't attempt to join lines
-         (let ((original-position (point)))
-           (when (symex--go-backward)
-             (let ((previous-symex-end-pos (symex--get-end-point 1)))
-               (unless (symex--intervening-comment-line-p previous-symex-end-pos
-                                                          original-position)
-                 (goto-char previous-symex-end-pos)
-                 ;; ensure that there isn't a comment on the
-                 ;; preceding line before joining lines
-                 (unless (condition-case nil
-                             (progn (evil-find-char 1 ?\;)
-                                    t)
-                           (error nil))
-                   (symex--join-to-match lispy-right)
-                   (symex--adjust-point)))))))
-        ((save-excursion (forward-char)                ; ... <>)
-                         (lispy-right-p))
-         (symex--go-backward))
-        (t (symex--go-forward)))
-  (symex-select-nearest)
-  (symex-tidy))
+  (if tree-sitter-mode
+      (symex-ts-delete-node-forward count)
+    (symex-lisp--delete count)))
 
 (defun symex-delete-backwards (count)
   "Delete COUNT symexes backwards."
   (interactive "p")
-  (dotimes (_ count)
-    (when (symex--go-backward)
-      (symex-delete 1))))
+  (if tree-sitter-mode
+      (symex-ts-delete-node-backward count)
+    (symex-lisp--delete-backwards count)))
 
+;; TODO: symex-delete-remaining: fix symex--remaining-length for TS
 (defun symex-delete-remaining ()
   "Delete remaining symexes at this level."
   (interactive)
@@ -97,10 +70,9 @@
 (defun symex-change (count)
   "Change COUNT symexes."
   (interactive "p")
-  (let ((start (point))
-        (end (symex--get-end-point count)))
-    (kill-region start end))
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-change-node-forward count)
+    (symex-lisp--change count)))
 
 (defun symex-change-remaining ()
   "Change remaining symexes at this level."
@@ -123,17 +95,22 @@
 (defun symex-replace ()
   "Replace contents of symex."
   (interactive)
-  (symex--clear)
-  (when (or (symex-form-p) (symex-string-p))
-    (forward-char))
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-replace)
+    (progn (symex--clear)
+           (when (or (symex-form-p) (symex-string-p))
+             (forward-char))
+           (symex-enter-lowest))))
 
 (defun symex-clear ()
   "Clear contents of symex."
   (interactive)
-  (symex--clear)
-  (symex-select-nearest)
-  (symex-tidy))
+  (if tree-sitter-mode
+      (symex-ts-clear)
+    (progn
+      (symex--clear)
+      (symex-select-nearest)
+      (symex-tidy))))
 
 (defun symex--emit-backward ()
   "Emit backward."
@@ -261,124 +238,78 @@ by default, joins next symex to current one."
 (defun symex-yank (count)
   "Yank (copy) COUNT symexes."
   (interactive "p")
-  ;; we set `last-command` here to avoid appending to the kill ring
-  ;; when it's a delete followed by a yank. We want to treat each as
-  ;; independent entries in the kill ring
-  (let ((last-command nil))
-    (let ((start (point))
-          (end (symex--get-end-point count)))
-      (copy-region-as-kill start end))))
+  (if tree-sitter-mode
+    (symex-ts-yank count)
+    (symex-lisp--yank count)))
 
+;; TODO: symex-yank-remaining: fix symex--remaining-length for TS
 (defun symex-yank-remaining ()
   "Yank (copy) remaining symexes at this level."
   (interactive)
   (let ((count (symex--remaining-length)))
     (symex-yank count)))
 
-(defun symex--paste-before ()
-  "Paste before symex."
-  (interactive)
-  (let ((extra-to-append
-         (cond ((or (and (symex--point-at-indentation-p)
-                         (not (bolp)))
-                    (save-excursion (forward-sexp)
-                                    (eolp)))
-                "\n")
-               (t " "))))
-    (save-excursion
-      (save-excursion
-        (evil-paste-before nil nil)
-        (when evil-move-cursor-back
-          (forward-char))
-        (insert extra-to-append))
-      (symex--go-forward)
-      (symex-tidy))
-    (symex-tidy)))
-
 (defun symex-paste-before (count)
   "Paste before symex, COUNT times."
   (interactive "p")
   (setq this-command 'evil-paste-before)
-  (symex--with-undo-collapse
-    (dotimes (_ count)
-      (symex--paste-before))))
-
-(defun symex--paste-after ()
-  "Paste after symex."
-  (interactive)
-  (let ((extra-to-prepend
-         (cond ((or (and (symex--point-at-indentation-p)
-                         (not (bolp)))
-                    (save-excursion (forward-sexp)
-                                    (eolp)))
-                "\n")
-               (t " "))))
-    (save-excursion
-      (forward-sexp)
-      (insert extra-to-prepend)
-      (evil-paste-before nil nil))
-    (symex--go-forward)
-    (symex-tidy)))
+  (if tree-sitter-mode
+      (symex-ts-paste-before count)
+    (symex--with-undo-collapse
+      (dotimes (_ count)
+        (symex-lisp--paste-before)))))
 
 (defun symex-paste-after (count)
   "Paste after symex, COUNT times."
   (interactive "p")
   (setq this-command 'evil-paste-after)
-  (symex--with-undo-collapse
-    (dotimes (_ count)
-      (symex--paste-after))))
+  (if tree-sitter-mode
+      (symex-ts-paste-after count)
+    (symex--with-undo-collapse
+      (dotimes (_ count)
+        (symex-lisp--paste-after)))))
 
 (defun symex-open-line-after ()
   "Open new line after symex."
   (interactive)
-  (forward-sexp)
-  (newline-and-indent)
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-open-line-after)
+    (symex-lisp--open-line-after)))
 
 (defun symex-open-line-before ()
   "Open new line before symex."
   (interactive)
-  (newline-and-indent)
-  (evil-previous-line)
-  (indent-according-to-mode)
-  (evil-move-end-of-line)
-  (unless (or (symex--current-line-empty-p)
-              (save-excursion (backward-char)
-                              (lispy-left-p)))
-    (insert " "))
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-open-line-before)
+    (symex-lisp--open-line-before)))
 
 (defun symex-append-after ()
   "Append after symex (instead of vim's default of line)."
   (interactive)
-  (forward-sexp)  ; selected symexes will have the cursor on the starting paren
-  (insert " ")
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-append-after)
+    (symex-lisp--append-after)))
 
 (defun symex-insert-before ()
   "Insert before symex (instead of vim's default at the start of line)."
   (interactive)
-  (insert " ")
-  (backward-char)
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-insert-before)
+    (symex-lisp--insert-before)))
 
 (defun symex-insert-at-beginning ()
   "Insert at beginning of symex."
   (interactive)
-  (when (or (lispy-left-p)
-            (symex-string-p))
-    (forward-char))
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-insert-at-beginning)
+    (symex-lisp--insert-at-beginning)))
 
 (defun symex-insert-at-end ()
   "Insert at end of symex."
   (interactive)
-  (if (or (lispy-left-p)
-          (symex-string-p))
-      (progn (forward-sexp)
-             (backward-char))
-    (forward-sexp))
-  (symex-enter-lowest))
+  (if tree-sitter-mode
+      (symex-ts-insert-at-end)
+    (symex-lisp--insert-at-end)))
 
 (defun symex-create (type)
   "Create new symex (list).
@@ -574,8 +505,11 @@ then no action is taken."
 (defun symex-comment (count)
   "Comment out COUNT symexes."
   (interactive "p")
-  (mark-sexp count)
-  (comment-dwim nil))
+  (if tree-sitter-mode
+      (symex-ts-comment count)
+    (progn
+      (mark-sexp count)
+      (comment-dwim nil))))
 
 (defun symex-comment-remaining ()
   "Comment out remaining symexes at this level."
@@ -624,7 +558,7 @@ matched."
 Inserts the prefix at position INDEX in PREFIX-LIST into the buffer at
 point.  If INDEX exceeds the length of the prefix list, then nothing
 is inserted.  This has the effect, when used in succession to
-symex--delete-prefix, of returning the content to an unprefixed state
+`symex--delete-prefix`, of returning the content to an unprefixed state
 after it has cycled once through the prefixes."
   (unless (>= index (length prefix-list))
     (insert (elt prefix-list (max 0 index)))))

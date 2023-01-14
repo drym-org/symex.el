@@ -70,9 +70,9 @@ to enter, and any of the standard exits to exit."
 ;; likewise, we might want to disable and re-enable highlighting,
 ;; if active, on each command
 (defhydra hydra-symex (:columns 4
-                                :post (symex-hydra-exit)
-                                :after-exit (symex--signal-exit))
-  "Symex mode"
+                       :post (symex-hydra-exit)
+                       :after-exit (symex--signal-exit))
+  "Symex mode."
   ("(" symex-create-round "()")
   ("[" symex-create-square "[]")
   ("{" symex-create-curly "{}")

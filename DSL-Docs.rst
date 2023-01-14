@@ -91,7 +91,7 @@ Syntax
 Description
 ```````````
 
-Execute a sequence of traversals in order. If the maneuver is partially completed, i.e. if at least one traversal was executed, then the maneuver is treated as successful. Otherwise it is considered to have failed.
+Execute a sequence of traversals in order. The maneuver succeeds if *all* of the traversals succeed. If any of them fail, then the entire maneuver is aborted and nothing happens. In other words, the maneuver has "all or nothing" semantics. To accept partial completion, use ``venture`` instead.
 
 Examples
 ````````
@@ -115,6 +115,42 @@ Examples
       (maneuver (maneuver (move up)
                           (circuit (move forward)))
                 (move up))))
+
+venture
+~~~~~~~
+
+Syntax
+``````
+
+``(venture traversal ...)``
+
+Description
+```````````
+
+Execute a sequence of traversals in order. If the venture is partially completed, i.e. if at least one traversal was executed, then the venture is treated as successful. Otherwise it is considered to have failed.
+
+Examples
+````````
+
+"Venture to go forward, then up, and then forward again."
+
+::
+
+  (symex-execute-traversal
+    (symex-traversal
+      (venture (move forward)
+               (move up)
+               (move forward))))
+
+"Venture to go up and then keep going forward, and then go up again."
+
+::
+
+  (symex-execute-traversal
+    (symex-traversal
+      (venture (venture (move up)
+                        (circuit (move forward)))
+               (move up))))
 
 protocol
 ~~~~~~~~
@@ -269,8 +305,8 @@ Examples
     (symex-traversal
       (circuit
         (precaution
-          (maneuver (move down)
-                    (move forward))
+          (venture (move down)
+                   (move forward))
           (afterwards (not (at root)))))))
 
 precaution
@@ -411,9 +447,21 @@ When you're done debugging, you can remove the debugger hooks by just evaluating
 
 Also see `this series on ELisp debugging <https://endlessparentheses.com/debugging-emacs-lisp-part-1-earn-your-independence.html>`__ for more tips.
 
+Print Statements and Asserts
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Don't hesitate to add print statements (e.g. ``message``) to trace the execution path. Such trace logs can also serve as evidence from which to form hypotheses about bugs. You could also use ``cl-assert`` to assert assumptions at specific points.
+
+Minimizing Complexity
+^^^^^^^^^^^^^^^^^^^^^
+
+Symex uses `advice <https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html>`_ to implement some features such as branch memory. To minimize complexity while debugging, it may be advisable (so to speak) to disable such advice. To do this, find the place in the code where the advice is added and execute the corresponding function to remove it, something like ``(advice-remove #'symex-go-down #'symex--remember-branch-position)``. Of course, if disabling the advice causes the error to go away, then you can focus your efforts on debugging the advice itself in isolation.
+
+It may also be advisable to comment out macros like ``symex-save-excursion`` to see if the problem persists.
+
 Gotchas
 ^^^^^^^
 
-The ``symex-traversal`` form accepts a *single* traversal argument. If you'd like to do more than one thing, then wrap the steps in a `maneuver`_.
+The ``symex-traversal`` form accepts a *single* traversal argument. If you'd like to do more than one thing, then wrap the steps in a `maneuver`_ or a `venture`_.
 
 ``symex-deftraversal`` is equivalent to ``(defvar name (symex-traversal traversal))``. As it uses ``defvar``, once defined, you cannot use the same form to redefine the traversal (e.g. if you are debugging it). You will need to use ``setq`` directly -- e.g. replace ``defvar`` with ``setq`` in the expanded version of this form.

@@ -3,7 +3,7 @@
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/countvajhula/symex.el
 ;; Version: 1.0
-;; Package-Requires: ((emacs "25.1") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (evil "1.2.14") (evil-surround "1.0.4") (hydra "0.15.0") (seq "2.22"))
+;; Package-Requires: ((emacs "25.1") (tsc "0.15.2") (tree-sitter "0.15.2") (lispy "0.26.0") (paredit "24") (evil-cleverparens "20170718.413") (evil "1.2.14") (evil-surround "1.0.4") (hydra "0.15.0") (seq "2.22"))
 ;; Keywords: lisp, convenience, languages
 
 ;; This program is "part of the world," in the sense described at
@@ -47,7 +47,10 @@
 (require 'symex-evil)
 (require 'symex-interop)
 (require 'symex-misc)
+(require 'symex-primitives)
 (require 'symex-custom)
+(require 'tree-sitter)
+(require 'symex-ts)
 
 ;;;###autoload
 (define-minor-mode symex-mode
@@ -157,6 +160,10 @@ advises functions to enable or disable features based on user configuration."
     (advice-add #'symex-go-up :around #'symex--return-to-branch-position)
     (advice-add #'symex-go-backward :around #'symex--forget-branch-positions)
     (advice-add #'symex-go-forward :around #'symex--forget-branch-positions))
+  (when (fboundp 'undo-tree-undo)
+    (advice-add #'undo-tree-undo :after #'symex-select-nearest-advice))
+  (when (fboundp 'undo-tree-redo)
+    (advice-add #'undo-tree-redo :after #'symex-select-nearest-advice))
   (symex--add-selection-advice)
   ;; initialize modal interface frontend
   (cond ((eq symex-modal-backend 'hydra)
@@ -183,6 +190,10 @@ configuration to be disabled and the new one adopted."
   (advice-remove #'symex-go-up #'symex--return-to-branch-position)
   (advice-remove #'symex-go-backward #'symex--forget-branch-positions)
   (advice-remove #'symex-go-forward #'symex--forget-branch-positions)
+  (when (fboundp 'undo-tree-undo)
+    (advice-remove #'undo-tree-undo #'symex-select-nearest-advice))
+  (when (fboundp 'undo-tree-redo)
+    (advice-remove #'undo-tree-redo #'symex-select-nearest-advice))
   (symex--remove-selection-advice))
 
 ;;;###autoload

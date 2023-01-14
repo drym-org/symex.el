@@ -50,13 +50,14 @@ requiring changes to higher-level code that uses the present interface."
   (let ((move-x (symex--move-x move))
         (move-y (symex--move-y move)))
     (cond ((> move-x 0)
-           (symex--forward move-x))
+           (symex--go-forward move-x))
           ((< move-x 0)
-           (symex--backward (abs move-x)))
+           (symex--go-backward (abs move-x)))
           ((> move-y 0)
-           (symex--enter move-y))
+           (symex--go-up move-y))
           ((< move-y 0)
-           (symex--exit (abs move-y))))))
+           (symex--go-down (abs move-y)))
+          (t symex--move-zero))))
 
 (defun symex-execute-move (move &optional computation)
   "Execute the MOVE as a traversal.
@@ -67,38 +68,6 @@ Optional argument COMPUTATION currently unused."
   (let ((executed-move (symex--execute-tree-move move computation)))
     (when executed-move
       (list executed-move))))
-
-(cl-defun symex--go-forward (&optional (count 1))
-  "Move forward COUNT symexes.
-
-This is an internal utility that avoids any user-level concerns
-such as symex selection via advice.  This should be used in all
-internal operations that are not primarily user-directed."
-  (symex--execute-tree-move (symex-make-move count 0)))
-
-(cl-defun symex--go-backward (&optional (count 1))
-  "Move backwards COUNT symexes.
-
-This is an internal utility that avoids any user-level concerns
-such as symex selection via advice.  This should be used in all
-internal operations that are not primarily user-directed."
-  (symex--execute-tree-move (symex-make-move (- count) 0)))
-
-(cl-defun symex--go-up (&optional (count 1))
-  "Move up COUNT symexes.
-
-This is an internal utility that avoids any user-level concerns
-such as symex selection via advice.  This should be used in all
-internal operations that are not primarily user-directed."
-  (symex--execute-tree-move (symex-make-move 0 count)))
-
-(cl-defun symex--go-down (&optional (count 1))
-  "Move down COUNT symexes.
-
-This is an internal utility that avoids any user-level concerns
-such as symex selection via advice.  This should be used in all
-internal operations that are not primarily user-directed."
-  (symex--execute-tree-move (symex-make-move 0 (- count))))
 
 (cl-defun symex-go-forward (&optional (count 1))
   "Move forward COUNT symexes."
@@ -135,49 +104,71 @@ The aggregate result is constructed according to the specified COMPUTATION."
 (defun symex-execute-maneuver (maneuver computation)
   "Attempt to execute a given MANEUVER.
 
-Attempts the maneuver in the order of its phases, accepting partial completion
-of phases.  If any phase fails entirely, then the maneuver it is part of is
-terminated at that step.
+Attempts the maneuver in the order of its phases.  The maneuver
+succeeds only if all of the phases succeed, and otherwise fails.
 
-Evaluates to a COMPUTATION on the maneuver actually executed."
-  (let ((phases (symex--maneuver-phases maneuver)))
-    (when phases
-      (let ((current-phase (car phases))
-            (remaining-phases (cdr phases)))
-        (let ((executed-phase (symex-execute-traversal current-phase
-                                                       computation)))
-          (when executed-phase
-            (let ((executed-remaining-phases
-                   (symex-execute-traversal (apply #'symex-make-maneuver
-                                                   remaining-phases)
-                                            computation)))
+Evaluates to a COMPUTATION on the traversal actually executed."
+  (if (symex--maneuver-null-p maneuver)
+      symex--move-zero
+    (let ((current-phase (symex--maneuver-first maneuver))
+          (remaining-maneuver (symex--maneuver-rest maneuver)))
+      (let ((executed-phase (symex-execute-traversal current-phase
+                                                     computation)))
+        (when executed-phase
+          (let ((executed-remaining-phases
+                 (symex-execute-traversal remaining-maneuver
+                                          computation)))
+            (when executed-remaining-phases
               (symex--compute-results executed-phase
-                                      executed-remaining-phases
+                                      (if (equal executed-remaining-phases
+                                                 (list symex--move-zero))
+                                          nil
+                                          executed-remaining-phases)
                                       computation))))))))
+
+(defun symex-execute-venture (venture computation)
+  "Attempt to execute a given VENTURE.
+
+Similar to maneuver execution, except that it accepts partial
+completion.  That is, this attempts the venture in the order of its
+phases.  If any phase fails, then the venture is terminated at that
+step.  The venture succeeds if at least one phase succeeds, and
+otherwise fails.
+
+Evaluates to a COMPUTATION on the traversal actually executed."
+  (unless (symex--venture-null-p venture)
+    (let ((current-phase (symex--venture-first venture))
+          (remaining-venture (symex--venture-rest venture)))
+      (let ((executed-phase (symex-execute-traversal current-phase
+                                                     computation)))
+        (when executed-phase
+          (let ((executed-remaining-phases
+                 (symex-execute-traversal remaining-venture
+                                          computation)))
+            (symex--compute-results executed-phase
+                                    executed-remaining-phases
+                                    computation)))))))
 
 (defun symex-execute-circuit (circuit computation)
   "Execute a CIRCUIT.
 
 This repeats some traversal as specified.
 
-Evaluates to a COMPUTATION on the maneuver actually executed."
+Evaluates to a COMPUTATION on the traversal actually executed."
   (let ((traversal (symex--circuit-traversal circuit))
-        (times (symex--circuit-times circuit)))
+        (times (symex--circuit-times circuit))
+        (remaining-circuit (symex--circuit-rest circuit)))
     (when (or (not times)  ; loop indefinitely
               (> times 0))
       (let ((result (symex-execute-traversal traversal
                                              computation)))
         (when result
-          (let ((times (if times
-                           (1- times)
-                         times)))
-            (let ((remaining-circuit
-                   (symex-execute-traversal (symex-make-circuit traversal
-                                                                times)
-                                            computation)))
-              (symex--compute-results result
-                                      remaining-circuit
-                                      computation))))))))
+          (let ((executed-remaining-circuit
+                 (symex-execute-traversal remaining-circuit
+                                          computation)))
+            (symex--compute-results result
+                                    executed-remaining-circuit
+                                    computation)))))))
 
 (defun symex-execute-detour (detour computation)
   "Execute the DETOUR.
@@ -187,7 +178,7 @@ Apply a reorientation and then attempt the traversal.
 If the traversal fails, then the reorientation is attempted as many times as
 necessary until either it succeeds, or the reorientation fails.
 
-Evaluates to a COMPUTATION on the maneuver actually executed."
+Evaluates to a COMPUTATION on the traversal actually executed."
   (let ((reorientation (symex--detour-reorientation detour))
         (traversal (symex--detour-traversal detour)))
     (let ((executed-reorientation (symex-execute-traversal reorientation)))
@@ -207,7 +198,7 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
 The traversal is only executed if PRE-CONDITION holds, and is reversed if
 POST-CONDITION does not hold after the provisional execution of the traversal.
 
-Evaluates to a COMPUTATION on the maneuver actually executed."
+Evaluates to a COMPUTATION on the traversal actually executed."
   (let ((traversal (symex--precaution-traversal precaution))
         (pre-condition (symex--precaution-pre-condition precaution))
         (post-condition (symex--precaution-post-condition precaution)))
@@ -223,18 +214,16 @@ Evaluates to a COMPUTATION on the maneuver actually executed."
 Given a protocol including a set of options, attempt to execute them
 in order until one succeeds.
 
-Evaluates to a COMPUTATION on the maneuver actually executed."
-  (let ((options (symex--protocol-options protocol)))
-    (when options
-      (let ((option (car options))
-            (remaining-options (cdr options)))
-        (let ((executed-option (symex-execute-traversal option
-                                                        computation)))
-          (if executed-option
-              executed-option
-            (symex-execute-traversal (apply #'symex-make-protocol
-                                            remaining-options)
-                                     computation)))))))
+Evaluates to a COMPUTATION on the traversal actually executed."
+  (unless (symex--protocol-null-p protocol)
+    (let ((option (symex--protocol-first protocol))
+          (remaining-protocol (symex--protocol-rest protocol)))
+      (let ((executed-option (symex-execute-traversal option
+                                                      computation)))
+        (if executed-option
+            executed-option
+          (symex-execute-traversal remaining-protocol
+                                   computation))))))
 
 (defun symex-execute-decision (decision computation)
   "Attempt to execute a given DECISION.
@@ -265,10 +254,19 @@ Evaluates to a COMPUTATION on the traversal actually executed."
         (side-effect (if side-effect
                          side-effect
                        #'symex--side-effect-noop)))
+    ;; TODO: a macro similar to `symex-save-excursion`
+    ;; where it conditionally returns to the original
+    ;; point / node depending on whether BODY succeeds
+    ;; or which tests for success before moving point
     (let ((original-location (point))
+          (original-point-height-offset
+           (symex--point-height-offset))
           (executed-traversal (cond ((symex-maneuver-p traversal)
                                      (symex-execute-maneuver traversal
                                                              computation))
+                                    ((symex-venture-p traversal)
+                                     (symex-execute-venture traversal
+                                                            computation))
                                     ((symex-circuit-p traversal)
                                      (symex-execute-circuit traversal
                                                             computation))
@@ -294,6 +292,13 @@ Evaluates to a COMPUTATION on the traversal actually executed."
             (progn (funcall side-effect)
                    result)
           (goto-char original-location)
+          (symex-select-nearest)
+          (let* ((current-point-height-offset (symex--point-height-offset))
+                 (height-differential (- original-point-height-offset
+                                         current-point-height-offset)))
+            ;; necessary because point does not uniquely identify
+            ;; a node for non-symex (i.e. tree-sitter) languages
+            (symex--go-up height-differential))
           result)))))
 
 

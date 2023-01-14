@@ -27,7 +27,8 @@
 
 ;;; Code:
 
-(require 'symex-custom)
+(require 'symex-custom
+         'symex-primitives)
 
 ;; to avoid byte compile warnings.  eventually sort out the dependency
 ;; order so this is unnecessary
@@ -44,15 +45,6 @@
 
 (defvar-local symex--original-scroll-margin nil)
 (defvar-local symex--original-max-scroll-margin nil)
-
-(defun symex--adjust-point ()
-  "Helper to adjust point to indicate the correct symex."
-  (unless (or (bobp)
-              (symex--point-at-start-p)
-              (save-excursion (backward-char)  ; just inside symex
-                              (or (lispy-left-p)
-                                  (symex-string-p))))
-    (backward-sexp)))
 
 (defun symex--adjust-point-on-entry ()
   "Adjust point context from the Emacs to the Vim interpretation.
