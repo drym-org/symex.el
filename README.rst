@@ -368,6 +368,15 @@ When going up and down, the choice of initial position on the branch is arbitrar
 
    (symex-remember-branch-position-p nil)
 
+Highlighting
+------------
+
+The current expression is highlighted by default (as of Jan 2023). If you'd like to disable highlighting, add this to the ``:custom`` `section <https://github.com/jwiegley/use-package#customizing-variables>`__ (not the ``:config`` section) of your ``use-package`` form:
+
+::
+
+   (symex-highlight-p nil)
+
 Quoting Styles
 --------------
 
