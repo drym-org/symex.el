@@ -30,7 +30,7 @@
   "A language for editing symbolic expressions."
   :group 'lisp)
 
-(defcustom symex-highlight-p nil
+(defcustom symex-highlight-p t
   "Whether selected symexes should be highlighted."
   :type 'boolean
   :group 'symex)
