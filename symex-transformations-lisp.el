@@ -27,7 +27,6 @@
 
 (require 'cl-lib)
 
-(require 'paredit)
 (require 'lispy)
 (require 'evil)
 (require 'evil-surround)

@@ -32,6 +32,7 @@
 ;;; Code:
 
 (require 'tree-sitter)
+(require 'tsc)
 (require 'symex-transformations-ts)
 (require 'symex-utils-ts)
 
