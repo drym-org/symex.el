@@ -13,7 +13,7 @@
 
 symex.el
 ========
-An `evil <https://github.com/emacs-evil/evil>`_ way to edit Lisp symbolic expressions ("symexes") as trees in Emacs.
+An intuitive way to edit Lisp symbolic expressions ("symexes") structurally in Emacs.
 
 .. raw:: html
 
@@ -26,13 +26,15 @@ An `evil <https://github.com/emacs-evil/evil>`_ way to edit Lisp symbolic expres
 Introduction
 ============
 
-Symex mode (pronounced sym-ex, as in symbolic expression) is a vim-inspired way of editing Lisp code as trees. Entering symex mode allows you to reason about your code in terms of its structure, similar to other tools like `paredit <https://www.emacswiki.org/emacs/ParEdit>`_ and `lispy <https://github.com/abo-abo/lispy>`_. But while those packages provide a curated number of useful tree operations, symex mode treats the tree structure explicitly so that arbitrary tree navigations and operations can be described using an expressive DSL, and invoked conveniently via a vim-style modal interface. As a consequence of this:
+Symex (pronounced sym-ex, as in symbolic expression) is a modal (like Vim but simpler) way of editing Lisp code as trees. Entering symex mode allows you to reason about your code in terms of its structure, similar to other tools like `paredit <https://www.emacswiki.org/emacs/ParEdit>`_ and `lispy <https://github.com/abo-abo/lispy>`_. But while those packages provide a curated number of useful tree operations, Symex treats the tree structure explicitly so that arbitrary tree navigations and operations can be described using an expressive DSL, and invoked conveniently via a simple ("point-free") modal interface. As a consequence of this:
 
 - Symex provides many novel features, such as "leap branch," "climb/descend branch," "goto highest/lowest," "skip forward/backward", recursive indent, recursive evaluate, among many others
 - Implementing new structure-related features in general is easy [1]_.
 - Keybindings are short and memorable
 
 At the moment, symex mode uses ``paredit``, ``lispy``, and `evil-cleverparens <https://github.com/luxbock/evil-cleverparens>`_ to provide much of its low level functionality. In the future, this layer of primitives may be replaced with a layer that explicitly uses the abstract syntax tree, for still greater precision.
+
+As of Jan 2023, there is "alpha" support for non-Lisp languages via ``tree-sitter``. While motions and a couple of basic transformations should work across languages (i.e. not only Lisp), it should be considered an early preview rather than production-worthy. Full support is planned for completion by March 20, 2023.
 
 .. raw:: html
 
