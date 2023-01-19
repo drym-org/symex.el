@@ -6,3 +6,5 @@
 * A modal interface library that is used to implement the primary modal UI used today.
 * The platform on which Symex is implemented.
 * A lint and docstring-checking package for the Emacs ecosystem.
+* A library providing the primitives for moving across and transforming expressions in non-Lisp languages. These primitives are used in the structural editing DSL to extend Symex's support to many non-Lisp languages.
+* A library providing access to the syntax tree for non-Lisp languages.

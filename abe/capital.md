@@ -6,3 +6,5 @@
 * Evil
 * Emacs
 * Melpazoid
+* Tsc
+* Tree-sitter
