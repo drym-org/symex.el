@@ -16,6 +16,8 @@
 * Simon added a lightweight UI feedback overlay for tree-sitter
 * Sid generalized the overlay for use in lisp
 * Pepperblue reported many early issues
+* Tommy suggested adding a table to the docs documenting keybindings
+* Sid added a keybinding table to the docs
 * Tommy suggested "demo gifs" / animated guide
 * Sid created the animated guide
 * MarkgDawson reported a bug in yank/paste with quoted symbols
