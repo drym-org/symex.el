@@ -13,6 +13,7 @@
 * Tommy wrote an early proof-of-concept of using tree-sitter
 * Simon wrote a more complete proof-of-concept using tree-sitter
 * Simon and Sid turned the proof of concept into a full implementation
+* Simon, Sid, and Tommy tested the tree-sitter functionality
 * Simon added a lightweight UI feedback overlay for tree-sitter
 * Sid generalized the overlay for use in lisp
 * Pepperblue reported many early issues

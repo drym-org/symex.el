@@ -13,6 +13,7 @@
 * An early proof-of-concept of using tree-sitter was written.
 * A more complete proof-of-concept using tree-sitter was written.
 * The proof of concept was turned into a full implementation.
+* The tree-sitter functionality was tested.
 * A lightweight UI feedback overlay was added for tree-sitter
 * The overlay was generalized for use in lisp
 * Many early issues were reported.
