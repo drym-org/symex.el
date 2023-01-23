@@ -1,7 +1,7 @@
 * Paredit
 * Lispy
 * Evil-cleverparens
-* evil-textobject
+* evil-surround
 * Hydra
 * Evil
 * Emacs
