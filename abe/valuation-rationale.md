@@ -32,11 +32,11 @@ VALUATION
 
 	Person-hour cost analysis:
 		first 8 months
-			8 * 23 * 8 * 1/3 = S
-			20 = J
+			8 months * 23 days/month * 8 hours/day * 1/3 time spent = S
+			20 hours = J
 		next 12 + 12 + 5 months collaboration
-			29 * 23 * 8 * 1/5 = S
-			+ S/5
+			29 months * 23 days/month * 8 hours/day * 1/5 time spent = S
+			+ S/5 time spent by others
 
 		At $125 / hr,
 			Cost = $223,913.33
