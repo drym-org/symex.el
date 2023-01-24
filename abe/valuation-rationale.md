@@ -1,7 +1,7 @@
 PRICING
 
 	Iris (screen filter)
-		$50 one-time (14-50 one-time, 2/month = 48 at 2 years)
+		$50 one-time ($14 one-time w/o updates, $50 one-time w/updates, monthly price $2/month = $48 at 2 years)
 
 	IntelliJ
 		Individual: $17/month - $29/month (monthly) or $169/yr - $289/yr (annual)
@@ -17,7 +17,7 @@ PRICING
 
 	Visual Assist (Visual Studio plugin for refactoring, code generation, snippets, etc.)
 		Individual: $129
-		Organizations: $279 (+ 119/yr "maintenance" e.g. updates and support)
+		Organizations: $279 (+ $119/yr "maintenance" e.g. updates and support)
 
 	Resharper (VS plugin by Jetbrains, code quality, static checking, style)
 		Individual: $14/month - $29/month (monthly) or $139/yr - $289/yr (annual)
