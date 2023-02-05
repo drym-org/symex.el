@@ -6,3 +6,4 @@
 .cask
 *.elc
 dist
+*.html
