@@ -28,7 +28,7 @@
 (require 'slime      nil 'noerror)
 (require 'slime-repl nil 'noerror)
 (require 'sly        nil 'noerror)
-(require 'sly-repl   nil 'noerror)
+(require 'sly-mrepl  nil 'noerror)
 (require 'symex-interop)
 (require 'symex-custom)
 
@@ -44,7 +44,7 @@
 (declare-function sly-eval-last-expression "ext:sly")
 (declare-function sly-eval-defun           "ext:sly")
 (declare-function sly-eval-buffer          "ext:sly")
-(declare-function sly-repl                 "ext:sly-repl")
+(declare-function sly-mrepl                "ext:sly-mrepl")
 (declare-function sly-eval-print-last-expression "ext:sly")
 (declare-function sly-documentation        "ext:sly")
 
