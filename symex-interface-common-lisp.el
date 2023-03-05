@@ -95,7 +95,7 @@ Accounts for different point location in evil vs Emacs mode."
   ;; this already goes to the active repl prompt
   ;; so there's no need to move point there
   (if (eq symex-common-lisp-backend 'sly)
-      (sly-repl)
+      (call-interactively #'sly-mrepl)
       (slime-repl))
   (symex-enter-lowest))
 
