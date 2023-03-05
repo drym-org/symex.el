@@ -28,7 +28,7 @@
 (require 'slime      nil 'noerror)
 (require 'slime-repl nil 'noerror)
 (require 'sly        nil 'noerror)
-(require 'sly-repl   nil 'noerror)
+(require 'sly-mrepl  nil 'noerror)
 (require 'symex-interop)
 (require 'symex-custom)
 
@@ -44,7 +44,7 @@
 (declare-function sly-eval-last-expression "ext:sly")
 (declare-function sly-eval-defun           "ext:sly")
 (declare-function sly-eval-buffer          "ext:sly")
-(declare-function sly-repl                 "ext:sly-repl")
+(declare-function sly-mrepl                "ext:sly-mrepl")
 (declare-function sly-eval-print-last-expression "ext:sly")
 (declare-function sly-documentation        "ext:sly")
 
@@ -95,7 +95,7 @@ Accounts for different point location in evil vs Emacs mode."
   ;; this already goes to the active repl prompt
   ;; so there's no need to move point there
   (if (eq symex-common-lisp-backend 'sly)
-      (sly-repl)
+      (call-interactively #'sly-mrepl)
       (slime-repl))
   (symex-enter-lowest))
 
