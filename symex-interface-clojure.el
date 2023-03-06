@@ -43,9 +43,9 @@ Accounts for different point location in evil vs Emacs mode."
   (interactive)
   (cider-eval-last-sexp))
 
-(defun symex-eval-definition-clojure ()
+(defun symex-eval-definition-clojure (debug-it)
   "Eval entire containing definition."
-  (cider-eval-defun-at-point nil))
+  (cider-eval-defun-at-point debug-it))
 
 (defun symex-eval-pretty-clojure ()
   "Evaluate symex and render the result in a useful string form."
