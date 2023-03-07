@@ -136,12 +136,16 @@
                                   'clojurescript-mode
                                   'clojurec-mode))
 
+(defvar symex-common-lisp-modes (list 'lisp-mode
+                                      'slime-repl-mode
+                                      'sly-mrepl-mode))
+
 (defvar symex-lisp-modes (append symex-elisp-modes
                                  symex-racket-modes
                                  symex-clojure-modes
+                                 symex-common-lisp-modes
                                  (list 'scheme-mode
-                                       'arc-mode
-                                       'lisp-mode)))
+                                       'arc-mode)))
 
 ;;;###autoload
 (defun symex-initialize ()
