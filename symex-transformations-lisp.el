@@ -41,13 +41,58 @@
 ;;; TRANSFORMATIONS ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun symex-lisp-tidy ()
+  "Auto-indent symex and fix any whitespace."
+  (fixup-whitespace)
+  (when (save-excursion (looking-at-p "[[:space:]]"))
+    (forward-char))
+  (condition-case nil
+      (save-excursion
+        (forward-sexp)
+        (fixup-whitespace))
+    (error nil))
+  (condition-case err
+      (save-excursion
+        (apply #'evil-indent
+               (seq-take (evil-cp-a-form 1)
+                         2)))
+    (error (message "[Symex] symex-tidy: suppressed error %S" err)
+           (let ((start (point))
+                 (end (save-excursion (forward-sexp) (point))))
+             ;; maybe we should just always use this instead
+             (save-excursion
+               (apply #'evil-indent
+                      (list start end)))))))
+
+(defun symex-lisp-clear ()
+  "Helper to clear contents of symex."
+  (cond ((symex-opening-round-p)
+         (apply #'evil-delete (evil-inner-paren)))
+        ((symex-opening-square-p)
+         (apply #'evil-delete (evil-inner-bracket)))
+        ((symex-opening-curly-p)
+         (apply #'evil-delete (evil-inner-curly)))
+        ((symex-string-p)
+         (apply #'evil-delete (evil-inner-double-quote)))
+        (t (kill-sexp))))
+
+(defun symex-lisp-replace ()
+  (symex-lisp-clear)
+  (when (or (symex-form-p) (symex-string-p))
+    (forward-char))
+  (symex-enter-lowest))
+
 (defun symex-lisp--delete (count)
   "Delete COUNT symexes."
-  (interactive "p")
   (let ((last-command nil)  ; see symex-yank re: last-command
         (start (point))
         (end (symex--get-end-point count)))
-    (kill-region start end))
+    (kill-region start end)))
+
+(defun symex-lisp-delete (count)
+  "Delete COUNT symexes."
+  (interactive "p")
+  (symex-lisp--delete count)
   (cond ((or (symex--current-line-empty-p)         ; ^<>$
              (save-excursion (evil-last-non-blank) ; (<>$
                              (lispy-left-p))
@@ -77,38 +122,34 @@
         ((save-excursion (forward-char) ; ... <>)
                          (lispy-right-p))
          (symex--go-backward))
-        (t (symex--go-forward)))
-  (symex-select-nearest)
-  (symex-tidy))
+        (t (symex--go-forward))))
 
+;; TODO: rename these to reflect non-private
 (defun symex-lisp--delete-backwards (count)
   "Delete COUNT symexes backwards."
   (interactive "p")
   (dotimes (_ count)
     (when (symex--go-backward)
-      (symex-delete 1))))
+      (symex-lisp-delete 1))))
 
 (defun symex-lisp--change (count)
   "Change COUNT symexes."
   (interactive "p")
   (let ((start (point))
         (end (symex--get-end-point count)))
-    (kill-region start end))
-  (symex-enter-lowest))
+    (kill-region start end)))
 
 (defun symex-lisp--append-after ()
   "Append after symex (instead of vim's default of line)."
   (interactive)
   (forward-sexp)  ; selected symexes will have the cursor on the starting paren
-  (insert " ")
-  (symex-enter-lowest))
+  (insert " "))
 
 (defun symex-lisp--open-line-after ()
   "Open new line after symex."
   (interactive)
   (forward-sexp)
-  (newline-and-indent)
-  (symex-enter-lowest))
+  (newline-and-indent))
 
 (defun symex-lisp--open-line-before ()
   "Open new line before symex."
@@ -120,23 +161,20 @@
   (unless (or (symex--current-line-empty-p)
               (save-excursion (backward-char)
                               (lispy-left-p)))
-    (insert " "))
-  (symex-enter-lowest))
+    (insert " ")))
 
 (defun symex-lisp--insert-before ()
   "Insert before symex (instead of vim's default at the start of line)."
   (interactive)
   (insert " ")
-  (backward-char)
-  (symex-enter-lowest))
+  (backward-char))
 
 (defun symex-lisp--insert-at-beginning ()
   "Insert at beginning of symex."
   (interactive)
   (when (or (lispy-left-p)
             (symex-string-p))
-    (forward-char))
-  (symex-enter-lowest))
+    (forward-char)))
 
 (defun symex-lisp--insert-at-end ()
   "Insert at end of symex."
@@ -145,8 +183,7 @@
           (symex-string-p))
       (progn (forward-sexp)
              (backward-char))
-    (forward-sexp))
-  (symex-enter-lowest))
+    (forward-sexp)))
 
 (defun symex-lisp--paste-after ()
   "Paste after symex."
@@ -163,7 +200,7 @@
       (insert extra-to-prepend)
       (evil-paste-before nil nil))
     (symex--go-forward)
-    (symex-tidy)))
+    (symex-lisp-tidy)))
 
 (defun symex-lisp--paste-before ()
   "Paste before symex."
@@ -182,8 +219,7 @@
           (forward-char))
         (insert extra-to-append))
       (symex--go-forward)
-      (symex-tidy))
-    (symex-tidy)))
+      (symex-lisp-tidy))))
 
 (defun symex-lisp--yank (count)
   "Yank (copy) COUNT symexes."

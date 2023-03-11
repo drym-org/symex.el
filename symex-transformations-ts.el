@@ -36,9 +36,11 @@ evaluated. The new tree is then compared and the current node is
 selected according to the ranges that have changed."
   (let ((prev-tree (gensym))
         (res (gensym))
-        (changed-ranges (gensym)))
+        (changed-ranges (gensym))
+        (orig-pos (gensym)))
 
-    `(let ((,prev-tree tree-sitter-tree))
+    `(let ((,prev-tree tree-sitter-tree)
+           (,orig-pos (point)))
 
        ;; Execute BODY, bind to RES
        (let ((,res (progn ,@body)))
@@ -49,27 +51,19 @@ selected according to the ranges that have changed."
            ;; Move point to the first changed range if possible
            (when (and (> (length ,changed-ranges) 0)
                       (> (length (elt ,changed-ranges 0)) 0))
-             (goto-char (elt (elt ,changed-ranges 0) 0))
-
-             ;; If the change starts on a carriage return, move
-             ;; forward one character
-             (when (char-equal ?\C-j (char-after))
-               (forward-char 1)))
-
-           ;; Update current node from point and reindent if necessary
-           (symex-ts-set-current-node-from-point)
-           (when symex-highlight-p
-             (symex--update-overlay))
-           (indent-according-to-mode))
+             (let ((new-pos (elt (elt ,changed-ranges 0) 0)))
+               ;; don't move point to before the
+               ;; original point location
+               (if (< new-pos ,orig-pos)
+                   (goto-char ,orig-pos)
+                 (goto-char new-pos)
+                 ;; If the change starts on a carriage return, move
+                 ;; forward one character
+                 (when (char-equal ?\C-j (char-after))
+                   (forward-char 1))))))
 
          ;; Return the result of evaluating BODY
          ,res))))
-
-(defun symex-ts-change-node-forward (&optional count)
-  "Delete COUNT nodes forward from the current node and enter Insert state."
-  (interactive "p")
-  (save-excursion (symex-ts-delete-node-forward count t))
-  (evil-insert-state 1))
 
 (defun symex-ts-clear ()
   "Clear contents of symex."
@@ -114,8 +108,7 @@ selected according to the ranges that have changed."
                             (symex-ts--get-nth-sibling-from-node node #'tsc-get-prev-named-sibling count)
                           node))))
         (kill-region start-pos end-pos)
-        (symex-ts--delete-current-line-if-empty start-pos)
-        (symex-ts-set-current-node-from-point)))))
+        (symex-ts--delete-current-line-if-empty start-pos)))))
 
 (defun symex-ts-delete-node-forward (&optional count keep-empty-lines)
   "Delete COUNT nodes forward from the current node.
@@ -147,15 +140,13 @@ too."
   "Insert at beginning of symex."
   (interactive)
   (when (symex-ts-get-current-node)
-    (goto-char (tsc-node-start-position (symex-ts-get-current-node)))
-    (evil-insert-state)))
+    (goto-char (tsc-node-start-position (symex-ts-get-current-node)))))
 
 (defun symex-ts-insert-at-end ()
   "Insert at end of symex."
   (interactive)
   (when (symex-ts-get-current-node)
-    (goto-char (tsc-node-end-position (symex-ts-get-current-node)))
-    (evil-insert-state)))
+    (goto-char (tsc-node-end-position (symex-ts-get-current-node)))))
 
 (defun symex-ts-insert-before ()
   "Insert before symex (instead of vim's default at the start of line)."
@@ -163,8 +154,16 @@ too."
   (when (symex-ts-get-current-node)
     (goto-char (tsc-node-start-position (symex-ts-get-current-node)))
     (insert " ")
-    (backward-char)
-    (evil-insert-state)))
+    (backward-char)))
+
+(defun symex-ts-append-after ()
+  "Append after the end of the symex.
+
+Since non-Lisp languages don't really have a syntactic distinction
+between the inside and the outside of expressions, this is just an
+alias for inserting at the end."
+  (interactive)
+  (symex-ts-insert-at-end))
 
 (defun symex-ts-append-after ()
   "Append after symex (instead of vim's default of line)."
@@ -179,8 +178,7 @@ too."
   (interactive)
   (when (symex-ts-get-current-node)
     (goto-char (tsc-node-end-position (symex-ts-get-current-node)))
-    (newline-and-indent)
-    (evil-insert-state)))
+    (newline-and-indent)))
 
 (defun symex-ts-open-line-before ()
   "Open new line before symex."
@@ -190,7 +188,7 @@ too."
     (newline-and-indent)
     (evil-previous-line)
     (indent-according-to-mode)
-    (evil-append-line 1)))
+    (move-end-of-line 1)))
 
 (defun symex-ts--paste (count direction)
   "Paste before or after symex, COUNT times, according to DIRECTION.
@@ -235,8 +233,7 @@ DIRECTION should be either the symbol `before' or `after'."
                       (point))))
 
       (symex-ts-clear)
-      (goto-char new-pos)
-      (evil-insert-state 1))))
+      (goto-char new-pos))))
 
 (defun symex-ts-yank (count)
   "Yank (copy) COUNT symexes."
@@ -253,6 +250,11 @@ DIRECTION should be either the symbol `before' or `after'."
                      (symex-ts--get-nth-sibling-from-node node #'tsc-get-next-named-sibling count)
                    node))))
       (copy-region-as-kill start end))))
+
+(defun symex-ts-tidy ()
+  "Auto-indent symex and fix any whitespace."
+  ;; Update current node from point and reindent if necessary
+  (indent-according-to-mode))
 
 
 ;; TODO: TS: capture node
