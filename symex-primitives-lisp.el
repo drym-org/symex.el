@@ -48,7 +48,9 @@
               (save-excursion (backward-char)  ; just inside symex
                               (or (lispy-left-p)
                                   (symex-string-p))))
-    (backward-sexp)))
+    (condition-case nil
+        (backward-sexp)
+      (error nil))))
 
 ;;; Predicates
 
@@ -122,14 +124,45 @@
 (defvar symex--re-blank-line "^[[:space:]]*$"
   "A blank line, either empty or containing only whitespace.")
 
+(defvar symex--re-whitespace "[[:space:]|\n]*"
+  "Whitespace that may extend over many lines.")
+
 (defvar symex--re-symex-line "^[[:space:]]*[^;[:space:]\n]"
   "A line that isn't blank and isn't a comment line.")
+
+(defvar symex--re-racket-syntax-object
+  (concat "#['`]" lispy-left))
+
+(defvar symex--re-splicing-unquote
+  (concat ",@" lispy-left))
+
+(defvar symex--re-racket-unquote-syntax
+  (concat "#," lispy-left))
+
+(defvar symex--re-racket-splicing-unsyntax
+  (concat "#,@" lispy-left))
+
+(defvar symex--re-quoted-list
+  (concat "['`]" lispy-left))
+
+(defvar symex--re-unquoted-list
+  (concat "," lispy-left))
+
+(defvar symex--re-clojure-deref-reader-macro
+  (concat "@" lispy-left))
+
+(defvar symex--re-clojure-literal-lambda
+  (concat "#" lispy-left))
 
 (defun symex-comment-line-p ()
   "Check if we're currently at the start of a comment line."
   (save-excursion
     (back-to-indentation)
     (looking-at-p ";")))
+
+(defun symex-inline-comment-p ()
+  "Check if there is an inline comment following point."
+  (looking-at-p "[[:space:]]*;"))
 
 (defun symex-string-p ()
   "Check if the symex is a string."
@@ -149,10 +182,10 @@
 
 (defun symex-empty-list-p ()
   "Check if we're looking at an empty list."
-  (save-excursion
-    (and (lispy-left-p)
-         (progn (forward-char 2) ;; need to go forward by 2 for some reason
-                (lispy-right-p)))))
+  (looking-at-p
+   (concat lispy-left
+           symex--re-whitespace
+           lispy-right)))
 
 (defun symex-empty-string-p ()
   "Check if we're looking at an empty list."
@@ -163,35 +196,35 @@
 
 (defun symex--racket-syntax-object-p ()
   "Check if the symex is a racket syntax object."
-  (looking-at (concat "#['`]" lispy-left)))
+  (looking-at-p symex--re-racket-syntax-object))
 
 (defun symex--splicing-unquote-p ()
   "Check if the symex is a spliced unquoted list."
-  (looking-at (concat ",@" lispy-left)))
+  (looking-at-p symex--re-splicing-unquote))
 
 (defun symex--racket-unquote-syntax-p ()
   "Check if the symex is a racket unquoted syntax list."
-  (looking-at (concat "#," lispy-left)))
+  (looking-at-p symex--re-racket-unquote-syntax))
 
 (defun symex--racket-splicing-unsyntax-p ()
   "Check if the symex is a racket spliced unsyntaxed list."
-  (looking-at (concat "#,@" lispy-left)))
+  (looking-at-p symex--re-racket-splicing-unsyntax))
 
 (defun symex--quoted-list-p ()
   "Check if the symex is a quoted list."
-  (looking-at (concat "['`]" lispy-left)))
+  (looking-at-p symex--re-quoted-list))
 
 (defun symex--unquoted-list-p ()
   "Check if the symex is an unquoted list."
-  (looking-at (concat "," lispy-left)))
+  (looking-at-p symex--re-unquoted-list))
 
 (defun symex--clojure-deref-reader-macro-p ()
   "Check if the symex is a Clojure deref reader macro."
-  (looking-at (concat "@" lispy-left)))
+  (looking-at-p symex--re-clojure-deref-reader-macro))
 
 (defun symex--clojure-literal-lambda-p ()
   "Check if the symex is a Clojure anonymous function literal."
-  (looking-at (concat "#" lispy-left)))
+  (looking-at-p symex--re-clojure-literal-lambda))
 
 (defun symex--special-left-p ()
   "Check if point is at a 'special' opening delimiter.
@@ -210,25 +243,45 @@ as special cases here."
       (symex--clojure-deref-reader-macro-p)
       (symex--clojure-literal-lambda-p)))
 
+(defun symex--re-or (&rest args)
+  "An OR combinator for regular expression strings."
+  (concat (string-join args "\\|") ))
+
+(defun symex--form-offset ()
+  "Get the offset for entry into the form."
+  (cond ((symex--racket-splicing-unsyntax-p) 4)
+        ((or (symex--racket-syntax-object-p)
+             (symex--racket-unquote-syntax-p)
+             (symex--splicing-unquote-p))
+         3)
+        ((or (symex--quoted-list-p)
+             (symex--unquoted-list-p)
+             (symex--clojure-deref-reader-macro-p)
+             (symex--clojure-literal-lambda-p))
+         2)
+        ((or (symex-form-p)
+             (symex-string-p)) 1)
+        (t 0)))
+
 (defun symex--special-empty-list-p ()
   "Check if we're looking at a 'special' empty list."
   (or (save-excursion
         (and (symex--racket-splicing-unsyntax-p)
-             (progn (forward-char 5)
-                    (lispy-right-p))))
+             (progn (forward-char 4)
+                    (looking-at-p (concat symex--re-whitespace lispy-right)))))
       (save-excursion
         (and (or (symex--racket-syntax-object-p)
                  (symex--racket-unquote-syntax-p)
                  (symex--splicing-unquote-p))
-             (progn (forward-char 4)
-                    (lispy-right-p))))
+             (progn (forward-char 3)
+                    (looking-at-p (concat symex--re-whitespace lispy-right)))))
       (save-excursion
         (and (or (symex--quoted-list-p)
                  (symex--unquoted-list-p)
                  (symex--clojure-deref-reader-macro-p)
                  (symex--clojure-literal-lambda-p))
-             (progn (forward-char 3)
-                    (lispy-right-p))))))
+             (progn (forward-char 2)
+                    (looking-at-p (concat symex--re-whitespace lispy-right)))))))
 
 (defun symex-atom-p ()
   "Check if the symex is an atom."
@@ -255,7 +308,7 @@ as special cases here."
 
 ;;; Navigation
 
-(defun symex-lisp--select-nearest ()
+(defun symex-lisp-select-nearest ()
   "Select the appropriate symex nearest to point."
   (cond ((and (not (eobp))
               (save-excursion (forward-char) (lispy-right-p))) ; |)
@@ -265,7 +318,6 @@ as special cases here."
          (beginning-of-thing 'sexp))
         (t (symex-lisp--if-stuck (symex-lisp--backward)
                                  (symex-lisp--forward)))))
-
 
 (defun symex-lisp--get-starting-point ()
   "Get the point value at the start of the current symex."
@@ -337,7 +389,20 @@ symex-oriented languages like Lisp, this is always zero."
         ;; better to revise the above logic so that
         ;; point does not go backwards.
         (goto-char original-location)
-        (setq result 0)))
+        (setq result 0))
+      (when (and (< original-location current-location)
+                 (= result 0))
+        ;; happens when point is in whitespace like
+        ;; a |  b
+        ;; and the result is
+        ;; a   |b
+        ;; but the logic above concludes there has been
+        ;; no movement.
+        ;; probably better to revise the above logic to
+        ;; explicitly reason about the source text instead
+        ;; of relying on implicit assumptions about the
+        ;; behavior of forward-sexp - maybe use thing-at-point
+        (setq result 1)))
     result))
 
 (defun symex-lisp--forward (&optional count)
@@ -393,29 +458,40 @@ of symex mode (use the public `symex-go-backward` instead)."
   (re-search-forward symex--re-symex-line)
   (back-to-indentation))
 
+(defun symex-lisp--go-to-next-non-whitespace-char ()
+  "Move point to the next non-whitespace character.
+
+If the current character is non-whitespace, point is not moved."
+  (unless (looking-at-p "[^[:space:]\n]")
+    (re-search-forward "[^[:space:]\n]")
+    ;; since the re search goes to the end of the match
+    (backward-char)))
+
 (defun symex-lisp--go-up-by-one ()
   "Go up one level."
   (let ((result 1))
-    (cond ((or (symex-empty-list-p)
-               (symex--special-empty-list-p))
-           (setq result 0))
-          ((lispy-left-p) (forward-char))
-          ;; note that at least some symex features would benefit by
-          ;; treating these special cases as "symex-left-p" but it
-          ;; would likely be too much special case handling to be
-          ;; worth it to support those cases naively, without an AST
-          ((or (symex--racket-syntax-object-p)
-               (symex--splicing-unquote-p)
-               (symex--racket-unquote-syntax-p))
-           (forward-char 3))
-          ((symex--racket-splicing-unsyntax-p)
-           (forward-char 4))
-          ((or (symex--quoted-list-p)
-               (symex--unquoted-list-p)
-               (symex--clojure-deref-reader-macro-p)
-               (symex--clojure-literal-lambda-p))
-           (forward-char 2))
-          (t (setq result 0)))
+    (if (or (symex-empty-list-p)
+            (symex--special-empty-list-p))
+        (setq result 0)
+      (cond ((lispy-left-p) (forward-char))
+            ;; note that at least some symex features would benefit by
+            ;; treating these special cases as "symex-left-p" but it
+            ;; would likely be too much special case handling to be
+            ;; worth it to support those cases naively, without an AST
+            ((or (symex--racket-syntax-object-p)
+                 (symex--splicing-unquote-p)
+                 (symex--racket-unquote-syntax-p))
+             (forward-char 3))
+            ((symex--racket-splicing-unsyntax-p)
+             (forward-char 4))
+            ((or (symex--quoted-list-p)
+                 (symex--unquoted-list-p)
+                 (symex--clojure-deref-reader-macro-p)
+                 (symex--clojure-literal-lambda-p))
+             (forward-char 2))
+            (t (setq result 0)))
+      ;; find first non-whitespace character
+      (symex-lisp--go-to-next-non-whitespace-char))
     result))
 
 (defun symex-lisp--go-up (&optional count)
@@ -504,7 +580,7 @@ match."
 
 ;;; Utilities
 
-(defun symex-lisp--exit ()
+(defun symex-lisp-exit ()
   "Take necessary actions upon Symex mode exit.
 
 There are no Lisp-specific actions to take, at the present time, so

@@ -189,15 +189,15 @@ symexes, returns the end point of the last one found."
   (interactive)
   (if tree-sitter-mode
       (symex-ts-set-current-node-from-point)
-    (symex-lisp--select-nearest))
+    (symex-lisp-select-nearest))
   (point))
 
 (defun symex--primitive-exit ()
   "Take necessary actions as part of exiting Symex mode, at a primitive level."
   (symex--delete-overlay)
   (if tree-sitter-mode
-      (symex-ts--exit)
-    (symex-lisp--exit)))
+      (symex-ts-exit)
+    (symex-lisp-exit)))
 
 
 (provide 'symex-primitives)

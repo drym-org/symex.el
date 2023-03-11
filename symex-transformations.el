@@ -52,7 +52,6 @@
 ;; - this would also allow more fine-grained handling, e.g. different types of commands
 ;; - this would also avoid the need for `symex--evil-repeatable-commands`, so that we could `(evil-add-command-properties fn :repeat t)` directly -- this would also support users defining new symex commands and having them be repeatable without a manual registration process
 ;; TODO: dot operator disrupts scroll margins
-;; TODO: why doesn't symex-replace undo in one step?
 ;; TODO: maybe identify "non-disorienting" commands and define a new macro for them. E.g. symex-tidy is itself a command. it that bad?
 
 (defmacro symex-define-command (name args docstring &rest body)
@@ -62,7 +61,7 @@
      ,docstring
      ,@body
      (symex-select-nearest)
-     (symex--tidy)))
+     (symex--tidy 1)))
 
 (defmacro symex-define-insertion-command (name
                                           args
@@ -91,7 +90,7 @@
   (interactive "p")
   (if tree-sitter-mode
       (symex-ts-delete-node-backward count)
-    (symex-lisp--delete-backwards count)))
+    (symex-lisp-delete-backwards count)))
 
 (symex-define-command symex-delete-remaining ()
   "Delete remaining symexes at this level."
@@ -211,8 +210,8 @@
 (defun symex--join ()
   "Merge symexes at the same level."
   (save-excursion
-    (symex--go-forward)
-    (paredit-join-sexps)))
+    (when (symex--go-forward)
+      (paredit-join-sexps))))
 
 (symex-define-command symex-join (count)
   "Merge COUNT symexes at the same level."
@@ -232,6 +231,31 @@
   (dotimes (_ count)
     (symex--join-lines t)))
 
+(defun symex--same-line-tidy-affected ()
+  "Tidy symexes affected by line-oriented operations.
+
+This assumes that point is at the end of whatever change has been
+made, and tidies the next symex if it is on the same line. Then, it
+continues tidying symexes as long as the next one begins on the same
+line that the preceding one ends on."
+  (symex--save-point-excursion
+    ;; assume point is at the end of the triggering change
+    (let ((affected (or (symex-lisp--point-at-start-p)
+                        (= (line-number-at-pos)
+                           ;; does the next symex start on the same line?
+                           (if (symex--go-forward)
+                               (line-number-at-pos)
+                             -1)))))
+      (while affected
+        (symex--tidy 1)
+        (setq affected
+              (= (save-excursion  ; does the symex end on the same line
+                   (forward-sexp) ; that the next one begins on?
+                   (line-number-at-pos))
+                 (if (symex--go-forward)
+                     (line-number-at-pos)
+                   -1)))))))
+
 (defun symex--join-lines (&optional backwards)
   "Join lines inside symex.
 
@@ -239,23 +263,24 @@ If BACKWARDS is true, then joins current symex to previous one, otherwise,
 by default, joins next symex to current one."
   (if backwards
       (when (symex--point-at-indentation-p)
-        (progn (evil-previous-line)
-               (if (symex--current-line-empty-p)
-                   (evil-join (line-beginning-position)
-                              (1+ (line-beginning-position)))
-                 (evil-join (line-beginning-position)
-                            (line-end-position)))))
-    (save-excursion (forward-sexp)
-                    (evil-join (line-beginning-position)
-                               (line-end-position))))
-  (symex--tidy))
+        (join-line)
+        (when (looking-at-p "[[:space:]]")
+          (symex-lisp--go-to-next-non-whitespace-char)))
+    (unless (symex--point-on-last-line-p)
+      (save-excursion
+        (forward-sexp)
+        (join-line t))
+      ;; every subsequent symex that begins on
+      ;; the same line that the preceding one ends on
+      ;; should be indented
+      (symex--same-line-tidy-affected))))
 
 (defun symex-yank (count)
   "Yank (copy) COUNT symexes."
   (interactive "p")
   (if tree-sitter-mode
     (symex-ts-yank count)
-    (symex-lisp--yank count)))
+    (symex-lisp-yank count)))
 
 (defun symex-yank-remaining ()
   "Yank (copy) remaining symexes at this level."
@@ -270,8 +295,26 @@ by default, joins next symex to current one."
   (if tree-sitter-mode
       (symex-ts-paste-before count)
     (symex--with-undo-collapse
-      (dotimes (_ count)
-        (symex-lisp--paste-before)))))
+      (let ((pasted-text ""))
+        (dotimes (_ count)
+          (setq pasted-text
+                (concat (symex-lisp-paste-before)
+                        pasted-text)))
+        (save-excursion
+          (let* ((end (+ (point) (length pasted-text)))
+                 (end-line (line-number-at-pos end)))
+            ;; we use end + 1 here since end is the point
+            ;; right before the initial expression, which
+            ;; won't be indented as it thus would fall
+            ;; outside the region to be indented.
+            (indent-region (point) (1+ end))
+            ;; indenting may add characters (e.g. spaces)
+            ;; to the buffer, so we rely on the line number
+            ;; instead.
+            (symex--goto-line end-line)
+            ;; if the last line has any trailing forms,
+            ;; indent them.
+            (symex--same-line-tidy-affected)))))))
 
 (symex-define-command symex-paste-after (count)
   "Paste after symex, COUNT times."
@@ -280,50 +323,60 @@ by default, joins next symex to current one."
   (if tree-sitter-mode
       (symex-ts-paste-after count)
     (symex--with-undo-collapse
-      (dotimes (_ count)
-        (symex-lisp--paste-after)))))
+      (let ((pasted-text ""))
+        (dotimes (_ count)
+          (setq pasted-text
+                (concat (symex-lisp-paste-after)
+                        pasted-text)))
+        (save-excursion
+          (goto-char (+ (point)
+                        (length pasted-text)))
+          (symex--same-line-tidy-affected))
+        ;; move to indicate appropriate posterior selection
+        (forward-sexp)
+        (forward-char)))))
 
 (symex-define-insertion-command symex-open-line-after ()
   "Open new line after symex."
   (interactive)
   (if tree-sitter-mode
       (symex-ts-open-line-after)
-    (symex-lisp--open-line-after)))
+    (symex-lisp-open-line-after)))
 
 (symex-define-insertion-command symex-open-line-before ()
   "Open new line before symex."
   (interactive)
   (if tree-sitter-mode
       (symex-ts-open-line-before)
-    (symex-lisp--open-line-before)))
+    (symex-lisp-open-line-before)))
 
 (symex-define-insertion-command symex-append-after ()
   "Append after symex (instead of vim's default of line)."
   (interactive)
   (if tree-sitter-mode
       (symex-ts-append-after)
-    (symex-lisp--append-after)))
+    (symex-lisp-append-after)))
 
 (symex-define-insertion-command symex-insert-before ()
   "Insert before symex (instead of vim's default at the start of line)."
   (interactive)
   (if tree-sitter-mode
       (symex-ts-insert-before)
-    (symex-lisp--insert-before)))
+    (symex-lisp-insert-before)))
 
 (symex-define-insertion-command symex-insert-at-beginning ()
   "Insert at beginning of symex."
   (interactive)
   (if tree-sitter-mode
       (symex-ts-insert-at-beginning)
-    (symex-lisp--insert-at-beginning)))
+    (symex-lisp-insert-at-beginning)))
 
 (symex-define-insertion-command symex-insert-at-end ()
   "Insert at end of symex."
   (interactive)
   (if tree-sitter-mode
       (symex-ts-insert-at-end)
-    (symex-lisp--insert-at-end)))
+    (symex-lisp-insert-at-end)))
 
 (defun symex--create (type)
   "Create new symex (list).
@@ -369,7 +422,9 @@ New list delimiters are determined by the TYPE."
   (interactive "p")
   (save-excursion
     (forward-sexp)
-    (newline-and-indent count)))
+    (newline-and-indent count)
+    (fixup-whitespace))
+  (symex--same-line-tidy-affected))
 
 (symex-define-command symex-swallow ()
   "Swallow the head of the symex.
@@ -448,13 +503,14 @@ then no action is taken."
 
 (defun symex--shift-forward ()
   "Move symex forward in current tree level."
-  (forward-sexp)
-  (condition-case nil
-      (progn (transpose-sexps 1)
-             (backward-sexp)
-             t)
-    (error (backward-sexp)
-           nil)))
+  (unless (symex--point-at-last-symex-p)
+    (forward-sexp)
+    (condition-case nil
+        (progn (transpose-sexps 1)
+               (backward-sexp)
+               t)
+      (error (backward-sexp)
+             nil))))
 
 (symex-define-command symex-shift-forward (count)
   "Move symex forward COUNT times in current tree level."
@@ -642,16 +698,16 @@ layer of quoting."
   (interactive)
   (insert ","))
 
-(defun symex--tidy ()
+(defun symex--tidy (count)
   "Auto-indent symex and fix any whitespace."
   (if tree-sitter-mode
-      (symex-ts-tidy)
-    (symex-lisp-tidy)))
+      (symex-ts-tidy) ; TODO: add count
+    (symex-lisp-tidy count)))
 
-(symex-define-command symex-tidy ()
+(symex-define-command symex-tidy (count)
   "Auto-indent symex and fix any whitespace."
-  (interactive)
-  (symex--tidy))
+  (interactive "p")
+  (symex--tidy count))
 
 (cl-defun symex--transform-in-isolation (traversal side-effect &key pre-traversal)
   "Transform a symex in a temporary buffer and replace the original with it.
@@ -690,7 +746,7 @@ effect is not performed during the pre-traversal."
            (error nil))
          (buffer-string)))))
   (save-excursion (yank))
-  (symex--tidy))
+  (symex--tidy 1))
 
 (symex-define-command symex-tidy-proper ()
   "Properly tidy things up.
@@ -709,7 +765,7 @@ implementation."
   (interactive)
   (symex--transform-in-isolation
    symex--traversal-postorder-in-tree
-   #'symex--tidy
+   (apply-partially #'symex--tidy 1)
    :pre-traversal (symex-traversal (circuit symex--traversal-preorder-in-tree))))
 
 (symex-define-command symex-collapse ()
@@ -761,8 +817,8 @@ implementation."
   (save-excursion
     ;; do it once first since it will be executed as a side-effect
     ;; _after_ each step in the traversal
-    (symex--tidy)
-    (symex--do-while-traversing #'symex--tidy
+    (symex--tidy 1)
+    (symex--do-while-traversing (apply-partially #'symex--tidy 1)
                                 (symex-make-move 1 0))))
 
 (symex-define-command symex-unfurl ()

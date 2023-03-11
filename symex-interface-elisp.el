@@ -51,9 +51,7 @@
 (defun symex-eval-print-elisp ()
   "Eval symex and print result in buffer."
   (interactive)
-  (save-excursion
-    (forward-sexp)
-    (eval-print-last-sexp)))
+  (eval-print-last-sexp))
 
 (defun symex-describe-symbol-elisp ()
   "Describe symbol at point."

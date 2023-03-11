@@ -44,6 +44,20 @@ From: https://stackoverflow.com/a/13313091"
                      (point))
      (point)))
 
+(defun symex--point-on-last-line-p ()
+  "Check if point is on the last line of the buffer."
+  (= (line-number-at-pos)
+     (save-excursion (goto-char (point-max))
+                     (line-number-at-pos))))
+
+(defun symex--goto-line (line-no)
+  "Go to line number LINE-NO.
+
+Emacs docs recommend against using `goto-line`, suggesting
+the following recipe instead."
+  (goto-char (point-min))
+  (forward-line (1- line-no)))
+
 ;; `with-undo-collapse` macro, to treat a sequence of operations
 ;; as a single entry in the undo list.
 ;; From: https://emacs.stackexchange.com/questions/7558/collapsing-undo-history/7560#7560
@@ -87,6 +101,22 @@ MARKER is some kind of delimiter for the undo block, TODO."
              ,@body)
          (with-current-buffer ,buffer-var
            (symex--undo-collapse-end ',marker))))))
+
+;; Modified from: https://stackoverflow.com/a/24283996
+;; In cases where we mutate the buffer within a save-excursion
+;; (e.g. by using symex--tidy), it seems that save-excursion
+;; does not return to the original point even if the mutation
+;; did not actually result in any changes. Instead, it seems
+;; to return to the beginning of the changed region, which
+;; for our purposes is sometimes one character before the
+;; original position. We use this simple macro to restore point
+;; to its exact original location.
+(defmacro symex--save-point-excursion (&rest forms)
+  (let ((old-point (gensym "old-point")))
+    `(let ((,old-point (point)))
+       (prog1
+           (progn ,@forms)
+         (goto-char ,old-point)))))
 
 (defun symex--combine-alists (al1 al2)
   "Combine two association lists, prioritizing one of them.
