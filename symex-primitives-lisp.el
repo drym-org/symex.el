@@ -344,7 +344,6 @@ as special cases here."
   "Select the appropriate symex nearest to point."
   (cond ((and (not (eobp))
               (save-excursion (forward-char) (symex-right-p))) ; |)
-         (forward-char)
          (symex-other))
         ((thing-at-point 'sexp)       ; som|ething
          (beginning-of-thing 'sexp))
