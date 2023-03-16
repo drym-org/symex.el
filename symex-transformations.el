@@ -497,14 +497,17 @@ then no action is taken."
   "Wrap with containing symex."
   (interactive)
   (symex-wrap-round)
-  (symex--go-up))
+  (symex--go-up)
+  (insert " ")
+  (backward-char))
 
 (symex-define-insertion-command symex-wrap-and-append ()
   "Wrap with containing symex and append."
   (interactive)
   (symex-wrap-round)
   (symex--go-up)
-  (forward-sexp))
+  (forward-sexp)
+  (insert " "))
 
 (defun symex--shift-forward ()
   "Move symex forward in current tree level."
