@@ -74,6 +74,7 @@
      ,interactive-decl
      (evil-start-undo-step)
      ,@body
+     (setq-local symex--buffer-modified-tick (buffer-chars-modified-tick))
      (symex-enter-lowest)))
 
 (symex-define-command symex-delete (count)
