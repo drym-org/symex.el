@@ -28,7 +28,10 @@
 (defun symex-ts--delete-current-line-if-empty (point)
   "Delete the line containing POINT if it is empty."
   (save-excursion (goto-char point)
-                  (when (string-match "^[[:space:]]*$" (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
+                  (when (string-match "^[[:space:]]*$"
+                                      (buffer-substring-no-properties
+                                        (line-beginning-position)
+                                        (line-end-position)))
                     (kill-whole-line)
                     (pop kill-ring)
                     (setq kill-ring-yank-pointer kill-ring)
