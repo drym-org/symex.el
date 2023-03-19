@@ -50,6 +50,7 @@
 
 ;; buffer-local branch memory stack
 (defvar-local symex--branch-memory nil)
+(defvar-local symex-eval-function nil)
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;;; MISCELLANEOUS ;;;
@@ -80,19 +81,7 @@
           ;; merely as an implementation detail of this operation
           (evil-emacslike-state)
           (forward-sexp) ; selected symexes will have the cursor on the starting paren
-          (cond ((member major-mode symex-racket-modes)
-                 (symex-eval-racket))
-                ((member major-mode symex-elisp-modes)
-                 (symex-eval-elisp))
-                ((equal major-mode 'scheme-mode)
-                 (symex-eval-scheme))
-                ((member major-mode symex-clojure-modes)
-                 (symex-eval-clojure))
-                ((member major-mode symex-common-lisp-modes)
-                 (symex-eval-common-lisp))
-                ((equal major-mode 'arc-mode)
-                 (symex-eval-arc))
-                (t (error "Symex mode: Lisp flavor not recognized!"))))
+          (funcall #'symex-eval-function))
       ;; enter a "normal-like" state here momentarily, to prevent entry
       ;; into symex mode from being treated as if it was in an "emacs" context
       ;; since the entry into emacs state is done here as an implementation
