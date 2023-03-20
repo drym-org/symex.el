@@ -81,7 +81,7 @@
           ;; merely as an implementation detail of this operation
           (evil-emacslike-state)
           (forward-sexp) ; selected symexes will have the cursor on the starting paren
-          (funcall #'symex-eval-function))
+          (funcall symex-eval-function))
       ;; enter a "normal-like" state here momentarily, to prevent entry
       ;; into symex mode from being treated as if it was in an "emacs" context
       ;; since the entry into emacs state is done here as an implementation

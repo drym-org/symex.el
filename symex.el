@@ -41,6 +41,7 @@
 
 (require 'symex-evil)
 (require 'symex-interop)
+(require 'symex-context)
 (require 'symex-misc)
 (require 'symex-primitives)
 (require 'symex-custom)
