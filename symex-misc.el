@@ -52,7 +52,11 @@
 (defvar-local symex--branch-memory nil)
 (defvar-local symex-eval-function
   (lambda ()
-    (error "Symex mode: Lisp flavor not recognized! ")))
+    (error "Symex mode: Lisp flavor not recognized! "))
+  "Function to call to evaluate an expression.
+
+This is dynamically set upon entry to Symex, and may be set according
+to major mode or other inferred user context at the time of entry.")
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;;; MISCELLANEOUS ;;;
