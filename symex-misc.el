@@ -50,7 +50,9 @@
 
 ;; buffer-local branch memory stack
 (defvar-local symex--branch-memory nil)
-(defvar-local symex-eval-function nil)
+(defvar-local symex-eval-function
+  (lambda ()
+    (error "Symex mode: Lisp flavor not recognized! ")))
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;;; MISCELLANEOUS ;;;
