@@ -35,6 +35,16 @@
 
 (defvar symex-clojure-modes)
 
+(defun symex-tree-sitter-p ()
+  "Whether to use the tree sitter primitives."
+  (and tree-sitter-mode
+       ;; We use the Lisp primitives for Clojure
+       ;; even though Emacs 29 provides tree-sitter APIs
+       ;; for it, since the Lisp primitives in Symex are
+       ;; more mature than the Tree Sitter ones at the
+       ;; present time.
+       (not (member major-mode symex-clojure-modes))))
+
 ;;; User Interface
 
 (defun symex--adjust-point ()
@@ -193,16 +203,6 @@ symexes, returns the end point of the last one found."
       (symex-ts-set-current-node-from-point)
     (symex-lisp--select-nearest))
   (point))
-
-(defun symex-tree-sitter-p ()
-  "Whether to use the tree sitter primitives."
-  (and tree-sitter-mode
-       ;; We use the Lisp primitives for Clojure
-       ;; even though Emacs 29 provides tree-sitter APIs
-       ;; for it, since the Lisp primitives in Symex are
-       ;; more mature than the Tree Sitter ones at the
-       ;; present time.
-       (not (member major-mode symex-clojure-modes))))
 
 (defun symex--primitive-exit ()
   "Take necessary actions as part of exiting Symex mode, at a primitive level."
