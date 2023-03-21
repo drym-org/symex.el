@@ -87,7 +87,7 @@ selected according to the ranges that have changed."
 
 (defun symex-ts-comment (&optional count)
   "Comment out COUNT expressions."
-  (when tree-sitter-mode
+  (when (symex-tree-sitter-p)
     (let* ((count (or count 1))
            (node (symex-ts-get-current-node))
            (start-pos (tsc-node-start-position node))
