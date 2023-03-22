@@ -49,14 +49,14 @@
 (defun symex-delete (count)
   "Delete COUNT symexes."
   (interactive "p")
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-delete-node-forward count)
     (symex-lisp--delete count)))
 
 (defun symex-delete-backwards (count)
   "Delete COUNT symexes backwards."
   (interactive "p")
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-delete-node-backward count)
     (symex-lisp--delete-backwards count)))
 
@@ -70,7 +70,7 @@
 (defun symex-change (count)
   "Change COUNT symexes."
   (interactive "p")
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-change-node-forward count)
     (symex-lisp--change count)))
 
@@ -95,7 +95,7 @@
 (defun symex-replace ()
   "Replace contents of symex."
   (interactive)
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-replace)
     (progn (symex--clear)
            (when (or (symex-form-p) (symex-string-p))
@@ -105,7 +105,7 @@
 (defun symex-clear ()
   "Clear contents of symex."
   (interactive)
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-clear)
     (progn
       (symex--clear)
@@ -238,7 +238,7 @@ by default, joins next symex to current one."
 (defun symex-yank (count)
   "Yank (copy) COUNT symexes."
   (interactive "p")
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
     (symex-ts-yank count)
     (symex-lisp--yank count)))
 
@@ -253,7 +253,7 @@ by default, joins next symex to current one."
   "Paste before symex, COUNT times."
   (interactive "p")
   (setq this-command 'evil-paste-before)
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-paste-before count)
     (symex--with-undo-collapse
       (dotimes (_ count)
@@ -263,7 +263,7 @@ by default, joins next symex to current one."
   "Paste after symex, COUNT times."
   (interactive "p")
   (setq this-command 'evil-paste-after)
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-paste-after count)
     (symex--with-undo-collapse
       (dotimes (_ count)
@@ -272,42 +272,42 @@ by default, joins next symex to current one."
 (defun symex-open-line-after ()
   "Open new line after symex."
   (interactive)
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-open-line-after)
     (symex-lisp--open-line-after)))
 
 (defun symex-open-line-before ()
   "Open new line before symex."
   (interactive)
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-open-line-before)
     (symex-lisp--open-line-before)))
 
 (defun symex-append-after ()
   "Append after symex (instead of vim's default of line)."
   (interactive)
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-append-after)
     (symex-lisp--append-after)))
 
 (defun symex-insert-before ()
   "Insert before symex (instead of vim's default at the start of line)."
   (interactive)
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-insert-before)
     (symex-lisp--insert-before)))
 
 (defun symex-insert-at-beginning ()
   "Insert at beginning of symex."
   (interactive)
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-insert-at-beginning)
     (symex-lisp--insert-at-beginning)))
 
 (defun symex-insert-at-end ()
   "Insert at end of symex."
   (interactive)
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-insert-at-end)
     (symex-lisp--insert-at-end)))
 
@@ -505,7 +505,7 @@ then no action is taken."
 (defun symex-comment (count)
   "Comment out COUNT symexes."
   (interactive "p")
-  (if tree-sitter-mode
+  (if (symex-tree-sitter-p)
       (symex-ts-comment count)
     (progn
       (mark-sexp count)
