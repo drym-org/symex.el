@@ -217,7 +217,7 @@ text, on the respective side."
           (save-excursion (forward-sexp)
                           (eobp)))
          (previous-line-empty
-          (save-excursion (previous-line)
+          (save-excursion (forward-line -1)
                           (symex--current-line-empty-p)))
          (next-line-empty
           (save-excursion (forward-sexp)
