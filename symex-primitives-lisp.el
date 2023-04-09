@@ -131,9 +131,7 @@
 (defun symex-lisp--point-at-end-p ()
   "Check if point is at the end of a symex."
   (condition-case nil
-      (save-excursion
-        (forward-char)
-        (symex-right-p))
+      (symex-right-p)
     (error nil)))
 
 ;; From Lispy
@@ -191,8 +189,7 @@
 ;; based on lispy-right-p
 (defun symex-right-p ()
   "Check if we're at (i.e. after) a closing delimiter."
-  (looking-back symex--re-right
-                (line-beginning-position)))
+  (looking-at symex--re-right))
 
 ;; From https://www.gnu.org/software/emacs/manual/html_node/efaq/Matching-parentheses.html
 (defun symex-other ()
@@ -357,7 +354,7 @@ as special cases here."
 (defun symex-lisp-select-nearest ()
   "Select the appropriate symex nearest to point."
   (cond ((and (not (eobp))
-              (save-excursion (forward-char) (symex-right-p))) ; |)
+              (symex-right-p)) ; |)
          (symex-other))
         ((thing-at-point 'sexp)       ; som|ething
          (beginning-of-thing 'sexp))

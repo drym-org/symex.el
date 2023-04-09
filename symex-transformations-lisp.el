@@ -112,7 +112,6 @@
                (symex--join-to-next)
              (symex--go-backward)))
           ((save-excursion (back-to-indentation) ; ^<>)
-                           (forward-char)
                            (symex-right-p))
            ;; Cases 2 and 3 in issue #18
            ;; if the deleted symex is preceded by a comment line
@@ -132,8 +131,7 @@
                                         t)
                                (error nil))
                        (symex--join-to-match symex--re-right))))))))
-          ((save-excursion (forward-char) ; ... <>)
-                           (symex-right-p))
+          ((symex-right-p) ; ... <>)
            (symex--go-backward))
           (t (symex--go-forward)))
     ;; should we return the actual motion we took?
