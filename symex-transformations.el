@@ -52,14 +52,22 @@
 ;; TODO: dot operator disrupts scroll margins
 ;; TODO: maybe identify "non-disorienting" commands and define a new macro for them. E.g. symex-tidy is itself a command. it that bad?
 
-(defmacro symex-define-command (name args docstring &rest body)
+(defmacro symex-define-command (name
+                                args
+                                docstring
+                                interactive-decl
+                                &rest
+                                body)
   "Define a symex command."
   (declare (indent defun))
-  `(defun ,name ,args
-     ,docstring
-     ,@body
-     (symex-select-nearest)
-     (symex--tidy 1)))
+  (let ((result (gensym)))
+    `(defun ,name ,args
+       ,docstring
+       ,interactive-decl
+       (let ((,result (progn ,@body)))
+         (symex-select-nearest)
+         (symex--tidy 1)
+         ,result))))
 
 (defmacro symex-define-insertion-command (name
                                           args
@@ -140,50 +148,61 @@
       (re-search-forward symex--re-left)
       (symex--go-down))))
 
+(defvar symex--traversal-emit-backward
+  (symex-traversal
+   (maneuver (move up)
+             (delete)
+             (move down)
+             (paste before)))
+  "Emit backward.")
+
+(defun symex--emit-backward (count)
+  "Emit backward."
+  (dotimes (_ count)
+    (symex-execute-traversal symex--traversal-emit-backward)))
+
 (symex-define-command symex-emit-backward (count)
   "Emit backward, COUNT times."
   (interactive "p")
-  (dotimes (_ count)
-    (symex--emit-backward)))
+  (symex--emit-backward count))
 
-(defun symex--emit-forward ()
+(defvar symex--traversal-emit-forward
+  (symex-traversal
+   (maneuver (move up)
+             (circuit (move forward))
+             (delete)
+             (move down)
+             (paste after)))
+  "Emit forward.")
+
+(defun symex--emit-forward (count)
   "Emit forward."
-  (when (and (symex-left-p)
-             (not (symex-empty-list-p)))
-    (save-excursion
-      (symex--go-up)  ; need to be inside the symex to emit and capture
-      (paredit-forward-barf-sexp 1))
-    (when (symex-empty-list-p)
-      (symex--go-forward)
-      (fixup-whitespace)
-      (re-search-backward symex--re-left))))
+  (dotimes (_ count)
+    (symex-execute-traversal symex--traversal-emit-forward)))
 
 (symex-define-command symex-emit-forward (count)
   "Emit forward, COUNT times."
   (interactive "p")
-  (dotimes (_ count)
-    (symex--emit-forward)))
+  (symex--emit-forward count))
 
-(defun symex--capture-backward ()
+(defvar symex--traversal-capture-backward
+  (symex-traversal
+   (maneuver (move backward)
+             (delete)
+             (move up)
+             (paste before)
+             (move down)))
+  "Capture backward.")
+
+(defun symex--capture-backward (count)
   "Capture from behind."
-  (when (and (symex-left-p)
-             ;; paredit captures 1 ((|2 3)) -> (1 (2 3)) but we don't
-             ;; want to in this case since point indicates the inner
-             ;; symex, which cannot capture, rather than the outer
-             ;; one. We avoid this by employing a guard condition here.
-             (not (symex--point-at-first-symex-p)))
-    (if (symex-empty-list-p)
-        (forward-char)
-      (symex--go-up))  ; need to be inside the symex to emit and capture
-    (paredit-backward-slurp-sexp 1)
-    (fixup-whitespace)
-    (symex--go-down)))
+  (dotimes (_ count)
+    (symex-execute-traversal symex--traversal-capture-backward)))
 
 (symex-define-command symex-capture-backward (count)
   "Capture from behind, COUNT times."
   (interactive "p")
-  (dotimes (_ count)
-    (symex--capture-backward)))
+  (symex--capture-backward count))
 
 (defun symex--capture-forward ()
   "Capture from the front."

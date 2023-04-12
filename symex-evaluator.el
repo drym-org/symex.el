@@ -69,26 +69,6 @@ Optional argument COMPUTATION currently unused."
     (when executed-move
       (list executed-move))))
 
-(cl-defun symex-go-forward (&optional (count 1))
-  "Move forward COUNT symexes."
-  (interactive)
-  (symex--execute-tree-move (symex-make-move count 0)))
-
-(cl-defun symex-go-backward (&optional (count 1))
-  "Move backward COUNT symexes."
-  (interactive)
-  (symex--execute-tree-move (symex-make-move (- count) 0)))
-
-(cl-defun symex-go-up (&optional (count 1))
-  "Move up COUNT symexes."
-  (interactive)
-  (symex--execute-tree-move (symex-make-move 0 count)))
-
-(cl-defun symex-go-down (&optional (count 1))
-  "Move down COUNT symexes."
-  (interactive)
-  (symex--execute-tree-move (symex-make-move 0 (- count))))
-
 (defun symex--compute-results (a b computation)
   "Combine component computed results A and B into an aggregate result.
 
@@ -116,8 +96,8 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                                                      computation)))
         (when executed-phase
           (let ((executed-remaining-phases
-                 (symex-execute-traversal remaining-maneuver
-                                          computation)))
+                 (symex-execute-maneuver remaining-maneuver
+                                         computation)))
             (when executed-remaining-phases
               (symex--compute-results executed-phase
                                       (if (equal executed-remaining-phases
@@ -143,8 +123,8 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                                                      computation)))
         (when executed-phase
           (let ((executed-remaining-phases
-                 (symex-execute-traversal remaining-venture
-                                          computation)))
+                 (symex-execute-venture remaining-venture
+                                        computation)))
             (symex--compute-results executed-phase
                                     executed-remaining-phases
                                     computation)))))))
@@ -162,12 +142,18 @@ Evaluates to a COMPUTATION on the traversal actually executed."
               (> times 0))
       (let ((result (symex-execute-traversal traversal
                                              computation)))
-        (when result
-          (let ((executed-remaining-circuit
-                 (symex-execute-traversal remaining-circuit
+        (if result
+            (let ((executed-remaining-circuit
+                   (symex-execute-circuit remaining-circuit
                                           computation)))
-            (symex--compute-results result
-                                    executed-remaining-circuit
+              (symex--compute-results result
+                                      executed-remaining-circuit
+                                      computation))
+          (when (not times)
+            ;; if looping indefinitely, then count 0
+            ;; times executed as success
+            (symex--compute-results symex--move-zero
+                                    nil
                                     computation)))))))
 
 (defun symex-execute-detour (detour computation)
@@ -222,8 +208,8 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                                                       computation)))
         (if executed-option
             executed-option
-          (symex-execute-traversal remaining-protocol
-                                   computation))))))
+          (symex-execute-protocol remaining-protocol
+                                  computation))))))
 
 (defun symex-execute-decision (decision computation)
   "Attempt to execute a given DECISION.
@@ -240,6 +226,86 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                                  computation)
       (symex-execute-traversal alternative
                                computation))))
+
+(defun symex-execute-deletion (deletion computation)
+  "Attempt to execute a given DELETION.
+
+Evaluates to a COMPUTATION on the traversal actually executed."
+  (let ((what (symex--deletion-what deletion)))
+    ;; TODO: "what" is currently ignored
+    (let ((result (symex-delete 1)))
+      ;; TODO: compute based on an appropriate result here
+      (when result
+        (symex--compute-results symex--move-zero
+                                nil
+                                computation)))))
+
+(defun symex-execute-paste (paste computation)
+  "Attempt to execute a given PASTE.
+
+Evaluates to a COMPUTATION on the traversal actually executed."
+  (let ((side (symex--paste-side paste)))
+    (let ((result (if (eq 'before side)
+                      ;; TODO: ensure point invariance
+                      ;; at the command level
+                      (let ((result (symex-paste-before 1)))
+                        (symex--go-forward)
+                        result)
+                    (save-excursion
+                      (symex-paste-after 1)))))
+      ;; TODO: compute based on an appropriate result here
+      (when result
+        (symex--compute-results symex--move-zero
+                                nil
+                                computation)))))
+
+(defun symex-execute-operation (operation computation)
+  "Attempt to execute a given OPERATION.
+
+Evaluates to a COMPUTATION on the traversal actually executed."
+  (let ((op (symex--operation-operation operation)))
+    (funcall op)
+    ;; TODO: compute based on an appropriate result here
+    (symex--compute-results symex--move-zero
+                            nil
+                            computation)))
+
+(defun symex--execute-traversal (traversal computation)
+  "Helper to execute TRAVERSAL and perform COMPUTATION."
+  (cond ((symex-maneuver-p traversal)
+         (symex-execute-maneuver traversal
+                                 computation))
+        ((symex-venture-p traversal)
+         (symex-execute-venture traversal
+                                computation))
+        ((symex-circuit-p traversal)
+         (symex-execute-circuit traversal
+                                computation))
+        ((symex-protocol-p traversal)
+         (symex-execute-protocol traversal
+                                 computation))
+        ((symex-precaution-p traversal)
+         (symex-execute-precaution traversal
+                                   computation))
+        ((symex-detour-p traversal)
+         (symex-execute-detour traversal
+                               computation))
+        ((symex-decision-p traversal)
+         (symex-execute-decision traversal
+                                 computation))
+        ((symex-move-p traversal)
+         (symex-execute-move traversal
+                             computation))
+        ((symex-delete-p traversal)
+         (symex-execute-deletion traversal
+                                 computation))
+        ((symex-paste-p traversal)
+         (symex-execute-paste traversal
+                              computation))
+        ((symex-operation-p traversal)
+         (symex-execute-operation traversal
+                                  computation))
+        (t (funcall traversal))))
 
 (defun symex-execute-traversal (traversal &optional computation side-effect)
   "Execute a tree TRAVERSAL.
@@ -261,36 +327,17 @@ Evaluates to a COMPUTATION on the traversal actually executed."
     (let ((original-location (point))
           (original-point-height-offset
            (symex--point-height-offset))
-          (executed-traversal (cond ((symex-maneuver-p traversal)
-                                     (symex-execute-maneuver traversal
-                                                             computation))
-                                    ((symex-venture-p traversal)
-                                     (symex-execute-venture traversal
-                                                            computation))
-                                    ((symex-circuit-p traversal)
-                                     (symex-execute-circuit traversal
-                                                            computation))
-                                    ((symex-protocol-p traversal)
-                                     (symex-execute-protocol traversal
-                                                             computation))
-                                    ((symex-precaution-p traversal)
-                                     (symex-execute-precaution traversal
-                                                               computation))
-                                    ((symex-detour-p traversal)
-                                     (symex-execute-detour traversal
-                                                           computation))
-                                    ((symex-decision-p traversal)
-                                     (symex-execute-decision traversal
-                                                             computation))
-                                    ((symex-move-p traversal)
-                                     (symex-execute-move traversal
-                                                         computation))
-                                    (t (funcall traversal)))))
+          (executed-traversal (symex--execute-traversal traversal
+                                                        computation)))
       (let ((result (funcall (symex--computation-perceive computation)
                              executed-traversal)))
         (if result
             (progn (funcall side-effect)
                    result)
+          ;; TODO: simply returning to the original location
+          ;; isn't enough when the traversal might include
+          ;; transformations. It may be necessary to execute
+          ;; traversals in a temporary buffer.
           (goto-char original-location)
           (symex-select-nearest)
           (let* ((current-point-height-offset (symex--point-height-offset))

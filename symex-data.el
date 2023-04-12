@@ -341,6 +341,39 @@ This is the traversal that will be chosen if the condition is false."
              (nth 0 obj))
     (error nil)))
 
+(defun symex-delete-p (obj)
+  "Check if OBJ specifies a deletion."
+  (condition-case nil
+      (equal 'delete
+             (nth 0 obj))
+    (error nil)))
+
+(defun symex--deletion-what (deletion)
+  "Get the 'what' component of a DELETION."
+  (nth 1 deletion))
+
+(defun symex-paste-p (obj)
+  "Check if OBJ specifies a paste."
+  (condition-case nil
+      (equal 'paste
+             (nth 0 obj))
+    (error nil)))
+
+(defun symex--paste-side (paste)
+  "Get the side component of a PASTE."
+  (nth 1 paste))
+
+(defun symex-operation-p (obj)
+  "Check if OBJ specifies a generic operation."
+  (condition-case nil
+      (equal 'operation
+             (nth 0 obj))
+    (error nil)))
+
+(defun symex--operation-operation (operation)
+  "Get the actual OPERATION to perform."
+  (nth 1 operation))
+
 (defun symex-traversal-p (obj)
   "Check if OBJ specifies a traversal."
   (or (symex-move-p obj)
@@ -350,7 +383,10 @@ This is the traversal that will be chosen if the condition is false."
       (symex-detour-p obj)
       (symex-precaution-p obj)
       (symex-protocol-p obj)
-      (symex-decision-p obj)))
+      (symex-decision-p obj)
+      (symex-delete-p obj)
+      (symex-paste-p obj)
+      (symex-operation-p obj)))
 
 
 (provide 'symex-data)

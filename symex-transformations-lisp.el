@@ -54,8 +54,10 @@
     (error nil))
   (let ((start (point))
         (end (save-excursion
-               (dotimes (_ count)
-                 (forward-sexp))
+               (condition-case nil
+                   (dotimes (_ count)
+                     (forward-sexp))
+                 (error nil))
                (point))))
     (indent-region start end))
   (symex-lisp-select-nearest))
@@ -80,18 +82,18 @@
   (let ((last-command nil)  ; see symex-yank re: last-command
         (start (point))
         (end (symex--get-end-point count)))
-    (kill-region start end)))
+    (when (> end start)
+      (kill-region start end)
+      t)))
 
-(defun symex-lisp-delete (count)
-  "Delete COUNT symexes."
-  (interactive "p")
-  (symex-lisp--delete count)
-  (cond ((symex--current-line-empty-p)         ; ^<>$
+(defun symex-lisp--reset-after-delete ()
+  "Tidy after deletion and select the appropriate symex."
+  (cond ((symex--current-line-empty-p) ; ^<>$
          ;; only join up to the next symex if the context suggests
          ;; that a line break is not desired
          (if (or (save-excursion (forward-line)
                                  (not (symex--current-line-empty-p)))
-                 (save-excursion (previous-line)
+                 (save-excursion (forward-line -1)
                                  (symex--current-line-empty-p)))
              (symex--join-to-next)
            ;; don't leave an empty line where the symex was
@@ -100,7 +102,7 @@
         ((or (save-excursion (evil-last-non-blank) ; (<>$
                              (symex-left-p)))
          (symex--join-to-next))
-        ((looking-at-p "\n")  ; (abc <>
+        ((looking-at-p "\n")         ; (abc <>
          (if (save-excursion (forward-line)
                              (not (symex--current-line-empty-p)))
              ;; only join up to the next symex if the context suggests
@@ -108,7 +110,6 @@
              (symex--join-to-next)
            (symex--go-backward)))
         ((save-excursion (back-to-indentation) ; ^<>)
-                         (forward-char)
                          (symex-right-p))
          ;; Cases 2 and 3 in issue #18
          ;; if the deleted symex is preceded by a comment line
@@ -128,10 +129,18 @@
                                       t)
                              (error nil))
                      (symex--join-to-match symex--re-right))))))))
-        ((save-excursion (forward-char) ; ... <>)
-                         (symex-right-p))
+        ((symex-right-p)             ; ... <>)
          (symex--go-backward))
         (t (symex--go-forward))))
+
+(defun symex-lisp-delete (count)
+  "Delete COUNT symexes."
+  (interactive "p")
+  (let ((result (symex-lisp--delete count)))
+    (when result
+      (symex-lisp--reset-after-delete)
+      ;; should we return the actual motion we took?
+      result)))
 
 (defun symex-lisp-delete-backwards (count)
   "Delete COUNT symexes backwards."
@@ -159,7 +168,7 @@
   "Open new line before symex."
   (interactive)
   (newline-and-indent)
-  (evil-previous-line)
+  (forward-line -1)
   (indent-according-to-mode)
   (evil-move-end-of-line)
   (unless (or (symex--current-line-empty-p)
@@ -211,22 +220,38 @@ text, on the respective side."
   (let* ((after (not before))
          (island
           (and (bolp)
-               (save-excursion (forward-sexp)
-                               (eolp))))
+               (condition-case nil
+                   (save-excursion (forward-sexp)
+                                   (eolp))
+                 (error nil))))
          (at-eob
-          (save-excursion (forward-sexp)
-                          (eobp)))
+          (condition-case nil
+              (save-excursion (forward-sexp)
+                              (eobp))
+            (error nil)))
          (previous-line-empty
           (save-excursion (forward-line -1)
                           (symex--current-line-empty-p)))
          (next-line-empty
-          (save-excursion (forward-sexp)
-                          (forward-line)
-                          (symex--current-line-empty-p)))
+          (condition-case nil
+              (save-excursion (forward-sexp)
+                              (forward-line)
+                              (symex--current-line-empty-p))
+            (error nil)))
          (surrounding-lines-empty (and previous-line-empty
                                        next-line-empty))
          (paste-text-contains-newlines
-          (seq-contains-p (current-kill 0 t) ?\n)))
+          (seq-contains-p (current-kill 0 t) ?\n))
+         (at-eol (condition-case nil
+                     (save-excursion (forward-sexp)
+                                     (eolp))
+                   (error nil)))
+         (multiline (let ((original-line (line-number-at-pos)))
+                      (condition-case nil
+                          (save-excursion (forward-sexp)
+                                          (not (= original-line
+                                                  (line-number-at-pos))))
+                        (error nil)))))
     (cond ((and island
                 ;; if we're at the toplevel, on an "island" symex
                 ;; (i.e. with no peers occupying the same lines),
@@ -247,12 +272,8 @@ text, on the respective side."
                 ;; then we typically want an extra newline separator
            "\n\n")
           ((or (symex--point-at-indentation-p)
-               (let ((original-line (line-number-at-pos)))
-                 (save-excursion (forward-sexp)
-                                 (or (eolp)
-                                     ;; for multi-line symex, add a newline
-                                     (not (= original-line
-                                             (line-number-at-pos)))))))
+               at-eol
+               multiline)
            "\n")
           (t " "))))
 
@@ -283,7 +304,8 @@ text, on the respective side."
           (symex--goto-line end-line)
           ;; if the last line has any trailing forms,
           ;; indent them.
-          (symex--same-line-tidy-affected))))))
+          (symex--same-line-tidy-affected)
+          (not (equal pasted-text "")))))))
 
 (defun symex-lisp--paste-after ()
   "Paste after symex."
@@ -307,8 +329,16 @@ text, on the respective side."
                       (length pasted-text))) ; end of pasted text
         (symex--same-line-tidy-affected))
       ;; move to indicate appropriate posterior selection
+      ;; TODO: this should probably be at the "user" level
+      ;; suggesting there should be 4 levels rather than 3:
+      ;; 0. primitives
+      ;; 1. tractable, deterministic symex commands
+      ;; 2. DSL over those primitives and commands
+      ;; 3. user commands that use the DSL and include UX specifics like which expression
+      ;;    should be selected after the fact, and configurable things
       (forward-sexp)
-      (forward-char))))
+      (forward-char)
+      (not (equal pasted-text "")))))
 
 (defun symex-lisp-yank (count)
   "Yank (copy) COUNT symexes."
