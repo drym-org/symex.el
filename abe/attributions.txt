@@ -1,37 +1,37 @@
-'(("sid" . 42.181459499999995)
-  ("emacs" . 7.8497142857142865)
-  ("simon" . 6.2531595)
-  ("evil" . 6.065714285714286)
-  ("paredit" . 4.975714285714286)
-  ("jeff" . 4.968)
-  ("hydra" . 2.49)
-  ("tommy" . 2.4252809999999996)
-  ("markgdawson" . 2.1113999999999997)
-  ("riscy" . 1.863)
-  ("apl" . 1.68)
-  ("jake" . 1.6421999999999999)
-  ("doyougnu" . 1.4489999999999998)
-  ("lispy" . 1.4337142857142857)
-  ("ariana" . 1.242)
-  ("pepperblue" . 1.242)
-  ("vim" . 1.2357142857142858)
-  ("anonimitoraf" . 1.1591999999999998)
-  ("melpazoid" . 1.1500000000000001)
-  ("tsc" . 1.1270000000000002)
-  ("dcostaras" . 1.02465)
-  ("gremlin" . 0.9857142857142858)
-  ("tarsius" . 0.621)
-  ("tree-sitter" . 0.5687142857142857)
-  ("anonymous" . 0.50715)
-  ("racket mode" . 0.204)
-  ("cider" . 0.204)
-  ("arc mode" . 0.192)
-  ("scheme mode" . 0.192)
-  ("evil-surround" . 0.16100000000000003)
-  ("evil-cleverparens" . 0.16100000000000003)
-  ("devcarbon" . 0.15525)
-  ("basilconto" . 0.15525)
-  ("slime" . 0.102)
-  ("sly" . 0.102)
-  ("parinfer" . 0.06)
-  ("drracket" . 0.06))
+sid,42.181459
+emacs,7.849714
+simon,6.253159
+evil,6.065714
+paredit,4.975714
+jeff,4.968
+hydra,2.49
+tommy,2.425281
+markgdawson,2.1114
+riscy,1.863
+apl,1.68
+jake,1.6422
+doyougnu,1.449
+lispy,1.433714
+ariana,1.242
+pepperblue,1.242
+vim,1.235714
+anonimitoraf,1.1592
+melpazoid,1.15
+tsc,1.127
+dcostaras,1.02465
+gremlin,0.985714
+tarsius,0.621
+tree-sitter,0.568714
+anonymous,0.50715
+racket mode,0.204
+cider,0.204
+arc mode,0.192
+scheme mode,0.192
+evil-surround,0.161
+evil-cleverparens,0.161
+devcarbon,0.15525
+basilconto,0.15525
+slime,0.102
+sly,0.102
+parinfer,0.06
+drracket,0.06
