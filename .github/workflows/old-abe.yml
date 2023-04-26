@@ -1,0 +1,32 @@
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'abe/payments/**'
+      - 'abe/payouts/**'
+      - '.github/workflows/old-abe.yml'
+
+jobs:
+  billing_job:
+    runs-on: ubuntu-latest
+    name: Run the ABE billing prototype
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Fix git safe.directory in container
+        run: mkdir -p /home/runner/work/_temp/_github_home && printf "[safe]\n\tdirectory = /github/workspace" > /home/runner/work/_temp/_github_home/.gitconfig
+      - uses: actions/checkout@v3
+      - name: Do accounting
+        id: doAccounting
+        uses: drym-org/old-abe@v1
+      - name: Find balances issue
+        id: findIssue
+        run: echo "issueId=`gh issue list -l outstanding-balances -s open --json number --jq .[].number`" >> "$GITHUB_OUTPUT"
+      - name: Close existing issue reporting outstanding balances if present
+        if: steps.findIssue.outputs.issueId
+        run: |
+          gh issue close "${{steps.findIssue.outputs.issueId}}"
+      - name: Create an issue with the computed outstanding balances
+        run: |
+          gh issue create -b "${{ steps.doAccounting.outputs.balances }}" -t "Outstanding Balances" -l outstanding-balances
