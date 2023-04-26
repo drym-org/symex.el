@@ -1,39 +1,40 @@
-sid,39.65057146,1
-emacs,7.37873116,1
-simon,5.87796946,1
-evil,5.70177116,1
-paredit,4.67717116,1
-jeff,4.66992,1
-hydra,2.3406,1
-tommy,2.27976414,1
-markgdawson,1.984716,1
-riscy,1.75122,1
-apl,1.5792,1
-jake,1.543668,1
-doyougnu,1.36206,1
-lispy,1.34769116,1
-ariana,1.16748,1
-pepperblue,1.16748,1
-vim,1.16157116,1
-anonimitoraf,1.089648,1
-melpazoid,1.081,1
-tsc,1.05938,1
-dcostaras,0.963171,1
-gremlin,0.92657116,1
-tarsius,0.58374,1
-tree-sitter,0.53459116,1
-anonymous,0.476721,1
-racket mode,0.19176,1
-cider,0.19176,1
-arc mode,0.18048,1
-scheme mode,0.18048,1
-evil-surround,0.15134,1
-evil-cleverparens,0.15134,1
-devcarbon,0.145935,1
-basilconto,0.145935,1
-slime,0.09588,1
-sly,0.09588,1
-parinfer,0.0564,1
-drracket,0.05640282,1
+sid,39.64775954,1
+emacs,7.378207878,1
+simon,5.877552609,1
+evil,5.701366804,1
+paredit,4.676839466,1
+jeff,4.66958882,1
+hydra,2.34043401,1
+tommy,2.279602465,1
+markgdawson,1.984575249,1
+riscy,1.751095808,1
+apl,1.579088007,1
+jake,1.543558527,1
+doyougnu,1.361963406,1
+lispy,1.347595585,1
+ariana,1.167397205,1
+pepperblue,1.167397205,1
+vim,1.161488784,1
+anonimitoraf,1.089570725,1
+melpazoid,1.080923338,1
+tsc,1.059304871,1
+dcostaras,0.9631026942,1
+gremlin,0.9265054498,1
+tarsius,0.5836986026,1
+tree-sitter,0.5345532481,1
+anonymous,0.4766871921,1
+racket mode,0.1917464008,1
+cider,0.1917464008,1
+arc mode,0.1804672008,1
+scheme mode,0.1804672008,1
+evil-surround,0.1513292673,1
+evil-cleverparens,0.1513292673,1
+devcarbon,0.1459246506,1
+basilconto,0.1459246506,1
+slime,0.09587320042,1
+sly,0.09587320042,1
+parinfer,0.05639600025,1
+drracket,0.05639882005,1
 DIA,5,0
 Old Abe,1,0
+Hans,0.006666248915,1
