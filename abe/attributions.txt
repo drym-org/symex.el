@@ -34,6 +34,6 @@ basilconto,0.145935,1
 slime,0.09588,1
 sly,0.09588,1
 parinfer,0.0564,1
-drracket,0.0564,1
+drracket,0.05640282,1
 DIA,5,0
 Old Abe,1,0
