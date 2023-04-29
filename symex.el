@@ -111,6 +111,16 @@
   (when symex-remember-branch-positions-p
     (symex--clear-branch-memory))
   (symex-select-nearest)
+  ;; if an operation was begun but no change was made
+  ;; then undo any change that was made as part of
+  ;; setting up the operation (e.g. if an extra space
+  ;; was added)
+  (when (and (boundp 'symex--buffer-modified-tick)
+             symex--buffer-modified-tick
+             (= (buffer-chars-modified-tick)
+                symex--buffer-modified-tick))
+    (evil-undo 1))
+  (setq-local symex--buffer-modified-tick nil)
   (when symex-refocus-p
     ;; smooth scrolling currently not supported
     ;; may add it back in the future
