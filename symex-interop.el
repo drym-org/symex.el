@@ -27,13 +27,17 @@
 
 ;;; Code:
 
-(require 'symex-custom
-         'symex-primitives)
+(require 'symex-custom)
+(require 'symex-primitives)
 
 ;; to avoid byte compile warnings.  eventually sort out the dependency
 ;; order so this is unnecessary
 (defvar chimera-symex-mode)
 (defvar rigpa-mode)
+
+;; stub out evil-state in case evil is not installed.
+(when (not (boundp 'evil-state))
+  (setq evil-state nil))
 
 ;; misc bindings defined elsewhere
 (declare-function rigpa-enter-higher-level "ext:ignore")
@@ -84,7 +88,8 @@ right symex when we enter Symex mode."
          (rigpa-enter-higher-level))
         ((symex--evil-enabled-p)
          (evil-normal-state))
-        (t (evil-emacs-state))))
+        ((symex--evil-installed-p)
+         (evil-emacs-state))))
 
 (defun symex-enter-lower ()
   "Exit symex mode via an 'enter'."
@@ -93,7 +98,8 @@ right symex when we enter Symex mode."
          (rigpa-enter-lower-level))
         ((symex--evil-enabled-p)
          (evil-insert-state))
-        (t (evil-emacs-state))))
+        ((symex--evil-installed-p)
+         (evil-emacs-state))))
 
 (defun symex-enter-lowest ()
   "Enter the lowest (manual) editing level."
@@ -102,7 +108,8 @@ right symex when we enter Symex mode."
          (rigpa-enter-lowest-level))
         ((symex--evil-enabled-p)
          (evil-insert-state))
-        (t (evil-emacs-state))))
+        ((symex--evil-installed-p)
+         (evil-emacs-state))))
 
 (defun symex--set-scroll-margin ()
   "Set a convenient scroll margin for symex mode, after storing the original value."
