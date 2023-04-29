@@ -612,7 +612,8 @@ then no action is taken."
          (start (point-marker))
          (end (save-excursion (forward-sexp) (point-marker))))
     (if no-trim
-        (save-excursion (symex--surround open-delimiter close-delimiter start end))
+        (save-excursion
+          (symex--surround open-delimiter close-delimiter start end))
       (save-excursion
         (goto-char start)
         (delete-char 1)
