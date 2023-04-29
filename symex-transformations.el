@@ -582,8 +582,8 @@ then no action is taken."
          (start (point-marker))
          (end (progn (forward-sexp) (point-marker))))
     (if no-trim
-        (save-excursion (symex--surround open-delimiter close-delimiter start end))
-      (save-excursion
+        (symex--surround open-delimiter close-delimiter start end)
+      (progn
         (goto-char start)
         (delete-char 1)
         (insert open-delimiter)
@@ -594,9 +594,9 @@ then no action is taken."
 (symex-define-command symex-change-delimiter ()
   "Change delimiter enclosing current symex, e.g. round -> square brackets."
   (interactive)
-  (if (or (symex-left-p) (symex-string-p))
-      (symex--change-delimiter)
-    (symex--change-delimiter :no-trim)))
+  (save-excursion (if (or (symex-left-p) (symex-string-p))
+                      (symex--change-delimiter)
+                    (symex--change-delimiter :no-trim))))
 
 (symex-define-command symex-comment (count)
   "Comment out COUNT symexes."
