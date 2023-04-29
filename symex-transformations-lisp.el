@@ -76,7 +76,7 @@
   (newline-and-indent)
   (forward-line -1)
   (indent-according-to-mode)
-  (evil-move-end-of-line)
+  (move-end-of-line)
   (unless (or (symex--current-line-empty-p)
               (save-excursion (backward-char)
                               (symex-left-p)))

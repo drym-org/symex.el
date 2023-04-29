@@ -3,7 +3,7 @@
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/drym-org/symex.el
 ;; Version: 1.0
-;; Package-Requires: ((emacs "25.1") (paredit "24") (evil "1.2.14") (evil-surround "1.0.4") (seq "2.22"))
+;; Package-Requires: ((emacs "25.1") (paredit "24") (seq "2.22"))
 ;; Keywords: lisp, convenience, languages
 
 ;; This program is "part of the world," in the sense described at
@@ -40,10 +40,12 @@
 ;;; Code:
 
 (require 'symex-lithium)
-(require 'symex-evil)
+(when (symex--evil-installed-p)
+  (require 'symex-evil))
 (require 'symex-interop)
 (require 'symex-misc)
 (require 'symex-interface)
+(require 'symex-transformations)
 (require 'symex-primitives)
 (require 'symex-custom)
 (require 'symex-ts)
