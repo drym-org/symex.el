@@ -35,9 +35,12 @@
 (defvar chimera-symex-mode)
 (defvar rigpa-mode)
 
-;; stub out evil-state in case evil is not installed.
-(when (not (boundp 'evil-state))
-  (setq evil-state nil))
+;; temporary stubbing non-evil modal users
+(when (not (boundp 'evil))
+  (setq evil-state nil)
+  (defun evil-emacslike-state ())
+  (defun evil-normallike-state ())
+  (defun evil-nil-state ()))
 
 ;; misc bindings defined elsewhere
 (declare-function rigpa-enter-higher-level "ext:ignore")
@@ -89,7 +92,9 @@ right symex when we enter Symex mode."
         ((symex--evil-enabled-p)
          (evil-normal-state))
         ((symex--evil-installed-p)
-         (evil-emacs-state))))
+         (evil-emacs-state))
+        ((fboundp 'symex-user-defined-higher-mode)
+         (symex-user-defined-higher-mode))))
 
 (defun symex-enter-lower ()
   "Exit symex mode via an \"enter\"."
@@ -99,7 +104,9 @@ right symex when we enter Symex mode."
         ((symex--evil-enabled-p)
          (evil-insert-state))
         ((symex--evil-installed-p)
-         (evil-emacs-state))))
+         (evil-emacs-state))
+        ((fboundp 'symex-user-defined-lower-mode)
+         (symex-user-defined-lower-mode))))
 
 (defun symex-enter-lowest ()
   "Enter the lowest (manual) editing level."
@@ -109,7 +116,9 @@ right symex when we enter Symex mode."
         ((symex--evil-enabled-p)
          (evil-insert-state))
         ((symex--evil-installed-p)
-         (evil-emacs-state))))
+         (evil-emacs-state))
+        ((fboundp 'symex-user-defined-lowest-mode)
+         (symex-user-defined-lowest-mode))))
 
 (defun symex--set-scroll-margin ()
   "Set a convenient scroll margin for symex mode, after storing the original value."
