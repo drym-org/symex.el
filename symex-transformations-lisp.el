@@ -169,7 +169,7 @@
   (newline-and-indent)
   (forward-line -1)
   (indent-according-to-mode)
-  (move-end-of-line)
+  (move-end-of-line 1)
   (unless (or (symex--current-line-empty-p)
               (save-excursion (backward-char)
                               (symex-left-p)))
