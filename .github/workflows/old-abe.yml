@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Do accounting
         id: doAccounting
-        uses: drym-org/old-abe@v1.1
+        uses: drym-org/old-abe@v1.2
       - name: Find balances issue
         id: findIssue
         run: echo "issueId=`gh issue list -l outstanding-balances -s open --json number --jq .[].number`" >> "$GITHUB_OUTPUT"
