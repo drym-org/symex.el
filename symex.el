@@ -98,7 +98,7 @@
 
 (defun symex--enter-mode ()
   "Load the modal interface."
-  (when (symex--evil-enabled-p)
+  (when (symex--evil-installed-p)
     (unless (symex--rigpa-enabled-p)
      ;; the minor mode needs to be enabled prior to entering the
      ;; evil state or the keybindings won't take effect. So we
