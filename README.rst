@@ -530,4 +530,4 @@ This project will distribute payments according to the ABE guidelines specified 
 Non-Ownership
 =============
 
-This work is not owned by anyone. Please see the `Declaration of Non-Ownership <https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md>`_.
+This work is not owned by anyone. Please see the `Declaration of Non-Ownership <https://github.com/drym-org/foundation/blob/main/Declaration_of_Non_Ownership.md>`_.
