@@ -525,9 +525,7 @@ This project follows Attribution-Based Economics as described in `drym-org/found
 
 Additionally, if your voluntary payments exceed the agreed-upon "market price" of the project (see `price.txt <https://github.com/drym-org/symex.el/blob/main/abe/price.txt>`_), that additional amount will be treated as an investment, entitling you to a share in future revenues, including payments made to the project in the future or attributive revenue from other projects.
 
-This project will distribute payments according to the ABE guidelines specified in the constitution. In particular, it may take up to 30 days to distribute the initial payments if DIA has not already been conducted for this project. After that, payments will be distributed to contributors (including investors) biweekly.
-
-NOTE: `Initial DIA has concluded <https://github.com/drym-org/dia-symex>`__ for the Symex project! However, the accounting system `Old Abe <https://github.com/drym-org/old-abe>`_ still has a few features that need to be implemented before we can begin payouts and be assured that they will be reliably accounted according to ABE guidelines. Thank you for your patience as we set up this new system, and please stay tuned!
+This project will distribute payments according to the ABE guidelines specified in the constitution. In particular, it may take up to 90 days to distribute the initial payments if DIA has not already been conducted for this project. After that, payments will be distributed to contributors (including investors) at each meeting of the `DIA congress <https://github.com/drym-org/dia-symex>`__ (e.g. approximately quarterly).
 
 Non-Ownership
 =============
