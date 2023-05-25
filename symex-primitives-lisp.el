@@ -658,12 +658,11 @@ match."
                              (symex-left-p)))
          (symex--join-to-next))
         ((looking-at-p "\n")         ; (abc <>
-         (if (save-excursion (forward-line)
-                             (not (symex--current-line-empty-p)))
-             ;; only join up to the next symex if the context suggests
-             ;; that a line break is not desired
-             (symex--join-to-next)
-           (symex--go-backward)))
+         (when (save-excursion (forward-line)
+                               (not (symex--current-line-empty-p)))
+           ;; only join up to the next symex if the context suggests
+           ;; that a line break is not desired
+           (symex--join-to-next)))
         ((save-excursion (back-to-indentation) ; ^<>)
                          (symex-right-p))
          ;; Cases 2 and 3 in issue #18
@@ -683,10 +682,7 @@ match."
                                (progn (evil-find-char 1 ?\;)
                                       t)
                              (error nil))
-                     (symex--join-to-match symex--re-right))))))))
-        ((symex-right-p)             ; ... <>)
-         (symex--go-backward))
-        (t (symex--go-forward))))
+                     (symex--join-to-match symex--re-right))))))))))
 
 (defun symex-lisp--delete (count)
   "Delete COUNT symexes."
