@@ -664,7 +664,8 @@ line."
                                (progn (evil-find-char 1 ?\;)
                                       t)
                              (error nil))
-                     (symex--join-to-match symex--re-right))))))))))
+                     (symex--join-to-match symex--re-right))))))))
+        (t (symex--join-to-non-whitespace))))
 
 ;;; Utilities
 
