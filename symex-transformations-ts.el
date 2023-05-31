@@ -27,6 +27,8 @@
 ;;; Code:
 
 (require 'tree-sitter)
+(require 'symex-ts)
+(require 'symex-utils)
 
 (defmacro symex-ts--handle-tree-modification (&rest body)
   "Handle modifications to the current Tree Sitter tree after executing BODY.
@@ -77,7 +79,7 @@ selected according to the ranges that have changed."
               (last-child (tsc-get-nth-named-child symex-ts--current-node (1- child-count))))
           (when (and first-child last-child)
             (kill-region (tsc-node-start-position first-child) (tsc-node-end-position last-child))))
-        (symex-ts-delete-node-forward 1 t)))))
+        (symex-ts-delete-node-forward 1)))))
 
 (defun symex-ts-comment (&optional count)
   "Comment out COUNT expressions."
@@ -96,27 +98,19 @@ selected according to the ranges that have changed."
                       (comment-dwim nil))
       (symex-ts-set-current-node-from-point))))
 
-(defun symex-ts-delete-node-backward (&optional count)
-  "Delete COUNT nodes backward from the current node."
-  (interactive "p")
-  (let* ((count (or count 1))
-         (node (tsc-get-prev-named-sibling (symex-ts-get-current-node))))
-    (when node
-      (let ((end-pos (tsc-node-end-position node))
-            (start-pos (tsc-node-start-position
-                        (if (> count 1)
-                            (symex-ts--get-nth-sibling-from-node node #'tsc-get-prev-named-sibling count)
-                          node))))
-        (kill-region start-pos end-pos)
-        (symex-ts--delete-current-line-if-empty start-pos)))))
+(defun symex-ts--reset-after-delete ()
+  "Tidy things up after deletion.
 
-(defun symex-ts-delete-node-forward (&optional count keep-empty-lines)
-  "Delete COUNT nodes forward from the current node.
+If the deletion results in an empty line it will be removed."
+  (when (symex--current-line-empty-p)
+    (if (symex--previous-line-empty-p)
+        (symex--join-to-non-whitespace)
+      (symex--kill-whole-line))))
 
-If KEEP-EMPTY-LINES is set then if the deletion results in an
-empty line it will be kept. By default empty lines are deleted
-too."
+(defun symex-ts-delete-node-forward (&optional count)
+  "Delete COUNT nodes forward from the current node."
   (interactive "p")
+  ;; TODO: this is no longer used outside of this module
   (symex-ts--handle-tree-modification
    (let* ((count (or count 1))
           (node (symex-ts-get-current-node))
@@ -129,12 +123,8 @@ too."
                       node))))
 
      ;; Delete the node's region
-     (kill-region start-pos end-pos)
-
-     ;; Remove all empty lines following the deletion
-     (when (not keep-empty-lines)
-       (let ((cont t))
-         (while cont (setq cont (symex-ts--delete-current-line-if-empty start-pos))))))))
+     (kill-region start-pos end-pos)))
+  t)
 
 (defun symex-ts-insert-at-beginning ()
   "Insert at beginning of symex."
@@ -165,14 +155,6 @@ alias for inserting at the end."
   (interactive)
   (symex-ts-insert-at-end))
 
-(defun symex-ts-append-after ()
-  "Append after symex (instead of vim's default of line)."
-  (interactive)
-  (when (symex-ts-get-current-node)
-    (goto-char (tsc-node-end-position (symex-ts-get-current-node)))
-    (insert " ")
-    (evil-insert-state)))
-
 (defun symex-ts-open-line-after ()
   "Open new line after symex."
   (interactive)
@@ -190,17 +172,14 @@ alias for inserting at the end."
     (indent-according-to-mode)
     (move-end-of-line 1)))
 
-(defun symex-ts-emit-forward (count)
-  "Emit forward"
-  nil)
-
 (defun symex-ts--paste (count direction)
   "Paste before or after symex, COUNT times, according to DIRECTION.
 
 DIRECTION should be either the symbol `before' or `after'."
   (interactive)
   (when (symex-ts-get-current-node)
-    (symex-ts--handle-tree-modification (let* ((node (symex-ts-get-current-node))
+    (symex-ts--handle-tree-modification
+     (let* ((node (symex-ts-get-current-node))
             (start (tsc-node-start-position node))
             (end (tsc-node-end-position node))
             (indent-start (save-excursion (back-to-indentation) (point)))
@@ -209,20 +188,24 @@ DIRECTION should be either the symbol `before' or `after'."
                                  (= end (line-end-position))))))
        (goto-char (if (eq direction 'before) start end))
        (dotimes (_ count)
-         (when (eq direction 'after) (insert (if block-node "\n" " ")))
+         (when (eq direction 'after) (insert (if block-node "\n" " "))
+               (indent-according-to-mode))
          (yank)
          (when (eq direction 'before) (insert (if block-node "\n" " "))
-               (indent-according-to-mode)))))))
+               (indent-according-to-mode)))))
+    t))
 
 (defun symex-ts-paste-after (count)
   "Paste after symex, COUNT times."
   (interactive)
-  (symex-ts--paste count 'after))
+  (symex-ts-save-excursion
+    (symex-ts--paste count 'after)))
 
 (defun symex-ts-paste-before (count)
   "Paste before symex, COUNT times."
   (interactive)
-  (symex-ts--paste count 'before))
+  (symex-ts-save-excursion
+    (symex-ts--paste count 'before)))
 
 (defun symex-ts-replace ()
   "Replace contents of symex."

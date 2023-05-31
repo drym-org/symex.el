@@ -32,6 +32,7 @@
 
 (require 'paredit)
 (require 'symex-data)
+(require 'symex-utils)
 
 ;;;;;;;;;;;;;;;;;;
 ;;; PRIMITIVES ;;;
@@ -133,6 +134,19 @@
   (condition-case nil
       (symex-right-p)
     (error nil)))
+
+(defun symex-lisp--previous-p ()
+  "Check if a preceding symex exists at this level."
+  (save-excursion (symex-lisp--backward)))
+
+(defun symex-lisp--next-p ()
+  "Check if a succeeding symex exists at this level."
+  (save-excursion (symex-lisp--forward)))
+
+(defun symex-lisp--selected-p ()
+  "Check if a symex is currently selected."
+  (and (not (looking-at-p "[[:space:]]"))
+       (not (symex-right-p))))
 
 ;; From Lispy
 (defvar symex--re-left "[([{]"
@@ -236,6 +250,15 @@
     (and (symex-string-p)
          (progn (forward-char 1)
                 (symex-string-p)))))
+
+(defun symex-inside-empty-form-p ()
+  "Check if point is inside an empty form."
+  (and (looking-back (concat symex--re-left
+                             symex--re-whitespace)
+                     (line-beginning-position))
+       (looking-at-p
+        (concat symex--re-whitespace
+                symex--re-right))))
 
 (defun symex--racket-syntax-object-p ()
   "Check if the symex is a racket syntax object."
@@ -353,16 +376,12 @@ as special cases here."
 
 (defun symex-lisp-select-nearest ()
   "Select the appropriate symex nearest to point."
-  (cond ((and (not (bobp))
-              (save-excursion (backward-char)
-                              (symex-left-p))
-              (not (eobp))
-              (symex-right-p)) ; (|)
+  (cond ((symex-left-p) nil)
+        ((and (symex-right-p)
+              (looking-back symex--re-left
+                            (line-beginning-position))) ; (|)
          nil) ; don't change level in selection
-        ((and (not (eobp))
-              (symex-right-p)) ; |)
-         (symex-other))
-        ((thing-at-point 'sexp)       ; som|ething
+        ((thing-at-point 'sexp) ; som|ething or even (something)|
          (beginning-of-thing 'sexp))
         (t (symex-lisp--if-stuck (symex-lisp--backward)
                                  (symex-lisp--forward)))))
@@ -506,15 +525,6 @@ of symex mode (use the public `symex-go-backward` instead)."
   (re-search-forward symex--re-symex-line)
   (back-to-indentation))
 
-(defun symex-lisp--go-to-next-non-whitespace-char ()
-  "Move point to the next non-whitespace character.
-
-If the current character is non-whitespace, point is not moved."
-  (unless (looking-at-p "[^[:space:]\n]")
-    (re-search-forward "[^[:space:]\n]")
-    ;; since the re search goes to the end of the match
-    (backward-char)))
-
 (defun symex-lisp--go-up-by-one ()
   "Go up one level."
   (let ((result 1))
@@ -541,7 +551,7 @@ If the current character is non-whitespace, point is not moved."
            (forward-char 2))
           (t (setq result 0)))
     ;; find first non-whitespace character
-    (symex-lisp--go-to-next-non-whitespace-char)
+    (symex--go-to-next-non-whitespace-char)
     result))
 
 (defun symex-lisp--go-up (&optional count)
@@ -617,16 +627,46 @@ line."
         (delete-region start comment-line-position)
       (delete-region start end))))
 
-(defun symex--join-to-match (pattern)
-  "Join current position to the next position matching PATTERN.
-
-This eliminates whitespace between the original position and the found
-match."
-  (condition-case nil
-      (let* ((start (point))
-             (end (save-excursion (re-search-forward pattern)
-                                  (match-beginning 0))))
-        (delete-region start end))))
+(defun symex-lisp--reset-after-delete ()
+  "Tidy after deletion and select the appropriate symex."
+  (cond ((symex--current-line-empty-p) ; ^<>$
+         ;; only join up to the next symex if the context suggests
+         ;; that a line break is not desired
+         (if (or (not (symex--next-line-empty-p))
+                 (symex--previous-line-empty-p))
+             (symex--join-to-next)
+           ;; don't leave an empty line where the symex was
+           (symex--kill-whole-line)))
+        ((or (save-excursion (evil-last-non-blank) ; (<>$
+                             (symex-left-p)))
+         (symex--join-to-next))
+        ((looking-at-p "\n")         ; (abc <>
+         (unless (symex--next-line-empty-p)
+           ;; only join up to the next symex if the context suggests
+           ;; that a line break is not desired
+           (symex--join-to-next)))
+        ((save-excursion (back-to-indentation) ; ^<>)
+                         (symex-right-p))
+         ;; Cases 2 and 3 in issue #18
+         ;; if the deleted symex is preceded by a comment line
+         ;; or if the preceding symex is followed by a comment
+         ;; on the same line, then don't attempt to join lines
+         (let ((original-position (point)))
+           (when (symex--go-backward)
+             (save-excursion
+               (let ((previous-symex-end-pos (symex--get-end-point 1)))
+                 (unless (symex--intervening-comment-line-p previous-symex-end-pos
+                                                            original-position)
+                   (goto-char previous-symex-end-pos)
+                   ;; ensure that there isn't a comment on the
+                   ;; preceding line before joining lines
+                   (unless (condition-case nil
+                               (progn (evil-find-char 1 ?\;)
+                                      t)
+                             (error nil))
+                     (symex--join-to-match symex--re-right))))))))
+        ((symex-right-p) (fixup-whitespace)) ; abc <>)
+        (t (symex--join-to-non-whitespace))))
 
 ;;; Utilities
 

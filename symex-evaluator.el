@@ -230,10 +230,21 @@ Evaluates to a COMPUTATION on the traversal actually executed."
 (defun symex-execute-deletion (deletion computation)
   "Attempt to execute a given DELETION.
 
+This could delete `this`, `previous` or `next`. Of these, favor the
+latter two as those are explicit that the placement of point is
+unaffected by the transformation. On the other hand, the first is
+provided as a convenience for cases where posterior placement of point
+is irrelevant for the purposes of the traversal, because, indeed,
+there is no fixed rule on where it will be placed.
+
+TODO: either there should be no guarantee and either next or previous
+could be selected, or it should leave a void and have point indicate
+the whitespace there rather than explicitly select either the next or
+previous expression.
+
 Evaluates to a COMPUTATION on the traversal actually executed."
   (let ((what (symex--deletion-what deletion)))
-    ;; TODO: "what" is currently ignored
-    (let ((result (symex-delete 1)))
+    (let ((result (symex-prim-delete what)))
       ;; TODO: compute based on an appropriate result here
       (when result
         (symex--compute-results symex--move-zero
@@ -245,14 +256,7 @@ Evaluates to a COMPUTATION on the traversal actually executed."
 
 Evaluates to a COMPUTATION on the traversal actually executed."
   (let ((side (symex--paste-side paste)))
-    (let ((result (if (eq 'before side)
-                      ;; TODO: ensure point invariance
-                      ;; at the command level
-                      (let ((result (symex-paste-before 1)))
-                        (symex--go-forward)
-                        result)
-                    (save-excursion
-                      (symex-paste-after 1)))))
+    (let ((result (symex-prim-paste side)))
       ;; TODO: compute based on an appropriate result here
       (when result
         (symex--compute-results symex--move-zero
@@ -309,6 +313,10 @@ Evaluates to a COMPUTATION on the traversal actually executed."
 
 (defun symex-execute-traversal (traversal &optional computation side-effect)
   "Execute a tree TRAVERSAL.
+
+TRAVERSAL could be a move, a maneuver, or any other Symex traversal.
+If it is not a Symex expression, then it is assumed to be an ELisp
+function, and the rule for interpretation is to apply the function.
 
 SIDE-EFFECT is the operation to perform as part of the traversal
 \(none by default).

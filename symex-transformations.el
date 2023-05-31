@@ -34,10 +34,12 @@
 (require 'paredit)
 (require 'evil)
 (require 'evil-surround)
+(require 'symex-misc)
 (require 'symex-primitives)
 (require 'symex-primitives-lisp)
 (require 'symex-utils)
 (require 'symex-traversals)
+(require 'symex-evaluator)
 (require 'symex-interop)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -65,7 +67,18 @@
        ,docstring
        ,interactive-decl
        (let ((,result (progn ,@body)))
-         (symex-select-nearest)
+         (symex-user-select-nearest)
+         ;; Note that the built-in `fixup-whitespace` that's used in
+         ;; `symex-tidy` causes the buffer to reflect as modified even
+         ;; if it doesn't actually make any modifications.  In such
+         ;; cases, a null change is also pushed onto the undo stack,
+         ;; meaning that executing `undo` results in a no-op at first,
+         ;; and we need to hit `u` again to undo the real change we
+         ;; meant to undo.  We could fix this on the Symex side by
+         ;; only invoking tidy if we see that the buffer has been
+         ;; modified, but it would be better to fix `fixup-whitespace`
+         ;; so it doesn't mark the buffer as modified if no changes
+         ;; were made.
          (symex--tidy 1)
          ,result))))
 
@@ -84,42 +97,56 @@
      ,@body
      (symex-enter-lowest)))
 
+(defun symex--delete (count)
+  "Delete COUNT symexes."
+  ;; if we attempt to just (delete this) count times, if there happen
+  ;; to be fewer than count expressions following, then we may delete
+  ;; preceding expressions too. But we typically mean to delete only
+  ;; the succeeding expressions here.
+  ;;
+  ;; In lieu of doing it in two traversals, we could potentially
+  ;; either introduce a new traversal type that always executes every
+  ;; subexpression even if any of them fail, or, we could first
+  ;; compute (either in symex or in Elisp) the number of succeeding
+  ;; expressions or count, whichever is lower, and then execute the
+  ;; deletion traversal on that modified count.
+  (symex-execute-traversal
+   (symex-traversal
+    (circuit (delete next)
+             (1- count))))
+  (symex-execute-traversal
+   (symex-traversal
+    (delete this))))
+
 (symex-define-command symex-delete (count)
   "Delete COUNT symexes."
   (interactive "p")
-  (if (symex-tree-sitter-p)
-      (symex-ts-delete-node-forward count)
-    (symex-lisp-delete count)))
+  (symex--delete count))
 
 (symex-define-command symex-delete-backwards (count)
   "Delete COUNT symexes backwards."
   (interactive "p")
-  (if (symex-tree-sitter-p)
-      (symex-ts-delete-node-backward count)
-    (symex-lisp-delete-backwards count)))
+  (symex-execute-traversal
+   (symex-traversal
+    (circuit (delete previous)
+             count))))
 
 (symex-define-command symex-delete-remaining ()
   "Delete remaining symexes at this level."
   (interactive)
   (let ((count (symex--remaining-length)))
-    (symex-delete count)))
-
-(defun symex--change (count)
-  "Change COUNT symexes."
-  (if (symex-tree-sitter-p)
-      (symex-ts-delete-node-forward count t) ; only delete - no tidy
-    (symex-lisp--delete count)))
+    (symex--delete count)))
 
 (symex-define-insertion-command symex-change (count)
   "Change COUNT symexes."
   (interactive "p")
-  (symex--change count))
+  (symex--remove count))
 
 (symex-define-insertion-command symex-change-remaining ()
   "Change remaining symexes at this level."
   (interactive)
   (let ((count (symex--remaining-length)))
-    (symex--change count)))
+    (symex--remove count)))
 
 (symex-define-insertion-command symex-replace ()
   "Replace contents of symex."
@@ -135,27 +162,6 @@
       (symex-ts-clear)
     (symex-lisp-clear)))
 
-(defun symex--emit-backward ()
-  "Emit backward."
-  (when (and (symex-left-p)
-             (not (symex-empty-list-p)))
-    (save-excursion
-      (symex--go-up)  ; need to be inside the symex to emit and capture
-      (paredit-backward-barf-sexp 1))
-    (symex--go-forward)
-    (when (symex-empty-list-p)
-      (fixup-whitespace)
-      (re-search-forward symex--re-left)
-      (symex--go-down))))
-
-(defvar symex--traversal-emit-backward
-  (symex-traversal
-   (maneuver (move up)
-             (delete)
-             (move down)
-             (paste before)))
-  "Emit backward.")
-
 (defun symex--emit-backward (count)
   "Emit backward."
   (dotimes (_ count)
@@ -165,15 +171,6 @@
   "Emit backward, COUNT times."
   (interactive "p")
   (symex--emit-backward count))
-
-(defvar symex--traversal-emit-forward
-  (symex-traversal
-   (maneuver (move up)
-             (circuit (move forward))
-             (delete)
-             (move down)
-             (paste after)))
-  "Emit forward.")
 
 (defun symex--emit-forward (count)
   "Emit forward."
@@ -185,15 +182,6 @@
   (interactive "p")
   (symex--emit-forward count))
 
-(defvar symex--traversal-capture-backward
-  (symex-traversal
-   (maneuver (move backward)
-             (delete)
-             (move up)
-             (paste before)
-             (move down)))
-  "Capture backward.")
-
 (defun symex--capture-backward (count)
   "Capture from behind."
   (dotimes (_ count)
@@ -204,24 +192,15 @@
   (interactive "p")
   (symex--capture-backward count))
 
-(defun symex--capture-forward ()
+(defun symex--capture-forward (count)
   "Capture from the front."
-  (when (and (symex-left-p)
-             (not (save-excursion
-                    (symex-other)
-                    (forward-char)
-                    (symex-lisp--point-at-end-p))))
-    (save-excursion
-      (if (symex-empty-list-p)
-          (forward-char)
-        (symex--go-up))  ; need to be inside the symex to emit and capture
-      (paredit-forward-slurp-sexp 1))))
+  (dotimes (_ count)
+    (symex-execute-traversal symex--traversal-capture-forward)))
 
 (symex-define-command symex-capture-forward (count)
   "Capture from the front, COUNT times."
   (interactive "p")
-  (dotimes (_ count)
-    (symex--capture-forward)))
+  (symex--capture-forward count))
 
 (symex-define-command symex-split ()
   "Split symex into two."
@@ -287,7 +266,7 @@ by default, joins next symex to current one."
       (when (symex--point-at-indentation-p)
         (join-line)
         (when (looking-at-p "[[:space:]]")
-          (symex-lisp--go-to-next-non-whitespace-char)))
+          (symex--go-to-next-non-whitespace-char)))
     (unless (symex--point-on-last-line-p)
       (save-excursion
         (forward-sexp)
@@ -314,17 +293,31 @@ by default, joins next symex to current one."
   "Paste before symex, COUNT times."
   (interactive "p")
   (setq this-command 'evil-paste-before)
-  (if (symex-tree-sitter-p)
-      (symex-ts-paste-before count)
-    (symex-lisp-paste-before count)))
+  ;; typically (e.g. to follow the convention in evil), we
+  ;; want to select the start of the pasted text after
+  ;; pasting.
+  ;; TODO: make this post-paste selection a defcustom
+  (symex-execute-traversal
+   (symex-traversal
+    (decision (at first)
+              (maneuver (circuit (paste before)
+                                 count)
+                        (circuit (move backward)))
+              (maneuver (move backward)
+                        (circuit (paste after)
+                                 count)
+                        (move forward))))))
 
 (symex-define-command symex-paste-after (count)
   "Paste after symex, COUNT times."
   (interactive "p")
   (setq this-command 'evil-paste-after)
-  (if (symex-tree-sitter-p)
-      (symex-ts-paste-after count)
-    (symex-lisp-paste-after count)))
+  (symex-execute-traversal
+   (symex-traversal
+    (maneuver (circuit (paste after)
+                       count)
+              ;; select the start of pasted text.
+              (move forward)))))
 
 (symex-define-insertion-command symex-open-line-after ()
   "Open new line after symex."
@@ -449,7 +442,7 @@ then no action is taken."
   (when (or (symex-left-p) (symex-string-p))
     (if (or (symex-empty-list-p)
             (symex-empty-string-p))
-        (symex-delete 1)
+        (symex--delete 1)
       (save-excursion
         (evil-surround-delete (char-after))
         (symex--go-down)))))
@@ -687,12 +680,6 @@ layer of quoting."
   "Escape quote in quoted symex."
   (interactive)
   (insert ","))
-
-(defun symex--tidy (count)
-  "Auto-indent symex and fix any whitespace."
-  (if tree-sitter-mode
-      (symex-ts-tidy) ; TODO: add count
-    (symex-lisp-tidy count)))
 
 (symex-define-command symex-tidy (count)
   "Auto-indent symex and fix any whitespace."
