@@ -128,9 +128,6 @@ to how the Lisp interpreter does it (when it is following
   (save-excursion
     (symex-execute-traversal (symex-traversal
                               (circuit symex--traversal-preorder-in-tree)))
-    ;; do it once first since it will be executed as a side-effect
-    ;; _after_ each step in the traversal
-    (symex--evaluate)
     (symex--do-while-traversing #'symex--evaluate
                                 symex--traversal-postorder-in-tree)))
 
@@ -138,9 +135,6 @@ to how the Lisp interpreter does it (when it is following
   "Evaluate the remaining symexes at this level."
   (interactive)
   (save-excursion
-    ;; do it once first since it will be executed as a side-effect
-    ;; _after_ each step in the traversal
-    (symex--evaluate)
     (symex--do-while-traversing #'symex--evaluate
                                 (symex-make-move 1 0))))
 
