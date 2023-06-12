@@ -65,31 +65,39 @@ forward-backward axis, and the Y or in-out axis."
   "Check if two moves M1 and M2 are identical."
   (equal m1 m2))
 
-(defun symex--add-moves (moves)
-  "Add MOVES together as vectors.
+(defun symex--zero-move-p (move)
+  "Check if MOVE is the zero move."
+  (symex--are-moves-equal-p move
+                            symex--move-zero))
+
+(defun symex--move-+ (a b)
+  "Add moves A and B using vector addition.
 
 This sum indicates height and distance along the branches of the tree."
-  (if moves
-      (let ((current (car moves))
-            (remaining (cdr moves)))
-        (let ((result (symex--add-moves remaining)))
-          (symex-make-move (+ (symex--move-x current)
-                              (symex--move-x result))
-                           (+ (symex--move-y current)
-                              (symex--move-y result)))))
-    symex--move-zero))
+  (let ((x1 (symex--move-x a))
+        (y1 (symex--move-y a))
+        (x2 (symex--move-x b))
+        (y2 (symex--move-y b)))
+    (symex-make-move (+ x1 x2)
+                     (+ y1 y2))))
+
+(defun symex--move-abs-+ (a b)
+  "Add two moves using vector addition of their absolute projections."
+  (let ((x1 (symex--move-x a))
+        (y1 (symex--move-y a))
+        (x2 (symex--move-x b))
+        (y2 (symex--move-y b)))
+    (symex-make-move (+ (abs x1) (abs x2))
+                     (+ (abs y1) (abs y2)))))
 
 (defun symex--move-length (move)
   "Compute the length of the MOVE.
 
-This is most naturally meaningful when the move is entirely along one axis,
-but a result will be returned even if the move is across multiple axes,
-as standard linear vector magnitude computation is used."
+This assumes that the move is entirely along one axis, i.e.
+that either x or y is zero."
   (let ((x (symex--move-x move))
         (y (symex--move-y move)))
-    (if (not (= x 0))
-        x
-      y)))
+    (abs (+ x y))))
 
 (cl-defun symex-make-precaution (traversal &key pre-condition post-condition)
   "A specification to check conditions before/after execution of a TRAVERSAL.
@@ -167,6 +175,33 @@ execution."
   (let ((traversal (symex--circuit-traversal circuit))
         (times (symex--circuit-times circuit)))
     (symex-make-circuit traversal (when times (1- times)))))
+
+(defun symex-make-loop (traversal &optional condition)
+  "A specification to repeat a TRAVERSAL until CONDITION is met.
+
+If CONDITION is nil, repeat indefinitely until the traversal fails."
+  (list 'loop
+        traversal
+        condition))
+
+(defun symex-loop-p (obj)
+  "Check if OBJ specifies a loop."
+  (condition-case nil
+      (equal 'loop
+             (nth 0 obj))
+    (error nil)))
+
+(defun symex--loop-traversal (loop)
+  "Get the traversal component of the LOOP.
+
+This is the traversal that is intended to be looped."
+  (nth 1 loop))
+
+(defun symex--loop-condition (loop)
+  "Get the condition component of the LOOP.
+
+This is the condition for termination of the traversal."
+  (nth 2 loop))
 
 (defun symex-make-maneuver (&rest phases)
   "Construct a maneuver from the given PHASES."
@@ -363,14 +398,14 @@ This is the traversal that will be chosen if the condition is false."
   "Get the side component of a PASTE."
   (nth 1 paste))
 
-(defun symex-make-effect (traversal effect)
+(defun symex-make-effect (effect traversal)
   "A specification to perform a side-effect after executing a traversal.
 
 Execute TRAVERSAL and, if it succeeds, execute EFFECT disregarding its
 result."
   (list 'effect
-        traversal
-        effect))
+        effect
+        traversal))
 
 (defun symex-effect-p (obj)
   "Check if OBJ specifies a traversal with a side effect."
@@ -379,12 +414,12 @@ result."
              (nth 0 obj))
     (error nil)))
 
-(defun symex--effect-traversal (effect)
-  "Get the traversal to perform with an EFFECT."
-  (nth 1 effect))
-
 (defun symex--effect-effect (effect)
   "Get the EFFECT to perform as part of traversal execution."
+  (nth 1 effect))
+
+(defun symex--effect-traversal (effect)
+  "Get the traversal to perform with an EFFECT."
   (nth 2 effect))
 
 (defun symex-traversal-p (obj)
@@ -393,6 +428,7 @@ result."
       (symex-maneuver-p obj)
       (symex-venture-p obj)
       (symex-circuit-p obj)
+      (symex-loop-p obj)
       (symex-detour-p obj)
       (symex-precaution-p obj)
       (symex-protocol-p obj)

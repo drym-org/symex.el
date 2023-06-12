@@ -25,6 +25,8 @@
 
 ;;; Code:
 
+(require 'symex-data)
+
 
 (defun symex--compile-traversal-helper (traversal)
   "Helper function to compile a TRAVERSAL.
@@ -69,6 +71,14 @@ TRAVERSAL - see underlying Lisp implementation.
 TIMES - see underlying Lisp implementation."
   `(symex-make-circuit (symex-traversal ,traversal)
                        ,times))
+
+(defmacro symex--compile-loop (traversal &optional condition)
+  "Compile a loop from Symex DSL -> Lisp.
+
+TRAVERSAL - see underlying Lisp implementation.
+CONDITION - see underlying Lisp implementation."
+  `(symex-make-loop (symex-traversal ,traversal)
+                    ,condition))
 
 (defun symex--rewrite-condition (condition)
   "Rewrite a condition expression into a lambda expression.
@@ -198,13 +208,17 @@ WHAT - what to delete, either this, previous, next, remaining or until."
 SIDE - the side to paste on, either before or after."
   `'(paste ,side))
 
-(defmacro symex--compile-effect (traversal effect)
+(defmacro symex--compile-effect (effect &optional traversal)
   "Compile an effect from Symex -> Lisp.
 
-TRAVERSAL - the traversal to perform. This could be any traversal.
-EFFECT - the side effect to perform. This is any Lisp expression."
-  `(symex-make-effect (symex-traversal ,traversal)
-                      (lambda () ,effect)))
+EFFECT - the side effect to perform. This is any Lisp expression.
+TRAVERSAL - the traversal to perform. This could be any traversal. If
+no traversal is specified, then the traversal is treated as the zero
+move, making this a pure side effect."
+  `(symex-make-effect (lambda () ,effect)
+                      (if ,traversal
+                          (symex-traversal ,traversal)
+                        symex--move-zero)))
 
 ;; TODO: support args here like lambda / defun (i.e. as a list in the
 ;; binding form -- not passed in but syntactically inserted)
@@ -232,6 +246,8 @@ a detour, a move, etc., which is specified using the Symex DSL."
          `(symex--compile-detour ,@(cdr traversal)))
         ((equal 'circuit (car traversal))
          `(symex--compile-circuit ,@(cdr traversal)))
+        ((equal 'loop (car traversal))
+         `(symex--compile-loop ,@(cdr traversal)))
         ((equal 'precaution (car traversal))
          `(symex--compile-precaution ,@(cdr traversal)))
         ((equal 'decision (car traversal))
