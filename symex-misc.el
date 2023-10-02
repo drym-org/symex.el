@@ -25,7 +25,7 @@
 
 ;;; Code:
 
-
+(require 'range)
 (require 'evil)
 (require 'symex-primitives)
 (require 'symex-evaluator)
