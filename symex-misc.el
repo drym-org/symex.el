@@ -329,14 +329,14 @@ For the deterministic version used at the primitive level, see
                            (line-beginning-position)))
     (symex-go-down 1)))
 
-(defun symex-select-nearest-in-line ()
-  "Select symex nearest to point that's on the current line."
+(defun symex-select-nearest-in-visual-line ()
+  "Select symex nearest to point on the current visual line."
   (interactive)
-  (unless (symex--current-line-empty-p)
-    (let ((original-pos (point)))
+  (unless (symex--current-visual-line-empty-p)
+    (let ((original-pos (point))
+          (bounds (symex--current-visual-line-bounds)))
       (symex-select-nearest)
-      (unless (= (line-number-at-pos)
-                 (line-number-at-pos original-pos))
+      (unless (range-member-p (point) bounds)
         (goto-char original-pos)))))
 
 (defun symex-remaining-length ()
@@ -365,7 +365,7 @@ This moves down COUNT lines in terms of buffer coordinates, rather than
 structurally in terms of the tree."
   (interactive "p")
   (evil-next-visual-line count)
-  (symex-select-nearest-in-line))
+  (symex-select-nearest-in-visual-line))
 
 (defun symex-previous-visual-line (&optional count)
   "Coordinate navigation to move up.
@@ -374,7 +374,7 @@ This moves up COUNT lines in terms of buffer coordinates, rather than
 structurally in terms of the tree."
   (interactive "p")
   (evil-previous-visual-line count)
-  (symex-select-nearest-in-line))
+  (symex-select-nearest-in-visual-line))
 
 (defun symex-soar-backward (count)
   "Leap backwards, crossing to a neighboring tree.
