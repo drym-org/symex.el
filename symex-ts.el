@@ -122,7 +122,7 @@ point movement (e.g. `(move -1 0)' for a move \"upward\").
 Move COUNT times, defaulting to 1.
 
 Return a Symex move (list with x,y node offsets tagged with
-'move) or nil if no movement was performed."
+`move') or nil if no movement was performed."
   (let ((target-node nil)
         (move symex--move-zero)
         (cursor (symex-ts-get-current-node)))

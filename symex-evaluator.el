@@ -41,7 +41,7 @@
 Evaluates to the actual move executed or nil if no move was executed.
 Optional argument COMPUTATION currently unused.
 
-This interface is an 'abstraction barrier' to keep the details of the
+This interface is an \"abstraction barrier\" to keep the details of the
 elementary navigation of symexes as a black box.  The implementation
 of these elementary operations could be changed in the future (e.g. to
 incorporate an explicit AST representation for greater precision) without

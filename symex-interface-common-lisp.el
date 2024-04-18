@@ -69,7 +69,7 @@ Accounts for different point location in evil vs Emacs mode."
   (symex-eval-common-lisp))
 
 (defun symex-eval-thunk-common-lisp ()
-  "Evaluate symex as a 'thunk,' i.e. as a function taking no arguments."
+  "Evaluate symex as a \"thunk,\" i.e. as a function taking no arguments."
   (interactive)
   ;; can use slime-interactive-eval
   (message "eval as thunk currently not supported for Common Lisp"))

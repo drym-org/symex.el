@@ -386,7 +386,7 @@ in the parent symex."
   (symex-tidy))
 
 (defun symex-splice ()
-  "Splice or 'clip' symex.
+  "Splice or \"clip\" symex.
 
 If the symex is a nested list, this operation eliminates the symex,
 putting its contents in the parent symex.  If the symex is an atom,
@@ -707,7 +707,7 @@ effect is not performed during the pre-traversal."
   "Properly tidy things up.
 
 This operates on the subtree indicated by the selection, rather than
-on the entire tree.  Ordinarily this would require 'remembering' the
+on the entire tree.  Ordinarily this would require \"remembering\" the
 initial location on the tree while traversing and collapsing the
 subexpressions, a feature (memory) that is absent in the Symex DSL.
 But the present implementation gets around the need for memory by
@@ -727,7 +727,7 @@ implementation."
   "Collapse a symex to a single line.
 
 This operates on the subtree indicated by the selection, rather than
-on the entire tree.  Ordinarily this would require 'remembering' the
+on the entire tree.  Ordinarily this would require \"remembering\" the
 initial location on the tree while traversing and collapsing the
 subexpressions, a feature (memory) that is absent in the Symex DSL.
 But the present implementation gets around the need for memory by

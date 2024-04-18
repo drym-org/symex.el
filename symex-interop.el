@@ -52,7 +52,7 @@
 If entering symex mode from Insert or Emacs mode, then translate point
 so it indicates the appropriate symex in Symex mode.  This is necessary
 because in Emacs, the symex preceding point is indicated.  In Vim, the
-symex 'under' point is indicated.  We want to make sure to select the
+symex \"under\" point is indicated.  We want to make sure to select the
 right symex when we enter Symex mode."
   (interactive)
   (when (or (not (symex--evil-installed-p))
@@ -81,7 +81,7 @@ right symex when we enter Symex mode."
   (and (symex--evil-installed-p) (not evil-mode)))
 
 (defun symex-escape-higher ()
-  "Exit symex mode via an 'escape'."
+  "Exit symex mode via an \"escape\"."
   (interactive)
   (cond ((symex--rigpa-enabled-p)
          (rigpa-enter-higher-level))
@@ -90,7 +90,7 @@ right symex when we enter Symex mode."
         (t (evil-emacs-state))))
 
 (defun symex-enter-lower ()
-  "Exit symex mode via an 'enter'."
+  "Exit symex mode via an \"enter\"."
   (interactive)
   (cond ((symex--rigpa-enabled-p)
          (rigpa-enter-lower-level))

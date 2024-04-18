@@ -73,13 +73,13 @@ computations.
 FILTER - a predicate function to be applied to results from nested computations
 to select those that will factor into the decision.
 DECIDE - a binary function to be applied in combining results from nested
-computations (each of the 'perceived' type) to yield the provisional result
+computations (each of the \"perceived\" type) to yield the provisional result
 \(also of the perceived type).
 EXPRESS - a function to transform data of the perceived type (e.g. the
 type produced by the decision) to the application type (the type that can be
 used by the application).
 ACT - a binary function to be applied in combining results from the overall
-computation (each of the 'expressed' type) to yield the final result
+computation (each of the \"expressed\" type) to yield the final result
 \(also of the expressed type)."
   (list 'computation
         components

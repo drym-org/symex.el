@@ -224,7 +224,7 @@ a detour, a move, etc., which is specified using the Symex DSL."
 NAME is the name of the traversal.  The defined traversal will be
 assigned to a variable with this name.
 TRAVERSAL is the specification of the traversal in the Symex DSL.
-This can be thought of as the 'program' written in the DSL, which
+This can be thought of as the \"program\" written in the DSL, which
 will be compiled into Lisp and can be executed when needed.
 An optional DOCSTRING will be used as documentation for the variable
 NAME to which the traversal is assigned."

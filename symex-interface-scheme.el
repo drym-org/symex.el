@@ -49,7 +49,7 @@
   (symex-eval-scheme))
 
 (defun symex-eval-thunk-scheme ()
-  "Evaluate symex as a 'thunk,' i.e. as a function taking no arguments."
+  "Evaluate symex as a \"thunk,\" i.e. as a function taking no arguments."
   (interactive)
   (message "eval as thunk currently not supported for Scheme"))
 

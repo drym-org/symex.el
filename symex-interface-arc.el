@@ -51,7 +51,7 @@ Accounts for different point location in evil vs Emacs mode."
   (symex-eval-arc))
 
 (defun symex-eval-thunk-arc ()
-  "Evaluate symex as a 'thunk,' i.e. as a function taking no arguments."
+  "Evaluate symex as a \"thunk,\" i.e. as a function taking no arguments."
   (interactive)
   (let ((thunk-code (string-join
                      `("("

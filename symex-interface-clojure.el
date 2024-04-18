@@ -53,7 +53,7 @@ Accounts for different point location in evil vs Emacs mode."
   (cider-pprint-eval-last-sexp))
 
 (defun symex-eval-thunk-clojure ()
-  "Evaluate symex as a 'thunk,' i.e. as a function taking no arguments."
+  "Evaluate symex as a \"thunk,\" i.e. as a function taking no arguments."
   (interactive)
   (message "eval as thunk currently not supported for Clojure"))
 

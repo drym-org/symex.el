@@ -124,7 +124,7 @@
 
 Eval starting at the leaves and proceed down to the root, similarly
 to how the Lisp interpreter does it (when it is following
-'applicative-order evaluation')."
+\"applicative-order evaluation\")."
   (interactive)
   (save-excursion
     (symex-execute-traversal (symex-traversal
@@ -431,19 +431,19 @@ the height at every step of the traversal which itself is logarithmic
 in the size of the tree, making the cost O(nlog(n)).
 
 There are at least two possible ways in which we could implement this
-'leap' feature: first, as a \"local\" traversal from the starting
+\"leap\" feature: first, as a \"local\" traversal from the starting
 position, keeping track of changes to the height while traversing and
 stopping when a suitable destination point is reached.  This would be
 efficient since we would only need to determine the height once, at the
 start, making it O(n).  However, this approach would require some
-notion of 'memory' to be built into the DSL semantics, which at
+notion of \"memory\" to be built into the DSL semantics, which at
 present it lacks (representing a theoretical limitation on the types
 of traversals expressible in the DSL in its present form).
 
 A second way to do it is in \"global\" terms -- rather than keeping
 track of changing height in the course of the traversal, instead,
 determine always from a common reference point (the root) the current
-height. This allows us to circumvent the need for 'memory' since this
+height. This allows us to circumvent the need for \"memory\" since this
 information could be computed afresh at each step.  This latter
 approach is the one employed here."
   (let ((traverse (if soar

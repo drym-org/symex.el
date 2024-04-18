@@ -96,7 +96,7 @@ Accounts for different point location in evil vs Emacs mode."
     (symex--racket-send-to-repl pretty-code)))
 
 (defun symex-eval-thunk-racket ()
-  "Evaluate symex as a 'thunk,' i.e. as a function taking no arguments."
+  "Evaluate symex as a \"thunk,\" i.e. as a function taking no arguments."
   (interactive)
   (let ((thunk-code (string-join
                       `("("

@@ -34,7 +34,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun symex-make-move (x y)
-  "Construct a tree 'move'.
+  "Construct a tree \"move\".
 
 A move represents the number of steps to be taken along the X or
 forward-backward axis, and the Y or in-out axis."
@@ -108,7 +108,7 @@ executed traversal is reversed if this returns false."
 (defun symex--precaution-traversal (precaution)
   "The traversal component of the PRECAUTION.
 
-This is the traversal that is to be executed 'with precautions'."
+This is the traversal that is to be executed \"with precautions\"."
   (nth 1 precaution))
 
 (defun symex--precaution-pre-condition (precaution)
