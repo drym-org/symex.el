@@ -1,5 +1,5 @@
-.. image:: https://github.com/countvajhula/symex.el/actions/workflows/test.yml/badge.svg
-    :target: https://github.com/countvajhula/symex.el/actions
+.. image:: https://github.com/drym-org/symex.el/actions/workflows/test.yml/badge.svg
+    :target: https://github.com/drym-org/symex.el/actions
 
 .. image:: https://melpa.org/packages/symex-badge.svg
     :alt: MELPA
@@ -50,7 +50,7 @@ Installation
 
 1. Install the package the usual way via MELPA (e.g. :code:`M-x package-install`).
 
-2. Then, assuming you're using `use-package <https://github.com/jwiegley/use-package>`__ to manage your configuration, add the following config to your ``init.d`` (note these instructions have changed as of `version 0.9 <https://github.com/countvajhula/symex.el/releases/tag/0.9>`__):
+2. Then, assuming you're using `use-package <https://github.com/jwiegley/use-package>`__ to manage your configuration, add the following config to your ``init.d`` (note these instructions have changed as of `version 0.9 <https://github.com/drym-org/symex.el/releases/tag/0.9>`__):
 
 ::
 
@@ -420,7 +420,7 @@ Tips
 Escaping to Symex Instead of Normal State
 -----------------------------------------
 
-For evil users, when you "escape" from Insert state, you may prefer to enter Symex state rather than Normal state while in Lisp buffers. You could write one-off keybindings to do this (e.g. `this recipe <https://github.com/countvajhula/symex.el/issues/24#issuecomment-815110143>`__ by user @tommy-mor), but if you'd like a more structured and flexible alternative, use `Rigpa <https://github.com/countvajhula/rigpa>`_.
+For evil users, when you "escape" from Insert state, you may prefer to enter Symex state rather than Normal state while in Lisp buffers. You could write one-off keybindings to do this (e.g. `this recipe <https://github.com/drym-org/symex.el/issues/24#issuecomment-815110143>`__ by user @tommy-mor), but if you'd like a more structured and flexible alternative, use `Rigpa <https://github.com/countvajhula/rigpa>`_.
 
 Also see `Easy Entry Into Symex State`_, below, for another option.
 
@@ -471,7 +471,7 @@ You could think of "w" as "wrap" in this context, as in, "to wrap with parenthes
 Learn More
 ==========
 
-Read the documentation for the `Symex DSL <https://github.com/countvajhula/symex.el/blob/master/DSL-Docs.rst>`_.
+Read the documentation for the `Symex DSL <https://github.com/drym-org/symex.el/blob/master/DSL-Docs.rst>`_.
 
 Learn more about the implementation and see some usage examples in the video overview (given at an `Emacs SF <https://www.meetup.com/Emacs-SF/>`_ meetup in 2019):
 
