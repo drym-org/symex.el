@@ -65,9 +65,13 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-repl-fennel ()
   "Go to REPL."
-  (fennel-repl)
-  (goto-char (point-max))
-  (symex-enter-lowest))
+  (let ((original-window (selected-window)))
+    (fennel-repl fennel-program)
+    (unless (eq original-window (selected-window))
+      ;; if the REPL window is currently being created
+      ;; then don't attempt to go to the bottom
+      (goto-char (point-max))
+      (symex-enter-lowest))))
 
 (defun symex-run-fennel ()
   "Evaluate buffer."
