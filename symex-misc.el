@@ -38,6 +38,7 @@
 (require 'symex-interface-common-lisp)
 (require 'symex-interface-arc)
 (require 'symex-interface-fennel)
+(require 'symex-interface)
 (require 'symex-interop)
 (require 'symex-ui)
 
@@ -96,7 +97,7 @@
                  (symex-eval-arc))
                 ((equal major-mode 'fennel-mode)
                  (symex-eval-fennel))
-                (t (error "Symex mode: Lisp flavor not recognized!") )))
+                (t (funcall (symex-interface-get-method :eval)))))
       ;; enter a "normal-like" state here momentarily, to prevent entry
       ;; into symex mode from being treated as if it was in an "emacs" context
       ;; since the entry into emacs state is done here as an implementation
@@ -165,7 +166,7 @@ to how the Lisp interpreter does it (when it is following
          (symex-eval-definition-arc))
         ((equal major-mode 'fennel-mode)
          (symex-eval-definition-fennel))
-        (t (error "Symex mode: Lisp flavor not recognized!") )))
+        (t (funcall (symex-interface-get-method :eval-definition)))))
 
 (defun symex-evaluate-pretty ()
   "Evaluate Symex and transform output into a useful string representation."
@@ -186,7 +187,7 @@ to how the Lisp interpreter does it (when it is following
            (symex-eval-pretty-arc))
           ((equal major-mode 'fennel-mode)
            (symex-eval-pretty-fennel))
-          (t (error "Symex mode: Lisp flavor not recognized!")))))
+          (t (funcall (symex-interface-get-method :eval-pretty))))))
 
 (defun symex-eval-print ()
   "Eval symex and print result in buffer."
@@ -207,7 +208,7 @@ to how the Lisp interpreter does it (when it is following
            (symex-eval-print-arc))
           ((equal major-mode 'fennel-mode)
            (symex-eval-print-fennel))
-          (t (error "Symex mode: Lisp flavor not recognized!")))))
+          (t (funcall (symex-interface-get-method :eval-print))))))
 
 (defun symex-evaluate-thunk ()
   "Evaluate symex as a thunk.
@@ -232,7 +233,7 @@ executing it."
            (symex-eval-thunk-arc))
           ((equal major-mode 'fennel-mode)
            (symex-eval-thunk-fennel))
-          (t (error "Symex mode: Lisp flavor not recognized!")))))
+          (t (funcall (symex-interface-get-method :eval-thunk))))))
 
 (defun symex-describe ()
   "Lookup doc on symex."
@@ -253,7 +254,7 @@ executing it."
            (symex-describe-symbol-arc))
           ((equal major-mode 'fennel-mode)
            (symex-describe-symbol-fennel))
-          (t (error "Symex mode: Lisp flavor not recognized!")))))
+          (t (funcall (symex-interface-get-method :describe-symbol))))))
 
 (defun symex-repl ()
   "Go to REPL."
@@ -272,7 +273,7 @@ executing it."
          (symex-repl-arc))
         ((equal major-mode 'fennel-mode)
          (symex-repl-fennel))
-        (t (error "Symex mode: Lisp flavor not recognized!"))))
+        (t (funcall (symex-interface-get-method :repl)))))
 
 (defun symex-run ()
   "Send to REPL."
@@ -289,7 +290,7 @@ executing it."
          (symex-run-common-lisp))
         ((equal major-mode 'fennel-mode)
          (symex-run-fennel))
-        (t (error "Symex mode: Lisp flavor not recognized!"))))
+        (t (funcall (symex-interface-get-method :run)))))
 
 (cl-defun symex--new-scratch-buffer (buffer-name)
   "Create a new empty buffer.
