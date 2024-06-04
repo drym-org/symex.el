@@ -1,31 +1,54 @@
 ;;; symex-interface.el --- An evil way to edit Lisp symbolic expressions as trees  -*- lexical-binding: t; -*-
 
-;; Package-Requires: ((emacs "25.1"))
+;; URL: https://github.com/countvajhula/symex.el
+
+;; This program is "part of the world," in the sense described at
+;; https://drym.org.  From your perspective, this is no different than
+;; MIT or BSD or other such "liberal" licenses that you may be
+;; familiar with, that is to say, you are free to do whatever you like
+;; with this program.  It is much more than BSD or MIT, however, in
+;; that it isn't a license at all but an idea about the world and how
+;; economic systems could be set up so that everyone wins.  Learn more
+;; at drym.org.
+;;
+;; This work transcends traditional legal and economic systems, but
+;; for the purposes of any such systems within which you may need to
+;; operate:
+;;
+;; This is free and unencumbered software released into the public domain.
+;; The authors relinquish any copyright claims on this work.
+;;
+
+;;; Commentary:
+
+;; Miscellaneous Lisp editing-related features
 
 ;;; Code:
 
 (defvar symex-interfaces '())
 
-(defun symex-interface-add (major-mode methods-plist)
-  (mapcar (lambda (k)
+(defun symex-interface-add (mode methods-plist)
+  "Add symex interface method's (METHODS-PLIST) for MODE."
+  (mapc (lambda (k)
             (cl-assert (plist-get methods-plist k)
-                       (concat "symex interface: missing method: " k) ))
-          (list :eval
-                :eval-definition
-                :eval-pretty
-                :eval-thunk
-                :eval-print
-                :describe-symbol
-                :repl
-                :run))
+                       (concat "symex interface: missing method: " (symbol-name k)) ))
+    (list :eval
+          :eval-definition
+          :eval-pretty
+          :eval-thunk
+          :eval-print
+          :describe-symbol
+          :repl
+          :run))
   (setq symex-interfaces
-        (cons (cons major-mode methods-plist)
+        (cons (cons mode methods-plist)
               symex-interfaces)))
 
 (defun symex-interface-get-method (method)
+  "Find a symex interface METHOD for the current major-mode."
   (let ((interface (alist-get major-mode symex-interfaces)))
     (or (plist-get interface method)
-        (lambda () (error (concat "Symex mode: no method " method " for major-mode " major-mode ))))))
+        (lambda () (error (concat "Symex mode: no method " (symbol-name method) " for major-mode " (symbol-name major-mode) ))))))
 
 (provide 'symex-interface)
 ;;; symex-interface.el ends here
