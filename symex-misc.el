@@ -287,6 +287,8 @@ executing it."
          (symex-run-clojure))
         ((member major-mode symex-common-lisp-modes)
          (symex-run-common-lisp))
+        ((equal major-mode 'fennel-mode)
+         (symex-run-fennel))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
 (cl-defun symex--new-scratch-buffer (buffer-name)
@@ -322,6 +324,8 @@ Version 2017-11-01"
                              "*scratch - Clojure*")
                             ((member major-mode symex-common-lisp-modes)
                              "*scratch - Common Lisp*")
+                            ((equal major-mode 'fennel-mode)
+                             "*scratch - Fennel*")
                             (t (error "Symex mode: Lisp flavor not recognized!"))))
          (buf (get-buffer buffer-name)))
     (let ((buf (or buf (symex--new-scratch-buffer buffer-name))))

@@ -29,7 +29,7 @@
 (require 'symex-interop)
 
 
-(declare-function fennel-find-definition  "ext:fennel-mode")
+[(declare-function fennel-find-definition  "ext:fennel-mode")]
 (declare-function fennel-repl "ext:fennel-mode")
 
 (defun symex-eval-fennel ()
@@ -51,7 +51,12 @@ Accounts for different point location in evil vs Emacs mode."
 (defun symex-eval-thunk-fennel ()
   "Evaluate symex as a 'thunk,' i.e. as a function taking no arguments."
   (interactive)
-  nil)
+  (let ((thunk-code (string-join
+                     `("("
+                       ,(buffer-substring (symex--get-starting-point)
+                                          (point))
+                       ")"))))
+    (lisp-eval-string thunk-code)))
 
 (defun symex-eval-print-fennel ()
   "Eval symex and print result in buffer."
@@ -75,7 +80,7 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-run-fennel ()
   "Evaluate buffer."
-  (error "Not implemented"))
+  (lisp-eval-region (point-min) (point-max)))
 
 
 (provide 'symex-interface-fennel)
