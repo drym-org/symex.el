@@ -411,6 +411,8 @@ Symex supports the following lisps:
      - Geiser
    * - Arc
      - Arc.el
+   * - Fennel
+     - fennel-mode.el
    * - Other
      - Structural editing only (no runtime). Please create an issue if you need additional support for your Lisp.
 
