@@ -37,6 +37,7 @@
 (require 'symex-interface-clojure)
 (require 'symex-interface-common-lisp)
 (require 'symex-interface-arc)
+(require 'symex-interface-fennel)
 (require 'symex-interop)
 (require 'symex-ui)
 
@@ -93,7 +94,9 @@
                  (symex-eval-common-lisp))
                 ((equal major-mode 'arc-mode)
                  (symex-eval-arc))
-                (t (error "Symex mode: Lisp flavor not recognized!"))))
+                ((equal major-mode 'fennel-mode)
+                 (symex-eval-fennel))
+                (t (error "Symex mode: Lisp flavor not recognized!") )))
       ;; enter a "normal-like" state here momentarily, to prevent entry
       ;; into symex mode from being treated as if it was in an "emacs" context
       ;; since the entry into emacs state is done here as an implementation
@@ -160,7 +163,9 @@ to how the Lisp interpreter does it (when it is following
          (symex-eval-definition-common-lisp))
         ((equal major-mode 'arc-mode)
          (symex-eval-definition-arc))
-        (t (error "Symex mode: Lisp flavor not recognized!"))))
+        ((equal major-mode 'fennel-mode)
+         (symex-eval-definition-fennel))
+        (t (error "Symex mode: Lisp flavor not recognized!") )))
 
 (defun symex-evaluate-pretty ()
   "Evaluate Symex and transform output into a useful string representation."
@@ -179,6 +184,8 @@ to how the Lisp interpreter does it (when it is following
            (symex-eval-pretty-common-lisp))
           ((equal major-mode 'arc-mode)
            (symex-eval-pretty-arc))
+          ((equal major-mode 'fennel-mode)
+           (symex-eval-pretty-fennel))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-eval-print ()
@@ -198,6 +205,8 @@ to how the Lisp interpreter does it (when it is following
            (symex-eval-print-common-lisp))
           ((equal major-mode 'arc-mode)
            (symex-eval-print-arc))
+          ((equal major-mode 'fennel-mode)
+           (symex-eval-print-fennel))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-evaluate-thunk ()
@@ -221,6 +230,8 @@ executing it."
            (symex-eval-thunk-common-lisp))
           ((equal major-mode 'arc-mode)
            (symex-eval-thunk-arc))
+          ((equal major-mode 'fennel-mode)
+           (symex-eval-thunk-fennel))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-describe ()
@@ -240,6 +251,8 @@ executing it."
            (symex-describe-symbol-common-lisp))
           ((equal major-mode 'arc-mode)
            (symex-describe-symbol-arc))
+          ((equal major-mode 'fennel-mode)
+           (symex-describe-symbol-fennel))
           (t (error "Symex mode: Lisp flavor not recognized!")))))
 
 (defun symex-repl ()
@@ -257,6 +270,8 @@ executing it."
          (symex-repl-common-lisp))
         ((equal major-mode 'arc-mode)
          (symex-repl-arc))
+        ((equal major-mode 'fennel-mode)
+         (symex-repl-fennel))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
 (defun symex-run ()
@@ -272,6 +287,8 @@ executing it."
          (symex-run-clojure))
         ((member major-mode symex-common-lisp-modes)
          (symex-run-common-lisp))
+        ((equal major-mode 'fennel-mode)
+         (symex-run-fennel))
         (t (error "Symex mode: Lisp flavor not recognized!"))))
 
 (cl-defun symex--new-scratch-buffer (buffer-name)
@@ -307,6 +324,8 @@ Version 2017-11-01"
                              "*scratch - Clojure*")
                             ((member major-mode symex-common-lisp-modes)
                              "*scratch - Common Lisp*")
+                            ((equal major-mode 'fennel-mode)
+                             "*scratch - Fennel*")
                             (t (error "Symex mode: Lisp flavor not recognized!"))))
          (buf (get-buffer buffer-name)))
     (let ((buf (or buf (symex--new-scratch-buffer buffer-name))))
