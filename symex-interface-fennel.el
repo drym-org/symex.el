@@ -29,7 +29,7 @@
 (require 'symex-interop)
 
 
-[(declare-function fennel-find-definition  "ext:fennel-mode")]
+(declare-function fennel-find-definition  "ext:fennel-mode")
 (declare-function fennel-repl "ext:fennel-mode")
 
 (defun symex-eval-fennel ()
