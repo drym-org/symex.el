@@ -48,8 +48,8 @@
   "Extend symex MODES with given INTERFACE."
   (symex-interface-assert interface)
   (setq symex-interfaces
-        (cons (mapcar (lambda (m) (cons m interface)) modes)
-              symex-interfaces)))
+       (append (mapcar (lambda (m) (cons m interface)) modes)
+                symex-interfaces)))
 
 (defun symex-interface-get-method (method)
   "Find a symex interface METHOD for the current major-mode."
