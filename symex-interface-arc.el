@@ -81,7 +81,7 @@ Accounts for different point location in evil vs Emacs mode."
   "Evaluate buffer."
   (error "Not implemented"))
 
-(defvar symex-arc-modes 'arc-mode)
+(defvar symex-arc-modes (list 'arc-mode))
 
 (symex-interface-extend
  symex-arc-modes
