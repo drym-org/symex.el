@@ -29,6 +29,7 @@
 (require 'subr-x)
 (require 'symex-interop)
 (require 'symex-primitives)
+(require 'symex-interface)
 
 ;; from racket-mode - avoid byte-compile warnings
 (defvar racket-repl-buffer-name)
@@ -132,6 +133,21 @@ Accounts for different point location in evil vs Emacs mode."
 (defun symex-run-racket ()
   "Evaluate buffer."
   (racket-run))
+
+(defvar symex-racket-modes (list 'racket-mode
+                                 'racket-repl-mode))
+
+(symex-interface-extend
+ symex-racket-modes
+ (list
+  :eval #'symex-eval-racket
+  :eval-definition #'symex-eval-definition-racket
+  :eval-pretty #'symex-eval-pretty-racket
+  :eval-thunk #'symex-eval-thunk-racket
+  :eval-print #'symex-eval-print-racket
+  :describe-symbol #'symex-describe-symbol-racket
+  :repl #'symex-repl-racket
+  :run #'symex-run-racket))
 
 
 (provide 'symex-interface-racket)

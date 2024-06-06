@@ -27,6 +27,7 @@
 
 (require 'cider nil 'noerror)
 (require 'symex-interop)
+(require 'symex-interface)
 
 (declare-function cider-eval-last-sexp "ext:cider")
 (declare-function cider-eval-defun-at-point "ext:cider")
@@ -78,6 +79,21 @@ Accounts for different point location in evil vs Emacs mode."
   "Evaluate buffer."
   (cider-eval-buffer))
 
+(defvar symex-clojure-modes (list 'clojure-mode
+                                  'clojurescript-mode
+                                  'clojurec-mode))
+
+(symex-interface-extend
+ symex-clojure-modes
+ (list
+  :eval #'symex-eval-clojure
+  :eval-definition #'symex-eval-definition-clojure
+  :eval-pretty #'symex-eval-pretty-clojure
+  :eval-thunk #'symex-eval-thunk-clojure
+  :eval-print #'symex-eval-print-clojure
+  :describe-symbol #'symex-describe-symbol-clojure
+  :repl #'symex-repl-clojure
+  :run #'symex-run-clojure))
 
 (provide 'symex-interface-clojure)
 ;;; symex-interface-clojure.el ends here

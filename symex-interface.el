@@ -27,21 +27,28 @@
 
 (defvar symex-interfaces '())
 
-(defun symex-interface-add (mode methods-plist)
-  "Add symex interface method's (METHODS-PLIST) for MODE."
+(defvar symex-methods
+  (list :eval
+        :eval-definition
+        :eval-pretty
+        :eval-thunk
+        :eval-print
+        :describe-symbol
+        :repl
+        :run))
+
+(defun symex-interface-assert (interface)
+  "Assert that INTERFACE is a valid symex interface."
   (mapc (lambda (k)
-            (cl-assert (plist-get methods-plist k)
-                       (concat "symex interface: missing method: " (symbol-name k)) ))
-    (list :eval
-          :eval-definition
-          :eval-pretty
-          :eval-thunk
-          :eval-print
-          :describe-symbol
-          :repl
-          :run))
+          (cl-assert (plist-get interface k)
+                     (concat "symex interface: missing method: " (symbol-name k)) ))
+        symex-methods))
+
+(defun symex-interface-extend (modes interface)
+  "Extend symex MODES with given INTERFACE."
+  (symex-interface-assert interface)
   (setq symex-interfaces
-        (cons (cons mode methods-plist)
+        (cons (mapcar (lambda (m) (cons m interface)) modes)
               symex-interfaces)))
 
 (defun symex-interface-get-method (method)

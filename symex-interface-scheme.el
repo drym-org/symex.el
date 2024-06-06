@@ -27,6 +27,7 @@
 
 (require 'geiser-mode nil 'noerror)
 (require 'symex-interop)
+(require 'symex-interface)
 
 (declare-function geiser-eval-last-sexp "ext:geiser-mode")
 (declare-function geiser-eval-definition "ext:geiser-mode")
@@ -72,6 +73,20 @@
 (defun symex-run-scheme ()
   "Evaluate buffer."
   (geiser-eval-buffer nil))
+
+(defvar symex-scheme-modes (list 'scheme-mode))
+
+(symex-interface-extend
+ symex-scheme-modes
+ (list
+  :eval #'symex-eval-scheme
+  :eval-definition #'symex-eval-definition-scheme
+  :eval-pretty #'symex-eval-pretty-scheme
+  :eval-thunk #'symex-eval-thunk-scheme
+  :eval-print #'symex-eval-print-scheme
+  :describe-symbol #'symex-describe-symbol-scheme
+  :repl #'symex-repl-scheme
+  :run #'symex-run-scheme))
 
 
 (provide 'symex-interface-scheme)

@@ -27,6 +27,7 @@
 
 (require 'evil)
 (require 'symex-interop)
+(require 'symex-interface)
 
 (defun symex-eval-elisp ()
   "Eval Elisp symex."
@@ -81,6 +82,22 @@ open in most recently used other window."
 (defun symex-run-elisp ()
   "Evaluate buffer."
   (eval-buffer))
+
+(defvar symex-elisp-modes (list 'lisp-interaction-mode
+                                'emacs-lisp-mode
+                                'inferior-emacs-lisp-mode))
+
+(symex-interface-extend
+ symex-elisp-modes
+ (list
+  :eval #'symex-eval-elisp
+  :eval-definition #'symex-eval-definition-elisp
+  :eval-pretty #'symex-eval-pretty-elisp
+  :eval-thunk #'symex-eval-thunk-elisp
+  :eval-print #'symex-eval-print-elisp
+  :describe-symbol #'symex-describe-symbol-elisp
+  :repl #'symex-repl-elisp
+  :run #'symex-run-elisp))
 
 
 (provide 'symex-interface-elisp)

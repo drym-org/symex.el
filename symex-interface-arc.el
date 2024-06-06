@@ -27,6 +27,7 @@
 
 (require 'arc nil 'noerror)
 (require 'symex-interop)
+(require 'symex-interface)
 
 (declare-function arc-send-last-sexp "ext:arc")
 (declare-function arc-send-definition "ext:arc")
@@ -79,6 +80,20 @@ Accounts for different point location in evil vs Emacs mode."
 (defun symex-run-arc ()
   "Evaluate buffer."
   (error "Not implemented"))
+
+(defvar symex-arc-modes 'arc-mode)
+
+(symex-interface-extend
+ symex-arc-modes
+ (list
+   :eval #'symex-eval-arc
+   :eval-definition #'symex-eval-definition-arc
+   :eval-pretty #'symex-eval-pretty-arc
+   :eval-thunk #'symex-eval-thunk-arc
+   :eval-print #'symex-eval-print-arc
+   :describe-symbol #'symex-describe-symbol-arc
+   :repl #'symex-repl-arc
+   :run #'symex-run-arc))
 
 
 (provide 'symex-interface-arc)

@@ -82,6 +82,20 @@ Accounts for different point location in evil vs Emacs mode."
   "Evaluate buffer."
   (lisp-eval-region (point-min) (point-max)))
 
+(defvar symex-fennel-modes (list 'fennel-mode))
+
+(symex-interface-extend
+ symex-fennel-modes
+ (list
+  :eval #'symex-eval-fennel
+  :eval-definition #'symex-eval-definition-fennel
+  :eval-pretty #'symex-eval-pretty-fennel
+  :eval-thunk #'symex-eval-thunk-fennel
+  :eval-print #'symex-eval-print-fennel
+  :describe-symbol #'symex-describe-symbol-fennel
+  :repl #'symex-repl-fennel
+  :run #'symex-run-fennel))
+
 
 (provide 'symex-interface-fennel)
 ;;; symex-interface-fennel.el ends here

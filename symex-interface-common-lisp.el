@@ -31,6 +31,7 @@
 (require 'sly-mrepl  nil 'noerror)
 (require 'symex-interop)
 (require 'symex-custom)
+(require 'symex-interface)
 
 ;; Make the bytecompiler aware of slime
 (declare-function slime-eval-last-expression "ext:slime")
@@ -104,6 +105,22 @@ Accounts for different point location in evil vs Emacs mode."
   (when (eq symex-common-lisp-backend 'sly)
     (sly-eval-buffer))
   (slime-eval-buffer))
+
+(defvar symex-common-lisp-modes (list 'lisp-mode
+                                      'slime-repl-mode
+                                      'sly-mrepl-mode))
+
+(symex-interface-extend
+ symex-common-lisp-modes
+ (list
+  :eval #'symex-eval-lisp
+  :eval-definition #'symex-eval-definition-lisp
+  :eval-pretty #'symex-eval-pretty-lisp
+  :eval-thunk #'symex-eval-thunk-lisp
+  :eval-print #'symex-eval-print-lisp
+  :describe-symbol #'symex-describe-symbol-lisp
+  :repl #'symex-repl-lisp
+  :run #'symex-run-lisp))
 
 
 (provide 'symex-interface-common-lisp)
