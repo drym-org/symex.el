@@ -128,7 +128,7 @@
 ;;; List major modes in which symex should be active.
 (defun symex-get-lisp-modes ()
   "List modes that implement the symex interface."
-  (mapcar 'car symex-interfaces))
+  (mapcar #'car symex-interfaces))
 
 ;;;###autoload
 (defun symex-initialize ()

@@ -1,6 +1,7 @@
 ;;; symex-interface-racket.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
 
-;; URL: https://github.com/countvajhula/symex.el
+;; URL: https://github.com/drym-org/symex.el
+
 
 ;; This program is "part of the world," in the sense described at
 ;; https://drym.org.  From your perspective, this is no different than
@@ -73,7 +74,6 @@ This function is based on code from an old version of the
   "Eval last sexp.
 
 Accounts for different point location in evil vs Emacs mode."
-  (interactive)
   (save-excursion
     (when (equal evil-state 'normal)
       (forward-char))
@@ -85,7 +85,6 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-eval-pretty-racket ()
   "Evaluate symex and render the result in a useful string form."
-  (interactive)
   (let ((pretty-code (string-join
                       `("(let ([result "
                         ,(buffer-substring (symex--get-starting-point)
@@ -98,22 +97,15 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-eval-thunk-racket ()
   "Evaluate symex as a \"thunk,\" i.e. as a function taking no arguments."
-  (interactive)
   (let ((thunk-code (string-join
-                      `("("
-                        ,(buffer-substring (symex--get-starting-point)
-                                           (point))
-                        ")"))))
+                     `("("
+                       ,(buffer-substring (symex--get-starting-point)
+                                          (point))
+                       ")"))))
     (symex--racket-send-to-repl thunk-code)))
-
-(defun symex-eval-print-racket ()
-  "Eval symex and print result in buffer."
-  (interactive)
-  nil)
 
 (defun symex-describe-symbol-racket ()
   "Describe symbol at point."
-  (interactive)
   (let ((original-window (selected-window)))
     (cond (racket-xp-mode (racket-xp-describe))
           ((eq major-mode 'racket-repl-mode) (racket-repl-describe))
@@ -130,10 +122,6 @@ Accounts for different point location in evil vs Emacs mode."
       (goto-char (point-max))
       (symex-enter-lowest))))
 
-(defun symex-run-racket ()
-  "Evaluate buffer."
-  (racket-run))
-
 (defvar symex-racket-modes (list 'racket-mode
                                  'racket-repl-mode))
 
@@ -141,13 +129,12 @@ Accounts for different point location in evil vs Emacs mode."
  symex-racket-modes
  (list
   :eval #'symex-eval-racket
-  :eval-definition #'symex-eval-definition-racket
+  :eval-definition #'racket-send-definition
   :eval-pretty #'symex-eval-pretty-racket
   :eval-thunk #'symex-eval-thunk-racket
-  :eval-print #'symex-eval-print-racket
   :describe-symbol #'symex-describe-symbol-racket
   :repl #'symex-repl-racket
-  :run #'symex-run-racket))
+  :run #'racket-run))
 
 
 (provide 'symex-interface-racket)

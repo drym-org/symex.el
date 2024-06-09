@@ -1,6 +1,7 @@
 ;;; symex-interface-arc.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
 
-;; URL: https://github.com/countvajhula/symex.el
+;; URL: https://github.com/drym-org/symex.el
+
 
 ;; This program is "part of the world," in the sense described at
 ;; https://drym.org.  From your perspective, this is no different than
@@ -35,22 +36,6 @@
 (declare-function arc--send-to-repl "ext:arc")
 (declare-function arc-repl "ext:arc")
 
-(defun symex-eval-arc ()
-  "Eval last sexp.
-
-Accounts for different point location in evil vs Emacs mode."
-  (interactive)
-  (arc-send-last-sexp))
-
-(defun symex-eval-definition-arc ()
-  "Eval entire containing definition."
-  (arc-send-definition))
-
-(defun symex-eval-pretty-arc ()
-  "Evaluate symex and render the result in a useful string form."
-  (interactive)
-  (symex-eval-arc))
-
 (defun symex-eval-thunk-arc ()
   "Evaluate symex as a \"thunk,\" i.e. as a function taking no arguments."
   (interactive)
@@ -61,39 +46,22 @@ Accounts for different point location in evil vs Emacs mode."
                        ")"))))
     (arc--send-to-repl thunk-code)))
 
-(defun symex-eval-print-arc ()
-  "Eval symex and print result in buffer."
-  (interactive)
-  nil)
-
-(defun symex-describe-symbol-arc ()
-  "Describe symbol at point."
-  (interactive)
-  nil)
-
 (defun symex-repl-arc ()
   "Go to REPL."
   (arc-repl)
   (goto-char (point-max))
   (symex-enter-lowest))
 
-(defun symex-run-arc ()
-  "Evaluate buffer."
-  (error "Not implemented"))
-
 (defvar symex-arc-modes (list 'arc-mode))
 
 (symex-interface-extend
  symex-arc-modes
  (list
-   :eval #'symex-eval-arc
-   :eval-definition #'symex-eval-definition-arc
-   :eval-pretty #'symex-eval-pretty-arc
-   :eval-thunk #'symex-eval-thunk-arc
-   :eval-print #'symex-eval-print-arc
-   :describe-symbol #'symex-describe-symbol-arc
-   :repl #'symex-repl-arc
-   :run #'symex-run-arc))
+  :eval #'arc-send-last-sexp
+  :eval-definition #'arc-send-definition
+  :eval-pretty #'arc-send-last-sexp
+  :eval-thunk #'symex-eval-thunk-arc
+  :repl #'symex-repl-arc))
 
 
 (provide 'symex-interface-arc)

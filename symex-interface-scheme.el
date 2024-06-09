@@ -1,6 +1,7 @@
 ;;; symex-interface-scheme.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
 
-;; URL: https://github.com/countvajhula/symex.el
+;; URL: https://github.com/drym-org/symex.el
+
 
 ;; This program is "part of the world," in the sense described at
 ;; https://drym.org.  From your perspective, this is no different than
@@ -37,32 +38,11 @@
 
 (defun symex-eval-scheme ()
   "Eval Scheme symex."
-  (interactive)
   (geiser-eval-last-sexp nil))
 
 (defun symex-eval-definition-scheme ()
   "Eval entire containing definition."
   (geiser-eval-definition nil))
-
-(defun symex-eval-pretty-scheme ()
-  "Evaluate symex and render the result in a useful string form."
-  (interactive)
-  (symex-eval-scheme))
-
-(defun symex-eval-thunk-scheme ()
-  "Evaluate symex as a \"thunk,\" i.e. as a function taking no arguments."
-  (interactive)
-  (message "eval as thunk currently not supported for Scheme"))
-
-(defun symex-eval-print-scheme ()
-  "Eval symex and print result in buffer."
-  (interactive)
-  nil)
-
-(defun symex-describe-symbol-scheme ()
-  "Describe symbol at point."
-  (interactive)
-  (geiser-doc-symbol-at-point))
 
 (defun symex-repl-scheme ()
   "Go to REPL."
@@ -81,10 +61,8 @@
  (list
   :eval #'symex-eval-scheme
   :eval-definition #'symex-eval-definition-scheme
-  :eval-pretty #'symex-eval-pretty-scheme
-  :eval-thunk #'symex-eval-thunk-scheme
-  :eval-print #'symex-eval-print-scheme
-  :describe-symbol #'symex-describe-symbol-scheme
+  :eval-pretty #'symex-eval-scheme
+  :describe-symbol #'geiser-doc-symbol-at-point
   :repl #'symex-repl-scheme
   :run #'symex-run-scheme))
 

@@ -1,6 +1,7 @@
 ;;; symex-interface.el --- An evil way to edit Lisp symbolic expressions as trees  -*- lexical-binding: t; -*-
 
-;; URL: https://github.com/countvajhula/symex.el
+;; URL: https://github.com/drym-org/symex.el
+
 
 ;; This program is "part of the world," in the sense described at
 ;; https://drym.org.  From your perspective, this is no different than
@@ -37,16 +38,24 @@
         :repl
         :run))
 
-(defun symex-interface-assert (interface)
+(defun symex-interface--plist-keys (plist)
+  "Return a list of keys in the property list PLIST."
+  (let (keys)
+    (while plist
+      (setq keys (cons (car plist) keys))
+      (setq plist (cddr plist)))
+    (reverse keys)))
+
+(defun symex-interface-check (interface)
   "Assert that INTERFACE is a valid symex interface."
   (mapc (lambda (k)
-          (cl-assert (plist-get interface k)
-                     (concat "symex interface: missing method: " (symbol-name k)) ))
-        symex-methods))
+          (cl-assert (member k symex-methods)
+                     (concat "symex interface: unknown method: " (symbol-name k)) ))
+        (symex-interface--plist-keys interface)))
 
 (defun symex-interface-extend (modes interface)
   "Extend symex MODES with given INTERFACE."
-  (symex-interface-assert interface)
+  (symex-interface-check interface)
   (setq symex-interfaces
        (append (mapcar (lambda (m) (cons m interface)) modes)
                 symex-interfaces)))

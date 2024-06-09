@@ -1,6 +1,7 @@
 ;;; symex-interface-common-lisp.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
 
-;; URL: https://github.com/countvajhula/symex.el
+;; URL: https://github.com/drym-org/symex.el
+
 
 ;; This program is "part of the world," in the sense described at
 ;; https://drym.org.  From your perspective, this is no different than
@@ -54,26 +55,15 @@
 
 Accounts for different point location in evil vs Emacs mode."
   (interactive)
-  (when (eq symex-common-lisp-backend 'sly)
-    (sly-eval-last-expression))
-  (slime-eval-last-expression))
+  (if (eq symex-common-lisp-backend 'sly)
+      (sly-eval-last-expression)
+    (slime-eval-last-expression)))
 
 (defun symex-eval-definition-common-lisp ()
   "Eval entire containing definition."
-  (when (eq symex-common-lisp-backend 'sly)
-    (sly-eval-defun))
-  (slime-eval-defun))
-
-(defun symex-eval-pretty-common-lisp ()
-  "Evaluate symex and render the result in a useful string form."
-  (interactive)
-  (symex-eval-common-lisp))
-
-(defun symex-eval-thunk-common-lisp ()
-  "Evaluate symex as a \"thunk,\" i.e. as a function taking no arguments."
-  (interactive)
-  ;; can use slime-interactive-eval
-  (message "eval as thunk currently not supported for Common Lisp"))
+  (if (eq symex-common-lisp-backend 'sly)
+      (sly-eval-defun)
+    (slime-eval-defun)))
 
 (defun symex-eval-print-common-lisp ()
   "Eval symex and print result in buffer."
@@ -81,7 +71,7 @@ Accounts for different point location in evil vs Emacs mode."
   (call-interactively
    (if (eq symex-common-lisp-backend 'sly)
        #'sly-eval-print-last-expression
-       #'slime-eval-print-last-expression)))
+     #'slime-eval-print-last-expression)))
 
 (defun symex-describe-symbol-common-lisp ()
   "Describe symbol at point."
@@ -102,9 +92,9 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-run-common-lisp ()
   "Evaluate buffer."
-  (when (eq symex-common-lisp-backend 'sly)
-    (sly-eval-buffer))
-  (slime-eval-buffer))
+  (if (eq symex-common-lisp-backend 'sly)
+      (sly-eval-buffer)
+    (slime-eval-buffer)))
 
 (defvar symex-common-lisp-modes (list 'lisp-mode
                                       'slime-repl-mode
@@ -113,14 +103,13 @@ Accounts for different point location in evil vs Emacs mode."
 (symex-interface-extend
  symex-common-lisp-modes
  (list
-  :eval #'symex-eval-lisp
-  :eval-definition #'symex-eval-definition-lisp
-  :eval-pretty #'symex-eval-pretty-lisp
-  :eval-thunk #'symex-eval-thunk-lisp
-  :eval-print #'symex-eval-print-lisp
-  :describe-symbol #'symex-describe-symbol-lisp
-  :repl #'symex-repl-lisp
-  :run #'symex-run-lisp))
+  :eval #'symex-eval-common-lisp
+  :eval-definition #'symex-eval-definition-common-lisp
+  :eval-pretty #'symex-eval-common-lisp
+  :eval-print #'symex-eval-print-common-lisp
+  :describe-symbol #'symex-describe-symbol-common-lisp
+  :repl #'symex-repl-common-lisp
+  :run #'symex-run-common-lisp))
 
 
 (provide 'symex-interface-common-lisp)
