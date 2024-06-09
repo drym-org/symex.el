@@ -93,6 +93,12 @@ Accounts for different point location in evil vs Emacs mode."
       (sly-eval-buffer)
     (slime-eval-buffer)))
 
+(defun symex-switch-to-scratch-buffer-common-lisp ()
+  "Switch to scratch buffer."
+  (let ((buffer-name "*scratch - Common Lisp*"))
+    (switch-to-buffer (or (get-buffer buffer-name)
+                          (symex--new-scratch-buffer buffer-name)))))
+
 (defvar symex-common-lisp-modes (list 'lisp-mode
                                       'slime-repl-mode
                                       'sly-mrepl-mode))
@@ -106,7 +112,8 @@ Accounts for different point location in evil vs Emacs mode."
   :eval-print #'symex-eval-print-common-lisp
   :describe-symbol #'symex-describe-symbol-common-lisp
   :repl #'symex-repl-common-lisp
-  :run #'symex-run-common-lisp))
+  :run #'symex-run-common-lisp
+  :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-common-lisp))
 
 
 (provide 'symex-interface-common-lisp)

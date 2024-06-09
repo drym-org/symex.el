@@ -118,6 +118,12 @@ Accounts for different point location in evil vs Emacs mode."
       (goto-char (point-max))
       (symex-enter-lowest))))
 
+(defun symex-switch-to-scratch-buffer-racket ()
+  "Switch to scratch buffer."
+  (let ((buffer-name "*scratch - Racket*"))
+    (switch-to-buffer (or (get-buffer buffer-name)
+                          (symex--new-scratch-buffer buffer-name)))))
+
 (defvar symex-racket-modes (list 'racket-mode
                                  'racket-repl-mode))
 
@@ -130,7 +136,8 @@ Accounts for different point location in evil vs Emacs mode."
   :eval-thunk #'symex-eval-thunk-racket
   :describe-symbol #'symex-describe-symbol-racket
   :repl #'symex-repl-racket
-  :run #'racket-run))
+  :run #'racket-run
+  :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-racket))
 
 
 (provide 'symex-interface-racket)

@@ -53,6 +53,12 @@
   (cider-switch-to-repl-buffer)
   (symex-enter-lowest))
 
+(defun symex-switch-to-scratch-buffer-clojure ()
+  "Switch to scratch buffer."
+  (let ((buffer-name "*scratch - Clojure*"))
+    (switch-to-buffer (or (get-buffer buffer-name)
+                          (symex--new-scratch-buffer buffer-name)))))
+
 (defvar symex-clojure-modes (list 'clojure-mode
                                   'clojurescript-mode
                                   'clojurec-mode))
@@ -66,7 +72,8 @@
   :eval-print #'cider-eval-print-last-sexp
   :describe-symbol #'symex-describe-symbol-clojure
   :repl #'symex-repl-clojure
-  :run #'cider-eval-buffer))
+  :run #'cider-eval-buffer
+  :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-clojure))
 
 (provide 'symex-interface-clojure)
 ;;; symex-interface-clojure.el ends here

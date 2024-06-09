@@ -195,22 +195,7 @@ Version 2017-11-01"
 (defun symex-switch-to-scratch-buffer ()
   "Switch to scratch buffer."
   (interactive)
-  (let* ((buffer-name (cond ((member major-mode symex-racket-modes)
-                             "*scratch - Racket*")
-                            ((member major-mode symex-elisp-modes)
-                             "*scratch*")
-                            ((equal major-mode 'scheme-mode)
-                             "*scratch - Scheme*")
-                            ((member major-mode symex-clojure-modes)
-                             "*scratch - Clojure*")
-                            ((member major-mode symex-common-lisp-modes)
-                             "*scratch - Common Lisp*")
-                            ((equal major-mode 'fennel-mode)
-                             "*scratch - Fennel*")
-                            (t (error "Symex mode: Lisp flavor not recognized!"))))
-         (buf (get-buffer buffer-name)))
-    (let ((buf (or buf (symex--new-scratch-buffer buffer-name))))
-      (switch-to-buffer buf))))
+  (funcall (symex-interface-get-method :switch-to-scratch-buffer)))
 
 (defun symex-switch-to-messages-buffer ()
   "Switch to messages buffer while retaining focus in original window."

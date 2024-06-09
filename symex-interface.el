@@ -36,7 +36,8 @@
         :eval-print
         :describe-symbol
         :repl
-        :run))
+        :run
+        :switch-to-scratch-buffer))
 
 (defun symex-interface--plist-keys (plist)
   "Return a list of keys in the property list PLIST."
