@@ -38,7 +38,6 @@
 
 (defun symex-eval-thunk-arc ()
   "Evaluate symex as a \"thunk,\" i.e. as a function taking no arguments."
-  (interactive)
   (let ((thunk-code (string-join
                      `("("
                        ,(buffer-substring (arc--repl-last-sexp-start)

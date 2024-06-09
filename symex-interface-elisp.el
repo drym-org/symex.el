@@ -31,7 +31,6 @@
 
 (defun symex-eval-elisp ()
   "Eval Elisp symex."
-  (interactive)
   (eval-last-sexp nil))
 
 (defun symex-eval-definition-elisp ()
@@ -40,14 +39,12 @@
 
 (defun symex-eval-print-elisp ()
   "Eval symex and print result in buffer."
-  (interactive)
   (save-excursion
     (forward-sexp)
     (eval-print-last-sexp)))
 
 (defun symex-describe-symbol-elisp ()
   "Describe symbol at point."
-  (interactive)
   (describe-symbol (symbol-at-point)))
 
 (defun symex-repl-elisp ()
@@ -56,7 +53,6 @@
 If the REPL is already visible, switch to that window.  Otherwise,
 if there is only one window, open REPL in a new window.  Otherwise
 open in most recently used other window."
-  (interactive)
   (let ((window (get-buffer-window "*ielm*")))
     (cond (window (select-window window))
           ((= 1 (length (window-list)))

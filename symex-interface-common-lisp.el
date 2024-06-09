@@ -54,7 +54,6 @@
   "Eval last sexp.
 
 Accounts for different point location in evil vs Emacs mode."
-  (interactive)
   (if (eq symex-common-lisp-backend 'sly)
       (sly-eval-last-expression)
     (slime-eval-last-expression)))
@@ -67,7 +66,6 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-eval-print-common-lisp ()
   "Eval symex and print result in buffer."
-  (interactive)
   (call-interactively
    (if (eq symex-common-lisp-backend 'sly)
        #'sly-eval-print-last-expression
@@ -75,11 +73,10 @@ Accounts for different point location in evil vs Emacs mode."
 
 (defun symex-describe-symbol-common-lisp ()
   "Describe symbol at point."
-  (interactive)
   (call-interactively
    (if (eq symex-common-lisp-backend 'sly)
        #'sly-documentation
-       #'slime-documentation)))
+     #'slime-documentation)))
 
 (defun symex-repl-common-lisp ()
   "Go to REPL."

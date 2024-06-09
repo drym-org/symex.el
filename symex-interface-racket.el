@@ -79,10 +79,6 @@ Accounts for different point location in evil vs Emacs mode."
       (forward-char))
     (racket-send-last-sexp)))
 
-(defun symex-eval-definition-racket ()
-  "Eval entire containing definition."
-  (racket-send-definition))
-
 (defun symex-eval-pretty-racket ()
   "Evaluate symex and render the result in a useful string form."
   (let ((pretty-code (string-join
