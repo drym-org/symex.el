@@ -62,17 +62,18 @@
 
 (defvar symex-scheme-modes (list 'scheme-mode))
 
-(symex-interface-extend
- symex-scheme-modes
- (list
-  :eval #'symex-eval-scheme
-  :eval-definition #'symex-eval-definition-scheme
-  :eval-pretty #'symex-eval-scheme
-  :describe-symbol #'geiser-doc-symbol-at-point
-  :repl #'symex-repl-scheme
-  :run #'symex-run-scheme
-  :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-scheme))
-
+(defun symex-interface-register-scheme ()
+  "Register the Scheme runtime interface."
+  (symex-interface-extend
+   symex-scheme-modes
+   (list
+    :eval #'symex-eval-scheme
+    :eval-definition #'symex-eval-definition-scheme
+    :eval-pretty #'symex-eval-scheme
+    :describe-symbol #'geiser-doc-symbol-at-point
+    :repl #'symex-repl-scheme
+    :run #'symex-run-scheme
+    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-scheme)))
 
 (provide 'symex-interface-scheme)
 ;;; symex-interface-scheme.el ends here

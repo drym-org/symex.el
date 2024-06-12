@@ -59,15 +59,17 @@
 
 (defvar symex-arc-modes (list 'arc-mode))
 
-(symex-interface-extend
- symex-arc-modes
- (list
-  :eval #'arc-send-last-sexp
-  :eval-definition #'arc-send-definition
-  :eval-pretty #'arc-send-last-sexp
-  :eval-thunk #'symex-eval-thunk-arc
-  :repl #'symex-repl-arc
-  :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-arc))
+(defun symex-interface-register-arc ()
+  "Register the Arc runtime interface."
+  (symex-interface-extend
+   symex-arc-modes
+   (list
+    :eval #'arc-send-last-sexp
+    :eval-definition #'arc-send-definition
+    :eval-pretty #'arc-send-last-sexp
+    :eval-thunk #'symex-eval-thunk-arc
+    :repl #'symex-repl-arc
+    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-arc)))
 
 
 (provide 'symex-interface-arc)

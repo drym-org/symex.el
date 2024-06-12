@@ -74,18 +74,19 @@ open in most recently used other window."
                                 'emacs-lisp-mode
                                 'inferior-emacs-lisp-mode))
 
-(symex-interface-extend
- symex-elisp-modes
- (list
-  :eval #'symex-eval-elisp
-  :eval-definition #'symex-eval-definition-elisp
-  :eval-pretty #'symex-eval-elisp
-  :eval-print #'symex-eval-print-elisp
-  :describe-symbol #'symex-describe-symbol-elisp
-  :repl #'symex-repl-elisp
-  :run #'eval-buffer
-  :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-elisp))
-
+(defun symex-interface-register-elisp ()
+  "Register the Emacs Lisp runtime interface."
+  (symex-interface-extend
+   symex-elisp-modes
+   (list
+    :eval #'symex-eval-elisp
+    :eval-definition #'symex-eval-definition-elisp
+    :eval-pretty #'symex-eval-elisp
+    :eval-print #'symex-eval-print-elisp
+    :describe-symbol #'symex-describe-symbol-elisp
+    :repl #'symex-repl-elisp
+    :run #'eval-buffer
+    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-elisp)))
 
 (provide 'symex-interface-elisp)
 ;;; symex-interface-elisp.el ends here

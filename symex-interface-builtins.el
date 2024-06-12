@@ -33,5 +33,15 @@
 (require 'symex-interface-arc)
 (require 'symex-interface-fennel)
 
+(defun symex-register-builtin-interfaces ()
+  "Register built-in interfaces."
+  (symex-interface-register-elisp)
+  (symex-interface-register-racket)
+  (symex-interface-register-scheme)
+  (symex-interface-register-clojure)
+  (symex-interface-register-common-lisp)
+  (symex-interface-register-arc)
+  (symex-interface-register-fennel))
+
 (provide 'symex-interface-builtins)
 ;;; symex-interface-builtins.el ends here

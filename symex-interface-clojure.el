@@ -63,17 +63,19 @@
                                   'clojurescript-mode
                                   'clojurec-mode))
 
-(symex-interface-extend
- symex-clojure-modes
- (list
-  :eval #'cider-eval-last-sexp
-  :eval-definition #'symex-eval-definition-clojure
-  :eval-pretty #'cider-pprint-eval-last-sexp
-  :eval-print #'cider-eval-print-last-sexp
-  :describe-symbol #'symex-describe-symbol-clojure
-  :repl #'symex-repl-clojure
-  :run #'cider-eval-buffer
-  :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-clojure))
+(defun symex-interface-register-clojure ()
+  "Register the Clojure runtime interface."
+  (symex-interface-extend
+   symex-clojure-modes
+   (list
+    :eval #'cider-eval-last-sexp
+    :eval-definition #'symex-eval-definition-clojure
+    :eval-pretty #'cider-pprint-eval-last-sexp
+    :eval-print #'cider-eval-print-last-sexp
+    :describe-symbol #'symex-describe-symbol-clojure
+    :repl #'symex-repl-clojure
+    :run #'cider-eval-buffer
+    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-clojure)))
 
 (provide 'symex-interface-clojure)
 ;;; symex-interface-clojure.el ends here

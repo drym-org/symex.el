@@ -127,18 +127,19 @@ Accounts for different point location in evil vs Emacs mode."
 (defvar symex-racket-modes (list 'racket-mode
                                  'racket-repl-mode))
 
-(symex-interface-extend
- symex-racket-modes
- (list
-  :eval #'symex-eval-racket
-  :eval-definition #'racket-send-definition
-  :eval-pretty #'symex-eval-pretty-racket
-  :eval-thunk #'symex-eval-thunk-racket
-  :describe-symbol #'symex-describe-symbol-racket
-  :repl #'symex-repl-racket
-  :run #'racket-run
-  :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-racket))
-
+(defun symex-interface-register-racket ()
+  "Register the Racket runtime interface."
+  (symex-interface-extend
+   symex-racket-modes
+   (list
+    :eval #'symex-eval-racket
+    :eval-definition #'racket-send-definition
+    :eval-pretty #'symex-eval-pretty-racket
+    :eval-thunk #'symex-eval-thunk-racket
+    :describe-symbol #'symex-describe-symbol-racket
+    :repl #'symex-repl-racket
+    :run #'racket-run
+    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-racket)))
 
 (provide 'symex-interface-racket)
 ;;; symex-interface-racket.el ends here

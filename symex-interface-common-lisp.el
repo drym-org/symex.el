@@ -103,17 +103,19 @@ Accounts for different point location in evil vs Emacs mode."
                                       'slime-repl-mode
                                       'sly-mrepl-mode))
 
-(symex-interface-extend
- symex-common-lisp-modes
- (list
-  :eval #'symex-eval-common-lisp
-  :eval-definition #'symex-eval-definition-common-lisp
-  :eval-pretty #'symex-eval-common-lisp
-  :eval-print #'symex-eval-print-common-lisp
-  :describe-symbol #'symex-describe-symbol-common-lisp
-  :repl #'symex-repl-common-lisp
-  :run #'symex-run-common-lisp
-  :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-common-lisp))
+(defun symex-interface-register-common-lisp ()
+  "Register the Common Lisp runtime interface."
+  (symex-interface-extend
+   symex-common-lisp-modes
+   (list
+    :eval #'symex-eval-common-lisp
+    :eval-definition #'symex-eval-definition-common-lisp
+    :eval-pretty #'symex-eval-common-lisp
+    :eval-print #'symex-eval-print-common-lisp
+    :describe-symbol #'symex-describe-symbol-common-lisp
+    :repl #'symex-repl-common-lisp
+    :run #'symex-run-common-lisp
+    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-common-lisp)))
 
 
 (provide 'symex-interface-common-lisp)

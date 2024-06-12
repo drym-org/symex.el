@@ -63,17 +63,18 @@
 
 (defvar symex-fennel-modes (list 'fennel-mode))
 
-(symex-interface-extend
- symex-fennel-modes
- (list
-  :eval #'lisp-eval-last-sexp
-  :eval-definition #'lisp-eval-defun
-  :eval-thunk #'symex-eval-thunk-fennel
-  :describe-symbol #'fennel-find-definition
-  :repl #'symex-repl-fennel
-  :run #'symex-run-fennel
-  :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-fennel))
-
+(defun symex-interface-register-fennel ()
+  "Register the Fennel runtime interface."
+  (symex-interface-extend
+   symex-fennel-modes
+   (list
+    :eval #'lisp-eval-last-sexp
+    :eval-definition #'lisp-eval-defun
+    :eval-thunk #'symex-eval-thunk-fennel
+    :describe-symbol #'fennel-find-definition
+    :repl #'symex-repl-fennel
+    :run #'symex-run-fennel
+    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-fennel)))
 
 (provide 'symex-interface-fennel)
 ;;; symex-interface-fennel.el ends here
