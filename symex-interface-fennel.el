@@ -1,6 +1,6 @@
 ;;; symex-interface-fennel.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
 
-;; URL: https://github.com/countvajhula/symex.el
+;; URL: https://github.com/drym-org/symex.el
 
 ;; This program is "part of the world," in the sense described at
 ;; https://drym.org.  From your perspective, this is no different than
@@ -32,41 +32,14 @@
 (declare-function fennel-find-definition  "ext:fennel-mode")
 (declare-function fennel-repl "ext:fennel-mode")
 
-(defun symex-eval-fennel ()
-  "Eval last sexp.
-
-Accounts for different point location in evil vs Emacs mode."
-  (interactive)
-  (lisp-eval-last-sexp))
-
-(defun symex-eval-definition-fennel ()
-  "Eval entire containing definition."
-  (lisp-eval-defun))
-
-(defun symex-eval-pretty-fennel ()
-  "Evaluate symex and render the result in a useful string form."
-  (interactive)
-  (lisp-eval-last-sexp))
-
 (defun symex-eval-thunk-fennel ()
   "Evaluate symex as a 'thunk,' i.e. as a function taking no arguments."
-  (interactive)
   (let ((thunk-code (string-join
                      `("("
                        ,(buffer-substring (symex--get-starting-point)
                                           (point))
                        ")"))))
     (lisp-eval-string thunk-code)))
-
-(defun symex-eval-print-fennel ()
-  "Eval symex and print result in buffer."
-  (interactive)
-  nil)
-
-(defun symex-describe-symbol-fennel ()
-  "Describe symbol at point."
-  (interactive)
-  (fennel-find-definition))
 
 (defun symex-repl-fennel ()
   "Go to REPL."
@@ -82,6 +55,26 @@ Accounts for different point location in evil vs Emacs mode."
   "Evaluate buffer."
   (lisp-eval-region (point-min) (point-max)))
 
+(defun symex-switch-to-scratch-buffer-fennel ()
+  "Switch to scratch buffer."
+  (let ((buffer-name "*scratch - Fennel*"))
+    (switch-to-buffer (or (get-buffer buffer-name)
+                          (symex--new-scratch-buffer buffer-name)))))
+
+(defvar symex-fennel-modes (list 'fennel-mode))
+
+(defun symex-interface-register-fennel ()
+  "Register the Fennel runtime interface."
+  (symex-interface-extend
+   symex-fennel-modes
+   (list
+    :eval #'lisp-eval-last-sexp
+    :eval-definition #'lisp-eval-defun
+    :eval-thunk #'symex-eval-thunk-fennel
+    :describe-symbol #'fennel-find-definition
+    :repl #'symex-repl-fennel
+    :run #'symex-run-fennel
+    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-fennel)))
 
 (provide 'symex-interface-fennel)
 ;;; symex-interface-fennel.el ends here
