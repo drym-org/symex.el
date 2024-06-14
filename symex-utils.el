@@ -71,14 +71,20 @@ the following recipe instead."
 (defvar symex--re-non-whitespace "[^[:space:]\n]"
   "A non-whitespace character.")
 
+(defvar symex--re-non-whitespace-or-newline "[^[:space:]]"
+  "A non-whitespace character.")
+
 (defun symex--go-to-next-non-whitespace-char ()
   "Move point to the next non-whitespace character.
 
 If the current character is non-whitespace, point is not moved."
   (unless (looking-at-p symex--re-non-whitespace)
-    (re-search-forward symex--re-non-whitespace)
-    ;; since the re search goes to the end of the match
-    (backward-char)))
+    (condition-case nil
+        (progn (re-search-forward symex--re-non-whitespace)
+               ;; since the re search goes to the end of the match
+               (backward-char)
+               t)
+      (error nil))))
 
 (defun symex--join-to-match (pattern)
   "Join current position to the next position matching PATTERN.
@@ -97,6 +103,13 @@ match."
 This eliminates whitespace between the original position and the found
 match."
   (symex--join-to-match symex--re-non-whitespace))
+
+(defun symex--join-to-non-whitespace-or-newline ()
+  "Join current position to the next non-whitespace character.
+
+This eliminates whitespace between the original position and the found
+match."
+  (symex--join-to-match symex--re-non-whitespace-or-newline))
 
 ;; `with-undo-collapse` macro, to treat a sequence of operations
 ;; as a single entry in the undo list.
@@ -170,17 +183,37 @@ result."
       (cl-pushnew p result :key #'car :test #'equal))
     result))
 
-(defun symex--kill-whole-line ()
+(defun symex--delete-whole-line ()
   "Delete entire current line.
 
 Similar to `kill-whole-line` but doesn't add an entry to the kill
 ring."
   (delete-region (line-beginning-position)
-                 (1+ (line-end-position))))
+                 (line-end-position))
+  (unless (eobp)
+    (delete-char 1)))
 
 (defun symex--current-kill ()
   "Get current kill ring entry without rotating the kill ring."
   (current-kill 0 t))
+
+(defun symex--kill-ring-push (entry)
+  "Push an ENTRY onto the kill ring."
+  (kill-new entry))
+
+(defun symex--kill-ring-pop ()
+  "Pop the latest entry off the kill ring."
+  (let ((result (pop kill-ring)))
+    (setq kill-ring-yank-pointer kill-ring)
+    result))
+
+(defun symex--kill-ring-compose ()
+  "Compose kill ring entries.
+
+This concatenates the latest kill with the preceding one, treating the
+preceding one as the accumulator. "
+  (let ((latest (symex--kill-ring-pop)))
+    (kill-append latest nil)))
 
 (defun symex--fix-leading-whitespace ()
   "Fix leading whitespace."

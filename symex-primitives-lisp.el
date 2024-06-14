@@ -165,8 +165,11 @@
 (defvar symex--re-blank-line "^[[:space:]]*$"
   "A blank line, either empty or containing only whitespace.")
 
-(defvar symex--re-whitespace "[[:space:]|\n]*"
+(defvar symex--re-whitespace "[[:space:]|\n]+"
   "Whitespace that may extend over many lines.")
+
+(defvar symex--re-optional-whitespace "[[:space:]|\n]*"
+  "Optional whitespace that may extend over many lines.")
 
 (defvar symex--re-symex-line "^[[:space:]]*[^;[:space:]\n]"
   "A line that isn't blank and isn't a comment line.")
@@ -211,6 +214,10 @@
   (cond ((looking-at "\\s(") (forward-list 1) (backward-char 1))
         ((looking-at "\\s)") (forward-char 1) (backward-list 1))))
 
+(defun symex-whitespace-p ()
+  "Check if we're looking at whitespace."
+  (looking-at-p symex--re-whitespace))
+
 (defun symex-comment-line-p ()
   "Check if we're currently at the start of a comment line."
   (save-excursion
@@ -241,7 +248,7 @@
   "Check if we're looking at an empty list."
   (looking-at-p
    (concat symex--re-left
-           symex--re-whitespace
+           symex--re-optional-whitespace
            symex--re-right)))
 
 (defun symex-empty-string-p ()
@@ -254,10 +261,10 @@
 (defun symex-inside-empty-form-p ()
   "Check if point is inside an empty form."
   (and (looking-back (concat symex--re-left
-                             symex--re-whitespace)
+                             symex--re-optional-whitespace)
                      (line-beginning-position))
        (looking-at-p
-        (concat symex--re-whitespace
+        (concat symex--re-optional-whitespace
                 symex--re-right))))
 
 (defun symex--racket-syntax-object-p ()
@@ -404,18 +411,31 @@ symexes, returns the end point of the last one found.
 Note that this mutates point - it should not be called directly."
   (if (= count 0)
       (point)
-    (condition-case nil
-        (forward-sexp)
-      (error (point)))
-    (symex-lisp--get-end-point-helper (1- count))))
+    (let ((at-end (condition-case nil
+                      (progn (forward-sexp)
+                             nil)
+                    (error t))))
+      (if at-end
+          (error "Out of range!")
+        (symex-lisp--get-end-point-helper (1- count))))))
 
-(defun symex-lisp--get-end-point (count)
+(defun symex-lisp--get-end-point (count &optional include-whitespace)
   "Get the point value after COUNT symexes.
 
 If the containing expression terminates earlier than COUNT
-symexes, returns the end point of the last one found."
+symexes, returns the end point of the last one found.
+
+If include-whitespace is non-nil, this returns the end point
+including trailing whitespace at the end of the last symex."
   (save-excursion
-    (symex-lisp--get-end-point-helper count)))
+    (let ((endpoint (symex-lisp--get-end-point-helper count)))
+      (if include-whitespace
+          (progn (goto-char endpoint)
+                 (if (and (not (eobp))
+                          (symex-whitespace-p))
+                     (1+ endpoint)
+                   endpoint))
+        endpoint))))
 
 (defun symex-lisp--point-height-offset ()
   "Compute the height offset of the current symex.
@@ -636,7 +656,7 @@ line."
                  (symex--previous-line-empty-p))
              (symex--join-to-next)
            ;; don't leave an empty line where the symex was
-           (symex--kill-whole-line)))
+           (symex--delete-whole-line)))
         ((or (save-excursion (evil-last-non-blank) ; (<>$
                              (symex-left-p)))
          (symex--join-to-next))
@@ -666,7 +686,7 @@ line."
                              (error nil))
                      (symex--join-to-match symex--re-right))))))))
         ((symex-right-p) (fixup-whitespace)) ; abc <>)
-        (t (symex--join-to-non-whitespace))))
+        (t nil)))
 
 ;;; Utilities
 

@@ -218,7 +218,7 @@ This is a low-level utility that simply removes the indicated text
 from the buffer."
   (let ((last-command nil)  ; see symex-yank re: last-command
         (start (point))
-        (end (symex--get-end-point count)))
+        (end (symex--get-end-point count t)))
     (when (> end start)
       (kill-region start end)
       t)))
@@ -250,26 +250,24 @@ from the buffer."
 
 WHAT could be `this`, `next`, or `previous`."
   (let ((result))
-    (cond ((eq 'this what)
-           (setq result (symex-remove 1)))
-          ((eq 'previous what)
-           (when (symex--previous-p)
-             ;; not sure how reliable `save-excursion` is when
-             ;; the buffer is being mutated. If we encounter
-             ;; any issues we could try `symex--save-point-excursion`
-             ;; or otherwise, note the bounds of the mutated region
-             ;; and manually preserve point where we need it, or
-             ;; if necessary, preserve point structurally by using
-             ;; a primitive version of `symex-index`.
-             (symex-save-excursion
-               (symex--go-backward)
-               (setq result (symex-remove 1)))))
-          ((eq 'next what)
-           (when (symex--next-p)
-             (save-excursion
-               (symex--go-forward)
-               (setq result (symex-remove 1)))))
-          (t (error "Invalid argument for primitive delete!")))
+    (condition-case nil
+        (cond ((eq 'this what)
+               (setq result (symex-remove 1)))
+              ((eq 'previous what)
+               (when (symex--previous-p)
+                 (symex--go-backward)
+                 (setq result (symex-remove 1))))
+              ((eq 'next what)
+               (when (symex--next-p)
+                 (save-excursion
+                   (symex--go-forward)
+                   (setq result (symex-remove 1)))))
+              (t (error "Invalid argument for primitive delete!")))
+      ;; if unable to delete, return nil instead of
+      ;; raising an error. nil is used in the evaluator
+      ;; to mean failed, so the traversal would stop there
+      ;; as expected.
+      (error nil))
     result))
 
 (defun symex-prim-paste (where)
@@ -327,14 +325,21 @@ difference from the lowest such level."
       (symex-ts--get-starting-point)
     (symex-lisp--get-starting-point)))
 
-(defun symex--get-end-point (count)
+(defun symex--get-end-point (count &optional include-whitespace)
   "Get the point value after COUNT symexes.
 
 If the containing expression terminates earlier than COUNT
 symexes, returns the end point of the last one found."
   (if (symex-tree-sitter-p)
+      ;; TODO: implement include-whitespace for ts
       (symex-ts--get-end-point count)
-    (symex-lisp--get-end-point count)))
+    (symex-lisp--get-end-point count include-whitespace)))
+
+(defun symex--get-bounds (count &optional include-whitespace)
+  "Get the start and end points of COUNT symexes."
+  (let ((start (symex--get-starting-point))
+        (end (symex--get-end-point count include-whitespace)))
+    (cons start end)))
 
 (defun symex-select-end (count)
   "Select endpoint of symex nearest to point."
