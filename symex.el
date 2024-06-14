@@ -138,6 +138,7 @@ This registers symex mode for use in all recognized Lisp modes, and also
 advises functions to enable or disable features based on user configuration."
 
   (symex-register-builtin-interfaces)
+
   ;; enable the symex minor mode in all recognized lisp modes
   (dolist (mode-name (symex-get-lisp-modes))
     (let ((mode-hook (intern (concat (symbol-name mode-name)
@@ -158,7 +159,9 @@ advises functions to enable or disable features based on user configuration."
   (cond ((eq symex-modal-backend 'hydra)
          (symex-hydra-initialize))
         ((eq symex-modal-backend 'evil)
-         (symex-evil-initialize))))
+         (symex-evil-initialize)))
+  ;; notify eldoc about symex motions.
+  (apply 'eldoc-add-command symex-motions))
 
 (defun symex-disable ()
   "Disable symex.
