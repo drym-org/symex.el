@@ -49,8 +49,6 @@
                (beforehand (not (at root)))))
   "Go to lowest (root) symex in present tree.")
 
-(defvar symex-motions ())
-
 (defmacro symex-define-motion (name
                                args
                                docstring
@@ -59,7 +57,7 @@
                                body)
   "Define a symex motion."
   (declare (indent defun))
-  (add-to-list 'symex-motions name)
+  (eldoc-add-command name)
   `(defun ,name ,args
      ,docstring
      ,interactive-decl
