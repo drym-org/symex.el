@@ -41,6 +41,7 @@
 
 (require 'symex-evil)
 (require 'symex-interop)
+(require 'symex-context)
 (require 'symex-misc)
 (require 'symex-primitives)
 (require 'symex-custom)
@@ -120,6 +121,7 @@
     ;; smooth scrolling currently not supported
     ;; may add it back in the future
     (symex--set-scroll-margin))
+  (contextualize-set-context symex-category)
   (symex--enter-mode))
 
 ;;; Major modes in which symex should be active.
@@ -172,7 +174,9 @@ advises functions to enable or disable features based on user configuration."
     (advice-add #'undo-tree-redo :after #'symex-select-nearest-advice))
   (symex--add-selection-advice)
   ;; initialize modal interface frontend
-  (symex-modal-provider-initialize))
+  (symex-modal-provider-initialize)
+  ;; initialize user context inference
+  (symex-initialize-contexts))
 
 (defun symex-disable ()
   "Disable symex.
@@ -197,7 +201,9 @@ configuration to be disabled and the new one adopted."
     (advice-remove #'undo-tree-undo #'symex-select-nearest-advice))
   (when (fboundp 'undo-tree-redo)
     (advice-remove #'undo-tree-redo #'symex-select-nearest-advice))
-  (symex--remove-selection-advice))
+  (symex--remove-selection-advice)
+  ;; unregister any user contexts
+  (symex-disable-contexts))
 
 ;;;###autoload
 (defun symex-mode-interface ()
