@@ -35,6 +35,23 @@ From: https://emacs.stackexchange.com/a/16793"
     (beginning-of-line)
     (looking-at "[[:space:]]*$")))
 
+(defun symex--current-visual-line-bounds ()
+  "Return bounds of the current visual line."
+  (cons (save-excursion
+          (beginning-of-visual-line)
+          (point))
+        (save-excursion
+          (end-of-visual-line)
+          (point))))
+
+(defun symex--current-visual-line-empty-p ()
+  "Return non-nil if the current visual line is empty.
+Otherwise, return nil."
+  (cl-destructuring-bind
+      (beg . end)
+      (symex--current-visual-line-bounds)
+    (string-blank-p (buffer-substring beg end))))
+
 (defun symex--next-line-empty-p ()
   "Check if the next line is empty."
   (save-excursion (forward-line)
