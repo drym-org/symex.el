@@ -168,6 +168,9 @@
 (defvar symex--re-whitespace "[[:space:]|\n]+"
   "Whitespace that may extend over many lines.")
 
+(defvar symex--re-optional-whitespace "[[:space:]|\n]*"
+  "Optional whitespace that may extend over many lines.")
+
 (defvar symex--re-symex-line "^[[:space:]]*[^;[:space:]\n]"
   "A line that isn't blank and isn't a comment line.")
 
@@ -245,7 +248,7 @@
   "Check if we're looking at an empty list."
   (looking-at-p
    (concat symex--re-left
-           symex--re-whitespace
+           symex--re-optional-whitespace
            symex--re-right)))
 
 (defun symex-empty-string-p ()
@@ -258,10 +261,10 @@
 (defun symex-inside-empty-form-p ()
   "Check if point is inside an empty form."
   (and (looking-back (concat symex--re-left
-                             symex--re-whitespace)
+                             symex--re-optional-whitespace)
                      (line-beginning-position))
        (looking-at-p
-        (concat symex--re-whitespace
+        (concat symex--re-optional-whitespace
                 symex--re-right))))
 
 (defun symex--racket-syntax-object-p ()
