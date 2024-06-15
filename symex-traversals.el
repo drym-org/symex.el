@@ -49,25 +49,40 @@
                (beforehand (not (at root)))))
   "Go to lowest (root) symex in present tree.")
 
-(defun symex-goto-first ()
+(defmacro symex-define-motion (name
+                               args
+                               docstring
+                               interactive-decl
+                               &rest
+                               body)
+  "Define a symex motion."
+  (declare (indent defun))
+  (eldoc-add-command name)
+  `(defun ,name ,args
+     ,docstring
+     ,interactive-decl
+     ,@body))
+
+(symex-define-motion symex-goto-first ()
   "Select first symex at present level."
   (interactive)
   (symex-execute-traversal symex--traversal-goto-first)
   (point))
 
-(defun symex-goto-last ()
+
+(symex-define-motion symex-goto-last ()
   "Select last symex at present level."
   (interactive)
   (symex-execute-traversal symex--traversal-goto-last)
   (point))
 
-(defun symex-goto-lowest ()
+(symex-define-motion symex-goto-lowest ()
   "Select lowest symex."
   (interactive)
   (symex-execute-traversal symex--traversal-goto-lowest)
   (point))
 
-(defun symex-goto-highest ()
+(symex-define-motion symex-goto-highest ()
   "Select highest symex."
   (interactive)
   (symex-execute-traversal (symex-traversal
@@ -132,7 +147,7 @@ when the way is blocked.")
                      (precaution symex--traversal-goto-first
                                  (beforehand (not (at root)))))))
 
-(defun symex-traverse-forward (count)
+(symex-define-motion symex-traverse-forward (count)
   "Traverse symex as a tree, using pre-order traversal.
 
 Executes the motion COUNT times."
@@ -140,7 +155,7 @@ Executes the motion COUNT times."
   (dotimes (_ count)
     (symex-execute-traversal symex--traversal-preorder)))
 
-(defun symex-traverse-forward-more (count)
+(symex-define-motion symex-traverse-forward-more (count)
   "Traverse symex as a tree, using pre-order traversal.
 
 Moves more steps at a time.  Executes the motion COUNT times."
@@ -148,7 +163,7 @@ Moves more steps at a time.  Executes the motion COUNT times."
   (dotimes (_ count)
     (symex-traverse-forward 3)))
 
-(defun symex-traverse-forward-in-tree (count)
+(symex-define-motion symex-traverse-forward-in-tree (count)
   "Traverse symex forward using pre-order traversal, stopping at end of tree.
 
 Executes the motion COUNT times."
@@ -156,7 +171,7 @@ Executes the motion COUNT times."
   (dotimes (_ count)
     (symex-execute-traversal symex--traversal-preorder-in-tree)))
 
-(defun symex-traverse-forward-skip (count)
+(symex-define-motion symex-traverse-forward-skip (count)
   "Traverse symex as a tree, skipping forward.
 
 Executes the motion COUNT times."
@@ -164,7 +179,7 @@ Executes the motion COUNT times."
   (dotimes (_ count)
     (symex-execute-traversal symex--traversal-skip-forward)))
 
-(defun symex-traverse-backward (count)
+(symex-define-motion symex-traverse-backward (count)
   "Traverse symex as a tree, using converse post-order traversal.
 
 Executes the motion COUNT times."
@@ -172,7 +187,7 @@ Executes the motion COUNT times."
   (dotimes (_ count)
     (symex-execute-traversal symex--traversal-postorder)))
 
-(defun symex-traverse-backward-more (count)
+(symex-define-motion symex-traverse-backward-more (count)
   "Traverse symex as a tree, using pre-order traversal.
 
 Moves more steps at a time.  Executes the motion COUNT times."
@@ -180,7 +195,7 @@ Moves more steps at a time.  Executes the motion COUNT times."
   (dotimes (_ count)
     (symex-traverse-backward 3)))
 
-(defun symex-traverse-backward-in-tree (count)
+(symex-define-motion symex-traverse-backward-in-tree (count)
   "Traverse symex backward using post-order traversal, stopping at root of tree.
 
 Executes the motion COUNT times."
@@ -188,7 +203,7 @@ Executes the motion COUNT times."
   (dotimes (_ count)
     (symex-execute-traversal symex--traversal-postorder-in-tree)))
 
-(defun symex-traverse-backward-skip (count)
+(symex-define-motion symex-traverse-backward-skip (count)
   "Traverse symex as a tree, skipping backwards.
 
 Executes the motion COUNT times."
@@ -196,7 +211,7 @@ Executes the motion COUNT times."
   (dotimes (_ count)
     (symex-execute-traversal symex--traversal-skip-backward)))
 
-(defun symex-climb-branch (count)
+(symex-define-motion symex-climb-branch (count)
   "Climb up.
 
 Executes the motion COUNT times."
@@ -204,7 +219,7 @@ Executes the motion COUNT times."
   (dotimes (_ count)
     (symex-execute-traversal symex--traversal-climb-branch)))
 
-(defun symex-descend-branch (count)
+(symex-define-motion symex-descend-branch (count)
   "Descend the tree.
 
 Executes the motion COUNT times."
