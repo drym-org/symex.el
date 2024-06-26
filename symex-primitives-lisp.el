@@ -110,6 +110,8 @@
                 (or (bolp)                          ; ^|.
                     (looking-back "[[:space:]]"     ; _|.
                                   (line-beginning-position))
+                    (save-excursion (backward-char)
+                                    (symex-string-p))
                     (looking-back lispy-left        ; (*|.
                                   (line-beginning-position)))))))
 
