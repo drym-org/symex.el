@@ -470,6 +470,11 @@ In writing Lisp code, parentheses are among the most commonly typed characters, 
 
 You could think of "w" as "wrap" in this context, as in, "to wrap with parentheses," and it matches a similar binding in symex state (i.e. ``w`` to wrap an expression and enter insert state). For the closing parenthesis, you could just use Emacs's ``C-f`` to move forward a character -- since symex (via paredit) ensures that parentheses are balanced, you rarely need to actually type a closing delimiter. The binding ``C-w`` would be fine for Evil users, but vanilla Emacs users may need to find something else here. Of course it goes without saying that the Control key should be conveniently accessible without having to leave home position. I have Control under my right thumb, and Escape in place of Caps Lock.
 
+Splicing and Doom Emacs
+~~~~~~~~~~~~~~~~~~~~~~~
+
+If you're on Doom Emacs (or more generally if you're using ``evil-surround`` and ``evil-embrace`` together), you may run into an issue with splicing expressions (``-`` and ``C--``). See `this issue <https://github.com/drym-org/symex.el/issues/132>`__ for more details and a workaround.
+
 Learn More
 ==========
 
