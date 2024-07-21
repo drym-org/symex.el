@@ -114,7 +114,8 @@
 
 (defun symex-enter-mode ()
   "Take necessary action upon symex mode entry."
-  (symex--ensure-minor-mode)
+  (when (member major-mode (symex-get-lisp-modes))
+    (symex--ensure-minor-mode))
   (symex--adjust-point-on-entry)
   (when symex-remember-branch-positions-p
     (symex--clear-branch-memory))
