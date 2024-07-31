@@ -69,8 +69,8 @@
                  ;; ensure that there isn't a comment on the
                  ;; preceding line before joining lines
                  (unless (condition-case nil
-                             (progn (evil-find-char 1 ?\;)
-                                    t)
+                             (save-excursion (evil-find-char 1 ?\;)
+                                             t)
                            (error nil))
                    (symex--join-to-match lispy-right)
                    (symex--adjust-point)))))))
