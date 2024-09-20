@@ -263,6 +263,8 @@ as special cases here."
               (save-excursion (forward-char) (lispy-right-p))) ; |)
          (forward-char)
          (lispy-different))
+        ((thing-at-point 'string)       ; "som|e string"
+         (beginning-of-thing 'string))
         ((thing-at-point 'sexp)       ; som|ething
          (beginning-of-thing 'sexp))
         (t (symex-lisp--if-stuck (symex-lisp--backward)
