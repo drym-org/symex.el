@@ -263,7 +263,9 @@ as special cases here."
               (save-excursion (forward-char) (lispy-right-p))) ; |)
          (forward-char)
          (lispy-different))
-        ((thing-at-point 'string)       ; "som|e string"
+        ((condition-case nil  ; (thing-at-point string) raises error at EOB
+             (thing-at-point 'string)
+           (error nil))       ; "som|e string"
          (beginning-of-thing 'string))
         ((thing-at-point 'sexp)       ; som|ething
          (beginning-of-thing 'sexp))
