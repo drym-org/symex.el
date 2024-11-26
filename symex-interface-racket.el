@@ -111,7 +111,7 @@ Accounts for different point location in evil vs Emacs mode."
 (defun symex-repl-racket ()
   "Go to REPL."
   (let ((original-window (selected-window)))
-    (racket-repl)
+    (racket-edit-switch-to-repl)
     (unless (eq original-window (selected-window))
       ;; if the REPL window is currently being created
       ;; then don't attempt to go to the bottom
