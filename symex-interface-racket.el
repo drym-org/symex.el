@@ -46,29 +46,30 @@
 (declare-function racket-run "ext:racket-mode")
 
 (defun symex--racket-send-to-repl (code)
-  "Internal function to send CODE to the Racket REPL for evaluation.
+   "Send CODE to the current buffer's REPL for evaluation.
 
-Before sending the code (in string form), calls `racket-repl' and
-`racket--repl-forget-errors'.  Also inserts a ?\n at the process
-mark so that output goes on a fresh line, not on the same line as
-the prompt.
-
-Afterwards call `racket--repl-show-and-move-to-end'.
-
-This function is based on code from an old version of the
-`racket-mode` Emacs package."
-  (racket-repl t)
-  (racket--repl-forget-errors)
-  (let ((proc (get-buffer-process racket-repl-buffer-name)))
+Based on `racket--send-region-to-repl' from `racket-mode'."
+  (unless (racket--repl-session-id)
+    (user-error "No REPL session available; run the file first"))
+  ;; Capture source buffer in case something changes; see e.g. #407.
+  (let ((source-buffer (current-buffer)))
+    (racket--repl-forget-errors)
     (with-racket-repl-buffer
       (save-excursion
-        (goto-char (process-mark proc))
+        (racket--repl-delete-prompt-mark nil)
+        (goto-char (point-max))
         (insert ?\n)
-        (set-marker (process-mark proc) (point))))
-    (comint-send-string proc code)
-    (comint-send-string proc "\n"))
-  (when (fboundp 'racket--repl-show-and-move-to-end)
-    (racket--repl-show-and-move-to-end)))
+        (when t
+          (insert code)
+          (insert (propertize "\n=>\n"
+                              'font-lock-face 'racket-repl-message)))
+        (add-text-properties racket--repl-output-mark (point)
+                             (list 'field 'send
+                                   'read-only t))
+        (set-marker racket--repl-output-mark (point))))
+    (racket--cmd/async (racket--repl-session-id)
+                       `(repl-submit ,code))
+    (display-buffer racket-repl-buffer-name)))
 
 (defun symex-eval-racket ()
   "Eval last sexp.
