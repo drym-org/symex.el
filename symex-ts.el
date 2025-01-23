@@ -48,9 +48,8 @@ package is being used instead."
   "Initialise tree sitter support for Symex.el."
   (when symex-mode
     (message "Initialising Symex-TS...")
-    (if (eq (symex-ts--current-ts-library) 'internal)
-        (symex-ts--init-treesit-builtin)
-      (symex-ts--init-treesit-package))))
+    (when (eq (symex-ts--current-ts-library) 'internal)
+        (symex-ts--init-treesit-builtin))))
 
 (defun symex-ts--init-treesit-builtin ()
   "Initialise Symex tree sitter support via built-in tree-sitter library."
@@ -94,32 +93,13 @@ return nil."
   (defalias 'symex-ts--root-node #'treesit-buffer-root-node)
   t)
 
-(defun symex-ts--init-treesit-package ()
-  "Initialise Symex tree sitter support via external tree-sitter library."
-  (message "Initialising Symex tree sitter support using external tree-sitter library...")
-  (require 'tree-sitter)
-  (defalias 'symex-ts--count-named-children #'tsc-count-named-children)
-  (defalias 'symex-ts--get-named-descendant-for-position-range #'tsc-get-named-descendant-for-position-range)
-  (defalias 'symex-ts--get-next-named-sibling #'tsc-get-next-named-sibling)
-  (defalias 'symex-ts--get-nth-named-child #'tsc-get-nth-named-child)
-  (defalias 'symex-ts--get-parent #'tsc-get-parent)
-  (defalias 'symex-ts--get-prev-named-sibling #'tsc-get-prev-named-sibling)
-  (defalias 'symex-ts--node-end-position #'tsc-node-end-position)
-  (defalias 'symex-ts--node-eq #'tsc-node-eq)
-  (defalias 'symex-ts--node-start-position #'tsc-node-start-position)
-  (defun 'symex-ts--root-node ()
-    (tsc-root-node tree-sitter-tree))
-  t)
-
 (require 'symex-transformations-ts)
-(require 'symex-utils-ts)
 
 (add-hook 'symex-mode-hook #'symex-ts--init)
 
 (defun symex-ts-available-p ()
   "Predicate to show if tree sitter support is available to Symex."
-  (or (and (treesit-available-p) (> (length (treesit-parser-list)) 0))
-      tree-sitter-mode))
+  (and (treesit-available-p) (> (length (treesit-parser-list)) 0)))
 
 (defvar-local symex-ts--current-node nil "The current Tree Sitter node.")
 

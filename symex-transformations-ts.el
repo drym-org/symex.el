@@ -26,8 +26,6 @@
 
 ;;; Code:
 
-(require 'tree-sitter)
-(require 'symex-ts)
 (require 'symex-utils)
 
 (defmacro symex-ts--handle-tree-modification (&rest body)
@@ -76,7 +74,7 @@ selected according to the ranges that have changed."
              (indent-according-to-mode))
 
            ;; Return the result of evaluating BODY
-           ,res)))))
+           ,res))))
 
 (defun symex-ts-clear ()
   "Clear contents of symex."

@@ -37,7 +37,7 @@
 
 (defun symex-tree-sitter-p ()
   "Whether to use the tree sitter primitives."
-  (and tree-sitter-mode
+  (and (and (treesit-available-p) (> (length (treesit-parser-list)) 0))
        ;; We use the Lisp primitives for Clojure
        ;; even though Emacs 29 provides tree-sitter APIs
        ;; for it, since the Lisp primitives in Symex are
