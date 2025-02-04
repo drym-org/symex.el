@@ -211,14 +211,14 @@ that are not primarily user-directed."
   (symex--indent count)
   (symex-select-nearest))
 
-(defun symex--remove (count)
+(defun symex--remove (count &optional include-whitespace)
   "Delete COUNT symexes.
 
 This is a low-level utility that simply removes the indicated text
 from the buffer."
   (let ((last-command nil)  ; see symex-yank re: last-command
         (start (point))
-        (end (symex--get-end-point count t)))
+        (end (symex--get-end-point count include-whitespace)))
     (when (> end start)
       (kill-region start end)
       t)))
@@ -229,7 +229,7 @@ from the buffer."
       (symex-ts--reset-after-delete)
     (symex-lisp--reset-after-delete)))
 
-(defun symex-remove (count)
+(defun symex-remove (count &optional include-whitespace)
   "Delete COUNT symexes."
   ;; TODO: instead of having the count at the primitive level, have
   ;; each delete operation push onto a (yet to be implemented)
@@ -239,7 +239,7 @@ from the buffer."
   ;; traversal stack. Then, we can put the entire contents of the
   ;; stack into the paste buffer in e.g. symex-delete (after popping
   ;; the contents to get them in the right order)
-  (let ((result (symex--remove count)))
+  (let ((result (symex--remove count include-whitespace)))
     (when result
       (symex--reset-after-delete)
       ;; should we return the actual motion we took?
@@ -252,16 +252,16 @@ WHAT could be `this`, `next`, or `previous`."
   (let ((result))
     (condition-case nil
         (cond ((eq 'this what)
-               (setq result (symex-remove 1)))
+               (setq result (symex-remove 1 t)))
               ((eq 'previous what)
                (when (symex--previous-p)
                  (symex--go-backward)
-                 (setq result (symex-remove 1))))
+                 (setq result (symex-remove 1 t))))
               ((eq 'next what)
                (when (symex--next-p)
                  (save-excursion
                    (symex--go-forward)
-                   (setq result (symex-remove 1)))))
+                   (setq result (symex-remove 1 t)))))
               (t (error "Invalid argument for primitive delete!")))
       ;; if unable to delete, return nil instead of
       ;; raising an error. nil is used in the evaluator
