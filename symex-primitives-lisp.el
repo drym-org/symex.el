@@ -392,7 +392,8 @@ as special cases here."
          nil) ; don't change level in selection
         ((and (not (eobp))
               (symex-right-p)) ; |)
-         (symex-other))
+         (backward-sexp)
+         (symex-lisp-select-nearest))
         ((condition-case nil  ; (thing-at-point string) raises error at EOB
              (thing-at-point 'string)
            (error nil))       ; "som|e string"
