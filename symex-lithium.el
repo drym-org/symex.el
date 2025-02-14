@@ -276,9 +276,12 @@ executing this command to get the expected behavior."
     symex-swallow
     symex-swallow-tail
     symex-tidy
+    symex-tidy-proper
+    symex-tidy-remaining
     symex-wrap
     symex-wrap-round
     symex-wrap-square
+    symex-wrap-and-append
     symex-append-after
     symex-change-delimiter
     symex-change-remaining
@@ -289,11 +292,8 @@ executing this command to get the expected behavior."
     symex-insert-before
     symex-open-line-after
     symex-open-line-before
-    symex-tidy-proper
-    symex-tidy-remaining
     symex-unfurl
-    symex-unfurl-remaining
-    symex-wrap-and-append)
+    symex-unfurl-remaining)
   "Commands which should have their `:repeat' property set to t.")
 
 (defun symex-lithium-initialize ()
