@@ -429,6 +429,11 @@ in the parent symex."
     (paredit-splice-sexp-killing-forward)
     (symex--go-backward)))
 
+(symex-define-command symex-raise ()
+  "Raise symex by replacing the containing one."
+  (interactive)
+  (paredit-raise-sexp))
+
 (symex-define-command symex-splice ()
   "Splice or \"clip\" symex.
 

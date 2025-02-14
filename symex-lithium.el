@@ -172,7 +172,7 @@ executing this command to get the expected behavior."
     ("L" symex-shift-forward)
     ("M-H" symex-shift-backward-most)
     ("M-L" symex-shift-forward-most)
-    ("K" paredit-raise-sexp) ; revisit kb
+    ("K" symex-raise) ; revisit kb
     ("C-S-j" symex-emit-backward)
     ("C-(" symex-capture-backward)
     ("C-S-h" symex-capture-backward)
