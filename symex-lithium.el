@@ -240,7 +240,7 @@ executing this command to get the expected behavior."
   :group 'symex)
 
 (defvar symex--evil-repeatable-commands
-  '(paredit-raise-sexp
+  '(symex-raise
     symex-add-quoting-level
     symex-append-newline
     symex-capture-backward
