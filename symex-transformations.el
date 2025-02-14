@@ -432,7 +432,8 @@ in the parent symex."
 (symex-define-command symex-raise ()
   "Raise symex by replacing the containing one."
   (interactive)
-  (paredit-raise-sexp))
+  (unless (symex--point-at-root-symex-p)
+    (paredit-raise-sexp)))
 
 (symex-define-command symex-splice ()
   "Splice or \"clip\" symex.
