@@ -72,6 +72,21 @@ The best way to learn how to use Symex is to read the `Animated Guide <https://c
 Symex and Evil
 --------------
 
+To avail of familiar Evil keybindings while in Symex mode, put something like this in your config:
+
+::
+
+   (lithium-define-keys symex-editing-mode
+                        (("u" evil-undo)
+                         ("C-r" evil-redo)
+                         ("." evil-repeat)
+                         ("/" evil-search-forward)
+                         ("?" evil-search-backward)
+                         ("#" evil-search-word-backward)
+                         ("*" evil-search-word-forward)
+                         ("n" evil-search-next)
+                         ("N" evil-search-previous)))
+
 At the moment, Symex uses an Evil state to implement its modal interface. Does that mean it's only for Evil users? No! It's just an implementation detail that you needn't be aware of, as Symex does not assume that you are an actual user of Evil.
 
 If you do happen to be an Evil user, using Symex should feel familiar, but while there are many similarities to Evil, it's also fairly different.
@@ -316,13 +331,13 @@ Put something resembling this in your configuration *before* the call to ``(syme
 
 ::
 
-  (setq symex--user-evil-keyspec
-        '(("j" . symex-go-up)
-          ("k" . symex-go-down)
-          ("C-j" . symex-climb-branch)
-          ("C-k" . symex-descend-branch)
-          ("M-j" . symex-goto-highest)
-          ("M-k" . symex-goto-lowest)))
+   (lithium-define-keys symex-editing-mode
+                        (("j" symex-go-up)
+                         ("k" symex-go-down)
+                         ("C-j" symex-climb-branch)
+                         ("C-k" symex-descend-branch)
+                         ("M-j" symex-goto-highest)
+                         ("M-k" symex-goto-lowest)))
 
 Branch Memory
 -------------

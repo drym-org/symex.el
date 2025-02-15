@@ -46,11 +46,6 @@
 ;;; TRANSFORMATIONS ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-;; TODO: `symex-define-command` macro
-;; - write the wrapping code before and after without needing advice
-;; - select-nearest etc. after, and remove the ad hoc cases
-;; - this would also allow more fine-grained handling, e.g. different types of commands
-;; - this would also avoid the need for `symex--evil-repeatable-commands`, so that we could `(evil-add-command-properties fn :repeat t)` directly -- this would also support users defining new symex commands and having them be repeatable without a manual registration process
 ;; TODO: dot operator disrupts scroll margins
 ;; TODO: maybe identify "non-disorienting" commands and define a new macro for them. E.g. symex-tidy is itself a command. it that bad?
 
@@ -63,24 +58,26 @@
   "Define a symex command."
   (declare (indent defun))
   (let ((result (gensym)))
-    `(defun ,name ,args
-       ,docstring
-       ,interactive-decl
-       (let ((,result (progn ,@body)))
-         (symex-user-select-nearest)
-         ;; Note that the built-in `fixup-whitespace` that's used in
-         ;; `symex-tidy` causes the buffer to reflect as modified even
-         ;; if it doesn't actually make any modifications.  In such
-         ;; cases, a null change is also pushed onto the undo stack,
-         ;; meaning that executing `undo` results in a no-op at first,
-         ;; and we need to hit `u` again to undo the real change we
-         ;; meant to undo.  We could fix this on the Symex side by
-         ;; only invoking tidy if we see that the buffer has been
-         ;; modified, but it would be better to fix `fixup-whitespace`
-         ;; so it doesn't mark the buffer as modified if no changes
-         ;; were made.
-         (symex--tidy 1)
-         ,result))))
+    `(progn
+       (defun ,name ,args
+         ,docstring
+         ,interactive-decl
+         (let ((,result (progn ,@body)))
+           (symex-user-select-nearest)
+           ;; Note that the built-in `fixup-whitespace` that's used in
+           ;; `symex-tidy` causes the buffer to reflect as modified even
+           ;; if it doesn't actually make any modifications.  In such
+           ;; cases, a null change is also pushed onto the undo stack,
+           ;; meaning that executing `undo` results in a no-op at first,
+           ;; and we need to hit `u` again to undo the real change we
+           ;; meant to undo.  We could fix this on the Symex side by
+           ;; only invoking tidy if we see that the buffer has been
+           ;; modified, but it would be better to fix `fixup-whitespace`
+           ;; so it doesn't mark the buffer as modified if no changes
+           ;; were made.
+           (symex--tidy 1)
+           ,result))
+       (evil-add-command-properties ',name :repeat t))))
 
 (defmacro symex-define-insertion-command (name
                                           args
@@ -90,12 +87,14 @@
                                           body)
   "Define a symex command that enters an insertion state."
   (declare (indent defun))
-  `(defun ,name ,args
-     ,docstring
-     ,interactive-decl
-     (evil-start-undo-step)
-     ,@body
-     (symex-enter-lowest)))
+  `(progn
+     (defun ,name ,args
+       ,docstring
+       ,interactive-decl
+       (evil-start-undo-step)
+       ,@body
+       (symex-enter-lowest))
+     (evil-add-command-properties ',name :repeat t)))
 
 (defun symex--delete (count)
   "Delete COUNT symexes."
@@ -428,6 +427,12 @@ in the parent symex."
     (symex--go-forward)
     (paredit-splice-sexp-killing-forward)
     (symex--go-backward)))
+
+(symex-define-command symex-raise ()
+  "Raise symex by replacing the containing one."
+  (interactive)
+  (unless (symex--point-at-root-symex-p)
+    (paredit-raise-sexp)))
 
 (symex-define-command symex-splice ()
   "Splice or \"clip\" symex.
