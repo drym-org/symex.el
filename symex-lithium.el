@@ -234,9 +234,15 @@ executing this command to get the expected behavior."
    ("s-;" symex-evaluate)
    ("H-h" symex--toggle-highlight) ; treats visual as distinct mode
    ("C-?" symex-describe)
+   ;; evil-related
    ("u" evil-undo)
    ("C-r" evil-redo)
    ("." evil-repeat)
+   ("/" evil-search-forward)
+   ("?" evil-search-backward)
+   ("n" evil-search-next)
+   ("N" evil-search-previous)
+   ;; escapes
    ("<return>" symex-enter-lower)
    ("<escape>" symex-escape-higher))
   :lighter " symex"
