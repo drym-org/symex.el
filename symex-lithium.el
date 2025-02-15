@@ -37,16 +37,7 @@
 (evil-define-state symex
   "Symex state."
   :tag " <λ> "
-  :message "-- SYMEX --"
-  ;; we currently rely on enabling normal here for support
-  ;; for "counts". It would be better to natively support
-  ;; counts (i.e. the usual prefix argument), and aim for
-  ;; evil to be purely superficial, just for the modeline
-  ;; feedback via existing plugins like telephone-line.
-  ;; Eventually we could have an analogous modeline extension
-  ;; for Lithium, or add Lithium support to existing evil-oriented
-  ;; UI extensions
-  :enable (normal))
+  :message "-- SYMEX --")
 
 (defun symex-evil-repeat-start-recording-advice (&rest _)
   "Prepare the current command for recording the repetition.
@@ -234,6 +225,9 @@ executing this command to get the expected behavior."
     ("s-;" symex-evaluate)
     ("H-h" symex--toggle-highlight) ; treats visual as distinct mode
     ("C-?" symex-describe)
+    ("u" evil-undo)
+    ("C-r" evil-redo)
+    ("." evil-repeat)
     ("<return>" symex-enter-lower)
     ("<escape>" symex-escape-higher))
   :lighter " symex"
