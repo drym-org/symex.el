@@ -126,8 +126,16 @@
 
 (defun symex-modal-provider-initialize ()
   "Initialize the modal interface provider."
-  (symex-lithium-initialize)
-  (add-hook 'symex-editing-mode-pre-exit-hook #'symex-exit-mode))
+  (symex-lithium-initialize))
+
+(defun symex-initialize-repeat ()
+  "Initialize repeat command (uses evil-repeat)."
+  (advice-add 'evil-repeat-pre-hook
+              :after #'symex-evil-repeat-start-recording-advice)
+  (advice-add 'evil-repeat-post-hook
+              :after #'symex-evil-repeat-stop-recording-advice)
+  (advice-add 'evil-repeat
+              :around #'symex-evil-repeat-preserve-state-advice))
 
 ;;;###autoload
 (defun symex-initialize ()
@@ -154,7 +162,9 @@ advises functions to enable or disable features based on user configuration."
     (advice-add #'undo-tree-redo :after #'symex-select-nearest-advice))
   (symex--add-selection-advice)
   ;; initialize modal interface frontend
-  (symex-modal-provider-initialize))
+  (symex-modal-provider-initialize)
+  ;; initialize repeat command
+  (symex-initialize-repeat))
 
 (defun symex-disable ()
   "Disable symex.

@@ -239,76 +239,9 @@ executing this command to get the expected behavior."
   :lighter " symex"
   :group 'symex)
 
-(defvar symex--evil-repeatable-commands
-  '(symex-raise
-    symex-add-quoting-level
-    symex-append-newline
-    symex-capture-backward
-    symex-capture-forward
-    symex-change
-    symex-clear
-    symex-comment
-    symex-comment-remaining
-    symex-create-round
-    symex-create-square
-    symex-cycle-quote
-    symex-cycle-unquote
-    symex-delete
-    symex-delete-backwards
-    symex-delete-remaining
-    symex-emit-backward
-    symex-emit-forward
-    symex-insert-newline
-    symex-join
-    symex-join-lines
-    symex-join-lines-backwards
-    symex-open-line-after
-    symex-open-line-before
-    symex-paste-after
-    symex-paste-before
-    symex-remove-quoting-level
-    symex-shift-backward
-    symex-shift-backward-most
-    symex-shift-forward
-    symex-shift-forward-most
-    symex-splice
-    symex-split
-    symex-swallow
-    symex-swallow-tail
-    symex-tidy
-    symex-tidy-proper
-    symex-tidy-remaining
-    symex-wrap
-    symex-wrap-round
-    symex-wrap-square
-    symex-wrap-and-append
-    symex-append-after
-    symex-change-delimiter
-    symex-change-remaining
-    symex-collapse
-    symex-collapse-remaining
-    symex-insert-at-beginning
-    symex-insert-at-end
-    symex-insert-before
-    symex-open-line-after
-    symex-open-line-before
-    symex-unfurl
-    symex-unfurl-remaining)
-  "Commands which should have their `:repeat' property set to t.")
-
 (defun symex-lithium-initialize ()
   "Initialize lithium modal interface."
-  (advice-add 'evil-repeat-pre-hook
-              :after #'symex-evil-repeat-start-recording-advice)
-  (advice-add 'evil-repeat-post-hook
-              :after #'symex-evil-repeat-stop-recording-advice)
-  (advice-add 'evil-repeat
-              :around #'symex-evil-repeat-preserve-state-advice)
-  ;; TODO: once all the commands are defined using the macro,
-  ;; add this declaration to the macro definition and remove
-  ;; the "registration" here.
-  (dolist (fn symex--evil-repeatable-commands)
-    (evil-add-command-properties fn :repeat t)))
+  (add-hook 'symex-editing-mode-pre-exit-hook #'symex-exit-mode))
 
 
 (provide 'symex-lithium)
