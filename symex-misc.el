@@ -356,8 +356,7 @@ measure them anywhere, we do this traversal in O(n)."
 
 (defun symex-select-nearest-advice (&rest _)
   "Advice to select the nearest symex."
-  (when (and (fboundp 'evil-symex-state-p)
-             (evil-symex-state-p))
+  (when symex-editing-mode
     (symex-user-select-nearest)))
 
 (defun symex--selection-side-effects ()
