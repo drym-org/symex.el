@@ -675,6 +675,8 @@ line."
            ;; only join up to the next symex if the context suggests
            ;; that a line break is not desired
            (symex--join-to-next)))
+        ((symex-comment-line-p) ; <> ;
+         (indent-according-to-mode))
         ((save-excursion (back-to-indentation) ; ^<>)
                          (symex-right-p))
          ;; Cases 2 and 3 in issue #18
