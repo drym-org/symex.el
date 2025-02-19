@@ -72,6 +72,10 @@ The best way to learn how to use Symex is to read the `Animated Guide <https://c
 Symex and Evil
 --------------
 
+If you do happen to be an Evil user, using Symex should feel familiar, but while there are many similarities to Evil, it's also fairly different.
+
+Symex has a simple modal interface written using `Lithium <https://github.com/countvajhula/lithium>`_. In Evil, the paradigm is composing verbs with nouns (or operators with motions, in Vim parlance), whereas Symex has a "point free" design where the noun is fixed (i.e. it assumes you mean to perform operations on symexes) so you only need to worry about what you are trying to do without bothering about composition. For more on this style of UI, see `Rigpa <https://github.com/countvajhula/rigpa>`_.
+
 To avail of familiar Evil keybindings while in Symex mode, put something like this in your config:
 
 ::
@@ -85,13 +89,10 @@ To avail of familiar Evil keybindings while in Symex mode, put something like th
                          ("#" evil-search-word-backward)
                          ("*" evil-search-word-forward)
                          ("n" evil-search-next)
-                         ("N" evil-search-previous)))
-
-At the moment, Symex uses an Evil state to implement its modal interface. Does that mean it's only for Evil users? No! It's just an implementation detail that you needn't be aware of, as Symex does not assume that you are an actual user of Evil.
-
-If you do happen to be an Evil user, using Symex should feel familiar, but while there are many similarities to Evil, it's also fairly different.
-
-Symex has a modal interface, but one that's simpler than Evil. In Evil, the paradigm is composing verbs with nouns (or operators with motions, in Vim parlance), whereas Symex has a "point free" design where the noun is fixed (i.e. it assumes you mean to perform operations on symexes) so you only need to worry about what you are trying to do without bothering about composition. For more on this style of UI, see `Rigpa <https://github.com/countvajhula/rigpa>`_.
+                         ("N" evil-search-previous)
+                         ("C-]" evil-jump-to-tag)
+                         ("C-i" evil-jump-forward)
+                         ("C-o" evil-jump-backward)))
 
 Key Bindings
 ------------
