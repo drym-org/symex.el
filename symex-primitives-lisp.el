@@ -697,7 +697,9 @@ line."
                                                t)
                              (error nil))
                      (symex--join-to-match symex--re-right))))))))
-        ((symex-right-p) (fixup-whitespace)) ; abc <>)
+        ((or (symex-right-p)     ; abc <>)
+             (looking-at-p " ")) ; (<> )
+         (fixup-whitespace))
         (t nil)))
 
 ;;; Utilities
