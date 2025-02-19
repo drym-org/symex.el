@@ -31,8 +31,7 @@
 
 ;;; Code:
 
-(require 'tree-sitter)
-(require 'tsc)
+(defvar symex-clojure-modes)
 
 (defun symex-ts--current-ts-library ()
   "Return a symbol to show what type of tree sitter library is available.
@@ -99,7 +98,14 @@ return nil."
 
 (defun symex-ts-available-p ()
   "Predicate to show if tree sitter support is available to Symex."
-  (and (treesit-available-p) (> (length (treesit-parser-list)) 0)))
+  (and (treesit-available-p)
+       (> (length (treesit-parser-list)) 0)
+       ;; We use the Lisp primitives for Clojure
+       ;; even though Emacs 29 provides tree-sitter APIs
+       ;; for it, since the Lisp primitives in Symex are
+       ;; more mature than the Tree Sitter ones at the
+       ;; present time.
+       (not (member major-mode symex-clojure-modes))))
 
 (defvar-local symex-ts--current-node nil "The current Tree Sitter node.")
 

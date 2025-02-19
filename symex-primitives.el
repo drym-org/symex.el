@@ -33,18 +33,6 @@
 (require 'symex-primitives-lisp)
 (require 'symex-ts)
 
-(defvar symex-clojure-modes)
-
-(defun symex-tree-sitter-p ()
-  "Whether to use the tree sitter primitives."
-  (and (and (treesit-available-p) (> (length (treesit-parser-list)) 0))
-       ;; We use the Lisp primitives for Clojure
-       ;; even though Emacs 29 provides tree-sitter APIs
-       ;; for it, since the Lisp primitives in Symex are
-       ;; more mature than the Tree Sitter ones at the
-       ;; present time.
-       (not (member major-mode symex-clojure-modes))))
-
 ;;; User Interface
 
 (defun symex--adjust-point ()
@@ -104,13 +92,13 @@
 
 (defun symex--previous-p ()
   "Check if a preceding symex exists at this level."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--previous-p)
     (symex-lisp--previous-p)))
 
 (defun symex--next-p ()
   "Check if a succeeding symex exists at this level."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--next-p)
     (symex-lisp--next-p)))
 
@@ -204,7 +192,7 @@ that are not primarily user-directed."
 
   ;; fixing leading whitespace in lisp, for now
   ;; probably find a better/uniform way later
-  (unless (symex-tree-sitter-p)
+  (unless (symex-ts-available-p)
     (symex--fix-leading-whitespace))
   ;; fix trailing whitespace (indent region doesn't)
   (symex--fix-trailing-whitespace count)
@@ -225,7 +213,7 @@ from the buffer."
 
 (defun symex--reset-after-delete ()
   "Tidy after deletion and select the appropriate symex."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--reset-after-delete)
     (symex-lisp--reset-after-delete)))
 
@@ -277,11 +265,11 @@ WHERE could be either 'before or 'after"
   ;; TODO: remove counts from primitives
   ;; as they aren't used
   (cond ((eq 'before where)
-         (if (symex-tree-sitter-p)
+         (if (symex-ts-available-p)
              (symex-ts-paste-before 1)
            (symex-lisp-paste-before)))
         ((eq 'after where)
-         (if (symex-tree-sitter-p)
+         (if (symex-ts-available-p)
              (symex-ts-paste-after 1)
            (symex-lisp-paste-after)))
         (t (error "Invalid argument for primitive paste!"))))
