@@ -53,7 +53,6 @@ selected according to the ranges that have changed."
            (let ((,changed-ranges (tsc-changed-ranges ,prev-tree tree-sitter-tree)))
 
              ;; Move point to the first changed range if possible
-             ;; Move point to the first changed range if possible
              (when (and (> (length ,changed-ranges) 0)
                         (> (length (elt ,changed-ranges 0)) 0))
                (let ((new-pos (elt (elt ,changed-ranges 0) 0)))
@@ -74,7 +73,7 @@ selected according to the ranges that have changed."
              (indent-according-to-mode))
 
            ;; Return the result of evaluating BODY
-           ,res))))
+           ,res)))))
 
 (defun symex-ts-clear ()
   "Clear contents of symex."
