@@ -167,28 +167,28 @@
 (symex-define-command symex-emit-backward (count)
   "Emit backward, COUNT times."
   (interactive "p")
-  (if tree-sitter-mode
+  (if (symex-ts-available-p)
       (symex-ts-emit-backward count)
     (symex-lisp-emit-backward count)))
 
 (symex-define-command symex-emit-forward (count)
   "Emit forward, COUNT times."
   (interactive "p")
-  (if tree-sitter-mode
+  (if (symex-ts-available-p)
       (symex-ts-emit-forward count)
     (symex-lisp-emit-forward count)))
 
 (symex-define-command symex-capture-backward (count)
   "Capture backward, COUNT times."
   (interactive "p")
-  (if tree-sitter-mode
+  (if (symex-ts-available-p)
       (symex-ts-capture-backward count)
     (symex-lisp-capture-backward count)))
 
 (symex-define-command symex-capture-forward (count)
   "Capture forward, COUNT times."
   (interactive "p")
-  (if tree-sitter-mode
+  (if (symex-ts-available-p)
       (symex-ts-capture-forward count)
     (symex-lisp-capture-forward count)))
 
