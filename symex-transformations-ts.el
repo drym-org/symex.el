@@ -26,8 +26,6 @@
 
 ;;; Code:
 
-(require 'tree-sitter)
-(require 'symex-ts)
 (require 'symex-utils)
 
 (defmacro symex-ts--handle-tree-modification (&rest body)
@@ -36,62 +34,72 @@
 The buffer's current Tree Sitter tree is saved before BODY is
 evaluated. The new tree is then compared and the current node is
 selected according to the ranges that have changed."
-  (let ((prev-tree (gensym))
-        (res (gensym))
-        (changed-ranges (gensym))
-        (orig-pos (gensym)))
+  (if (eq (symex-ts--current-ts-library) 'internal)
+      ;; TODO: Implement symex-ts--handle-tree-modification for the internal tree sitter library
+      '(error "Unable to perform edit: the Emacs internal tree sitter library is not yet supported")
 
-    `(let ((,prev-tree tree-sitter-tree)
-           (,orig-pos (point)))
+    (let ((prev-tree (gensym))
+          (res (gensym))
+          (changed-ranges (gensym))
+          (orig-pos (gensym)))
 
-       ;; Execute BODY, bind to RES
-       (let ((,res (progn ,@body)))
+      `(let ((,prev-tree tree-sitter-tree)
+             (,orig-pos (point)))
 
-         ;; Get changes from previous to current tree
-         (let ((,changed-ranges (tsc-changed-ranges ,prev-tree tree-sitter-tree)))
+         ;; Execute BODY, bind to RES
+         (let ((,res (progn ,@body)))
 
-           ;; Move point to the first changed range if possible
-           (when (and (> (length ,changed-ranges) 0)
-                      (> (length (elt ,changed-ranges 0)) 0))
-             (let ((new-pos (elt (elt ,changed-ranges 0) 0)))
-               ;; don't move point to before the
-               ;; original point location
-               (if (< new-pos ,orig-pos)
-                   (goto-char ,orig-pos)
-                 (goto-char new-pos)
-                 ;; If the change starts on a carriage return, move
-                 ;; forward one character
-                 (when (char-equal ?\C-j (char-after))
-                   (forward-char 1))))))
+           ;; Get changes from previous to current tree
+           (let ((,changed-ranges (tsc-changed-ranges ,prev-tree tree-sitter-tree)))
 
-         ;; Return the result of evaluating BODY
-         ,res))))
+             ;; Move point to the first changed range if possible
+             (when (and (> (length ,changed-ranges) 0)
+                        (> (length (elt ,changed-ranges 0)) 0))
+               (let ((new-pos (elt (elt ,changed-ranges 0) 0)))
+                 ;; don't move point to before the
+                 ;; original point location
+                 (if (< new-pos ,orig-pos)
+                     (goto-char ,orig-pos)
+                   (goto-char new-pos)
+                   ;; If the change starts on a carriage return, move
+                   ;; forward one character
+                   (when (char-equal ?\C-j (char-after))
+                     (forward-char 1)))))
+
+             ;; Update current node from point and reindent if necessary
+             (symex-ts-set-current-node-from-point)
+             (when symex-highlight-p
+               (symex--update-overlay))
+             (indent-according-to-mode))
+
+           ;; Return the result of evaluating BODY
+           ,res)))))
 
 (defun symex-ts-clear ()
   "Clear contents of symex."
   (when symex-ts--current-node
-    (let ((child-count (tsc-count-named-children symex-ts--current-node)))
+    (let ((child-count (symex-ts--count-named-children symex-ts--current-node)))
 
       ;; If the node has children, delete them. Otherwise, just delete
       ;; the current node using `symex-ts-delete-node-forward'.
       (if (> child-count 0)
-        (let ((first-child (tsc-get-nth-named-child symex-ts--current-node 0))
-              (last-child (tsc-get-nth-named-child symex-ts--current-node (1- child-count))))
+        (let ((first-child (symex-ts--get-nth-named-child symex-ts--current-node 0))
+              (last-child (symex-ts--get-nth-named-child symex-ts--current-node (1- child-count))))
           (when (and first-child last-child)
-            (kill-region (tsc-node-start-position first-child) (tsc-node-end-position last-child))))
+            (kill-region (symex-ts--node-start-position first-child) (symex-ts--node-end-position last-child))))
         (symex-ts-delete-node-forward 1)))))
 
 (defun symex-ts-comment (&optional count)
   "Comment out COUNT expressions."
-  (when (symex-tree-sitter-p)
+  (when (symex-ts-available-p)
     (let* ((count (or count 1))
            (node (symex-ts-get-current-node))
-           (start-pos (tsc-node-start-position node))
-           (end-pos (tsc-node-end-position
+           (start-pos (symex-ts--node-start-position node))
+           (end-pos (symex-ts--node-end-position
                      (if (> count 1)
                          (symex-ts--get-nth-sibling-from-node
                           node
-                          #'tsc-get-next-named-sibling count)
+                          #'symex-ts--get-next-named-sibling count)
                        node))))
       (save-excursion (set-mark start-pos)
                       (goto-char end-pos)
@@ -107,6 +115,21 @@ If the deletion results in an empty line it will be removed."
         (symex--join-to-non-whitespace)
       (symex--delete-whole-line))))
 
+(defun symex-ts-delete-node-backward (&optional count)
+  "Delete COUNT nodes backward from the current node."
+  (interactive "p")
+  (let* ((count (or count 1))
+         (node (symex-ts--get-prev-named-sibling (symex-ts-get-current-node))))
+    (when node
+      (let ((end-pos (symex-ts--node-end-position node))
+            (start-pos (symex-ts--node-start-position
+                        (if (> count 1)
+                            (symex-ts--get-nth-sibling-from-node node #'symex-ts--get-prev-named-sibling count)
+                          node))))
+        (kill-region start-pos end-pos)
+        (symex-ts--delete-current-line-if-empty start-pos)
+        (symex-ts-set-current-node-from-point)))))
+
 (defun symex-ts-delete-node-forward (&optional count)
   "Delete COUNT nodes forward from the current node."
   (interactive "p")
@@ -114,12 +137,12 @@ If the deletion results in an empty line it will be removed."
   (symex-ts--handle-tree-modification
    (let* ((count (or count 1))
           (node (symex-ts-get-current-node))
-          (start-pos (tsc-node-start-position node))
-          (end-pos (tsc-node-end-position
+          (start-pos (symex-ts--node-start-position node))
+          (end-pos (symex-ts--node-end-position
                     (if (> count 1)
                         (symex-ts--get-nth-sibling-from-node
                          node
-                         #'tsc-get-next-named-sibling count)
+                         #'symex-ts--get-next-named-sibling count)
                       node))))
 
      ;; Delete the node's region
@@ -130,19 +153,19 @@ If the deletion results in an empty line it will be removed."
   "Insert at beginning of symex."
   (interactive)
   (when (symex-ts-get-current-node)
-    (goto-char (tsc-node-start-position (symex-ts-get-current-node)))))
+    (goto-char (symex-ts--node-start-position (symex-ts-get-current-node)))))
 
 (defun symex-ts-insert-at-end ()
   "Insert at end of symex."
   (interactive)
   (when (symex-ts-get-current-node)
-    (goto-char (tsc-node-end-position (symex-ts-get-current-node)))))
+    (goto-char (symex-ts--node-end-position (symex-ts-get-current-node)))))
 
 (defun symex-ts-insert-before ()
   "Insert before symex (instead of vim's default at the start of line)."
   (interactive)
   (when (symex-ts-get-current-node)
-    (goto-char (tsc-node-start-position (symex-ts-get-current-node)))
+    (goto-char (symex-ts--node-start-position (symex-ts-get-current-node)))
     (insert " ")
     (backward-char)))
 
@@ -159,14 +182,14 @@ alias for inserting at the end."
   "Open new line after symex."
   (interactive)
   (when (symex-ts-get-current-node)
-    (goto-char (tsc-node-end-position (symex-ts-get-current-node)))
+    (goto-char (symex-ts--node-end-position (symex-ts-get-current-node)))
     (newline-and-indent)))
 
 (defun symex-ts-open-line-before ()
   "Open new line before symex."
   (interactive)
   (when (symex-ts-get-current-node)
-    (goto-char (tsc-node-start-position (symex-ts-get-current-node)))
+    (goto-char (symex-ts--node-start-position (symex-ts-get-current-node)))
     (newline-and-indent)
     (forward-line -1)
     (indent-according-to-mode)
@@ -180,8 +203,8 @@ DIRECTION should be either the symbol `before' or `after'."
   (when (symex-ts-get-current-node)
     (symex-ts--handle-tree-modification
      (let* ((node (symex-ts-get-current-node))
-            (start (tsc-node-start-position node))
-            (end (tsc-node-end-position node))
+            (start (symex-ts--node-start-position node))
+            (end (symex-ts--node-end-position node))
             (indent-start (save-excursion (back-to-indentation) (point)))
             (block-node (or (not (= (line-number-at-pos start) (line-number-at-pos end)))
                             (and (= start indent-start)
@@ -210,13 +233,13 @@ DIRECTION should be either the symbol `before' or `after'."
 (defun symex-ts-replace ()
   "Replace contents of symex."
   (when symex-ts--current-node
-    (let* ((child-count (tsc-count-named-children symex-ts--current-node))
+    (let* ((child-count (symex-ts--count-named-children symex-ts--current-node))
 
            ;; Get new position for insertion: if the node has children
            ;; then the start of the first child node, otherwise the
            ;; current point.
            (new-pos (if (> child-count 0)
-                        (tsc-node-start-position (tsc-get-nth-named-child symex-ts--current-node 0))
+                        (symex-ts--node-start-position (symex-ts--get-nth-named-child symex-ts--current-node 0))
                       (point))))
 
       (symex-ts-clear)
@@ -231,10 +254,10 @@ DIRECTION should be either the symbol `before' or `after'."
   (when (symex-ts-get-current-node)
     (let* ((last-command nil)
            (node (symex-ts-get-current-node))
-           (start (tsc-node-start-position node))
-           (end (tsc-node-end-position
+           (start (symex-ts--node-start-position node))
+           (end (symex-ts--node-end-position
                  (if (> count 1)
-                     (symex-ts--get-nth-sibling-from-node node #'tsc-get-next-named-sibling count)
+                     (symex-ts--get-nth-sibling-from-node node #'symex-ts--get-next-named-sibling count)
                    node))))
       (copy-region-as-kill start end))))
 

@@ -20,7 +20,9 @@
   "Update the highlight overlay to match the start/end position of NODE."
   (when symex-ts--current-overlay
     (delete-overlay symex-ts--current-overlay))
-  (setq-local symex-ts--current-overlay (make-overlay (tsc-node-start-position node) (tsc-node-end-position node)))
+  (setq-local symex-ts--current-overlay
+              (make-overlay (symex-ts--node-start-position node)
+                            (symex-ts--node-end-position node)))
   (overlay-put symex-ts--current-overlay 'face 'symex-ts-current-node-face))
 
 (defun symex-ts--hydra-exit ()

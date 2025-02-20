@@ -33,23 +33,11 @@
 (require 'symex-primitives-lisp)
 (require 'symex-ts)
 
-(defvar symex-clojure-modes)
-
-(defun symex-tree-sitter-p ()
-  "Whether to use the tree sitter primitives."
-  (and tree-sitter-mode
-       ;; We use the Lisp primitives for Clojure
-       ;; even though Emacs 29 provides tree-sitter APIs
-       ;; for it, since the Lisp primitives in Symex are
-       ;; more mature than the Tree Sitter ones at the
-       ;; present time.
-       (not (member major-mode symex-clojure-modes))))
-
 ;;; User Interface
 
 (defun symex--adjust-point ()
   "Helper to adjust point to indicate the correct symex."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--adjust-point)
     (symex-lisp--adjust-point)))
 
@@ -57,7 +45,7 @@
 
 (defun symex--point-at-root-symex-p ()
   "Check if point is at a root symex."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       ;; note that tree-sitter has a global
       ;; root for the whole file -- that's
       ;; not the one we mean here, but
@@ -67,31 +55,31 @@
 
 (defun symex--point-at-first-symex-p ()
   "Check if point is at the first symex at some level."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--at-first-p)
     (symex-lisp--point-at-first-symex-p)))
 
 (defun symex--point-at-last-symex-p ()
   "Check if point is at the last symex at some level."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--at-last-p)
     (symex-lisp--point-at-last-symex-p)))
 
 (defun symex--point-at-final-symex-p ()
   "Check if point is at the last symex in the buffer."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--at-final-p)
     (symex-lisp--point-at-final-symex-p)))
 
 (defun symex--point-at-initial-symex-p ()
   "Check if point is at the first symex in the buffer."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--at-initial-p)
     (symex-lisp--point-at-initial-symex-p)))
 
 (defun symex--point-at-start-p ()
   "Check if point is at the start of a symex."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--point-at-start-p)
     (symex-lisp--point-at-start-p)))
 
@@ -104,13 +92,13 @@
 
 (defun symex--previous-p ()
   "Check if a preceding symex exists at this level."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--previous-p)
     (symex-lisp--previous-p)))
 
 (defun symex--next-p ()
   "Check if a succeeding symex exists at this level."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--next-p)
     (symex-lisp--next-p)))
 
@@ -127,7 +115,7 @@ should be used in all internal operations _above_ the primitive layer
 (e.g. favoring it over Emacs internal utilities like `forward-sexp`)
 that are not primarily user-directed."
   (interactive)
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-move-next-sibling count)
     (symex-lisp--forward count)))
 
@@ -142,7 +130,7 @@ should be used in all internal operations _above_ the primitive layer
 (e.g. favoring it over Emacs internal utilities like `forward-sexp`)
 that are not primarily user-directed."
   (interactive)
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-move-prev-sibling count)
     (symex-lisp--backward count)))
 
@@ -157,7 +145,7 @@ should be used in all internal operations _above_ the primitive layer
 (e.g. favoring it over Emacs internal utilities like `forward-sexp`)
 that are not primarily user-directed."
   (interactive)
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-move-child count)
     (symex-lisp--go-up count)))
 
@@ -172,7 +160,7 @@ should be used in all internal operations _above_ the primitive layer
 (e.g. favoring it over Emacs internal utilities like `forward-sexp`)
 that are not primarily user-directed."
   (interactive)
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-move-parent count)
     (symex-lisp--go-down count)))
 
@@ -204,7 +192,7 @@ that are not primarily user-directed."
 
   ;; fixing leading whitespace in lisp, for now
   ;; probably find a better/uniform way later
-  (unless (symex-tree-sitter-p)
+  (unless (symex-ts-available-p)
     (symex--fix-leading-whitespace))
   ;; fix trailing whitespace (indent region doesn't)
   (symex--fix-trailing-whitespace count)
@@ -225,7 +213,7 @@ from the buffer."
 
 (defun symex--reset-after-delete ()
   "Tidy after deletion and select the appropriate symex."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--reset-after-delete)
     (symex-lisp--reset-after-delete)))
 
@@ -277,11 +265,11 @@ WHERE could be either 'before or 'after"
   ;; TODO: remove counts from primitives
   ;; as they aren't used
   (cond ((eq 'before where)
-         (if (symex-tree-sitter-p)
+         (if (symex-ts-available-p)
              (symex-ts-paste-before 1)
            (symex-lisp-paste-before)))
         ((eq 'after where)
-         (if (symex-tree-sitter-p)
+         (if (symex-ts-available-p)
              (symex-ts-paste-after 1)
            (symex-lisp-paste-after)))
         (t (error "Invalid argument for primitive paste!"))))
@@ -315,13 +303,13 @@ This will always be zero for symex-oriented languages such as Lisp,
 but in languages like Python where the same point position could
 correspond to multiple hierarchy levels, this function computes the
 difference from the lowest such level."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--point-height-offset)
     (symex-lisp--point-height-offset)))
 
 (defun symex--get-starting-point ()
   "Get the point value at the start of the current symex."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts--get-starting-point)
     (symex-lisp--get-starting-point)))
 
@@ -330,7 +318,7 @@ difference from the lowest such level."
 
 If the containing expression terminates earlier than COUNT
 symexes, returns the end point of the last one found."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       ;; TODO: implement include-whitespace for ts
       (symex-ts--get-end-point count)
     (symex-lisp--get-end-point count include-whitespace)))
@@ -348,7 +336,7 @@ symexes, returns the end point of the last one found."
 
 (defun symex-select-nearest ()
   "Select symex nearest to point."
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-set-current-node-from-point)
     (symex-lisp-select-nearest))
   (point))
@@ -372,7 +360,7 @@ symexes, returns the end point of the last one found."
 (defun symex--primitive-exit ()
   "Take necessary actions as part of exiting Symex mode, at a primitive level."
   (symex--delete-overlay)
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-exit)
     (symex-lisp-exit)))
 

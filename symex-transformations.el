@@ -153,42 +153,42 @@
 (symex-define-insertion-command symex-replace ()
   "Replace contents of symex."
   (interactive)
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-replace)
     (symex-lisp-replace)))
 
 (symex-define-command symex-clear ()
   "Clear contents of symex."
   (interactive)
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-clear)
     (symex-lisp-clear)))
 
 (symex-define-command symex-emit-backward (count)
   "Emit backward, COUNT times."
   (interactive "p")
-  (if tree-sitter-mode
+  (if (symex-ts-available-p)
       (symex-ts-emit-backward count)
     (symex-lisp-emit-backward count)))
 
 (symex-define-command symex-emit-forward (count)
   "Emit forward, COUNT times."
   (interactive "p")
-  (if tree-sitter-mode
+  (if (symex-ts-available-p)
       (symex-ts-emit-forward count)
     (symex-lisp-emit-forward count)))
 
 (symex-define-command symex-capture-backward (count)
   "Capture backward, COUNT times."
   (interactive "p")
-  (if tree-sitter-mode
+  (if (symex-ts-available-p)
       (symex-ts-capture-backward count)
     (symex-lisp-capture-backward count)))
 
 (symex-define-command symex-capture-forward (count)
   "Capture forward, COUNT times."
   (interactive "p")
-  (if tree-sitter-mode
+  (if (symex-ts-available-p)
       (symex-ts-capture-forward count)
     (symex-lisp-capture-forward count)))
 
@@ -269,7 +269,7 @@ by default, joins next symex to current one."
 (defun symex-yank (count)
   "Yank (copy) COUNT symexes."
   (interactive "p")
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
     (symex-ts-yank count)
     (symex-lisp-yank count)))
 
@@ -318,42 +318,42 @@ by default, joins next symex to current one."
 (symex-define-insertion-command symex-open-line-after ()
   "Open new line after symex."
   (interactive)
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-open-line-after)
     (symex-lisp-open-line-after)))
 
 (symex-define-insertion-command symex-open-line-before ()
   "Open new line before symex."
   (interactive)
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-open-line-before)
     (symex-lisp-open-line-before)))
 
 (symex-define-insertion-command symex-append-after ()
   "Append after symex (instead of vim's default of line)."
   (interactive)
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-append-after)
     (symex-lisp-append-after)))
 
 (symex-define-insertion-command symex-insert-before ()
   "Insert before symex (instead of vim's default at the start of line)."
   (interactive)
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-insert-before)
     (symex-lisp-insert-before)))
 
 (symex-define-insertion-command symex-insert-at-beginning ()
   "Insert at beginning of symex."
   (interactive)
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-insert-at-beginning)
     (symex-lisp-insert-at-beginning)))
 
 (symex-define-insertion-command symex-insert-at-end ()
   "Insert at end of symex."
   (interactive)
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-insert-at-end)
     (symex-lisp-insert-at-end)))
 
@@ -555,7 +555,7 @@ then no action is taken."
 (symex-define-command symex-comment (count)
   "Comment out COUNT symexes."
   (interactive "p")
-  (if (symex-tree-sitter-p)
+  (if (symex-ts-available-p)
       (symex-ts-comment count)
     (progn
       (mark-sexp count)

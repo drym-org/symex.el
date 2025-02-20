@@ -3,7 +3,7 @@
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/drym-org/symex.el
 ;; Version: 1.0
-;; Package-Requires: ((emacs "25.1") (tsc "0.15.2") (tree-sitter "0.15.2") (paredit "24") (evil "1.2.14") (evil-surround "1.0.4") (seq "2.22"))
+;; Package-Requires: ((emacs "25.1") (paredit "24") (evil "1.2.14") (evil-surround "1.0.4") (seq "2.22"))
 ;; Keywords: lisp, convenience, languages
 
 ;; This program is "part of the world," in the sense described at
@@ -46,7 +46,6 @@
 (require 'symex-interface)
 (require 'symex-primitives)
 (require 'symex-custom)
-(require 'tree-sitter)
 (require 'symex-ts)
 
 (defvar symex--original-blink-cursor-state nil)
