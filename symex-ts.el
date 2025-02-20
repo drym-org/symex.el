@@ -98,7 +98,8 @@ return nil."
 
 (defun symex-ts-available-p ()
   "Predicate to show if tree sitter support is available to Symex."
-  (and (treesit-available-p)
+  (and (fboundp 'treesit-available-p)
+       (treesit-available-p)
        (> (length (treesit-parser-list)) 0)
        ;; We use the Lisp primitives for Clojure
        ;; even though Emacs 29 provides tree-sitter APIs
