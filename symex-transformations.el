@@ -110,7 +110,7 @@
       ;; treat them as a single deletion, so we compose the entries on
       ;; the kill ring as a side effect of each deletion
       (symex--kill-ring-push "")
-      (symex-execute-traversal
+      (symex-eval
        (symex-traversal
          (circuit (effect (symex--kill-ring-compose)
                           (delete this))
@@ -128,7 +128,7 @@
 (symex-define-command symex-delete-backwards (count)
   "Delete COUNT symexes backwards."
   (interactive "p")
-  (symex-execute-traversal
+  (symex-eval
    (symex-traversal
     (circuit (delete previous)
              count))))
@@ -287,7 +287,7 @@ by default, joins next symex to current one."
   ;; want to select the start of the pasted text after
   ;; pasting.
   ;; TODO: make this post-paste selection a defcustom
-  (symex-execute-traversal
+  (symex-eval
    (symex-traversal
     (decision (at first)
               (maneuver (circuit (paste before)
@@ -308,7 +308,7 @@ by default, joins next symex to current one."
   ;; in Lisp, (|) currently would move when it shouldn't
   ;; but it's a default that works in the majority of
   ;; cases to provide evil-like behavior.
-  (symex-execute-traversal
+  (symex-eval
    (symex-traversal
     (maneuver (circuit (paste after)
                        count)
@@ -712,7 +712,7 @@ effect is not performed during the pre-traversal."
        (with-syntax-table original-syntax-table
          (yank)
          (goto-char 0)
-         (symex-execute-traversal pre-traversal)
+         (symex-eval pre-traversal)
          (condition-case nil
              (symex--do-while-traversing
               side-effect

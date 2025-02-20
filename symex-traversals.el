@@ -42,28 +42,28 @@
   ;; so that the actual executed traversal
   ;; is (move N 0) rather than
   ;; (move 1 0) executed N times
-  (symex-execute-traversal
+  (symex-eval
    (symex-traversal (circuit (move forward)
                              count))))
 
 (defun symex-go-backward (count)
   "Move backward COUNT symexes."
   (interactive "p")
-  (symex-execute-traversal
+  (symex-eval
    (symex-traversal (circuit (move backward)
                              count))))
 
 (defun symex-go-up (count)
   "Move up COUNT symexes."
   (interactive "p")
-  (symex-execute-traversal
+  (symex-eval
    (symex-traversal (circuit (move up)
                              count))))
 
 (defun symex-go-down (count)
   "Move down COUNT symexes."
   (interactive "p")
-  (symex-execute-traversal
+  (symex-eval
    (symex-traversal (circuit (move down)
                              count))))
 
@@ -98,26 +98,26 @@
 (symex-define-motion symex-goto-first ()
   "Select first symex at present level."
   (interactive)
-  (symex-execute-traversal symex--traversal-goto-first)
+  (symex-eval symex--traversal-goto-first)
   (point))
 
 
 (symex-define-motion symex-goto-last ()
   "Select last symex at present level."
   (interactive)
-  (symex-execute-traversal symex--traversal-goto-last)
+  (symex-eval symex--traversal-goto-last)
   (point))
 
 (symex-define-motion symex-goto-lowest ()
   "Select lowest symex."
   (interactive)
-  (symex-execute-traversal symex--traversal-goto-lowest)
+  (symex-eval symex--traversal-goto-lowest)
   (point))
 
 (symex-define-motion symex-goto-highest ()
   "Select highest symex."
   (interactive)
-  (symex-execute-traversal (symex-traversal
+  (symex-eval (symex-traversal
                             (circuit (venture (move up)
                                               (circuit (move forward))))))
   (point))
@@ -208,7 +208,7 @@ when the way is blocked.")
 Executes the motion COUNT times."
   (interactive "p")
   (dotimes (_ count)
-    (symex-execute-traversal symex--traversal-preorder)))
+    (symex-eval symex--traversal-preorder)))
 
 (symex-define-motion symex-traverse-forward-more (count)
   "Traverse symex as a tree, using pre-order traversal.
@@ -224,7 +224,7 @@ Moves more steps at a time.  Executes the motion COUNT times."
 Executes the motion COUNT times."
   (interactive "p")
   (dotimes (_ count)
-    (symex-execute-traversal symex--traversal-preorder-in-tree)))
+    (symex-eval symex--traversal-preorder-in-tree)))
 
 (symex-define-motion symex-traverse-forward-skip (count)
   "Traverse symex as a tree, skipping forward.
@@ -232,7 +232,7 @@ Executes the motion COUNT times."
 Executes the motion COUNT times."
   (interactive "p")
   (dotimes (_ count)
-    (symex-execute-traversal symex--traversal-skip-forward)))
+    (symex-eval symex--traversal-skip-forward)))
 
 (symex-define-motion symex-traverse-backward (count)
   "Traverse symex as a tree, using converse post-order traversal.
@@ -240,7 +240,7 @@ Executes the motion COUNT times."
 Executes the motion COUNT times."
   (interactive "p")
   (dotimes (_ count)
-    (symex-execute-traversal symex--traversal-postorder)))
+    (symex-eval symex--traversal-postorder)))
 
 (symex-define-motion symex-traverse-backward-more (count)
   "Traverse symex as a tree, using pre-order traversal.
@@ -256,7 +256,7 @@ Moves more steps at a time.  Executes the motion COUNT times."
 Executes the motion COUNT times."
   (interactive "p")
   (dotimes (_ count)
-    (symex-execute-traversal symex--traversal-postorder-in-tree)))
+    (symex-eval symex--traversal-postorder-in-tree)))
 
 (symex-define-motion symex-traverse-backward-skip (count)
   "Traverse symex as a tree, skipping backwards.
@@ -264,7 +264,7 @@ Executes the motion COUNT times."
 Executes the motion COUNT times."
   (interactive "p")
   (dotimes (_ count)
-    (symex-execute-traversal symex--traversal-skip-backward)))
+    (symex-eval symex--traversal-skip-backward)))
 
 (symex-define-motion symex-climb-branch (count)
   "Climb up.
@@ -272,7 +272,7 @@ Executes the motion COUNT times."
 Executes the motion COUNT times."
   (interactive "p")
   (dotimes (_ count)
-    (symex-execute-traversal symex--traversal-climb-branch)))
+    (symex-eval symex--traversal-climb-branch)))
 
 (symex-define-motion symex-descend-branch (count)
   "Descend the tree.
@@ -280,14 +280,14 @@ Executes the motion COUNT times."
 Executes the motion COUNT times."
   (interactive "p")
   (dotimes (_ count)
-    (symex-execute-traversal symex--traversal-descend-branch)))
+    (symex-eval symex--traversal-descend-branch)))
 
 (defun symex--do-while-traversing (operation traversal)
   "Traverse a symex using TRAVERSAL and do OPERATION at each step."
   ;; do it once first since it will be executed as a side-effect
   ;; _after_ each step in the traversal
   (funcall operation)
-  (symex-execute-traversal
+  (symex-eval
    (symex-traversal
     (circuit
      (effect (funcall operation)

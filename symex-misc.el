@@ -107,8 +107,9 @@ to how the Lisp interpreter does it (when it is following
 \"applicative-order evaluation\")."
   (interactive)
   (save-excursion
-    (symex-execute-traversal (symex-traversal
-                              (circuit symex--traversal-preorder-in-tree)))
+    (symex-eval
+     (symex-traversal
+       (circuit symex--traversal-preorder-in-tree)))
     (symex--do-while-traversing #'symex--evaluate
                                 symex--traversal-postorder-in-tree)))
 
@@ -228,20 +229,20 @@ For the deterministic version used at the primitive level, see
   "Compute the remaining length of the current symex."
   (1+  ; length, so not zero-based like index
    (symex-save-excursion
-     (symex-execute-traversal symex--traversal-goto-last
-                              symex--computation-traversal-length))))
+     (symex-eval symex--traversal-goto-last
+                 symex--computation-traversal-length))))
 
 (defun symex-index ()
   "Get relative (from start of containing symex) index of current symex."
   (symex-save-excursion
-    (symex-execute-traversal symex--traversal-goto-first
-                             symex--computation-traversal-length)))
+    (symex-eval symex--traversal-goto-first
+                symex--computation-traversal-length)))
 
 (defun symex-height ()
   "Get height (above root) of current symex."
   (symex-save-excursion
-    (symex-execute-traversal symex--traversal-goto-lowest
-                             symex--computation-traversal-length)))
+    (symex-eval symex--traversal-goto-lowest
+                symex--computation-traversal-length)))
 
 (defun symex-next-visual-line (&optional count)
   "Coordinate navigation to move down.
@@ -321,7 +322,7 @@ traversal instead of a postorder traversal."
   (let ((traverse (if soar
                       symex--traversal-preorder
                     symex--traversal-preorder-in-tree)))
-    (symex-execute-traversal
+    (symex-eval
      (symex-traversal
        (maneuver (loop traverse
                        (lambda (acc)
@@ -346,7 +347,7 @@ measure them anywhere, we do this traversal in O(n)."
   (let ((traverse (if soar
                       symex--traversal-postorder
                     symex--traversal-postorder-in-tree)))
-    (symex-execute-traversal
+    (symex-eval
      (symex-traversal
        (maneuver (loop traverse
                        (lambda (acc)

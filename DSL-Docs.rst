@@ -13,7 +13,7 @@ The Symex DSL allows you to specify arbitrary tree traversals in a cursor-orient
 Usage
 -----
 
-The main entry point to Symex from ELisp is the ``symex-traversal`` form, which can also be used via the definition form, ``symex-deftraversal``. Within these forms, traversals may be specified using the Symex language. Traversals defined this way may be executed via ``symex-execute-traversal`` and would affect the active Emacs cursor. Side effects may be attached to traversals, so that an action (which could be any function) may be repeatedly taken as part of traversal execution. Some Symex features are implemented this way.
+The main entry point to Symex from ELisp is the ``symex-traversal`` form, which can also be used via the definition form, ``symex-deftraversal``. Within these forms, traversals may be specified using the Symex language. Traversals defined this way may be executed via ``symex-eval`` and would affect the active Emacs cursor. Side effects may be attached to traversals, so that an action (which could be any function) may be repeatedly taken as part of traversal execution. Some Symex features are implemented this way.
 
 Language
 --------
@@ -50,7 +50,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (move forward)))
 
@@ -58,7 +58,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (move backward)))
 
@@ -66,7 +66,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (move up)))
 
@@ -74,7 +74,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (move down)))
 
@@ -100,7 +100,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (maneuver (move forward)
                 (move up)
@@ -110,7 +110,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (maneuver (move up)
                 (circuit (move forward))
@@ -136,7 +136,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (venture (move forward)
                (move up)
@@ -146,7 +146,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (venture (venture (move up)
                         (circuit (move forward)))
@@ -172,7 +172,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (protocol (move forward)
                 (move backward))))
@@ -181,7 +181,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (protocol (maneuver (move forward)
                           (move up))
@@ -210,7 +210,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (detour (move down)
               (move forward))))
@@ -219,7 +219,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (detour (precaution (move down)
                           (afterwards (not (at root))))
@@ -247,7 +247,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (decision (at root)
                 (move forward)
@@ -257,7 +257,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (decision (lambda () (< (point) previously-stored-position))
                 (move forward)
@@ -285,7 +285,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (circuit (move forward) 3)))
 
@@ -293,7 +293,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (circuit (move forward))))
 
@@ -301,7 +301,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (circuit
         (precaution
@@ -331,7 +331,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (precaution (move down)
                   (afterwards (not (at root))))))
@@ -340,7 +340,7 @@ Examples
 
 ::
 
-  (symex-execute-traversal
+  (symex-eval
     (symex-traversal
       (precaution (move backward)
                   (beforehand (not (at first))))))
@@ -381,7 +381,7 @@ Side Effects
 
 Traversals may be executed with arbitrary side effects. A side effect is simply a function (e.g. specified via a lambda expression) that is executed *after* the conclusion of a traversal, if that traversal succeeds.
 
-Typically, we are interested in attaching such side effects to a repeated traversal so that the side effect is performed at each step of the traversal as long as it succeeds. For this purpose, you can use the ``symex--do-while-traversing`` function, which simply takes care of calling ``symex-execute-traversal`` repeatedly with your specified traversal and side effect.
+Typically, we are interested in attaching such side effects to a repeated traversal so that the side effect is performed at each step of the traversal as long as it succeeds. For this purpose, you can use the ``symex--do-while-traversing`` function, which simply takes care of calling ``symex-eval`` repeatedly with your specified traversal and side effect.
 
 Examples
 ~~~~~~~~
@@ -400,7 +400,7 @@ Computations
 
 At the moment, executing a traversal returns a list of `moves <move>`_ performed, which can be thought of as a simple computation performed as part of traversal execution. In the future we may be interested in supporting other types of computations, such as returning the *number* of steps taken, or perhaps something related to the contents of traversed nodes and not just the structure.
 
-As an analogy, a squirrel could explore a tree and then, upon returning, could relate the exact trajectory of its explorations which could convey the structure of the tree to another squirrel, or it could report on the number of pine cones it found along the way. The ``computation`` argument in ``symex-execute-traversal`` is reserved for this purpose, to modulate the return value. But it is currently unused - it may be left out entirely, or you could pass ``nil`` here.
+As an analogy, a squirrel could explore a tree and then, upon returning, could relate the exact trajectory of its explorations which could convey the structure of the tree to another squirrel, or it could report on the number of pine cones it found along the way. The ``computation`` argument in ``symex-eval`` is reserved for this purpose, to modulate the return value. But it is currently unused - it may be left out entirely, or you could pass ``nil`` here.
 
 Debugging
 ---------
@@ -420,7 +420,7 @@ To do this, open an ielm buffer in a window next to a source buffer, and use thi
 ::
 
   (with-current-buffer (window-buffer (other-window 1))
-    (symex-execute-traversal
+    (symex-eval
      (symex-traversal
       (maneuver (move forward)
                 (move up))))
@@ -433,7 +433,7 @@ Using a Debugger (EDebug)
 
 Another way is to use the ELisp Debugger, EDebug. This allows you to see the exact steps the DSL evaluator goes through in executing a traversal and the effects it has on the code, and can be helpful if you want to understand why a traversal isn't doing what you think it should be doing (or even if you just want to understand how the DSL works). A good debugger isn't just for debugging problems, it's also an exploratory tool for quick feedback at the creative stage when you're implementing new functionality. It can help you be more efficient at every stage of development.
 
-To use it, first evaluate the relevant traversal evaluator (for instance, the ``symex-execute-traversal`` function) for debugging by placing point somewhere within it and then invoking ``M-x edebug-defun`` (I personally have this bound in an ELisp specific leader / Hydra). Now, if you execute a traversal (e.g. via the REPL as in the recipe above, with a test expression in the Scratch buffer -- or even just by invoking the relevant feature on source code while in Symex mode), it will put you in the debugger and allow you to step through the code. Handy commands for EDebug:
+To use it, first evaluate the relevant traversal evaluator (for instance, the ``symex-eval`` function) for debugging by placing point somewhere within it and then invoking ``M-x edebug-defun`` (I personally have this bound in an ELisp specific leader / Hydra). Now, if you execute a traversal (e.g. via the REPL as in the recipe above, with a test expression in the Scratch buffer -- or even just by invoking the relevant feature on source code while in Symex mode), it will put you in the debugger and allow you to step through the code. Handy commands for EDebug:
 
 * ``s`` -- step forward
 * ``i`` -- step in
