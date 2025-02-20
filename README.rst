@@ -80,19 +80,25 @@ To avail of familiar Evil keybindings while in Symex mode, put something like th
 
 ::
 
-   (lithium-define-keys symex-editing-mode
-                        (("u" evil-undo)
-                         ("C-r" evil-redo)
-                         ("." evil-repeat)
-                         ("/" evil-search-forward)
-                         ("?" evil-search-backward)
-                         ("#" evil-search-word-backward)
-                         ("*" evil-search-word-forward)
-                         ("n" evil-search-next)
-                         ("N" evil-search-previous)
-                         ("C-]" evil-jump-to-tag)
-                         ("C-i" evil-jump-forward)
-                         ("C-o" evil-jump-backward)))
+  (lithium-define-keys symex-editing-mode
+                       (("u" evil-undo)
+                        ("C-r" evil-redo)
+                        ("." evil-repeat)
+                        ("q" evil-record-macro)
+                        ("@" evil-execute-macro)
+                        ("/" evil-search-forward)
+                        ("?" evil-search-backward)
+                        ("#" evil-search-word-backward)
+                        ("*" evil-search-word-forward)
+                        ("n" evil-search-next)
+                        ("N" evil-search-previous)
+                        ("C-d" evil-scroll-down)
+                        ("C-u" evil-scroll-up)
+                        ("C-e" evil-scroll-line-down)
+                        ("C-y" evil-scroll-line-up)
+                        ("C-]" evil-jump-to-tag)
+                        ("C-i" evil-jump-forward)
+                        ("C-o" evil-jump-backward)))
 
 Key Bindings
 ------------
