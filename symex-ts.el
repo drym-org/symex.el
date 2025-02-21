@@ -94,6 +94,18 @@ return nil."
   (defalias 'symex-ts--root-node #'treesit-buffer-root-node)
   t)
 
+(defun symex-ts-add-notifier ()
+  "Register the change notifier."
+  (dolist (parser (treesit-parser-list))
+    (treesit-parser-add-notifier parser
+                                 #'symex-ts--change-notifier)))
+
+(defun symex-ts-remove-notifier ()
+  "Unregister the change notifier."
+  (dolist (parser (treesit-parser-list))
+    (treesit-parser-remove-notifier parser
+                                    #'symex-ts--change-notifier)))
+
 (defun symex-ts-available-p ()
   "Predicate to show if tree sitter support is available to Symex."
   (and (fboundp 'treesit-available-p)
@@ -407,7 +419,8 @@ This is measured from the lowest symex indicated by point."
 
 (defun symex-ts-exit ()
   "Take necessary tree-sitter related actions upon exiting Symex mode."
-  (setq-local symex-ts--current-node nil))
+  (setq-local symex-ts--current-node nil)
+  (symex-ts-remove-notifier))
 
 
 (provide 'symex-ts)

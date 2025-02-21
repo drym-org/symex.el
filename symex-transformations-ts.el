@@ -75,6 +75,12 @@ selected according to the ranges that have changed."
            ;; Return the result of evaluating BODY
            ,res)))))
 
+(defun symex-ts--change-notifier (_ranges _parser &rest _args)
+  "Notify of any changes to the contents of the buffer."
+  (when (and symex-editing-mode
+             (treesit-node-check symex-ts--current-node 'outdated))
+    (symex-ts-set-current-node-from-point)))
+
 (defun symex-ts-clear ()
   "Clear contents of symex."
   (when symex-ts--current-node

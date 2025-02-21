@@ -113,6 +113,7 @@
     (setq symex--original-blink-cursor-state blink-cursor-mode)
     (blink-cursor-mode -1))
   (symex-user-select-nearest)
+  (symex-ts-add-notifier)
   (when symex-refocus-p
     ;; smooth scrolling currently not supported
     ;; may add it back in the future
