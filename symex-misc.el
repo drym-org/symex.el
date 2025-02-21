@@ -493,6 +493,7 @@ ORIG-FN applied to ARGS is the invocation being advised."
     (blink-cursor-mode 1))
   (when symex-refocus-p
     (symex--restore-scroll-margin))
+  (symex--delete-overlay)
   (symex--primitive-exit))
 
 (provide 'symex-misc)

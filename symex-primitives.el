@@ -359,7 +359,6 @@ symexes, returns the end point of the last one found."
 
 (defun symex--primitive-exit ()
   "Take necessary actions as part of exiting Symex mode, at a primitive level."
-  (symex--delete-overlay)
   (if (symex-ts-available-p)
       (symex-ts-exit)
     (symex-lisp-exit)))
