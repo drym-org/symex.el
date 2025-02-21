@@ -312,6 +312,13 @@ Note that this does not consider global root to be a tree root."
   "Check if a succeeding symex exists at this level."
   (symex-ts-save-excursion (symex-ts-move-next-sibling)))
 
+(defun symex-ts-atom-p ()
+  "Check if the selected symex is an atom.
+
+This isn't generally as well-defined as for lisp. It could include
+both identifiers as well as empty lists or forms."
+  (= 0 (symex-ts--count-named-children symex-ts--current-node)))
+
 ;;; Navigations
 
 (defun symex-ts-move-prev-sibling (&optional count)

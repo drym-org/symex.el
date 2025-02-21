@@ -102,6 +102,12 @@
       (symex-ts--next-p)
     (symex-lisp--next-p)))
 
+(defun symex-atom-p ()
+  "Check if the selected symex is an atom."
+  (if (symex-ts-available-p)
+      (symex-ts-atom-p)
+    (symex-lisp-atom-p)))
+
 ;;; Navigation
 
 (defun symex--go-forward (&optional count)
