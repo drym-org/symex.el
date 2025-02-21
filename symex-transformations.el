@@ -441,7 +441,7 @@ If the symex is a nested list, this operation eliminates the symex,
 putting its contents in the parent symex.  If the symex is an atom,
 then no action is taken."
   (interactive)
-  (when (or (symex-left-p) (symex-string-p))
+  (when (or (symex-left-p) (symex-lisp-string-p))
     (if (or (symex-empty-list-p)
             (symex-empty-string-p))
         (symex--delete 1)
@@ -547,7 +547,7 @@ then no action is taken."
 (symex-define-command symex-change-delimiter ()
   "Change delimiter enclosing current symex, e.g. round -> square brackets."
   (interactive)
-  (if (or (symex-left-p) (symex-string-p))
+  (if (or (symex-left-p) (symex-lisp-string-p))
       (evil-surround-change (following-char))
     (let ((bounds (bounds-of-thing-at-point 'sexp)))
       (evil-surround-region (car bounds) (cdr bounds) 'inclusive 40))))

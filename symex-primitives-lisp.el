@@ -61,7 +61,7 @@
                                   ;; in the case "abc"|, we don't always
                                   ;; select the right symex the way we
                                   ;; would with (abc)|.
-                                  (symex-string-p))))
+                                  (symex-lisp-string-p))))
     (condition-case nil
         (backward-sexp)
       (error nil))))
@@ -127,7 +127,7 @@
                     (looking-back "[[:space:]]"     ; _|.
                                   (line-beginning-position))
                     (save-excursion (backward-char)
-                                    (symex-string-p))
+                                    (symex-lisp-string-p))
                     (looking-back symex--re-left    ; (*|.
                                   (line-beginning-position)))))))
 
@@ -230,7 +230,7 @@
   "Check if there is an inline comment following point."
   (looking-at-p "[[:space:]]*;"))
 
-(defun symex-string-p ()
+(defun symex-lisp-string-p ()
   "Check if the symex is a string."
   (looking-at-p "\""))
 
@@ -256,9 +256,9 @@
 (defun symex-empty-string-p ()
   "Check if we're looking at an empty list."
   (save-excursion
-    (and (symex-string-p)
+    (and (symex-lisp-string-p)
          (progn (forward-char 1)
-                (symex-string-p)))))
+                (symex-lisp-string-p)))))
 
 (defun symex-inside-empty-form-p ()
   "Check if point is inside an empty form."
@@ -334,8 +334,8 @@ as special cases here."
              (symex--clojure-deref-reader-macro-p)
              (symex--clojure-literal-lambda-p))
          2)
-        ((or (symex-form-p)
-             (symex-string-p)) 1)
+        ((or (symex-lisp-form-p)
+             (symex-lisp-string-p)) 1)
         (t 0)))
 
 (defun symex--special-empty-list-p ()
@@ -358,13 +358,13 @@ as special cases here."
              (progn (forward-char 2)
                     (looking-at-p (concat symex--re-whitespace symex--re-right)))))))
 
-(defun symex-atom-p ()
+(defun symex-lisp-atom-p ()
   "Check if the symex is an atom."
   (not (symex-left-p)))
 
-(defun symex-form-p ()
+(defun symex-lisp-form-p ()
   "Check if the symex is a composite expression, i.e. a nonatom."
-  (not (symex-atom-p)))
+  (not (symex-lisp-atom-p)))
 
 (defun symex--intervening-comment-line-p (start end)
   "Check if there is a comment line between the positions START and END."

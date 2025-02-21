@@ -42,8 +42,8 @@
 (defun symex-lisp-clear ()
   "Helper to clear contents of symex."
   (cond ((symex--go-up) (symex-delete-remaining))
-        ((symex-string-p) (save-excursion (kill-sexp)
-                                          (insert "\"\"")))
+        ((symex-lisp-string-p) (save-excursion (kill-sexp)
+                                               (insert "\"\"")))
         ((or (symex-empty-list-p)
              (symex--special-empty-list-p))
          ;; nothing needs to be done
@@ -91,14 +91,14 @@
   "Insert at beginning of symex."
   (interactive)
   (when (or (symex-left-p)
-            (symex-string-p))
+            (symex-lisp-string-p))
     (forward-char)))
 
 (defun symex-lisp-insert-at-end ()
   "Insert at end of symex."
   (interactive)
   (if (or (symex-left-p)
-          (symex-string-p))
+          (symex-lisp-string-p))
       (progn (forward-sexp)
              (backward-char))
     (forward-sexp)))
