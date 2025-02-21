@@ -121,21 +121,6 @@ If the deletion results in an empty line it will be removed."
         (symex--join-to-non-whitespace)
       (symex--delete-whole-line))))
 
-(defun symex-ts-delete-node-backward (&optional count)
-  "Delete COUNT nodes backward from the current node."
-  (interactive "p")
-  (let* ((count (or count 1))
-         (node (symex-ts--get-prev-named-sibling (symex-ts-get-current-node))))
-    (when node
-      (let ((end-pos (symex-ts--node-end-position node))
-            (start-pos (symex-ts--node-start-position
-                        (if (> count 1)
-                            (symex-ts--get-nth-sibling-from-node node #'symex-ts--get-prev-named-sibling count)
-                          node))))
-        (kill-region start-pos end-pos)
-        (symex-ts--delete-current-line-if-empty start-pos)
-        (symex-ts-set-current-node-from-point)))))
-
 (defun symex-ts-delete-node-forward (&optional count)
   "Delete COUNT nodes forward from the current node."
   (interactive "p")
