@@ -28,53 +28,6 @@
 
 (require 'symex-utils)
 
-(defmacro symex-ts--handle-tree-modification (&rest body)
-  "Handle modifications to the current Tree Sitter tree after executing BODY.
-
-The buffer's current Tree Sitter tree is saved before BODY is
-evaluated. The new tree is then compared and the current node is
-selected according to the ranges that have changed."
-  (if (eq (symex-ts--current-ts-library) 'internal)
-      ;; TODO: Implement symex-ts--handle-tree-modification for the internal tree sitter library
-      '(error "Unable to perform edit: the Emacs internal tree sitter library is not yet supported")
-
-    (let ((prev-tree (gensym))
-          (res (gensym))
-          (changed-ranges (gensym))
-          (orig-pos (gensym)))
-
-      `(let ((,prev-tree tree-sitter-tree)
-             (,orig-pos (point)))
-
-         ;; Execute BODY, bind to RES
-         (let ((,res (progn ,@body)))
-
-           ;; Get changes from previous to current tree
-           (let ((,changed-ranges (tsc-changed-ranges ,prev-tree tree-sitter-tree)))
-
-             ;; Move point to the first changed range if possible
-             (when (and (> (length ,changed-ranges) 0)
-                        (> (length (elt ,changed-ranges 0)) 0))
-               (let ((new-pos (elt (elt ,changed-ranges 0) 0)))
-                 ;; don't move point to before the
-                 ;; original point location
-                 (if (< new-pos ,orig-pos)
-                     (goto-char ,orig-pos)
-                   (goto-char new-pos)
-                   ;; If the change starts on a carriage return, move
-                   ;; forward one character
-                   (when (char-equal ?\C-j (char-after))
-                     (forward-char 1)))))
-
-             ;; Update current node from point and reindent if necessary
-             (symex-ts-set-current-node-from-point)
-             (when symex-highlight-p
-               (symex--update-overlay))
-             (indent-according-to-mode))
-
-           ;; Return the result of evaluating BODY
-           ,res)))))
-
 (defun symex-ts--change-notifier (_ranges _parser &rest _args)
   "Notify of any changes to the contents of the buffer."
   (when (and symex-editing-mode
@@ -125,19 +78,18 @@ If the deletion results in an empty line it will be removed."
   "Delete COUNT nodes forward from the current node."
   (interactive "p")
   ;; TODO: this is no longer used outside of this module
-  (symex-ts--handle-tree-modification
-   (let* ((count (or count 1))
-          (node (symex-ts-get-current-node))
-          (start-pos (symex-ts--node-start-position node))
-          (end-pos (symex-ts--node-end-position
-                    (if (> count 1)
-                        (symex-ts--get-nth-sibling-from-node
-                         node
-                         #'symex-ts--get-next-named-sibling count)
-                      node))))
+  (let* ((count (or count 1))
+         (node (symex-ts-get-current-node))
+         (start-pos (symex-ts--node-start-position node))
+         (end-pos (symex-ts--node-end-position
+                   (if (> count 1)
+                       (symex-ts--get-nth-sibling-from-node
+                        node
+                        #'symex-ts--get-next-named-sibling count)
+                     node))))
 
-     ;; Delete the node's region
-     (kill-region start-pos end-pos)))
+    ;; Delete the node's region
+    (kill-region start-pos end-pos))
   t)
 
 (defun symex-ts-insert-at-beginning ()
@@ -192,21 +144,20 @@ alias for inserting at the end."
 DIRECTION should be either the symbol `before' or `after'."
   (interactive)
   (when (symex-ts-get-current-node)
-    (symex-ts--handle-tree-modification
-     (let* ((node (symex-ts-get-current-node))
-            (start (symex-ts--node-start-position node))
-            (end (symex-ts--node-end-position node))
-            (indent-start (save-excursion (back-to-indentation) (point)))
-            (block-node (or (not (= (line-number-at-pos start) (line-number-at-pos end)))
-                            (and (= start indent-start)
-                                 (= end (line-end-position))))))
-       (goto-char (if (eq direction 'before) start end))
-       (dotimes (_ count)
-         (when (eq direction 'after) (insert (if block-node "\n" " "))
-               (indent-according-to-mode))
-         (yank)
-         (when (eq direction 'before) (insert (if block-node "\n" " "))
-               (indent-according-to-mode)))))
+    (let* ((node (symex-ts-get-current-node))
+           (start (symex-ts--node-start-position node))
+           (end (symex-ts--node-end-position node))
+           (indent-start (save-excursion (back-to-indentation) (point)))
+           (block-node (or (not (= (line-number-at-pos start) (line-number-at-pos end)))
+                           (and (= start indent-start)
+                                (= end (line-end-position))))))
+      (goto-char (if (eq direction 'before) start end))
+      (dotimes (_ count)
+        (when (eq direction 'after) (insert (if block-node "\n" " "))
+              (indent-according-to-mode))
+        (yank)
+        (when (eq direction 'before) (insert (if block-node "\n" " "))
+              (indent-according-to-mode))))
     t))
 
 (defun symex-ts-paste-after (count)
