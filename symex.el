@@ -151,7 +151,8 @@ advises functions to enable or disable features based on user configuration."
   ;; initialize modal interface frontend
   (symex-modal-provider-initialize)
   ;; initialize repeat command and other evil interop
-  (symex-initialize-evil))
+  (symex-initialize-evil)
+  (symex-ts--init))
 
 (defun symex-disable ()
   "Disable symex.

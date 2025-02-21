@@ -39,16 +39,18 @@
 `internal' means that Emacs has been compiled with native tree
 sitter support. `external' means that the `elisp-tree-sitter'
 package is being used instead."
-  (if (treesit-available-p)
+  (if (and (fboundp 'treesit-available-p)
+           (treesit-available-p))
       'internal
     'external))
 
 (defun symex-ts--init ()
-  "Initialise tree sitter support for Symex.el."
-  (when symex-mode
-    (message "Initialising Symex-TS...")
-    (when (eq (symex-ts--current-ts-library) 'internal)
-        (symex-ts--init-treesit-builtin))))
+  "Initialise tree sitter support for Symex.el.
+
+If treesitter isn't available, this doesn't do anything."
+  (message "Initialising Symex-TS...")
+  (when (eq (symex-ts--current-ts-library) 'internal)
+    (symex-ts--init-treesit-builtin)))
 
 (defun symex-ts--init-treesit-builtin ()
   "Initialise Symex tree sitter support via built-in tree-sitter library."
@@ -91,10 +93,6 @@ return nil."
   (defalias 'symex-ts--node-start-position #'treesit-node-start)
   (defalias 'symex-ts--root-node #'treesit-buffer-root-node)
   t)
-
-(require 'symex-transformations-ts)
-
-(add-hook 'symex-mode-hook #'symex-ts--init)
 
 (defun symex-ts-available-p ()
   "Predicate to show if tree sitter support is available to Symex."
