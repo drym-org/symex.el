@@ -357,6 +357,12 @@ symexes, returns the end point of the last one found."
         (fixup-whitespace))
     (error nil)))
 
+(defun symex--primitive-enter ()
+  "Take necessary actions as part of entering Symex mode, at a primitive level."
+  (if (symex-ts-available-p)
+      (symex-ts-enter)
+    (symex-lisp-enter)))
+
 (defun symex--primitive-exit ()
   "Take necessary actions as part of exiting Symex mode, at a primitive level."
   (if (symex-ts-available-p)

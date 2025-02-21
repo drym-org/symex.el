@@ -704,6 +704,11 @@ line."
 
 ;;; Utilities
 
+(defun symex-lisp-enter ()
+  "Take necessary actions upon Symex mode entry in Lisp modes."
+  (when (member major-mode (symex-get-lisp-modes))
+    (symex--ensure-minor-mode)))
+
 (defun symex-lisp-exit ()
   "Take necessary actions upon Symex mode exit.
 

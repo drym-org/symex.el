@@ -417,6 +417,10 @@ This is measured from the lowest symex indicated by point."
              (symex-ts-move-child offset)
              offset))))
 
+(defun symex-ts-enter ()
+  "Take necessary tree-sitter related actions upon entering Symex mode."
+  (symex-ts-add-notifier))
+
 (defun symex-ts-exit ()
   "Take necessary tree-sitter related actions upon exiting Symex mode."
   (setq-local symex-ts--current-node nil)

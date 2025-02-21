@@ -104,8 +104,6 @@
 ;; TODO: put a lot of this in entry hooks
 (defun symex-enter-mode ()
   "Take necessary action upon symex mode entry."
-  (when (member major-mode (symex-get-lisp-modes))
-    (symex--ensure-minor-mode))
   (symex--adjust-point-on-entry)
   (when symex-remember-branch-positions-p
     (symex--clear-branch-memory))
@@ -113,7 +111,7 @@
     (setq symex--original-blink-cursor-state blink-cursor-mode)
     (blink-cursor-mode -1))
   (symex-user-select-nearest)
-  (symex-ts-add-notifier)
+  (symex--primitive-enter)
   (when symex-refocus-p
     ;; smooth scrolling currently not supported
     ;; may add it back in the future
