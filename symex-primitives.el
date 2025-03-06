@@ -326,7 +326,7 @@ If the containing expression terminates earlier than COUNT
 symexes, returns the end point of the last one found."
   (if (symex-ts-available-p)
       ;; TODO: implement include-whitespace for ts
-      (symex-ts--get-end-point count)
+      (symex-ts--get-end-point count include-whitespace)
     (symex-lisp--get-end-point count include-whitespace)))
 
 (defun symex--get-bounds (count &optional include-whitespace)

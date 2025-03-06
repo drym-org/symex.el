@@ -375,14 +375,31 @@ This is tree-sitter specific and meant for internal, primitive use."
   "Get the point value at the start of the current symex."
   (symex-ts--node-start-position symex-ts--current-node))
 
-(defun symex-ts--get-end-point (count)
+(defun symex-ts--get-end-point-helper (count)
+  "Helper to get the point value after COUNT symexes.
+
+If the containing expression terminates earlier than COUNT
+symexes, returns the end point of the last one found.
+
+Note that this mutates point - it should not be called directly."
+  (symex-ts-move-next-sibling (1- count))
+  (symex-ts--node-end-position symex-ts--current-node))
+
+(defun symex-ts--get-end-point (count &optional include-whitespace)
   "Get the point value after COUNT symexes.
 
 If the containing expression terminates earlier than COUNT
 symexes, returns the end point of the last one found."
   (symex-ts-save-excursion
-    (symex-ts-move-next-sibling (1- count))
-    (symex-ts--node-end-position symex-ts--current-node)))
+    (let ((endpoint (symex-ts--get-end-point-helper count))
+          (include-whitespace nil))
+      (if include-whitespace
+          (progn (goto-char endpoint)
+                 (if (and (not (eobp))
+                          (symex-whitespace-p))
+                     (1+ endpoint)
+                   endpoint))
+        endpoint))))
 
 (defun symex-ts--point-height-offset-helper (orig-pos)
   "A helper to compute the height offset of the current symex.
