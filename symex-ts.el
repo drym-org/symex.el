@@ -221,7 +221,7 @@ Return a Symex move (list with x,y node offsets tagged with
 (defun symex-ts-current-node-sexp ()
   "Print the current node as an s-expression."
   (interactive)
-  (message (tsc-node-to-sexp symex-ts--current-node)))
+  (message (treesit-node-string symex-ts--current-node)))
 
 (defun symex-ts-get-current-node ()
   "Return the current node.
