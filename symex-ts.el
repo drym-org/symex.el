@@ -430,8 +430,7 @@ If the containing expression terminates earlier than COUNT
 symexes, returns the end point of the last one found."
   (symex-ts-save-excursion
     (let ((endpoint (symex-ts--get-end-point-helper count
-                                                    include-whitespace))
-          (include-whitespace nil))
+                                                    include-whitespace)))
       (if include-whitespace
           (progn (goto-char endpoint)
                  (if (and (not (eobp))
