@@ -402,19 +402,26 @@ This is tree-sitter specific and meant for internal, primitive use."
          (symex-ts-move-child ,offset)
          ,result))))
 
+(defconst symex-ts-separators '(","))
+
 (defun symex-ts--get-starting-point ()
   "Get the point value at the start of the current symex."
   (symex-ts--node-start-position symex-ts--current-node))
 
-(defun symex-ts--get-end-point-helper (count)
+(defun symex-ts--get-end-point-helper (count &optional include-whitespace)
   "Helper to get the point value after COUNT symexes.
 
 If the containing expression terminates earlier than COUNT
 symexes, returns the end point of the last one found.
 
 Note that this mutates point - it should not be called directly."
-  (symex-ts-move-next-sibling (1- count))
-  (symex-ts--node-end-position symex-ts--current-node))
+  (symex-ts-move-next-named-sibling (1- count))
+  (let ((next (treesit-node-next-sibling symex-ts--current-node)))
+    (if (and include-whitespace
+             (member (treesit-node-type next)
+                     symex-ts-separators))
+        (symex-ts--node-end-position next)
+      (symex-ts--node-end-position symex-ts--current-node))))
 
 (defun symex-ts--get-end-point (count &optional include-whitespace)
   "Get the point value after COUNT symexes.
@@ -422,7 +429,8 @@ Note that this mutates point - it should not be called directly."
 If the containing expression terminates earlier than COUNT
 symexes, returns the end point of the last one found."
   (symex-ts-save-excursion
-    (let ((endpoint (symex-ts--get-end-point-helper count))
+    (let ((endpoint (symex-ts--get-end-point-helper count
+                                                    include-whitespace))
           (include-whitespace nil))
       (if include-whitespace
           (progn (goto-char endpoint)
