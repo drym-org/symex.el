@@ -235,6 +235,11 @@ Return a Symex move (list with x,y node offsets tagged with
   (interactive)
   (message (treesit-node-string symex-ts--current-node)))
 
+(defun symex-ts-current-node-type ()
+  "Print the type of the current node."
+  (interactive)
+  (message (treesit-node-type symex-ts--current-node)))
+
 (defun symex-ts-get-current-node ()
   "Return the current node.
 Automatically set it to the node at point if necessary."

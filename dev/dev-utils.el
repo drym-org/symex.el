@@ -68,6 +68,7 @@
 (defhydra hydra-symex-ts (:post (symex-ts--hydra-exit))
   "Symex-TS."
   ("d" symex-ts-current-node-sexp "DEBUG NODE")
+  ("i" symex-ts-current-node-type "NODE TYPE")
 
   ("h" symex-ts--move-previous-named "prev named")
   ("l" symex-ts--move-next-named "next named")
