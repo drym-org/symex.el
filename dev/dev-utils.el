@@ -65,7 +65,8 @@
   (symex-ts-move-child)
   (symex-ts--update-overlay symex-ts--current-node))
 
-(defhydra hydra-symex-ts (:post (symex-ts--hydra-exit))
+(defhydra hydra-symex-ts (:body-pre (symex-ts-set-current-node-from-point)
+                          :post (symex-ts--hydra-exit))
   "Symex-TS."
   ("d" symex-ts-current-node-sexp "DEBUG NODE")
   ("i" symex-ts-current-node-type "NODE TYPE")
