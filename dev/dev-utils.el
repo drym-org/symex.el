@@ -29,10 +29,22 @@
   "Handle Hydra exit."
   (symex-ts--delete-overlay))
 
+(defun symex-ts--move-next-named ()
+  "Move to next named sibling."
+  (interactive)
+  (symex-ts-move-next-named-sibling)
+  (symex-ts--update-overlay symex-ts--current-node))
+
 (defun symex-ts--move-next ()
   "Move to next sibling."
   (interactive)
   (symex-ts-move-next-sibling)
+  (symex-ts--update-overlay symex-ts--current-node))
+
+(defun symex-ts--move-previous-named ()
+  "Move to previous named sibling."
+  (interactive)
+  (symex-ts-move-prev-named-sibling)
   (symex-ts--update-overlay symex-ts--current-node))
 
 (defun symex-ts--move-previous ()
@@ -57,8 +69,10 @@
   "Symex-TS."
   ("d" symex-ts-current-node-sexp "DEBUG NODE")
 
-  ("h" symex-ts--move-previous "prev")
-  ("l" symex-ts--move-next "next")
+  ("h" symex-ts--move-previous-named "prev named")
+  ("l" symex-ts--move-next-named "next named")
+  ("H" symex-ts--move-previous "prev")
+  ("L" symex-ts--move-next "next")
   ("j" symex-ts--move-parent "parent")
   ("k" symex-ts--move-child "child"))
 

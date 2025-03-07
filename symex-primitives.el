@@ -122,7 +122,7 @@ should be used in all internal operations _above_ the primitive layer
 that are not primarily user-directed."
   (interactive)
   (if (symex-ts-available-p)
-      (symex-ts-move-next-sibling count)
+      (symex-ts-move-next-named-sibling count)
     (symex-lisp--forward count)))
 
 (defun symex--go-backward (&optional count)
@@ -137,7 +137,7 @@ should be used in all internal operations _above_ the primitive layer
 that are not primarily user-directed."
   (interactive)
   (if (symex-ts-available-p)
-      (symex-ts-move-prev-sibling count)
+      (symex-ts-move-prev-named-sibling count)
     (symex-lisp--backward count)))
 
 (defun symex--go-up (&optional count)

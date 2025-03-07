@@ -73,6 +73,12 @@ If NODE is nil, return nil."
 Return nil if there is no next sibling. If NODE is nil, return
 nil."
     (treesit-node-next-sibling node t))
+  (defun symex-ts--get-next-sibling (node)
+    "Return the next sibling of NODE.
+
+Return nil if there is no next sibling. If NODE is nil, return
+nil."
+    (treesit-node-next-sibling node))
   (defun symex-ts--get-nth-named-child (node n)
     "Return the Nth named child of NODE.
 
@@ -87,6 +93,12 @@ N could be negative, e.g., -1 represents the last child."
 Return nil if there is no previous sibling. If NODE is nil,
 return nil."
     (treesit-node-prev-sibling node t))
+  (defun symex-ts--get-prev-sibling (node)
+    "Return the previous sibling of NODE.
+
+Return nil if there is no previous sibling. If NODE is nil,
+return nil."
+    (treesit-node-prev-sibling node))
   (defalias 'symex-ts--node-at #'treesit-node-at)
   (defalias 'symex-ts--node-end-position #'treesit-node-end)
   (defalias 'symex-ts--node-eq #'treesit-node-eq)
@@ -278,15 +290,15 @@ Note that this does not consider global root to be a tree root."
 (defun symex-ts--at-first-p ()
   "Check if the current node is the first one at some level."
   (symex-ts--if-stuck t
-                      (symex-ts-move-prev-sibling)
-                      (symex-ts-move-next-sibling)
+                      (symex-ts-move-prev-named-sibling)
+                      (symex-ts-move-next-named-sibling)
                       nil))
 
 (defun symex-ts--at-last-p ()
   "Check if the current node is at the last one at some level."
   (symex-ts--if-stuck t
-                      (symex-ts-move-next-sibling)
-                      (symex-ts-move-prev-sibling)
+                      (symex-ts-move-next-named-sibling)
+                      (symex-ts-move-prev-named-sibling)
                       nil))
 
 (defun symex-ts--at-final-p ()
@@ -306,11 +318,11 @@ Note that this does not consider global root to be a tree root."
 
 (defun symex-ts--previous-p ()
   "Check if a preceding symex exists at this level."
-  (symex-ts-save-excursion (symex-ts-move-prev-sibling)))
+  (symex-ts-save-excursion (symex-ts-move-prev-named-sibling)))
 
 (defun symex-ts--next-p ()
   "Check if a succeeding symex exists at this level."
-  (symex-ts-save-excursion (symex-ts-move-next-sibling)))
+  (symex-ts-save-excursion (symex-ts-move-next-named-sibling)))
 
 (defun symex-ts-atom-p ()
   "Check if the selected symex is an atom.
@@ -326,9 +338,23 @@ both identifiers as well as empty lists or forms."
 
 Move COUNT times, defaulting to 1."
   (interactive "p")
+  (symex-ts--move-with-count #'symex-ts--get-prev-sibling (symex-make-move -1 0) count))
+
+(defun symex-ts-move-prev-named-sibling (&optional count)
+  "Move the point to the current node's previous sibling if possible.
+
+Move COUNT times, defaulting to 1."
+  (interactive "p")
   (symex-ts--move-with-count #'symex-ts--get-prev-named-sibling (symex-make-move -1 0) count))
 
 (defun symex-ts-move-next-sibling (&optional count)
+  "Move the point to the current node's next sibling if possible.
+
+Move COUNT times, defaulting to 1."
+  (interactive "p")
+  (symex-ts--move-with-count #'symex-ts--get-next-sibling (symex-make-move 1 0) count))
+
+(defun symex-ts-move-next-named-sibling (&optional count)
   "Move the point to the current node's next sibling if possible.
 
 Move COUNT times, defaulting to 1."
