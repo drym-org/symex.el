@@ -360,12 +360,6 @@ symexes, returns the end point of the last one found."
       (symex-ts--get-end-point count include-whitespace)
     (symex-lisp--get-end-point count include-whitespace)))
 
-(defun symex--get-bounds (count &optional include-whitespace)
-  "Get the start and end points of COUNT symexes."
-  (let ((start (symex--get-starting-point))
-        (end (symex--get-end-point count include-whitespace)))
-    (cons start end)))
-
 (defun symex-select-end (count)
   "Select endpoint of symex nearest to point."
   (goto-char (symex--get-end-point count))
