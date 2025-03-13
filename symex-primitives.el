@@ -285,9 +285,9 @@ WHERE could be either 'before or 'after"
 (defmacro symex--transform-in-isolation (&rest body)
   "Transform a symex in a temporary buffer and replace the original with it.
 
-First traverses using PRE-TRAVERSAL if non-nil, then traverses using
-TRAVERSAL and performs SIDE-EFFECT at each step.  Note that the side
-effect is not performed during the pre-traversal."
+Copies the current symex into a temporary buffer, executes BODY, and
+pastes the result back into the source buffer, replacing the
+original."
   (declare (indent 0))
   (let ((original-syntax-table (gensym)))
     `(progn (kill-sexp 1)
@@ -303,7 +303,6 @@ effect is not performed during the pre-traversal."
                ;; when it is lexically defined here, not sure why. Defining a
                ;; lexical scope here and then setting it dynamically via `setq`
                ;; seems to work
-               ;; TODO: try without, now that it's a macro
                (setq ,original-syntax-table (syntax-table))
                (with-temp-buffer
                  (with-syntax-table ,original-syntax-table

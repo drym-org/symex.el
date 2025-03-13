@@ -704,16 +704,13 @@ When memory is added to the DSL, this would probably have a simpler
 implementation."
   (interactive)
   (symex--transform-in-isolation
-    (let ((pre-traversal (symex-traversal
-                           (circuit
-                            symex--traversal-preorder-in-tree)))
-          (traversal symex--traversal-postorder-in-tree)
-          (side-effect (apply-partially #'symex--tidy 1)))
-      (symex-eval pre-traversal)
-      (condition-case nil
-          (symex--do-while-traversing side-effect
-                                      traversal)
-        (error nil)))))
+    (symex-eval (symex-traversal
+                  (circuit
+                   symex--traversal-preorder-in-tree)))
+    (condition-case nil
+        (symex--do-while-traversing (apply-partially #'symex--tidy 1)
+                                    symex--traversal-postorder-in-tree)
+      (error nil))))
 
 (symex-define-command symex-collapse ()
   "Collapse a symex to a single line.
@@ -731,18 +728,15 @@ When memory is added to the DSL, this would probably have a simpler
 implementation."
   (interactive)
   (symex--transform-in-isolation
-    (let ((pre-traversal (symex-traversal
-                           (circuit
-                            symex--traversal-preorder-in-tree)))
-          (traversal (symex-traversal
-                       (precaution symex--traversal-postorder-in-tree
-                                   (afterwards (not (at root))))))
-          (side-effect (apply-partially #'symex--join-lines t)))
-      (symex-eval pre-traversal)
-      (condition-case nil
-          (symex--do-while-traversing side-effect
-                                      traversal)
-        (error nil)))))
+    (symex-eval (symex-traversal
+                  (circuit
+                   symex--traversal-preorder-in-tree)))
+    (condition-case nil
+        (symex--do-while-traversing (apply-partially #'symex--join-lines t)
+                                    (symex-traversal
+                                      (precaution symex--traversal-postorder-in-tree
+                                                  (afterwards (not (at root))))))
+      (error nil))))
 
 (symex-define-command symex-collapse-remaining ()
   "Collapse the remaining symexes to the current line."
