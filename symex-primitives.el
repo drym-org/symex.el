@@ -282,6 +282,38 @@ WHERE could be either 'before or 'after"
 
 ;;; Utilities
 
+(defmacro symex--transform-in-isolation (&rest body)
+  "Transform a symex in a temporary buffer and replace the original with it.
+
+First traverses using PRE-TRAVERSAL if non-nil, then traverses using
+TRAVERSAL and performs SIDE-EFFECT at each step.  Note that the side
+effect is not performed during the pre-traversal."
+  (declare (indent 0))
+  (let ((original-syntax-table (gensym)))
+    `(progn (kill-sexp 1)
+            (kill-new
+             (let (,original-syntax-table)
+               ;; In using a temp buffer to do the transformation here, we need to
+               ;; ensure that it uses the syntax table of the original buffer, since
+               ;; otherwise it doesn't necessarily treat characters the same way
+               ;; as the original buffer does, separating, for example, characters like
+               ;; `?` and `#` from the rest of the symbol during recursive indentation.
+               ;;
+               ;; The with-temp-buffer macro doesn't see the original syntax table
+               ;; when it is lexically defined here, not sure why. Defining a
+               ;; lexical scope here and then setting it dynamically via `setq`
+               ;; seems to work
+               ;; TODO: try without, now that it's a macro
+               (setq ,original-syntax-table (syntax-table))
+               (with-temp-buffer
+                 (with-syntax-table ,original-syntax-table
+                   (yank)
+                   (goto-char 0)
+                   ,@body
+                   (buffer-string)))))
+            (save-excursion (yank))
+            (symex--tidy 1))))
+
 (defmacro symex-save-excursion (&rest body)
   "Execute BODY while preserving position in the tree.
 
