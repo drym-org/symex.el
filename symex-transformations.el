@@ -449,32 +449,33 @@ then no action is taken."
         (evil-surround-delete (char-after))
         (symex--go-down)))))
 
+(defun symex--wrap-with (left right)
+  "Wrap selected symex with LEFT and RIGHT."
+  (symex--transform-in-isolation
+    (goto-char (point-min))
+    (insert left)
+    (goto-char (point-max))
+    (insert right)))
+
 (symex-define-command symex-wrap-round ()
   "Wrap with ()."
   (interactive)
-  (symex--transform-in-isolation
-    (goto-char (point-min))
-    (insert "(")
-    (goto-char (point-max))
-    (insert ")")))
+  (symex--wrap-with "(" ")"))
 
 (symex-define-command symex-wrap-square ()
   "Wrap with []."
   (interactive)
-  (paredit-wrap-square)
-  (symex--go-down))
+  (symex--wrap-with "[" "]"))
 
 (symex-define-command symex-wrap-curly ()
   "Wrap with {}."
   (interactive)
-  (paredit-wrap-curly)
-  (evil-find-char-backward nil 123))
+  (symex--wrap-with "{" "}"))
 
 (symex-define-command symex-wrap-angled ()
   "Wrap with <>."
   (interactive)
-  (paredit-wrap-angled)
-  (evil-find-char-backward nil 60))
+  (symex--wrap-with "<" ">"))
 
 (symex-define-insertion-command symex-wrap ()
   "Wrap with containing symex."
