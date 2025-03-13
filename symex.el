@@ -118,11 +118,6 @@
     (symex--set-scroll-margin))
   (symex--enter-mode))
 
-;;; List major modes in which symex should be active.
-(defun symex-get-lisp-modes ()
-  "List modes that implement the symex interface."
-  (mapcar #'car symex-interfaces))
-
 (defun symex-modal-provider-initialize ()
   "Initialize the modal interface provider."
   (symex-lithium-initialize))

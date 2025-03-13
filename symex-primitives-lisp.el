@@ -33,10 +33,18 @@
 (require 'paredit)
 (require 'symex-data)
 (require 'symex-utils)
+(require 'symex-interface)
 
 ;;;;;;;;;;;;;;;;;;
 ;;; PRIMITIVES ;;;
 ;;;;;;;;;;;;;;;;;;
+
+;;; Configuration
+
+;;; List major modes in which symex should be active.
+(defun symex-get-lisp-modes ()
+  "List modes that implement the symex interface."
+  (mapcar #'car symex-interfaces))
 
 ;;; User Interface
 
