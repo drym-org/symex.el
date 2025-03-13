@@ -290,7 +290,7 @@ pastes the result back into the source buffer, replacing the
 original."
   (declare (indent 0))
   (let ((original-syntax-table (gensym)))
-    `(progn (kill-sexp 1)
+    `(progn (symex--remove 1)
             (kill-new
              (let (,original-syntax-table)
                ;; In using a temp buffer to do the transformation here, we need to
