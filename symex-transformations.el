@@ -452,8 +452,11 @@ then no action is taken."
 (symex-define-command symex-wrap-round ()
   "Wrap with ()."
   (interactive)
-  (paredit-wrap-round)
-  (symex--go-down))
+  (symex--transform-in-isolation
+    (goto-char (point-min))
+    (insert "(")
+    (goto-char (point-max))
+    (insert ")")))
 
 (symex-define-command symex-wrap-square ()
   "Wrap with []."
