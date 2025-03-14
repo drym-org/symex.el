@@ -27,6 +27,7 @@
 ;;; Code:
 
 (require 'symex-utils)
+(require 'symex-ts)
 
 (defun symex-ts--change-notifier (_ranges _parser &rest _args)
   "Notify of any changes to the contents of the buffer."
@@ -146,7 +147,7 @@ DIRECTION should be either the symbol `before' or `after'."
   (when (symex-ts-get-current-node)
     (let* ((node (symex-ts-get-current-node))
            (start (symex-ts--node-start-position node))
-           (end (symex-ts--node-end-position node))
+           (end (symex-ts--get-end-point 1 t))
            (indent-start (save-excursion (back-to-indentation) (point)))
            (block-node (or (not (= (line-number-at-pos start) (line-number-at-pos end)))
                            (and (= start indent-start)
@@ -195,10 +196,7 @@ DIRECTION should be either the symbol `before' or `after'."
     (let* ((last-command nil)
            (node (symex-ts-get-current-node))
            (start (symex-ts--node-start-position node))
-           (end (symex-ts--node-end-position
-                 (if (> count 1)
-                     (symex-ts--get-nth-sibling-from-node node #'symex-ts--get-next-named-sibling count)
-                   node))))
+           (end (symex-ts--get-end-point count t)))
       (copy-region-as-kill start end))))
 
 (defun symex-ts-tidy ()
