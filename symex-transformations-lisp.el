@@ -187,10 +187,6 @@ text, on the respective side."
 (defun symex-lisp--paste-before ()
   "Paste before symex."
   (interactive)
-  (when (symex-inside-empty-form-p)
-    (symex--kill-ring-push
-     (string-trim-right
-      (symex--kill-ring-pop))))
   (symex-lisp--paste ""
                      (symex-lisp--padding t)))
 
