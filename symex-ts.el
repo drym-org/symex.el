@@ -332,8 +332,7 @@ Note that this does not consider global root to be a tree root."
 (defun symex-ts-atom-p ()
   "Check if the selected symex is an atom.
 
-This isn't generally as well-defined as for lisp. It could include
-both identifiers as well as empty lists or forms."
+It could include both identifiers as well as empty lists or forms."
   (= 0 (symex-ts--count-named-children symex-ts--current-node)))
 
 ;;; Navigations

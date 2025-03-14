@@ -43,10 +43,10 @@
       ;; If the node has children, delete them. Otherwise, just delete
       ;; the current node using `symex-ts-delete-node-forward'.
       (if (> child-count 0)
-        (let ((first-child (symex-ts--get-nth-named-child symex-ts--current-node 0))
-              (last-child (symex-ts--get-nth-named-child symex-ts--current-node (1- child-count))))
-          (when (and first-child last-child)
-            (kill-region (symex-ts--node-start-position first-child) (symex-ts--node-end-position last-child))))
+          (let ((first-child (symex-ts--get-nth-named-child symex-ts--current-node 0))
+                (last-child (symex-ts--get-nth-named-child symex-ts--current-node (1- child-count))))
+            (when (and first-child last-child)
+              (kill-region (symex-ts--node-start-position first-child) (symex-ts--node-end-position last-child))))
         (symex-ts-delete-node-forward 1)))))
 
 (defun symex-ts-comment (&optional count)

@@ -441,13 +441,14 @@ If the symex is a nested list, this operation eliminates the symex,
 putting its contents in the parent symex.  If the symex is an atom,
 then no action is taken."
   (interactive)
-  (when (or (symex-left-p) (symex-lisp-string-p))
-    (if (or (symex-empty-list-p)
-            (symex-empty-string-p))
-        (symex--delete 1)
-      (save-excursion
-        (evil-surround-delete (char-after))
-        (symex--go-down)))))
+  (if (symex-atom-p)
+      (symex--delete 1)
+    (when (symex-left-p)
+      (symex--transform-in-isolation
+        (goto-char (point-min))
+        (delete-char 1)
+        (goto-char (1- (point-max)))
+        (delete-char 1)))))
 
 (defun symex--wrap-with (left right)
   "Wrap selected symex with LEFT and RIGHT."

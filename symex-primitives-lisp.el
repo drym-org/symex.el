@@ -368,7 +368,8 @@ as special cases here."
 
 (defun symex-lisp-atom-p ()
   "Check if the symex is an atom."
-  (not (symex-left-p)))
+  (or (not (symex-left-p))
+      (symex-empty-list-p)))
 
 (defun symex-lisp-form-p ()
   "Check if the symex is a composite expression, i.e. a nonatom."
