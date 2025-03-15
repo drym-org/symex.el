@@ -441,22 +441,27 @@ If the symex is a nested list, this operation eliminates the symex,
 putting its contents in the parent symex.  If the symex is an atom,
 then no action is taken."
   (interactive)
-  (if (symex-atom-p)
-      (symex--delete 1)
+  (unless (symex-atom-p)
+    ;; in treesitter, non-atoms need not be lists,
+    ;; but we only want to splice lists, for now
     (when (symex-left-p)
-      (symex--transform-in-isolation
-        (goto-char (point-min))
-        (delete-char 1)
-        (goto-char (1- (point-max)))
-        (delete-char 1)))))
+      (let ((start (point))
+            (end (symex--get-end-point 1)))
+        (symex--transform-in-isolation start end
+          (goto-char (point-min))
+          (delete-char 1)
+          (goto-char (1- (point-max)))
+          (delete-char 1))))))
 
 (defun symex--wrap-with (left right)
   "Wrap selected symex with LEFT and RIGHT."
-  (symex--transform-in-isolation
-    (goto-char (point-min))
-    (insert left)
-    (goto-char (point-max))
-    (insert right)))
+  (let ((start (point))
+        (end (symex--get-end-point 1)))
+    (symex--transform-in-isolation start end
+      (goto-char (point-min))
+      (insert left)
+      (goto-char (point-max))
+      (insert right))))
 
 (symex-define-command symex-wrap-round ()
   "Wrap with ()."
@@ -693,7 +698,7 @@ layer of quoting."
   (interactive "p")
   (symex--tidy count))
 
-(symex-define-command symex-tidy-proper ()
+(symex-define-command symex-tidy-proper (count)
   "Properly tidy things up.
 
 This operates on the subtree indicated by the selection, rather than
@@ -707,15 +712,17 @@ indented version from the temporary buffer.
 
 When memory is added to the DSL, this would probably have a simpler
 implementation."
-  (interactive)
-  (symex--transform-in-isolation
-    (symex-eval (symex-traversal
-                  (circuit
-                   symex--traversal-preorder-in-tree)))
-    (condition-case nil
-        (symex--do-while-traversing (apply-partially #'symex--tidy 1)
-                                    symex--traversal-postorder-in-tree)
-      (error nil))))
+  (interactive "p")
+  (let ((start (point))
+        (end (symex--get-end-point count)))
+    (symex--transform-in-isolation start end
+      (symex-eval (symex-traversal
+                    (circuit
+                     symex--traversal-preorder)))
+      (condition-case nil
+          (symex--do-while-traversing (apply-partially #'symex--tidy 1)
+                                      symex--traversal-postorder)
+        (error nil)))))
 
 (symex-define-command symex-collapse ()
   "Collapse a symex to a single line.
@@ -732,16 +739,18 @@ collapsed version from the temporary buffer.
 When memory is added to the DSL, this would probably have a simpler
 implementation."
   (interactive)
-  (symex--transform-in-isolation
-    (symex-eval (symex-traversal
-                  (circuit
-                   symex--traversal-preorder-in-tree)))
-    (condition-case nil
-        (symex--do-while-traversing (apply-partially #'symex--join-lines t)
-                                    (symex-traversal
-                                      (precaution symex--traversal-postorder-in-tree
-                                                  (afterwards (not (at root))))))
-      (error nil))))
+  (let ((start (point))
+        (end (symex--get-end-point 1)))
+    (symex--transform-in-isolation start end
+      (symex-eval (symex-traversal
+                    (circuit
+                     symex--traversal-preorder-in-tree)))
+      (condition-case nil
+          (symex--do-while-traversing (apply-partially #'symex--join-lines t)
+                                      (symex-traversal
+                                        (precaution symex--traversal-postorder-in-tree
+                                                    (afterwards (not (at root))))))
+        (error nil)))))
 
 (symex-define-command symex-collapse-remaining ()
   "Collapse the remaining symexes to the current line."
