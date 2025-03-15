@@ -55,12 +55,7 @@
     (let* ((count (or count 1))
            (node (symex-ts-get-current-node))
            (start-pos (symex-ts--node-start-position node))
-           (end-pos (symex-ts--node-end-position
-                     (if (> count 1)
-                         (symex-ts--get-nth-sibling-from-node
-                          node
-                          #'symex-ts--get-next-named-sibling count)
-                       node))))
+           (end-pos (symex-ts--get-end-point count t)))
       (save-excursion (set-mark start-pos)
                       (goto-char end-pos)
                       (comment-dwim nil))
