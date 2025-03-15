@@ -373,7 +373,8 @@ as special cases here."
 
 (defun symex-lisp-form-p ()
   "Check if the symex is a composite expression, i.e. a nonatom."
-  (not (symex-lisp-atom-p)))
+  (or (not (symex-lisp-atom-p))
+      (symex-empty-list-p)))
 
 (defun symex--intervening-comment-line-p (start end)
   "Check if there is a comment line between the positions START and END."
