@@ -499,27 +499,27 @@ then no action is taken."
 (defun symex--shift-forward ()
   "Move symex forward in current tree level."
   (unless (symex--point-at-last-symex-p)
-    (let ((start (point))
-          (end (symex--get-end-point 2)))
+    (let* ((start (point))
+           (end (symex--get-end-point 2))
+           (first-end (symex--get-end-point 1))
+           (second-start
+            (symex-save-excursion
+              (symex--go-forward 1)
+              (point)))
+           (first
+            (buffer-substring start
+                              first-end))
+           (second
+            (buffer-substring second-start
+                              end))
+           (separator
+            (buffer-substring first-end
+                              second-start)))
       (symex--transform-in-isolation start end
-        (let* ((first-end (symex--get-end-point 1))
-               (second-start
-                (symex-save-excursion
-                  (symex--go-forward 1)
-                  (point)))
-               (first
-                (buffer-substring (point-min)
-                                  first-end))
-               (second
-                (buffer-substring second-start
-                                  (point-max)))
-               (separator
-                (buffer-substring first-end
-                                  second-start)))
-          (kill-region (point-min) (point-max))
-          (insert second)
-          (insert separator)
-          (insert first))))
+        (kill-region (point-min) (point-max))
+        (insert second)
+        (insert separator)
+        (insert first)))
     (symex--go-forward)
     t))
 
