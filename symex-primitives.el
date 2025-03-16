@@ -315,7 +315,8 @@ original."
             ,result)))
        (save-excursion (yank))
        (indent-region (point)
-                      (+ (point) (length ,result))))))
+                      (+ (point) (length ,result)))
+       (symex-select-nearest))))
 
 (defmacro symex-save-excursion (&rest body)
   "Execute BODY while preserving position in the tree.
