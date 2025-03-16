@@ -201,7 +201,8 @@ that are not primarily user-directed."
   (unless (symex-ts-available-p)
     (symex--fix-leading-whitespace))
   ;; fix trailing whitespace (indent region doesn't)
-  (symex--fix-trailing-whitespace count)
+  (unless (symex-ts-available-p)
+    (symex--fix-trailing-whitespace count))
   (symex--indent count)
   (symex-select-nearest))
 
