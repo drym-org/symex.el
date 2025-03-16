@@ -466,9 +466,14 @@ This is measured from the lowest symex indicated by point."
   ;; i.e. they are wrt. "tree root"
   (cond ((symex-ts--at-root-p) 0)
         ;; at the "tree root" of the first symex in the buffer,
-        ;; point-height offset must account for "true" root
-        ;; and so it's 1 rather than 0 here
-        ((symex-ts--at-initial-p) 1)
+        ;; point-height offset would need to account for "true" root
+        ;; but since we've now disallowed root selection at the
+        ;; primitive level, we don't need to treat this initial
+        ;; node as special, after all, as this initial symex is now
+        ;; the lowest selectable node. Still, we retain a distinct
+        ;; case for it here as it would be impacted if we ever change
+        ;; the behavior wrt root selection
+        ((symex-ts--at-initial-p) 0)
         ;; aside from the above special cases, compute point-height
         ;; offset by just descending as long as point does not change,
         ;; and counting the number of steps taken
