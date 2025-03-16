@@ -146,7 +146,9 @@ start position as NODE."
         (parent (symex-ts--get-parent node)))
     (if parent
         (let ((parent-pos (symex-ts--node-start-position parent)))
-          (if (eq node-start-pos parent-pos)
+          (if (and (eq node-start-pos parent-pos)
+                   ;; don't consider root
+                   (not (symex-ts--node-eq parent (symex-ts--root-node))))
               (symex-ts--get-topmost-node parent)
             node))
       node)))
@@ -192,11 +194,12 @@ root."
   (let ((parent (symex-ts--get-parent node))
         (initial (or initial node)))
     (if parent
-        ;; visit node if it either has no siblings or changes point,
-        ;; for symmetry with "descend" behavior
-        (cond ((and (not (= (symex-ts--node-start-position node)
-                            (symex-ts--node-start-position parent)))
-                    (not (symex-ts--node-eq node initial)))
+        (cond ((or (symex-ts--node-eq parent (symex-ts--root-node))  ; don't visit root node
+                   ;; visit node if it either has no siblings or changes point,
+                   ;; for symmetry with "descend" behavior
+                   (and (not (= (symex-ts--node-start-position node)
+                                (symex-ts--node-start-position parent)))
+                        (not (symex-ts--node-eq node initial))))
                node)
               ((symex-ts--node-has-sibling-p parent) parent)
               (t (symex-ts--ascend-to-parent-with-sibling parent node)))
