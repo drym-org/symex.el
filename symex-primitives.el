@@ -314,8 +314,8 @@ original."
             (setq ,result (buffer-string))
             ,result)))
        (save-excursion (yank))
-       (indent-region (- (point) (length ,result))
-                      (point)))))
+       (indent-region (point)
+                      (+ (point) (length ,result))))))
 
 (defmacro symex-save-excursion (&rest body)
   "Execute BODY while preserving position in the tree.
