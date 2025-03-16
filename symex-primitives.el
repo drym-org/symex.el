@@ -285,16 +285,16 @@ WHERE could be either 'before or 'after"
 (defmacro symex--transform-in-isolation (start end &rest body)
   "Transform a region in a temporary buffer and replace the original with it.
 
-Copies the current symex into a temporary buffer, executes BODY, and
-pastes the result back into the source buffer, replacing the
+Copies the region from START to END into a temporary buffer, executes
+BODY, and pastes the result back into the source buffer, replacing the
 original."
   (declare (indent 2))
-  (let ((original-syntax-table (gensym))
+  (let ((original-major-mode (gensym))
         (result (gensym)))
     `(let ((,result))
        (kill-region ,start ,end)
        (kill-new
-        (let (,original-syntax-table)
+        (let (,original-major-mode)
           ;; In using a temp buffer to do the transformation here, we need to
           ;; ensure that it uses the syntax table of the original buffer, since
           ;; otherwise it doesn't necessarily treat characters the same way
@@ -305,14 +305,14 @@ original."
           ;; when it is lexically defined here, not sure why. Defining a
           ;; lexical scope here and then setting it dynamically via `setq`
           ;; seems to work
-          (setq ,original-syntax-table (syntax-table))
+          (setq ,original-major-mode major-mode)
           (with-temp-buffer
-            (with-syntax-table ,original-syntax-table
-              (yank)
-              (goto-char 0)
-              ,@body
-              (setq ,result (buffer-string))
-              ,result))))
+            (funcall ,original-major-mode)
+            (yank)
+            (goto-char 0)
+            ,@body
+            (setq ,result (buffer-string))
+            ,result)))
        (save-excursion (yank))
        (indent-region (- (point) (length ,result))
                       (point)))))
@@ -360,7 +360,6 @@ difference from the lowest such level."
 If the containing expression terminates earlier than COUNT
 symexes, returns the end point of the last one found."
   (if (symex-ts-available-p)
-      ;; TODO: implement include-whitespace for ts
       (symex-ts--get-end-point count include-whitespace)
     (symex-lisp--get-end-point count include-whitespace)))
 
