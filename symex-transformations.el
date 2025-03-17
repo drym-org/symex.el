@@ -103,7 +103,8 @@
     ;; treat them as a single deletion
     (let ((start (point))
           (end (symex--get-end-point count t t)))
-      (kill-region start end))))
+      (kill-region start end)
+      (symex--reset-after-delete))))
 
 (symex-define-command symex-delete (count)
   "Delete COUNT symexes."
