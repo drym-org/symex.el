@@ -696,7 +696,7 @@ line."
          (let ((original-position (point)))
            (when (symex--go-backward)
              (save-excursion
-               (let ((previous-symex-end-pos (symex--get-end-point 1)))
+               (let ((previous-symex-end-pos (symex-lisp--get-end-point 1)))
                  (unless (symex--intervening-comment-line-p previous-symex-end-pos
                                                             original-position)
                    (goto-char previous-symex-end-pos)

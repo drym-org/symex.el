@@ -255,7 +255,7 @@ selected expression. Otherwise, paste in place."
   ;; independent entries in the kill ring
   (let ((last-command nil))
     (let ((start (point))
-          (end (symex--get-end-point count)))
+          (end (symex-lisp--get-end-point count)))
       (copy-region-as-kill start end))))
 
 (defun symex-lisp--emit-backward ()
