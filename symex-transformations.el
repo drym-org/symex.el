@@ -123,10 +123,11 @@
 (symex-define-command symex-delete-backwards (count)
   "Delete COUNT symexes backwards."
   (interactive "p")
-  (symex-eval
-   (symex-traversal
-    (circuit (delete previous)
-             count))))
+  (let* ((preceding-length (symex-preceding-length))
+         (count (min preceding-length
+                     count)))
+    (symex--go-backward count)
+    (symex--delete count)))
 
 (symex-define-command symex-delete-remaining ()
   "Delete remaining symexes at this level."

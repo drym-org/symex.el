@@ -226,11 +226,21 @@ For the deterministic version used at the primitive level, see
         (goto-char original-pos)))))
 
 (defun symex-remaining-length ()
-  "Compute the remaining length of the current symex."
+  "Compute the remaining length of the containing symex.
+
+This *includes* the current symex."
   (1+  ; length, so not zero-based like index
    (symex-save-excursion
      (symex-eval symex--traversal-goto-last
                  symex--computation-traversal-length))))
+
+(defun symex-preceding-length ()
+  "Compute the length of the symex before the current one.
+
+This does *not* include the current symex."
+  (symex-save-excursion
+    (symex-eval symex--traversal-goto-first
+                symex--computation-traversal-length)))
 
 (defun symex-index ()
   "Get relative (from start of containing symex) index of current symex."
