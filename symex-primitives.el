@@ -175,11 +175,9 @@ that are not primarily user-directed."
 (defun symex--indent (count)
   "Indent COUNT expressions."
   (let ((start (point))
-        (end (save-excursion
-               (condition-case nil
-                   (symex-select-end count)
-                 (error nil))
-               (point))))
+        (end (condition-case nil
+                 (symex--get-end-point count)
+               (error nil))))
     (indent-region start end)))
 
 (defun symex--tidy (count)
