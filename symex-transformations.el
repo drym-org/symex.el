@@ -98,32 +98,27 @@
 
 (defun symex--delete (count)
   "Delete COUNT symexes."
-  ;; if we attempt to just (delete this) count times, if there happen
-  ;; to be fewer than count expressions following, then we may delete
-  ;; preceding expressions too. But we typically mean to delete only
-  ;; the succeeding expressions here. That's why we count the number
-  ;; of remaining expressions first.
-  (let ((count (min (symex-remaining-length)
-                    count)))
-    (when (> count 0)
-      ;; when deleting multiple expressions, we typically want to
-      ;; treat them as a single deletion, so we compose the entries on
-      ;; the kill ring as a side effect of each deletion
-      (symex--kill-ring-push "")
-      (symex-eval
-       (symex-traversal
-         (circuit (effect (symex--kill-ring-compose)
-                          (delete this))
-                  count)))
-      ;; trim trailing whitespace at the end
-      ;; otherwise, paste will include that
-      (let ((result (symex--kill-ring-pop)))
-        (symex--kill-ring-push (string-trim-right result))))))
+  (when (> count 0)
+    ;; when deleting multiple expressions, we typically want to
+    ;; treat them as a single deletion
+    (let ((start (point))
+          (end (symex--get-end-point count t t)))
+      (kill-region start end))))
 
 (symex-define-command symex-delete (count)
   "Delete COUNT symexes."
   (interactive "p")
-  (symex--delete count))
+  (let* ((remaining-length (symex-remaining-length))
+         (previous (and (not (symex--point-at-initial-symex-p))
+                        (symex-save-excursion (symex--go-backward)
+                                              (point))))
+         (count (min remaining-length
+                     count))
+         (is-last (= count remaining-length)))
+    (symex--delete count)
+    (when (and is-last
+               previous)
+      (goto-char previous))))
 
 (symex-define-command symex-delete-backwards (count)
   "Delete COUNT symexes backwards."
@@ -136,8 +131,13 @@
 (symex-define-command symex-delete-remaining ()
   "Delete remaining symexes at this level."
   (interactive)
-  (let ((count (symex-remaining-length)))
-    (symex--delete count)))
+  (let ((count (symex-remaining-length))
+        (previous (and (not (symex--point-at-initial-symex-p))
+                       (symex-save-excursion (symex--go-backward)
+                                             (point)))))
+    (symex--delete count)
+    (when previous
+      (goto-char previous))))
 
 (symex-define-insertion-command symex-change (count)
   "Change COUNT symexes."
