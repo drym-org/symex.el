@@ -49,6 +49,13 @@
 ;; TODO: dot operator disrupts scroll margins
 ;; TODO: maybe identify "non-disorienting" commands and define a new macro for them. E.g. symex-tidy is itself a command. it that bad?
 
+;; TIP: To write deterministic transformations, the key is to do all
+;; the computations beforehand, if possible, without mutating
+;; anything. Then use these calculations to mutate the buffer
+;; precisely, e.g., by operating on regions, or by executing the
+;; transformation in a temporary buffer. See `symex-delete' and
+;; `symex--shift-forward' as examples.
+
 (defmacro symex-define-command (name
                                 args
                                 docstring
