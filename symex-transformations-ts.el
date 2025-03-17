@@ -55,7 +55,7 @@
     (let* ((count (or count 1))
            (node (symex-ts-get-current-node))
            (start-pos (symex-ts--node-start-position node))
-           (end-pos (symex-ts--get-end-point count t)))
+           (end-pos (symex-ts--get-end-point count t t)))
       (save-excursion (set-mark start-pos)
                       (goto-char end-pos)
                       (comment-dwim nil))
@@ -121,7 +121,7 @@ alias for inserting at the end."
   "Open new line after symex."
   (interactive)
   (when (symex-ts-get-current-node)
-    (goto-char (symex-ts--node-end-position (symex-ts-get-current-node)))
+    (goto-char (symex-ts--get-end-point 1 nil t))
     (newline-and-indent)))
 
 (defun symex-ts-open-line-before ()
@@ -142,7 +142,7 @@ DIRECTION should be either the symbol `before' or `after'."
   (when (symex-ts-get-current-node)
     (let* ((node (symex-ts-get-current-node))
            (start (symex-ts--node-start-position node))
-           (end (symex-ts--get-end-point 1 t))
+           (end (symex-ts--get-end-point 1 t t))
            (indent-start (save-excursion (back-to-indentation) (point)))
            (block-node (or (not (= (line-number-at-pos start) (line-number-at-pos end)))
                            (and (= start indent-start)
@@ -191,7 +191,7 @@ DIRECTION should be either the symbol `before' or `after'."
     (let* ((last-command nil)
            (node (symex-ts-get-current-node))
            (start (symex-ts--node-start-position node))
-           (end (symex-ts--get-end-point count t)))
+           (end (symex-ts--get-end-point count t t)))
       (copy-region-as-kill start end))))
 
 (defun symex-ts-tidy ()

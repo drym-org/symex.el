@@ -204,14 +204,22 @@ that are not primarily user-directed."
   (symex--indent count)
   (symex-select-nearest))
 
-(defun symex--remove (count &optional include-whitespace)
+(defun symex--remove (count &optional include-whitespace include-separator)
   "Delete COUNT symexes.
 
 This is a low-level utility that simply removes the indicated text
 from the buffer."
+  ;; TODO: instead of having the count at the primitive level, have
+  ;; each delete operation push onto a (yet to be implemented)
+  ;; traversal memory stack. If the traversal is within a larger
+  ;; traversal, the stacks should implicitly compose so that the
+  ;; nested traversal accumulates and pushes onto the containing
+  ;; traversal stack. Then, we can put the entire contents of the
+  ;; stack into the paste buffer in e.g. symex-delete (after popping
+  ;; the contents to get them in the right order)
   (let ((last-command nil)  ; see symex-yank re: last-command
         (start (point))
-        (end (symex--get-end-point count include-whitespace)))
+        (end (symex--get-end-point count include-whitespace include-separator)))
     (when (> end start)
       (kill-region start end)
       t)))
@@ -222,22 +230,6 @@ from the buffer."
       (symex-ts--reset-after-delete)
     (symex-lisp--reset-after-delete)))
 
-(defun symex-remove (count &optional include-whitespace)
-  "Delete COUNT symexes."
-  ;; TODO: instead of having the count at the primitive level, have
-  ;; each delete operation push onto a (yet to be implemented)
-  ;; traversal memory stack. If the traversal is within a larger
-  ;; traversal, the stacks should implicitly compose so that the
-  ;; nested traversal accumulates and pushes onto the containing
-  ;; traversal stack. Then, we can put the entire contents of the
-  ;; stack into the paste buffer in e.g. symex-delete (after popping
-  ;; the contents to get them in the right order)
-  (let ((result (symex--remove count include-whitespace)))
-    (when result
-      (symex--reset-after-delete)
-      ;; should we return the actual motion we took?
-      result)))
-
 (defun symex-prim-delete (what)
   "Delete WHAT symex.
 
@@ -245,23 +237,26 @@ WHAT could be `this`, `next`, or `previous`."
   (let ((result))
     (condition-case nil
         (cond ((eq 'this what)
-               (setq result (symex-remove 1 t)))
+               (setq result (symex--remove 1 t t)))
               ((eq 'previous what)
                (when (symex--previous-p)
                  (symex--go-backward)
-                 (setq result (symex-remove 1 t))))
+                 (setq result (symex--remove 1 t t))))
               ((eq 'next what)
                (when (symex--next-p)
                  (save-excursion
                    (symex--go-forward)
-                   (setq result (symex-remove 1 t)))))
+                   (setq result (symex--remove 1 t t)))))
               (t (error "Invalid argument for primitive delete!")))
       ;; if unable to delete, return nil instead of
       ;; raising an error. nil is used in the evaluator
       ;; to mean failed, so the traversal would stop there
       ;; as expected.
       (error nil))
-    result))
+    (when result
+      (symex--reset-after-delete)
+      ;; should we return the actual motion we took?
+      result)))
 
 (defun symex-prim-paste (where)
   "Paste WHERE.
@@ -354,13 +349,16 @@ difference from the lowest such level."
       (symex-ts--get-starting-point)
     (symex-lisp--get-starting-point)))
 
-(defun symex--get-end-point (count &optional include-whitespace)
+(defun symex--get-end-point (count &optional include-whitespace include-separator)
   "Get the point value after COUNT symexes.
 
 If the containing expression terminates earlier than COUNT
 symexes, returns the end point of the last one found."
   (if (symex-ts-available-p)
-      (symex-ts--get-end-point count include-whitespace)
+      (symex-ts--get-end-point count
+                               include-whitespace
+                               include-separator)
+    ;; separator not relevant for lisp
     (symex-lisp--get-end-point count include-whitespace)))
 
 (defun symex-select-end (count)
