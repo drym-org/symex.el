@@ -95,7 +95,8 @@ match."
       (let* ((start (point))
              (end (save-excursion (re-search-forward pattern)
                                   (match-beginning 0))))
-        (delete-region start end))))
+        (delete-region start end))
+    (error nil)))
 
 (defun symex--join-to-non-whitespace ()
   "Join current position to the next non-whitespace character.
