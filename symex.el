@@ -147,7 +147,8 @@ advises functions to enable or disable features based on user configuration."
   ;; initialize modal interface frontend
   (symex-modal-provider-initialize)
   ;; initialize repeat command and other evil interop
-  (symex-initialize-evil)
+  (when (symex--evil-installed-p)
+    (symex-initialize-evil))
   (symex-ts--init))
 
 (defun symex-disable ()
@@ -169,7 +170,8 @@ configuration to be disabled and the new one adopted."
   (advice-remove #'symex-go-up #'symex--return-to-branch-position)
   (advice-remove #'symex-go-backward #'symex--forget-branch-positions)
   (advice-remove #'symex-go-forward #'symex--forget-branch-positions)
-  (symex-disable-evil)
+  (when (symex--evil-installed-p)
+    (symex-disable-evil))
   (symex--remove-selection-advice))
 
 ;;;###autoload

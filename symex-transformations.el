@@ -86,7 +86,8 @@ function as repeatable via `evil-repeat'."
            ;; were made.
            (symex--tidy 1)
            ,result))
-       (evil-add-command-properties ',name :repeat t))))
+       (when (symex--evil-installed-p)
+         (evil-add-command-properties ',name :repeat t)))))
 
 (defmacro symex-define-insertion-command (name
                                           args
@@ -104,7 +105,8 @@ function as repeatable via `evil-repeat'."
          (evil-start-undo-step))
        ,@body
        (symex-enter-lowest))
-     (evil-add-command-properties ',name :repeat t)))
+     (when (symex--evil-installed-p)
+       (evil-add-command-properties ',name :repeat t))))
 
 (defun symex--delete (count)
   "Delete COUNT symexes."

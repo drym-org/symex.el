@@ -28,8 +28,6 @@
 (require 'cl-lib)
 
 (require 'paredit)
-(require 'evil)
-(require 'evil-surround)
 (require 'symex-primitives)
 (require 'symex-primitives-lisp)
 (require 'symex-utils)
