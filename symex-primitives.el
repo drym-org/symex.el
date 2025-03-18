@@ -199,8 +199,7 @@ that are not primarily user-directed."
   (unless (symex-ts-available-p)
     (symex--fix-leading-whitespace))
   ;; fix trailing whitespace (indent region doesn't)
-  (unless (symex-ts-available-p)
-    (symex--fix-trailing-whitespace count))
+  (symex--fix-trailing-whitespace count)
   (symex--indent count)
   (symex-select-nearest))
 
@@ -361,9 +360,9 @@ symexes, returns the end point of the last one found."
     ;; separator not relevant for lisp
     (symex-lisp--get-end-point count include-whitespace)))
 
-(defun symex-select-end (count)
+(defun symex-select-end (count &optional include-whitespace include-separator)
   "Select endpoint of symex nearest to point."
-  (goto-char (symex--get-end-point count))
+  (goto-char (symex--get-end-point count include-whitespace include-separator))
   (point))
 
 (defun symex-select-nearest ()
@@ -385,7 +384,7 @@ symexes, returns the end point of the last one found."
   "Fix trailing whitespace."
   (condition-case nil
       (save-excursion
-        (symex-select-end count)
+        (symex-select-end count nil t)
         (fixup-whitespace))
     (error nil)))
 
