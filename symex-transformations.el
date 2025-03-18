@@ -30,8 +30,6 @@
 (require 'symex-transformations-lisp)
 (require 'symex-transformations-ts)
 
-;; TODO: Remove dependencies after moving to symex-transformations-lisp.el
-(require 'paredit)
 (require 'evil)
 (require 'evil-surround)
 (require 'symex-misc)
@@ -62,7 +60,12 @@
                                 interactive-decl
                                 &rest
                                 body)
-  "Define a symex command."
+  "Define a symex command.
+
+This wraps `defun' and performs a few additional things that we want
+to do as part of executing any Symex command, including updating the
+selected symex after the command, and reindenting. We also declare the
+function as repeatable via `evil-repeat'."
   (declare (indent defun))
   (let ((result (gensym)))
     `(progn
@@ -181,47 +184,44 @@
   "Emit backward, COUNT times."
   (interactive "p")
   (if (symex-ts-available-p)
-      (symex-ts-emit-backward count)
+      (symex-ts--not-implemented)
     (symex-lisp-emit-backward count)))
 
 (symex-define-command symex-emit-forward (count)
   "Emit forward, COUNT times."
   (interactive "p")
   (if (symex-ts-available-p)
-      (symex-ts-emit-forward count)
+      (symex-ts--not-implemented)
     (symex-lisp-emit-forward count)))
 
 (symex-define-command symex-capture-backward (count)
   "Capture backward, COUNT times."
   (interactive "p")
   (if (symex-ts-available-p)
-      (symex-ts-capture-backward count)
+      (symex-ts--not-implemented)
     (symex-lisp-capture-backward count)))
 
 (symex-define-command symex-capture-forward (count)
   "Capture forward, COUNT times."
   (interactive "p")
   (if (symex-ts-available-p)
-      (symex-ts-capture-forward count)
+      (symex-ts--not-implemented)
     (symex-lisp-capture-forward count)))
 
 (symex-define-command symex-split ()
   "Split symex into two."
   (interactive)
-  (paredit-split-sexp)
-  (forward-char))
-
-(defun symex--join ()
-  "Merge symexes at the same level."
-  (save-excursion
-    (when (symex--go-forward)
-      (paredit-join-sexps))))
+  (if (symex-ts-available-p)
+      (symex-ts--not-implemented)
+    (symex-lisp-split)))
 
 (symex-define-command symex-join (count)
   "Merge COUNT symexes at the same level."
   (interactive "p")
-  (dotimes (_ count)
-    (symex--join)))
+  (if (symex-ts-available-p)
+      (symex-ts--not-implemented)
+    (dotimes (_ count)
+      (symex-lisp-join))))
 
 (symex-define-command symex-join-lines (count)
   "Join COUNT lines inside symex."
@@ -283,7 +283,7 @@ by default, joins next symex to current one."
   "Yank (copy) COUNT symexes."
   (interactive "p")
   (if (symex-ts-available-p)
-    (symex-ts-yank count)
+      (symex-ts-yank count)
     (symex-lisp-yank count)))
 
 (defun symex-yank-remaining ()
@@ -412,11 +412,9 @@ New list delimiters are determined by the TYPE."
 (symex-define-command symex-append-newline (count)
   "Append COUNT newlines after symex."
   (interactive "p")
-  (save-excursion
-    (forward-sexp)
-    (newline-and-indent count)
-    (fixup-whitespace))
-  (symex--same-line-tidy-affected))
+  (if (symex-ts-available-p)
+      (symex-ts--not-implemented)
+    (symex-lisp-append-newline count)))
 
 (symex-define-command symex-swallow ()
   "Swallow the head of the symex.
@@ -424,10 +422,9 @@ New list delimiters are determined by the TYPE."
 This consumes the head of the symex, putting the rest of its contents
 in the parent symex."
   (interactive)
-  (save-excursion
-    (symex--go-up)
-    (symex--go-forward)
-    (paredit-splice-sexp-killing-backward)))
+  (if (symex-ts-available-p)
+      (symex-ts--not-implemented)
+    (symex-lisp-swallow)))
 
 (symex-define-command symex-swallow-tail ()
   "Swallow the tail of the symex.
@@ -435,17 +432,16 @@ in the parent symex."
 This consumes the tail of the symex, putting the head
 in the parent symex."
   (interactive)
-  (save-excursion
-    (symex--go-up)
-    (symex--go-forward)
-    (paredit-splice-sexp-killing-forward)
-    (symex--go-backward)))
+  (if (symex-ts-available-p)
+      (symex-ts--not-implemented)
+    (symex-lisp-swallow-tail)))
 
 (symex-define-command symex-raise ()
   "Raise symex by replacing the containing one."
   (interactive)
-  (unless (symex--point-at-root-symex-p)
-    (paredit-raise-sexp)))
+  (if (symex-ts-available-p)
+      (symex-ts--not-implemented)
+    (symex-lisp-raise)))
 
 (symex-define-command symex-splice ()
   "Splice or \"clip\" symex.
@@ -497,17 +493,21 @@ then no action is taken."
   (symex--wrap-with "<" ">"))
 
 (symex-define-insertion-command symex-wrap ()
-  "Wrap with containing symex."
+  "Wrap with containing symex and insert."
   (interactive)
-  (symex-wrap-round)
-  (symex--go-up))
+  (if (symex-ts-available-p)
+      (symex-ts--not-implemented)
+    (symex--wrap-with "(" ")")
+    (symex--go-up)))
 
 (symex-define-insertion-command symex-wrap-and-append ()
   "Wrap with containing symex and append."
   (interactive)
-  (symex-wrap-round)
-  (symex--go-up)
-  (forward-sexp))
+  (if (symex-ts-available-p)
+      (symex-ts--not-implemented)
+    (symex--wrap-with "(" ")")
+    (symex--go-up)
+    (forward-sexp)))
 
 (defun symex--shift-forward ()
   "Move symex forward in current tree level."

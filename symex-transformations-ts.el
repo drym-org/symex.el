@@ -201,34 +201,9 @@ DIRECTION should be either the symbol `before' or `after'."
   ;; Update current node from point and reindent if necessary
   (indent-according-to-mode))
 
-(defun symex-ts-emit-backward (count)
-  "Emit backward."
-  nil)
-
-(defun symex-ts-emit-forward (count)
-  "Emit forward."
-  nil)
-
-(defun symex-ts-capture-backward (count)
-  "Capture from behind, COUNT times."
-  nil)
-
-(defun symex-ts-capture-forward (count)
-  "Capture forward."
-  nil)
-
-
-;; TODO: TS: capture node
-;; TODO: TS: delete remaining nodes
-;; TODO: TS: emit node
-;; TODO: TS: shift forward/backward node
-;; TODO: TS: splice node
-;; TODO: TS: swallow node
-;; TODO: TS: wrap node
-;; TODO: TS: yank remaining nodes
-
-;; TODO: TS: join node ?
-;; TODO: TS: split node ?
+(defun symex-ts--not-implemented ()
+  "Features that are not implemented for treesitter."
+  (message "Not implemented for tree-sitter."))
 
 
 (provide 'symex-transformations-ts)

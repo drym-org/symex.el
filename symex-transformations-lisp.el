@@ -27,6 +27,7 @@
 
 (require 'cl-lib)
 
+(require 'paredit)
 (require 'evil)
 (require 'evil-surround)
 (require 'symex-primitives)
@@ -331,6 +332,50 @@ selected expression. Otherwise, paste in place."
   (dotimes (_ count)
     (symex-lisp--capture-forward)))
 
+(defun symex-lisp-split ()
+  "Split symex into two."
+  (paredit-split-sexp)
+  (forward-char))
+
+(defun symex-lisp-join ()
+  "Merge symexes at the same level."
+  (save-excursion
+    (when (symex--go-forward)
+      (paredit-join-sexps))))
+
+(defun symex-lisp-swallow ()
+  "Swallow the head of the symex.
+
+This consumes the head of the symex, putting the rest of its contents
+in the parent symex."
+  (save-excursion
+    (symex--go-up)
+    (symex--go-forward)
+    (paredit-splice-sexp-killing-backward)))
+
+(defun symex-lisp-swallow-tail ()
+  "Swallow the tail of the symex.
+
+This consumes the tail of the symex, putting the head
+in the parent symex."
+  (save-excursion
+    (symex--go-up)
+    (symex--go-forward)
+    (paredit-splice-sexp-killing-forward)
+    (symex--go-backward)))
+
+(defun symex-lisp-raise ()
+  "Raise symex by replacing the containing one."
+  (unless (symex--point-at-root-symex-p)
+    (paredit-raise-sexp)))
+
+(defun symex-lisp-append-newline (count)
+  "Append COUNT newlines after symex."
+  (save-excursion
+    (forward-sexp)
+    (newline-and-indent count)
+    (fixup-whitespace))
+  (symex--same-line-tidy-affected))
 
 (provide 'symex-transformations-lisp)
 ;;; symex-transformations-lisp.el ends here
