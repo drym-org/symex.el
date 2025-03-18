@@ -80,6 +80,14 @@ CONDITION - see underlying Lisp implementation."
   `(symex-make-loop (symex-traversal ,traversal)
                     ,condition))
 
+(defun symex--rewrite-condition-list (condition-list)
+  "A helper to rewrite a list of conditions.
+
+CONDITION-LIST - the list of conditions to compile to lambdas."
+  (mapcar (lambda (e)
+            `(funcall ,(symex--rewrite-condition e)))
+          condition-list))
+
 (defun symex--rewrite-condition (condition)
   "Rewrite a condition expression into a lambda expression.
 
@@ -101,6 +109,10 @@ procedure."
                (t condition)))
         ((equal 'not (car condition))
          `(lambda () (not (funcall ,(symex--rewrite-condition (cadr condition))))))
+        ((equal 'and (car condition))
+         `(lambda () (and ,@(symex--rewrite-condition-list (cdr condition)))))
+        ((equal 'or (car condition))
+         `(lambda () (or ,@(symex--rewrite-condition-list (cdr condition)))))
         ((equal 'at (car condition))
          (symex--rewrite-condition (cadr condition)))
         (t condition)))
