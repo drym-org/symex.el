@@ -111,6 +111,10 @@
     (let ((start (point))
           (end (symex--get-end-point count t t)))
       (kill-region start end)
+      ;; trim trailing whitespace at the end
+      ;; otherwise, paste will include that
+      (let ((result (symex--kill-ring-pop)))
+        (symex--kill-ring-push (string-trim-right result)))
       (symex--reset-after-delete))))
 
 (symex-define-command symex-delete (count)
