@@ -101,7 +101,6 @@
   (symex-eval symex--traversal-goto-first)
   (point))
 
-
 (symex-define-motion symex-goto-last ()
   "Select last symex at present level."
   (interactive)
@@ -197,7 +196,8 @@ when the way is blocked.")
 
 (symex-deftraversal symex--traversal-descend-branch
   (protocol (precaution symex--traversal-goto-first
-                        (beforehand (not (at root))))
+                        (beforehand (and (not (at root))
+                                         (not (at first)))))
             (venture (move down)
                      (precaution symex--traversal-goto-first
                                  (beforehand (not (at root)))))))
