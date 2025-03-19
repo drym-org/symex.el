@@ -27,6 +27,7 @@
 
 
 (require 'evil nil :no-error)
+(require 'symex-custom)
 (require 'symex-primitives)
 (require 'symex-evaluator)
 (require 'symex-computations)
@@ -35,11 +36,6 @@
 (require 'symex-interface-builtins)
 (require 'symex-interop)
 (require 'symex-ui)
-
-;; These are customization or config variables defined elsewhere;
-;; explicitly indicating them here to avoid byte compile warnings
-(defvar symex-refocus-p)
-(defvar symex-highlight-p)
 
 ;; buffer-local branch memory stack
 (defvar-local symex--branch-memory nil)
