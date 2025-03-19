@@ -40,9 +40,9 @@
 ;;; Code:
 
 (require 'symex-lithium)
+(require 'symex-interop)
 (when (symex--evil-installed-p)
   (require 'symex-evil))
-(require 'symex-interop)
 (require 'symex-misc)
 (require 'symex-interface)
 (require 'symex-transformations)
