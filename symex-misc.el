@@ -48,57 +48,24 @@
 ;;; MISCELLANEOUS ;;;
 ;;;;;;;;;;;;;;;;;;;;;
 
-(when (symex--evil-installed-p)
-  (evil-define-state emacslike
-    "An Emacs-like state."
-    :tag " <E> "
-    :message "-- EMACHS --"
-    :enable (emacs))
-
-  (evil-define-state normallike
-    "A Normal-like state."
-    :tag " <N> "
-    :message "-- NORMALE --"
-    :enable (normal)))
-
 (defun symex--evaluate ()
   "Evaluate symex."
-  (let ((original-evil-state evil-state))
-    (unwind-protect
-        (save-excursion
-          ;; enter an "emacs-like" state so that which symex is meant
-          ;; has a standard interpretation. We don't go into emacs state
-          ;; itself since, as a known, "registered" evil state in
-          ;; rigpa, it would trigger state transition logic
-          ;; that we don't want to trigger since this is to be treated
-          ;; merely as an implementation detail of this operation
-          (evil-emacslike-state)
-          (forward-sexp) ; selected symexes will have the cursor on the starting paren
-          (funcall (symex-interface-get-method :eval)))
-      ;; enter a "normal-like" state here momentarily, to prevent entry
-      ;; into symex mode from being treated as if it was in an "emacs" context
-      ;; since the entry into emacs state is done here as an implementation
-      ;; detail and is not user-directed
-      ;; we don't enter normal state itself but rather a clone, to go
-      ;; "under the radar" of any registered hooks
-      (evil-normallike-state)
-      ;; ideally we shouldn't do this since it would still trigger entry
-      ;; hooks, but for now that's OK
-      ;; the right way to handle all this would be to avoid any state
-      ;; transitions
-      (funcall (intern (concat "evil-" (symbol-name original-evil-state) "-state"))))))
+  (let ((start (point))
+        (end (symex--get-end-point 1)))
+    ;; selected symexes will have the cursor on the starting paren
+    (goto-char end)
+    (funcall (symex-interface-get-method :eval))
+    (goto-char start)))
 
 (defun symex-evaluate (count)
   "Evaluate COUNT symexes."
   (interactive "p")
   (save-excursion
-    (let ((i 0)
-          (movedp t))
-      (while (or (not movedp)
-                 (< i count))
+    (let ((count (min count
+                      (symex-remaining-length))))
+      (dotimes (i count)
         (symex--evaluate)
-        (symex--go-forward)
-        (setq i (1+ i))))))
+        (symex--go-forward)))))
 
 (defun symex-eval-recursive ()
   "Evaluate a symex recursively.

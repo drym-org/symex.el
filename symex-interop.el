@@ -37,10 +37,7 @@
 
 ;; temporary stubbing non-evil modal users
 (when (not (boundp 'evil))
-  (setq evil-state nil)
-  (defun evil-emacslike-state ())
-  (defun evil-normallike-state ())
-  (defun evil-nil-state ()))
+  (setq evil-state nil))
 
 ;; misc bindings defined elsewhere
 (declare-function rigpa-enter-higher-level "ext:ignore")
