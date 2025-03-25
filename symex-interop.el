@@ -132,18 +132,6 @@ right symex when we enter Symex mode."
   (setq-local scroll-margin symex--original-scroll-margin)
   (setq-local maximum-scroll-margin symex--original-max-scroll-margin))
 
-(defun symex--evil-scroll-down ()
-  "Scroll down half a page.
-
-This is needed because symex alters scroll margins upon mode entry to
-ensure that the symex is always in focus.  For some reason this winds
-up causing evil's `evil-scroll-down` to scroll all the way to the
-bottom of the buffer.  So we temporarily override the scroll margin in
-executing this command to get the expected behavior."
-  (interactive)
-  (let ((scroll-margin 0))
-    (evil-scroll-down nil)))
-
 
 (provide 'symex-interop)
 ;;; symex-interop.el ends here

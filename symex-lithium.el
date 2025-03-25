@@ -146,7 +146,6 @@
    ("I" symex-insert-before)
    ("w" symex-wrap)
    ("W" symex-wrap-and-append)
-   ("C-d" symex--evil-scroll-down)
    (";" symex-comment)
    ("M-;" symex-comment-remaining)
    ("C-;" symex-eval-print) ; weird pre-offset (in both)
