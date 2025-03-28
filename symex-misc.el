@@ -211,7 +211,7 @@ This does *not* include the current symex."
 This moves down COUNT lines in terms of buffer coordinates, rather than
 structurally in terms of the tree."
   (interactive "p")
-  (evil-next-visual-line count)
+  (next-line count)
   (symex-select-nearest-in-line))
 
 (defun symex-previous-visual-line (&optional count)
@@ -220,7 +220,7 @@ structurally in terms of the tree."
 This moves up COUNT lines in terms of buffer coordinates, rather than
 structurally in terms of the tree."
   (interactive "p")
-  (evil-previous-visual-line count)
+  (previous-line count)
   (symex-select-nearest-in-line))
 
 (defun symex-soar-backward (count)
