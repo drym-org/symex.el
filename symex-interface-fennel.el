@@ -55,12 +55,6 @@
   "Evaluate buffer."
   (lisp-eval-region (point-min) (point-max)))
 
-(defun symex-switch-to-scratch-buffer-fennel ()
-  "Switch to scratch buffer."
-  (let ((buffer-name "*scratch - Fennel*"))
-    (switch-to-buffer (or (get-buffer buffer-name)
-                          (symex--new-scratch-buffer buffer-name)))))
-
 (defvar symex-fennel-modes (list 'fennel-mode))
 
 (defun symex-interface-register-fennel ()
@@ -73,8 +67,7 @@
     :eval-thunk #'symex-eval-thunk-fennel
     :describe-symbol #'fennel-find-definition
     :repl #'symex-repl-fennel
-    :run #'symex-run-fennel
-    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-fennel)))
+    :run #'symex-run-fennel)))
 
 (provide 'symex-interface-fennel)
 ;;; symex-interface-fennel.el ends here

@@ -151,11 +151,6 @@ Version 2017-11-01"
       (setq buffer-offer-save nil))
     $buf))
 
-(defun symex-switch-to-scratch-buffer ()
-  "Switch to scratch buffer."
-  (interactive)
-  (funcall (symex-interface-get-method :switch-to-scratch-buffer)))
-
 (defun symex-user-select-nearest ()
   "Select symex nearest to point.
 

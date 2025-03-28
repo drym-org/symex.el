@@ -53,12 +53,6 @@
   "Evaluate buffer."
   (geiser-eval-buffer nil))
 
-(defun symex-switch-to-scratch-buffer-scheme ()
-  "Switch to scratch buffer."
-  (let ((buffer-name "*scratch - Scheme*"))
-    (switch-to-buffer (or (get-buffer buffer-name)
-                          (symex--new-scratch-buffer buffer-name)))))
-
 (defvar symex-scheme-modes (list 'scheme-mode))
 
 (defun symex-interface-register-scheme ()
@@ -71,8 +65,7 @@
     :eval-pretty #'symex-eval-scheme
     :describe-symbol #'geiser-doc-symbol-at-point
     :repl #'symex-repl-scheme
-    :run #'symex-run-scheme
-    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-scheme)))
+    :run #'symex-run-scheme)))
 
 (provide 'symex-interface-scheme)
 ;;; symex-interface-scheme.el ends here

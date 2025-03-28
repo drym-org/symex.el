@@ -108,7 +108,6 @@
    ("d" symex-evaluate-definition)
    ("M-e" symex-eval-recursive)
    ("T" symex-evaluate-thunk)
-   ("t" symex-switch-to-scratch-buffer)
    ("r" symex-repl)
    ("R" symex-run)
    ("|" symex-split)

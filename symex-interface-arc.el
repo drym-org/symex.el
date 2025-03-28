@@ -50,12 +50,6 @@
   (goto-char (point-max))
   (symex-enter-lowest))
 
-(defun symex-switch-to-scratch-buffer-arc ()
-  "Switch to scratch buffer."
-  (let ((buffer-name "*scratch - Arc*"))
-    (switch-to-buffer (or (get-buffer buffer-name)
-                          (symex--new-scratch-buffer buffer-name)))))
-
 (defvar symex-arc-modes (list 'arc-mode))
 
 (defun symex-interface-register-arc ()
@@ -67,8 +61,7 @@
     :eval-definition #'arc-send-definition
     :eval-pretty #'arc-send-last-sexp
     :eval-thunk #'symex-eval-thunk-arc
-    :repl #'symex-repl-arc
-    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-arc)))
+    :repl #'symex-repl-arc)))
 
 
 (provide 'symex-interface-arc)

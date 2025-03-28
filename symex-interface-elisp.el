@@ -63,12 +63,6 @@ open in most recently used other window."
     (goto-char (point-max))
     (symex-enter-lowest)))
 
-(defun symex-switch-to-scratch-buffer-elisp ()
-  "Switch to scratch buffer."
-  (let ((buffer-name "*scratch*"))
-    (switch-to-buffer (or (get-buffer buffer-name)
-                          (symex--new-scratch-buffer buffer-name)))))
-
 (defvar symex-elisp-modes (list 'lisp-interaction-mode
                                 'emacs-lisp-mode
                                 'inferior-emacs-lisp-mode))
@@ -84,8 +78,7 @@ open in most recently used other window."
     :eval-print #'symex-eval-print-elisp
     :describe-symbol #'symex-describe-symbol-elisp
     :repl #'symex-repl-elisp
-    :run #'eval-buffer
-    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-elisp)))
+    :run #'eval-buffer)))
 
 (provide 'symex-interface-elisp)
 ;;; symex-interface-elisp.el ends here
