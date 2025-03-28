@@ -678,7 +678,7 @@ line."
              (symex--join-to-next)
            ;; don't leave an empty line where the symex was
            (symex--delete-whole-line)))
-        ((or (save-excursion (evil-last-non-blank) ; (<>$
+        ((or (save-excursion (symex-last-non-blank) ; (<>$
                              (symex-left-p)))
          (symex--join-to-next))
         ((looking-at-p "\n")         ; (abc <>
@@ -704,7 +704,7 @@ line."
                    ;; ensure that there isn't a comment on the
                    ;; preceding line before joining lines
                    (unless (condition-case nil
-                               (save-excursion (evil-find-char 1 ?\;)
+                               (save-excursion (re-search-forward ";" (line-end-position))
                                                t)
                              (error nil))
                      (symex--join-to-match symex--re-right))))))))

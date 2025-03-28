@@ -57,9 +57,6 @@ open in most recently used other window."
            (split-window-right)
            (windmove-right)
            (ielm))
-          ((symex--evil-installed-p)
-           (evil-window-mru)            ; better LRU
-           (ielm))
           (t
            (other-window -1)
            (ielm)))

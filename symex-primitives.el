@@ -388,6 +388,12 @@ symexes, returns the end point of the last one found."
         (fixup-whitespace))
     (error nil)))
 
+(defun symex-last-non-blank ()
+  "Go to last non-blank character on line."
+  (end-of-line)
+  (skip-chars-backward " \t")
+  (unless (bolp) (backward-char)))
+
 (defun symex--primitive-enter ()
   "Take necessary actions as part of entering Symex mode, at a primitive level."
   (if (symex-ts-available-p)
