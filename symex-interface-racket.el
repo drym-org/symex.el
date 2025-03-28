@@ -74,10 +74,7 @@ Based on `racket--send-region-to-repl' from `racket-mode'."
   "Eval last sexp.
 
 Accounts for different point location in evil vs Emacs mode."
-  (save-excursion
-    (when (equal evil-state 'normal)
-      (forward-char))
-    (racket-send-last-sexp)))
+  (racket-send-last-sexp))
 
 (defun symex-eval-pretty-racket ()
   "Evaluate symex and render the result in a useful string form."
@@ -118,12 +115,6 @@ Accounts for different point location in evil vs Emacs mode."
       (goto-char (point-max))
       (symex-enter-lowest))))
 
-(defun symex-switch-to-scratch-buffer-racket ()
-  "Switch to scratch buffer."
-  (let ((buffer-name "*scratch - Racket*"))
-    (switch-to-buffer (or (get-buffer buffer-name)
-                          (symex--new-scratch-buffer buffer-name)))))
-
 (defvar symex-racket-modes (list 'racket-mode
                                  'racket-repl-mode))
 
@@ -138,8 +129,7 @@ Accounts for different point location in evil vs Emacs mode."
     :eval-thunk #'symex-eval-thunk-racket
     :describe-symbol #'symex-describe-symbol-racket
     :repl #'symex-repl-racket
-    :run #'racket-run
-    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-racket)))
+    :run #'racket-run)))
 
 (provide 'symex-interface-racket)
 ;;; symex-interface-racket.el ends here

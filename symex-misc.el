@@ -26,7 +26,8 @@
 ;;; Code:
 
 
-(require 'evil)
+(require 'evil nil :no-error)
+(require 'symex-custom)
 (require 'symex-primitives)
 (require 'symex-evaluator)
 (require 'symex-computations)
@@ -36,11 +37,6 @@
 (require 'symex-interop)
 (require 'symex-ui)
 
-;; These are customization or config variables defined elsewhere;
-;; explicitly indicating them here to avoid byte compile warnings
-(defvar symex-refocus-p)
-(defvar symex-highlight-p)
-
 ;; buffer-local branch memory stack
 (defvar-local symex--branch-memory nil)
 
@@ -48,56 +44,24 @@
 ;;; MISCELLANEOUS ;;;
 ;;;;;;;;;;;;;;;;;;;;;
 
-(evil-define-state emacslike
-  "An Emacs-like state."
-  :tag " <E> "
-  :message "-- EMACHS --"
-  :enable (emacs))
-
-(evil-define-state normallike
-  "A Normal-like state."
-  :tag " <N> "
-  :message "-- NORMALE --"
-  :enable (normal))
-
 (defun symex--evaluate ()
   "Evaluate symex."
-  (let ((original-evil-state evil-state))
-    (unwind-protect
-        (save-excursion
-          ;; enter an "emacs-like" state so that which symex is meant
-          ;; has a standard interpretation. We don't go into emacs state
-          ;; itself since, as a known, "registered" evil state in
-          ;; rigpa, it would trigger state transition logic
-          ;; that we don't want to trigger since this is to be treated
-          ;; merely as an implementation detail of this operation
-          (evil-emacslike-state)
-          (forward-sexp) ; selected symexes will have the cursor on the starting paren
-          (funcall (symex-interface-get-method :eval)))
-      ;; enter a "normal-like" state here momentarily, to prevent entry
-      ;; into symex mode from being treated as if it was in an "emacs" context
-      ;; since the entry into emacs state is done here as an implementation
-      ;; detail and is not user-directed
-      ;; we don't enter normal state itself but rather a clone, to go
-      ;; "under the radar" of any registered hooks
-      (evil-normallike-state)
-      ;; ideally we shouldn't do this since it would still trigger entry
-      ;; hooks, but for now that's OK
-      ;; the right way to handle all this would be to avoid any state
-      ;; transitions
-      (funcall (intern (concat "evil-" (symbol-name original-evil-state) "-state"))))))
+  (let ((start (point))
+        (end (symex--get-end-point 1)))
+    ;; selected symexes will have the cursor on the starting paren
+    (goto-char end)
+    (funcall (symex-interface-get-method :eval))
+    (goto-char start)))
 
 (defun symex-evaluate (count)
   "Evaluate COUNT symexes."
   (interactive "p")
   (save-excursion
-    (let ((i 0)
-          (movedp t))
-      (while (or (not movedp)
-                 (< i count))
+    (let ((count (min count
+                      (symex-remaining-length))))
+      (dotimes (i count)
         (symex--evaluate)
-        (symex--go-forward)
-        (setq i (1+ i))))))
+        (symex--go-forward)))))
 
 (defun symex-eval-recursive ()
   "Evaluate a symex recursively.
@@ -187,19 +151,6 @@ Version 2017-11-01"
       (setq buffer-offer-save nil))
     $buf))
 
-(defun symex-switch-to-scratch-buffer ()
-  "Switch to scratch buffer."
-  (interactive)
-  (funcall (symex-interface-get-method :switch-to-scratch-buffer)))
-
-(defun symex-switch-to-messages-buffer ()
-  "Switch to messages buffer while retaining focus in original window."
-  (interactive)
-  (switch-to-buffer-other-window "*Messages*")
-  (goto-char (point-max))
-  (recenter)
-  (evil-window-mru))
-
 (defun symex-user-select-nearest ()
   "Select symex nearest to point.
 
@@ -260,7 +211,7 @@ This does *not* include the current symex."
 This moves down COUNT lines in terms of buffer coordinates, rather than
 structurally in terms of the tree."
   (interactive "p")
-  (evil-next-visual-line count)
+  (next-line count)
   (symex-select-nearest-in-line))
 
 (defun symex-previous-visual-line (&optional count)
@@ -269,7 +220,7 @@ structurally in terms of the tree."
 This moves up COUNT lines in terms of buffer coordinates, rather than
 structurally in terms of the tree."
   (interactive "p")
-  (evil-previous-visual-line count)
+  (previous-line count)
   (symex-select-nearest-in-line))
 
 (defun symex-soar-backward (count)

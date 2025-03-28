@@ -27,13 +27,17 @@
 
 ;;; Code:
 
-(require 'symex-custom
-         'symex-primitives)
+(require 'symex-custom)
+(require 'symex-primitives)
 
 ;; to avoid byte compile warnings.  eventually sort out the dependency
 ;; order so this is unnecessary
 (defvar chimera-symex-mode)
 (defvar rigpa-mode)
+
+;; temporary stubbing non-evil modal users
+(when (not (boundp 'evil))
+  (setq evil-state nil))
 
 ;; misc bindings defined elsewhere
 (declare-function rigpa-enter-higher-level "ext:ignore")
@@ -84,7 +88,10 @@ right symex when we enter Symex mode."
          (rigpa-enter-higher-level))
         ((symex--evil-enabled-p)
          (evil-normal-state))
-        (t (evil-emacs-state))))
+        ((symex--evil-installed-p)
+         (evil-emacs-state))
+        ((fboundp 'symex-user-defined-higher-mode)
+         (symex-user-defined-higher-mode))))
 
 (defun symex-enter-lower ()
   "Exit symex mode via an \"enter\"."
@@ -93,7 +100,10 @@ right symex when we enter Symex mode."
          (rigpa-enter-lower-level))
         ((symex--evil-enabled-p)
          (evil-insert-state))
-        (t (evil-emacs-state))))
+        ((symex--evil-installed-p)
+         (evil-emacs-state))
+        ((fboundp 'symex-user-defined-lower-mode)
+         (symex-user-defined-lower-mode))))
 
 (defun symex-enter-lowest ()
   "Enter the lowest (manual) editing level."
@@ -102,7 +112,10 @@ right symex when we enter Symex mode."
          (rigpa-enter-lowest-level))
         ((symex--evil-enabled-p)
          (evil-insert-state))
-        (t (evil-emacs-state))))
+        ((symex--evil-installed-p)
+         (evil-emacs-state))
+        ((fboundp 'symex-user-defined-lowest-mode)
+         (symex-user-defined-lowest-mode))))
 
 (defun symex--set-scroll-margin ()
   "Set a convenient scroll margin for symex mode, after storing the original value."
@@ -118,18 +131,6 @@ right symex when we enter Symex mode."
   "Restore original `scroll-margin` (e.g. upon symex exit)."
   (setq-local scroll-margin symex--original-scroll-margin)
   (setq-local maximum-scroll-margin symex--original-max-scroll-margin))
-
-(defun symex--evil-scroll-down ()
-  "Scroll down half a page.
-
-This is needed because symex alters scroll margins upon mode entry to
-ensure that the symex is always in focus.  For some reason this winds
-up causing evil's `evil-scroll-down` to scroll all the way to the
-bottom of the buffer.  So we temporarily override the scroll margin in
-executing this command to get the expected behavior."
-  (interactive)
-  (let ((scroll-margin 0))
-    (evil-scroll-down nil)))
 
 
 (provide 'symex-interop)

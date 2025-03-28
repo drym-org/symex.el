@@ -25,7 +25,7 @@
 
 ;;; Code:
 
-(require 'evil)
+(require 'evil nil :no-error)
 (require 'symex-interop)
 (require 'symex-interface)
 
@@ -54,19 +54,14 @@ open in most recently used other window."
   (let ((window (get-buffer-window "*ielm*")))
     (cond (window (select-window window))
           ((= 1 (length (window-list)))
-           (evil-window-vsplit)
-           (evil-window-right 1)
+           (split-window-right)
+           (windmove-right)
            (ielm))
-          (t (evil-window-mru)  ; better LRU
-             (ielm)))
+          (t
+           (other-window -1)
+           (ielm)))
     (goto-char (point-max))
     (symex-enter-lowest)))
-
-(defun symex-switch-to-scratch-buffer-elisp ()
-  "Switch to scratch buffer."
-  (let ((buffer-name "*scratch*"))
-    (switch-to-buffer (or (get-buffer buffer-name)
-                          (symex--new-scratch-buffer buffer-name)))))
 
 (defvar symex-elisp-modes (list 'lisp-interaction-mode
                                 'emacs-lisp-mode
@@ -83,8 +78,7 @@ open in most recently used other window."
     :eval-print #'symex-eval-print-elisp
     :describe-symbol #'symex-describe-symbol-elisp
     :repl #'symex-repl-elisp
-    :run #'eval-buffer
-    :switch-to-scratch-buffer #'symex-switch-to-scratch-buffer-elisp)))
+    :run #'eval-buffer)))
 
 (provide 'symex-interface-elisp)
 ;;; symex-interface-elisp.el ends here

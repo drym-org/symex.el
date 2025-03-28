@@ -28,8 +28,6 @@
 (require 'cl-lib)
 
 (require 'paredit)
-(require 'evil)
-(require 'evil-surround)
 (require 'symex-primitives)
 (require 'symex-primitives-lisp)
 (require 'symex-utils)
@@ -76,7 +74,7 @@
   (newline-and-indent)
   (forward-line -1)
   (indent-according-to-mode)
-  (evil-move-end-of-line)
+  (move-end-of-line 1)
   (unless (or (symex--current-line-empty-p)
               (save-excursion (backward-char)
                               (symex-left-p)))

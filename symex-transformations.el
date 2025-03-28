@@ -30,8 +30,7 @@
 (require 'symex-transformations-lisp)
 (require 'symex-transformations-ts)
 
-(require 'evil)
-(require 'evil-surround)
+(require 'evil nil :no-error)
 (require 'symex-misc)
 (require 'symex-primitives)
 (require 'symex-primitives-lisp)
@@ -87,7 +86,8 @@ function as repeatable via `evil-repeat'."
            ;; were made.
            (symex--tidy 1)
            ,result))
-       (evil-add-command-properties ',name :repeat t))))
+       (when (symex--evil-installed-p)
+         (evil-add-command-properties ',name :repeat t)))))
 
 (defmacro symex-define-insertion-command (name
                                           args
@@ -101,10 +101,12 @@ function as repeatable via `evil-repeat'."
      (defun ,name ,args
        ,docstring
        ,interactive-decl
-       (evil-start-undo-step)
+       (when (symex--evil-installed-p)
+         (evil-start-undo-step))
        ,@body
        (symex-enter-lowest))
-     (evil-add-command-properties ',name :repeat t)))
+     (when (symex--evil-installed-p)
+       (evil-add-command-properties ',name :repeat t))))
 
 (defun symex--delete (count)
   "Delete COUNT symexes."
@@ -295,7 +297,8 @@ by default, joins next symex to current one."
 (symex-define-command symex-paste-before (count)
   "Paste before symex, COUNT times."
   (interactive "p")
-  (setq this-command 'evil-paste-before)
+  (when (symex--evil-installed-p)
+    (setq this-command 'evil-paste-before))
   ;; typically (e.g. to follow the convention in evil), we
   ;; want to select the start of the pasted text after
   ;; pasting.
@@ -314,7 +317,8 @@ by default, joins next symex to current one."
 (symex-define-command symex-paste-after (count)
   "Paste after symex, COUNT times."
   (interactive "p")
-  (setq this-command 'evil-paste-after)
+  (when (symex--evil-installed-p)
+    (setq this-command 'evil-paste-after))
   ;; TODO: user-level defcustom of whether to move
   ;; to indicate pasted text (like evil), which should
   ;; be checked here and appropriately applied. E.g.
@@ -443,6 +447,21 @@ in the parent symex."
       (symex-ts--not-implemented)
     (symex-lisp-raise)))
 
+(defun symex--delete-pair ()
+  "Delete a pair of characters enclosing sexps that follow point."
+  (save-excursion
+    (skip-chars-forward " \t")
+    (save-excursion
+      (let ((open-char (char-after)))
+        (forward-sexp)
+        (unless (member (list open-char (char-before))
+                        (mapcar (lambda (p)
+                                  (if (= (length p) 3) (cdr p) p))
+                                insert-pair-alist))
+          (error "Not before matching pair"))
+        (delete-char -1)))
+    (delete-char 1)))
+
 (symex-define-command symex-splice ()
   "Splice or \"clip\" symex.
 
@@ -450,17 +469,13 @@ If the symex is a nested list, this operation eliminates the symex,
 putting its contents in the parent symex.  If the symex is an atom,
 then no action is taken."
   (interactive)
-  (unless (symex-atom-p)
-    ;; in treesitter, non-atoms need not be lists,
-    ;; but we only want to splice lists, for now
-    (when (symex-left-p)
-      (let ((start (point))
-            (end (symex--get-end-point 1)))
-        (symex--transform-in-isolation start end
-          (goto-char (point-min))
-          (delete-char 1)
-          (goto-char (1- (point-max)))
-          (delete-char 1))))))
+  (when (or (symex-left-p) (symex-lisp-string-p))
+    (if (or (symex-empty-list-p)
+            (symex-empty-string-p))
+        (symex-delete 1)
+      (save-excursion
+        (symex--delete-pair)
+        (symex--go-down)))))
 
 (defun symex--wrap-with (left right)
   "Wrap selected symex with LEFT and RIGHT."
@@ -583,13 +598,38 @@ then no action is taken."
                 (= row (line-number-at-pos)))
       (symex--shift-forward))))
 
+(defvar symex--delimiters
+  '(("(" . ")") ("[" . "]") ("{" . "}") ("<" . ">") ("\"" . "\"")))
+
+(defun symex--surround (open-delimiter close-delimiter start end)
+  (goto-char end)
+  (insert close-delimiter)
+  (goto-char start)
+  (insert open-delimiter))
+
+(defun symex--change-delimiter (&optional no-trim)
+  (let* ((open-delimiter (completing-read "Choose opening delimiter: " (mapcar 'car symex--delimiters)))
+         (close-delimiter (or (cdr (assoc open-delimiter symex--delimiters))
+                              open-delimiter))
+         (start (point-marker))
+         (end (save-excursion (forward-sexp) (point-marker))))
+    (if no-trim
+        (save-excursion
+          (symex--surround open-delimiter close-delimiter start end))
+      (save-excursion
+        (goto-char start)
+        (delete-char 1)
+        (insert open-delimiter)
+        (goto-char (1- end))
+        (delete-char 1)
+        (insert close-delimiter)))))
+
 (symex-define-command symex-change-delimiter ()
   "Change delimiter enclosing current symex, e.g. round -> square brackets."
   (interactive)
   (if (or (symex-left-p) (symex-lisp-string-p))
-      (evil-surround-change (following-char))
-    (let ((bounds (bounds-of-thing-at-point 'sexp)))
-      (evil-surround-region (car bounds) (cdr bounds) 'inclusive 40))))
+      (symex--change-delimiter)
+    (symex--change-delimiter :no-trim)))
 
 (symex-define-command symex-comment (count)
   "Comment out COUNT symexes."
