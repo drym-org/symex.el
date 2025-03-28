@@ -109,7 +109,6 @@
    ("M-e" symex-eval-recursive)
    ("T" symex-evaluate-thunk)
    ("t" symex-switch-to-scratch-buffer)
-   ("M" symex-switch-to-messages-buffer)
    ("r" symex-repl)
    ("R" symex-run)
    ("|" symex-split)

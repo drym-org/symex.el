@@ -156,14 +156,6 @@ Version 2017-11-01"
   (interactive)
   (funcall (symex-interface-get-method :switch-to-scratch-buffer)))
 
-(defun symex-switch-to-messages-buffer ()
-  "Switch to messages buffer while retaining focus in original window."
-  (interactive)
-  (switch-to-buffer-other-window "*Messages*")
-  (goto-char (point-max))
-  (recenter)
-  (evil-window-mru))
-
 (defun symex-user-select-nearest ()
   "Select symex nearest to point.
 
