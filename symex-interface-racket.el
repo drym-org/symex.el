@@ -74,10 +74,7 @@ Based on `racket--send-region-to-repl' from `racket-mode'."
   "Eval last sexp.
 
 Accounts for different point location in evil vs Emacs mode."
-  (save-excursion
-    (when (equal evil-state 'normal)
-      (forward-char))
-    (racket-send-last-sexp)))
+  (racket-send-last-sexp))
 
 (defun symex-eval-pretty-racket ()
   "Evaluate symex and render the result in a useful string form."
