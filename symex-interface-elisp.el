@@ -25,7 +25,6 @@
 
 ;;; Code:
 
-(require 'evil nil :no-error)
 (require 'symex-interop)
 (require 'symex-interface)
 

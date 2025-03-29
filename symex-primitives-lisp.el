@@ -31,7 +31,6 @@
 
 
 (require 'paredit)
-(require 'evil nil :no-error)
 (require 'symex-data)
 (require 'symex-utils)
 (require 'symex-interface)

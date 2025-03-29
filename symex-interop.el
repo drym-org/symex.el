@@ -27,6 +27,7 @@
 
 ;;; Code:
 
+(require 'evil nil :no-error)
 (require 'symex-custom)
 (require 'symex-primitives)
 
