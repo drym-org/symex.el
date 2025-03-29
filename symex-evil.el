@@ -26,7 +26,7 @@
 ;;; Code:
 
 (require 'evil)
-(require 'symex-misc)
+(require 'symex-motions)
 
 (defun symex-evil-repeat-start-recording-advice (&rest _)
   "Prepare the current command for recording the repetition.

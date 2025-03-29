@@ -31,7 +31,7 @@
 (require 'symex-transformations-ts)
 
 (require 'evil nil :no-error)
-(require 'symex-misc)
+(require 'symex-motions)
 (require 'symex-tree)
 (require 'symex-primitives)
 (require 'symex-primitives-lisp)

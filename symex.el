@@ -43,7 +43,7 @@
 (require 'symex-interop)
 (when (symex--evil-installed-p)
   (require 'symex-evil))
-(require 'symex-misc)
+(require 'symex-motions)
 (require 'symex-tree)
 (require 'symex-interface-builtins)
 (require 'symex-transformations)

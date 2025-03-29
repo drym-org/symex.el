@@ -29,7 +29,7 @@
 (require 'cl-lib)
 
 (require 'symex-ui)
-(require 'symex-misc)
+(require 'symex-motions)
 (require 'symex-tree)
 (require 'symex-runtime)
 (require 'symex-transformations)
