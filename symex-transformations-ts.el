@@ -28,6 +28,7 @@
 
 (require 'symex-utils)
 (require 'symex-ts)
+(require 'symex-primitives)
 
 (defun symex-ts--change-notifier (_ranges _parser &rest _args)
   "Notify of any changes to the contents of the buffer."
@@ -200,6 +201,19 @@ DIRECTION should be either the symbol `before' or `after'."
   "Auto-indent symex and fix any whitespace."
   ;; Update current node from point and reindent if necessary
   (indent-according-to-mode))
+
+(defun symex-ts--append-newline ()
+  "Append COUNT newlines after symex."
+  (let ((end (symex--get-end-point 1)))
+    (symex-save-excursion
+      (goto-char end)
+      (newline-and-indent 1)
+      (fixup-whitespace))))
+
+(defun symex-ts-append-newline (count)
+  "Append COUNT newlines after symex."
+  (dotimes (_ count)
+    (symex-ts--append-newline)))
 
 (defun symex-ts--not-implemented ()
   "Features that are not implemented for treesitter."

@@ -417,7 +417,7 @@ New list delimiters are determined by the TYPE."
   "Append COUNT newlines after symex."
   (interactive "p")
   (if (symex-ts-available-p)
-      (symex-ts--not-implemented)
+      (symex-ts-append-newline count)
     (symex-lisp-append-newline count)))
 
 (symex-define-command symex-swallow ()
