@@ -44,7 +44,7 @@
 (when (symex--evil-installed-p)
   (require 'symex-evil))
 (require 'symex-misc)
-(require 'symex-interface)
+(require 'symex-interface-builtins)
 (require 'symex-transformations)
 (require 'symex-primitives)
 (require 'symex-custom)
