@@ -25,7 +25,7 @@
 
 ;;; Code:
 
-(require 'evil)
+(require 'evil nil :no-error)
 (require 'symex-motions)
 
 (defun symex-evil-repeat-start-recording-advice (&rest _)
