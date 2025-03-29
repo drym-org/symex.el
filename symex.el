@@ -154,6 +154,10 @@ advises functions to enable or disable features based on user configuration."
     (advice-add #'symex-go-up :around #'symex--return-to-branch-position)
     (advice-add #'symex-go-backward :around #'symex--forget-branch-positions)
     (advice-add #'symex-go-forward :around #'symex--forget-branch-positions))
+  ;; any side effects that should happen as part of selection,
+  ;; e.g., update overlay
+  (advice-add #'symex-user-select-nearest :after #'symex--selection-side-effects)
+  (advice-add #'symex-select-nearest-in-line :after #'symex--selection-side-effects)
   ;; initialize modal interface frontend
   (symex-modal-provider-initialize)
   ;; initialize repeat command and other evil interop
@@ -180,6 +184,8 @@ configuration to be disabled and the new one adopted."
   (advice-remove #'symex-go-up #'symex--return-to-branch-position)
   (advice-remove #'symex-go-backward #'symex--forget-branch-positions)
   (advice-remove #'symex-go-forward #'symex--forget-branch-positions)
+  (advice-remove #'symex-user-select-nearest #'symex--selection-side-effects)
+  (advice-remove #'symex-select-nearest-in-line #'symex--selection-side-effects)
   (when (symex--evil-installed-p)
     (symex-disable-evil)))
 

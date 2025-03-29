@@ -48,11 +48,7 @@ For the deterministic version used at the primitive level, see
 This also may entail hooks and advice, which would be absent in the
 primitive version."
   (interactive)
-  (symex-select-nearest)
-  ;; any side effects that should happen as part of selection,
-  ;; e.g., update overlay
-  ;; TODO: move to advice at init time
-  (symex--selection-side-effects))
+  (symex-select-nearest))
 
 (defun symex-select-nearest-in-line ()
   "Select symex nearest to point that's on the current line."
@@ -62,11 +58,9 @@ primitive version."
       (symex-select-nearest)
       (unless (= (line-number-at-pos)
                  (line-number-at-pos original-pos))
-        (goto-char original-pos)))
-    ;; TODO: move to advice at init time
-    (symex--selection-side-effects)))
+        (goto-char original-pos)))))
 
-(defun symex--selection-side-effects ()
+(defun symex--selection-side-effects (&rest _)
   "Things to do as part of symex selection, e.g. after navigations."
   (when symex-highlight-p
     (symex--update-overlay)))
