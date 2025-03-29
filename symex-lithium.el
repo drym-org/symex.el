@@ -30,6 +30,7 @@
 
 (require 'symex-ui)
 (require 'symex-misc)
+(require 'symex-tree)
 (require 'symex-runtime)
 (require 'symex-transformations)
 (require 'symex-interop)

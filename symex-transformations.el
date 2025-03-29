@@ -32,6 +32,7 @@
 
 (require 'evil nil :no-error)
 (require 'symex-misc)
+(require 'symex-tree)
 (require 'symex-primitives)
 (require 'symex-primitives-lisp)
 (require 'symex-utils)
