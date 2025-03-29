@@ -360,6 +360,13 @@ symexes, returns the end point of the last one found."
     ;; separator not relevant for lisp
     (symex-lisp--get-end-point count include-whitespace)))
 
+(defun symex-copy (&optional count)
+  "Copy COUNT symexes."
+  (let ((count (or count 1)))
+    (let ((start (symex--get-starting-point))
+          (end (symex--get-end-point count)))
+      (buffer-substring start end))))
+
 (defun symex-select-end (count &optional include-whitespace include-separator)
   "Select endpoint of symex nearest to point."
   (goto-char (symex--get-end-point count include-whitespace include-separator))

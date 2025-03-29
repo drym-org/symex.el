@@ -444,9 +444,7 @@ in the parent symex."
   "Raise symex by replacing the containing one."
   (interactive)
   (unless (symex--point-at-root-symex-p)
-    (let* ((current-start (point))
-           (current-end (symex--get-end-point 1))
-           (current (buffer-substring current-start current-end))
+    (let* ((current (symex-copy))
            (start (symex-save-excursion (symex--go-down)
                                         (point)))
            (end (symex-save-excursion (symex--go-down)
