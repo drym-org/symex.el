@@ -131,26 +131,6 @@ executing it."
   (interactive)
   (funcall (symex-interface-get-method :run)))
 
-(cl-defun symex--new-scratch-buffer (buffer-name)
-  "Create a new empty buffer.
-
-The buffer will be named BUFFER-NAME and will be created in the
-currently active (at the time of command execution) major mode.
-As a \"scratch\" buffer, its contents will be treated as
-disposable, and it will not prompt to save if it is closed or
-if Emacs is exited.
-
-Modified from:
-URL `https://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
-Version 2017-11-01"
-  (interactive)
-  (let (($buf (generate-new-buffer buffer-name))
-        (major-mode-to-use major-mode))
-    (with-current-buffer $buf
-      (funcall major-mode-to-use)
-      (setq buffer-offer-save nil))
-    $buf))
-
 (defun symex-user-select-nearest ()
   "Select symex nearest to point.
 
