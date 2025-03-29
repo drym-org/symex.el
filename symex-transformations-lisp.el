@@ -362,11 +362,6 @@ in the parent symex."
     (paredit-splice-sexp-killing-forward)
     (symex--go-backward)))
 
-(defun symex-lisp-raise ()
-  "Raise symex by replacing the containing one."
-  (unless (symex--point-at-root-symex-p)
-    (paredit-raise-sexp)))
-
 (defun symex-lisp-append-newline (count)
   "Append COUNT newlines after symex."
   (save-excursion

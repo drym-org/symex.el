@@ -443,9 +443,17 @@ in the parent symex."
 (symex-define-command symex-raise ()
   "Raise symex by replacing the containing one."
   (interactive)
-  (if (symex-ts-available-p)
-      (symex-ts--not-implemented)
-    (symex-lisp-raise)))
+  (unless (symex--point-at-root-symex-p)
+    (let* ((current-start (point))
+           (current-end (symex--get-end-point 1))
+           (current (buffer-substring current-start current-end))
+           (start (symex-save-excursion (symex--go-down)
+                                        (point)))
+           (end (symex-save-excursion (symex--go-down)
+                                      (symex--get-end-point 1))))
+      (symex--transform-in-isolation start end
+        (kill-region (point-min) (point-max))
+        (insert current)))))
 
 (defun symex--delete-pair ()
   "Delete a pair of characters enclosing sexps that follow point."
