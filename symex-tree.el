@@ -66,48 +66,6 @@ This does *not* include the current symex."
     (symex-eval symex--traversal-goto-lowest
                 symex--computation-traversal-length)))
 
-(defun symex-soar-backward (count)
-  "Leap backwards, crossing to a neighboring tree.
-
-At the moment, if a neighboring branch in the current tree is
-available in that direction, we leap to it.  In a future version of
-symex, this may be changed to always go to a neighboring tree,
-ignoring local branches.
-
-Leaps COUNT times, defaulting to once."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex--leap-backward t)))
-
-(defun symex-soar-forward (count)
-  "Leap forward, crossing to a neighboring tree.
-
-At the moment, if a neighboring branch in the current tree is
-available in that direction, we leap to it.  In a future version of
-symex, this may be changed to always go to a neighboring tree,
-ignoring local branches.
-
-Leaps COUNT times, defaulting to once."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex--leap-forward t)))
-
-(defun symex-leap-backward (count)
-  "Leap backward to a neighboring branch, preserving height and position.
-
-Leaps COUNT times, defaulting to once."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex--leap-backward)))
-
-(defun symex-leap-forward (count)
-  "Leap forward to a neighboring branch, preserving height and position.
-
-Leaps COUNT times, defaulting to once."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex--leap-forward)))
-
 (defun symex--tree-index ()
   "Index of current tree."
   (symex-save-excursion

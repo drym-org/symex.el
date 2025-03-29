@@ -35,38 +35,6 @@
 ;;; TRAVERSALS ;;;
 ;;;;;;;;;;;;;;;;;;
 
-(defun symex-go-forward (count)
-  "Move forward COUNT symexes."
-  (interactive "p")
-  ;; TODO: these should be compiled
-  ;; so that the actual executed traversal
-  ;; is (move N 0) rather than
-  ;; (move 1 0) executed N times
-  (symex-eval
-   (symex-traversal (circuit (move forward)
-                             count))))
-
-(defun symex-go-backward (count)
-  "Move backward COUNT symexes."
-  (interactive "p")
-  (symex-eval
-   (symex-traversal (circuit (move backward)
-                             count))))
-
-(defun symex-go-up (count)
-  "Move up COUNT symexes."
-  (interactive "p")
-  (symex-eval
-   (symex-traversal (circuit (move up)
-                             count))))
-
-(defun symex-go-down (count)
-  "Move down COUNT symexes."
-  (interactive "p")
-  (symex-eval
-   (symex-traversal (circuit (move down)
-                             count))))
-
 (symex-deftraversal symex--traversal-goto-first
   (circuit (move backward))
   "Go to first symex on the present branch.")
@@ -81,45 +49,10 @@
                (beforehand (not (at root)))))
   "Go to lowest (root) symex in present tree.")
 
-(defmacro symex-define-motion (name
-                               args
-                               docstring
-                               interactive-decl
-                               &rest
-                               body)
-  "Define a symex motion."
-  (declare (indent defun))
-  (eldoc-add-command name)
-  `(defun ,name ,args
-     ,docstring
-     ,interactive-decl
-     ,@body))
-
-(symex-define-motion symex-goto-first ()
-  "Select first symex at present level."
-  (interactive)
-  (symex-eval symex--traversal-goto-first)
-  (point))
-
-(symex-define-motion symex-goto-last ()
-  "Select last symex at present level."
-  (interactive)
-  (symex-eval symex--traversal-goto-last)
-  (point))
-
-(symex-define-motion symex-goto-lowest ()
-  "Select lowest symex."
-  (interactive)
-  (symex-eval symex--traversal-goto-lowest)
-  (point))
-
-(symex-define-motion symex-goto-highest ()
-  "Select highest symex."
-  (interactive)
-  (symex-eval (symex-traversal
-                            (circuit (venture (move up)
-                                              (circuit (move forward))))))
-  (point))
+(symex-deftraversal symex--traversal-goto-highest
+  (circuit (venture (move up)
+                    (circuit (move forward))))
+  "Go to highest symex in present tree.")
 
 ;; TODO: consider compiling `(move down)` to this?
 (symex-deftraversal symex--traversal-go-down
@@ -201,86 +134,6 @@ when the way is blocked.")
             (venture (move down)
                      (precaution symex--traversal-goto-first
                                  (beforehand (not (at root)))))))
-
-(symex-define-motion symex-traverse-forward (count)
-  "Traverse symex as a tree, using pre-order traversal.
-
-Executes the motion COUNT times."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex-eval symex--traversal-preorder)))
-
-(symex-define-motion symex-traverse-forward-more (count)
-  "Traverse symex as a tree, using pre-order traversal.
-
-Moves more steps at a time.  Executes the motion COUNT times."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex-traverse-forward 3)))
-
-(symex-define-motion symex-traverse-forward-in-tree (count)
-  "Traverse symex forward using pre-order traversal, stopping at end of tree.
-
-Executes the motion COUNT times."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex-eval symex--traversal-preorder-in-tree)))
-
-(symex-define-motion symex-traverse-forward-skip (count)
-  "Traverse symex as a tree, skipping forward.
-
-Executes the motion COUNT times."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex-eval symex--traversal-skip-forward)))
-
-(symex-define-motion symex-traverse-backward (count)
-  "Traverse symex as a tree, using converse post-order traversal.
-
-Executes the motion COUNT times."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex-eval symex--traversal-postorder)))
-
-(symex-define-motion symex-traverse-backward-more (count)
-  "Traverse symex as a tree, using pre-order traversal.
-
-Moves more steps at a time.  Executes the motion COUNT times."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex-traverse-backward 3)))
-
-(symex-define-motion symex-traverse-backward-in-tree (count)
-  "Traverse symex backward using post-order traversal, stopping at root of tree.
-
-Executes the motion COUNT times."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex-eval symex--traversal-postorder-in-tree)))
-
-(symex-define-motion symex-traverse-backward-skip (count)
-  "Traverse symex as a tree, skipping backwards.
-
-Executes the motion COUNT times."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex-eval symex--traversal-skip-backward)))
-
-(symex-define-motion symex-climb-branch (count)
-  "Climb up.
-
-Executes the motion COUNT times."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex-eval symex--traversal-climb-branch)))
-
-(symex-define-motion symex-descend-branch (count)
-  "Descend the tree.
-
-Executes the motion COUNT times."
-  (interactive "p")
-  (dotimes (_ count)
-    (symex-eval symex--traversal-descend-branch)))
 
 (defun symex--do-while-traversing (operation traversal)
   "Traverse a symex using TRAVERSAL and do OPERATION at each step."

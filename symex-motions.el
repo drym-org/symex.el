@@ -1,4 +1,4 @@
-;;; symex-misc.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
+;;; symex-motions.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
 
 ;; URL: https://github.com/drym-org/symex.el
 
@@ -21,21 +21,21 @@
 
 ;;; Commentary:
 
-;; Miscellaneous Lisp editing-related features
+;; Ways to move around in trees.
 
 ;;; Code:
 
 
 (require 'symex-custom)
 (require 'symex-primitives)
+(require 'symex-dsl)
 (require 'symex-traversals)
+(require 'symex-tree)
 (require 'symex-interop)
 (require 'symex-ui)
 
-;;;;;;;;;;;;;;;;;;;;;
-;;; MISCELLANEOUS ;;;
-;;;;;;;;;;;;;;;;;;;;;
-
+;; TODO: these "selection" functions aren't motions; maybe they ought
+;; to be filed in another module (`symex-user`?)
 (defun symex-user-select-nearest ()
   "Select symex nearest to point.
 
@@ -43,13 +43,16 @@ This user-level interface does the most intuitive thing from the perspective
 of the user, and isn't necessarily deterministic. It may select the next
 expression, the previous one, or the containing one, depending on context.
 For the deterministic version used at the primitive level, see
-`symex-select-nearest`."
+`symex-select-nearest`.
+
+This also may entail hooks and advice, which would be absent in the
+primitive version."
   (interactive)
   (symex-select-nearest)
-  (when (and (symex-right-p)
-             (looking-back symex--re-left
-                           (line-beginning-position)))
-    (symex-go-down 1)))
+  ;; any side effects that should happen as part of selection,
+  ;; e.g., update overlay
+  ;; TODO: move to advice at init time
+  (symex--selection-side-effects))
 
 (defun symex-select-nearest-in-line ()
   "Select symex nearest to point that's on the current line."
@@ -59,8 +62,212 @@ For the deterministic version used at the primitive level, see
       (symex-select-nearest)
       (unless (= (line-number-at-pos)
                  (line-number-at-pos original-pos))
-        (goto-char original-pos)))))
+        (goto-char original-pos)))
+    ;; TODO: move to advice at init time
+    (symex--selection-side-effects)))
 
+(defun symex--selection-side-effects ()
+  "Things to do as part of symex selection, e.g. after navigations."
+  (when symex-highlight-p
+    (symex--update-overlay)))
+
+(defmacro symex-define-motion (name
+                               args
+                               docstring
+                               interactive-decl
+                               &rest
+                               body)
+  "Define a symex motion."
+  (declare (indent defun))
+  (eldoc-add-command name)
+  (let ((result (gensym)))
+    `(defun ,name ,args
+       ,docstring
+       ,interactive-decl
+       (let ((,result (progn ,@body)))
+         (symex-user-select-nearest)
+         ,result))))
+
+(symex-define-motion symex-go-forward (count)
+  "Move forward COUNT symexes."
+  (interactive "p")
+  ;; TODO: these should be compiled
+  ;; so that the actual executed traversal
+  ;; is (move N 0) rather than
+  ;; (move 1 0) executed N times
+  (symex-eval
+   (symex-traversal (circuit (move forward)
+                             count))))
+
+(symex-define-motion symex-go-backward (count)
+  "Move backward COUNT symexes."
+  (interactive "p")
+  (symex-eval
+   (symex-traversal (circuit (move backward)
+                             count))))
+
+(symex-define-motion symex-go-up (count)
+  "Move up COUNT symexes."
+  (interactive "p")
+  (symex-eval
+   (symex-traversal (circuit (move up)
+                             count))))
+
+(symex-define-motion symex-go-down (count)
+  "Move down COUNT symexes."
+  (interactive "p")
+  (symex-eval
+   (symex-traversal (circuit (move down)
+                             count))))
+
+(symex-define-motion symex-goto-first ()
+  "Select first symex at present level."
+  (interactive)
+  (symex-eval symex--traversal-goto-first)
+  (point))
+
+(symex-define-motion symex-goto-last ()
+  "Select last symex at present level."
+  (interactive)
+  (symex-eval symex--traversal-goto-last)
+  (point))
+
+(symex-define-motion symex-goto-lowest ()
+  "Select lowest symex."
+  (interactive)
+  (symex-eval symex--traversal-goto-lowest)
+  (point))
+
+(symex-define-motion symex-goto-highest ()
+  "Select highest symex."
+  (interactive)
+  (symex-eval symex--traversal-goto-highest)
+  (point))
+
+(symex-define-motion symex-traverse-forward (count)
+  "Traverse symex as a tree, using pre-order traversal.
+
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-eval symex--traversal-preorder)))
+
+(symex-define-motion symex-traverse-forward-more (count)
+  "Traverse symex as a tree, using pre-order traversal.
+
+Moves more steps at a time.  Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-traverse-forward 3)))
+
+(symex-define-motion symex-traverse-forward-in-tree (count)
+  "Traverse symex forward using pre-order traversal, stopping at end of tree.
+
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-eval symex--traversal-preorder-in-tree)))
+
+(symex-define-motion symex-traverse-forward-skip (count)
+  "Traverse symex as a tree, skipping forward.
+
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-eval symex--traversal-skip-forward)))
+
+(symex-define-motion symex-traverse-backward (count)
+  "Traverse symex as a tree, using converse post-order traversal.
+
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-eval symex--traversal-postorder)))
+
+(symex-define-motion symex-traverse-backward-more (count)
+  "Traverse symex as a tree, using pre-order traversal.
+
+Moves more steps at a time.  Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-traverse-backward 3)))
+
+(symex-define-motion symex-traverse-backward-in-tree (count)
+  "Traverse symex backward using post-order traversal, stopping at root of tree.
+
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-eval symex--traversal-postorder-in-tree)))
+
+(symex-define-motion symex-traverse-backward-skip (count)
+  "Traverse symex as a tree, skipping backwards.
+
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-eval symex--traversal-skip-backward)))
+
+(symex-define-motion symex-climb-branch (count)
+  "Climb up.
+
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-eval symex--traversal-climb-branch)))
+
+(symex-define-motion symex-descend-branch (count)
+  "Descend the tree.
+
+Executes the motion COUNT times."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex-eval symex--traversal-descend-branch)))
+
+(symex-define-motion symex-soar-backward (count)
+  "Leap backwards, crossing to a neighboring tree.
+
+At the moment, if a neighboring branch in the current tree is
+available in that direction, we leap to it.  In a future version of
+symex, this may be changed to always go to a neighboring tree,
+ignoring local branches.
+
+Leaps COUNT times, defaulting to once."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex--leap-backward t)))
+
+(symex-define-motion symex-soar-forward (count)
+  "Leap forward, crossing to a neighboring tree.
+
+At the moment, if a neighboring branch in the current tree is
+available in that direction, we leap to it.  In a future version of
+symex, this may be changed to always go to a neighboring tree,
+ignoring local branches.
+
+Leaps COUNT times, defaulting to once."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex--leap-forward t)))
+
+(symex-define-motion symex-leap-backward (count)
+  "Leap backward to a neighboring branch, preserving height and position.
+
+Leaps COUNT times, defaulting to once."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex--leap-backward)))
+
+(symex-define-motion symex-leap-forward (count)
+  "Leap forward to a neighboring branch, preserving height and position.
+
+Leaps COUNT times, defaulting to once."
+  (interactive "p")
+  (dotimes (_ count)
+    (symex--leap-forward)))
+
+;; These two aren't defined as motions since their post-motion selection
+;; strategy is different.
 (defun symex-next-visual-line (&optional count)
   "Coordinate navigation to move down.
 
@@ -69,6 +276,8 @@ structurally in terms of the tree."
   (interactive "p")
   (next-line count)
   (symex-select-nearest-in-line))
+
+(eldoc-add-command 'symex-next-visual-line)
 
 (defun symex-previous-visual-line (&optional count)
   "Coordinate navigation to move up.
@@ -79,92 +288,12 @@ structurally in terms of the tree."
   (previous-line count)
   (symex-select-nearest-in-line))
 
+(eldoc-add-command 'symex-previous-visual-line)
+
 (defun symex-select-nearest-advice (&rest _)
   "Advice to select the nearest symex."
   (when symex-editing-mode
     (symex-user-select-nearest)))
 
-(defun symex--selection-side-effects ()
-  "Things to do as part of symex selection, e.g. after navigations."
-  (interactive)
-  (when symex-highlight-p
-    (symex--update-overlay)))
-
-(defun symex-selection-advice (orig-fn &rest args)
-  "Attach symex selection side effects to a given function.
-
-ORIG-FN could be any function that results in a symex being selected.
-ARGS are the arguments that were passed to ORIG-FN (as any advice function
-is expected to handle in Emacs)."
-  (interactive)
-  (let ((result (apply orig-fn args)))
-    (symex--selection-side-effects)
-    result))
-
-(defun symex-selection-motion-advice (orig-fn count &rest args)
-  "Attach symex selection side effects to a given function.
-
-This is a version of `symex-selection-advice` that preserves a numeric
-argument supplied by the user, and can be used when the underlying
-function expects to receive one.
-
-ORIG-FN could be any function that results in a symex being selected.
-COUNT is the numeric argument provided via interactive invocation.
-ARGS are the arguments that were passed to ORIG-FN (as any advice function
-is expected to handle in Emacs)."
-  (interactive "p")
-  (let ((result (apply orig-fn count args)))
-    (symex--selection-side-effects)
-    result))
-
-(defun symex--add-selection-advice ()
-  "Add selection advice."
-  (advice-add #'symex-go-forward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-go-backward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-go-up :around #'symex-selection-motion-advice)
-  (advice-add #'symex-go-down :around #'symex-selection-motion-advice)
-  (advice-add #'symex-traverse-forward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-traverse-backward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-traverse-forward-skip :around #'symex-selection-motion-advice)
-  (advice-add #'symex-traverse-backward-skip :around #'symex-selection-motion-advice)
-  (advice-add #'symex-leap-forward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-leap-backward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-soar-forward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-soar-backward :around #'symex-selection-motion-advice)
-  (advice-add #'symex-goto-first :around #'symex-selection-advice)
-  (advice-add #'symex-goto-last :around #'symex-selection-advice)
-  (advice-add #'symex-goto-lowest :around #'symex-selection-advice)
-  (advice-add #'symex-goto-highest :around #'symex-selection-advice)
-  (advice-add #'symex-user-select-nearest :around #'symex-selection-advice))
-
-(defun symex--remove-selection-advice ()
-  "Remove selection advice."
-  (advice-remove #'symex-go-forward #'symex-selection-motion-advice)
-  (advice-remove #'symex-go-backward #'symex-selection-motion-advice)
-  (advice-remove #'symex-go-up #'symex-selection-motion-advice)
-  (advice-remove #'symex-go-down #'symex-selection-motion-advice)
-  (advice-remove #'symex-traverse-forward #'symex-selection-motion-advice)
-  (advice-remove #'symex-traverse-backward #'symex-selection-motion-advice)
-  (advice-remove #'symex-traverse-forward-skip #'symex-selection-motion-advice)
-  (advice-remove #'symex-traverse-backward-skip #'symex-selection-motion-advice)
-  (advice-remove #'symex-leap-forward #'symex-selection-motion-advice)
-  (advice-remove #'symex-leap-backward #'symex-selection-motion-advice)
-  (advice-remove #'symex-soar-forward #'symex-selection-motion-advice)
-  (advice-remove #'symex-soar-backward #'symex-selection-motion-advice)
-  (advice-remove #'symex-goto-first #'symex-selection-advice)
-  (advice-remove #'symex-goto-last #'symex-selection-advice)
-  (advice-remove #'symex-goto-lowest #'symex-selection-advice)
-  (advice-remove #'symex-goto-highest #'symex-selection-advice)
-  (advice-remove #'symex-user-select-nearest #'symex-selection-advice))
-
-(defun symex-exit-mode ()
-  "Take necessary action upon symex mode exit."
-  (when symex--original-blink-cursor-state
-    (blink-cursor-mode 1))
-  (when symex-refocus-p
-    (symex--restore-scroll-margin))
-  (symex--delete-overlay)
-  (symex--primitive-exit))
-
-(provide 'symex-misc)
-;;; symex-misc.el ends here
+(provide 'symex-motions)
+;;; symex-motions.el ends here

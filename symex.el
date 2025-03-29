@@ -48,6 +48,7 @@
 (require 'symex-interface-builtins)
 (require 'symex-transformations)
 (require 'symex-primitives)
+(require 'symex-ui)
 (require 'symex-custom)
 (require 'symex-ts)
 
@@ -121,6 +122,15 @@
     (symex--set-scroll-margin))
   (symex--enter-mode))
 
+(defun symex-exit-mode ()
+  "Take necessary action upon symex mode exit."
+  (when symex--original-blink-cursor-state
+    (blink-cursor-mode 1))
+  (when symex-refocus-p
+    (symex--restore-scroll-margin))
+  (symex--delete-overlay)
+  (symex--primitive-exit))
+
 (defun symex-modal-provider-initialize ()
   "Initialize the modal interface provider."
   (symex-lithium-initialize))
@@ -144,7 +154,6 @@ advises functions to enable or disable features based on user configuration."
     (advice-add #'symex-go-up :around #'symex--return-to-branch-position)
     (advice-add #'symex-go-backward :around #'symex--forget-branch-positions)
     (advice-add #'symex-go-forward :around #'symex--forget-branch-positions))
-  (symex--add-selection-advice)
   ;; initialize modal interface frontend
   (symex-modal-provider-initialize)
   ;; initialize repeat command and other evil interop
@@ -172,8 +181,7 @@ configuration to be disabled and the new one adopted."
   (advice-remove #'symex-go-backward #'symex--forget-branch-positions)
   (advice-remove #'symex-go-forward #'symex--forget-branch-positions)
   (when (symex--evil-installed-p)
-    (symex-disable-evil))
-  (symex--remove-selection-advice))
+    (symex-disable-evil)))
 
 ;;;###autoload
 (defun symex-mode-interface ()
