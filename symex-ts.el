@@ -437,7 +437,6 @@ symexes, returns the end point of the last one found."
           (progn (goto-char endpoint)
                  (if (and (not (eobp))
                           (symex-whitespace-p))
-                     endpoint
                      (1+ endpoint)
                    endpoint))
         endpoint))))
