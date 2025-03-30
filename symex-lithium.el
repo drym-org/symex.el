@@ -36,6 +36,8 @@
 (require 'symex-interop)
 (require 'symex-utils)
 
+(declare-function symex-exit-mode "symex.el")
+
 ;; TODO: others that could accept a count argument:
 ;; simple insert/append
 (lithium-define-local-mode symex-editing-mode
@@ -160,6 +162,8 @@
 
 (defun symex-lithium-initialize ()
   "Initialize lithium modal interface."
+  ;; If for whatever reason the Lihium mode must exit, ensure
+  ;; that any exit actions for symex mode are taken.
   (add-hook 'symex-editing-mode-pre-exit-hook #'symex-exit-mode))
 
 

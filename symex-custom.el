@@ -52,12 +52,12 @@
 
 (defcustom symex-quote-prefix-list (list "'" "`")
   "List of prefixes to cycle through while using `symex-cycle-quote`."
-  :type 'list
+  :type '(repeat string)
   :group 'symex)
 
 (defcustom symex-unquote-prefix-list (list "," ",@")
   "List of prefixes to cycle through while using `symex-cycle-unquote`."
-  :type 'list
+  :type '(repeat string)
   :group 'symex)
 
 (defcustom symex-common-lisp-backend 'slime

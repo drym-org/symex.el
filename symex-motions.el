@@ -71,7 +71,16 @@ primitive version."
                                interactive-decl
                                &rest
                                body)
-  "Define a symex motion."
+  "Define a symex motion.
+
+This is a thin wrapper around `defun', and thus takes similar
+arguments. In particular:
+
+NAME - the name of the motion.
+ARGS - any arguments, such as a count argument.
+DOCSTRING - a docstring
+INTERACTIVE-DECL - an `interactive' declaration
+BODY - the actual implementation of the motion."
   (declare (indent defun))
   (eldoc-add-command name)
   (let ((result (gensym)))
@@ -268,7 +277,7 @@ Leaps COUNT times, defaulting to once."
 This moves down COUNT lines in terms of buffer coordinates, rather than
 structurally in terms of the tree."
   (interactive "p")
-  (next-line count)
+  (forward-line count)
   (symex-select-nearest-in-line))
 
 (eldoc-add-command 'symex-next-visual-line)
@@ -279,7 +288,7 @@ structurally in terms of the tree."
 This moves up COUNT lines in terms of buffer coordinates, rather than
 structurally in terms of the tree."
   (interactive "p")
-  (previous-line count)
+  (forward-line (- count))
   (symex-select-nearest-in-line))
 
 (eldoc-add-command 'symex-previous-visual-line)

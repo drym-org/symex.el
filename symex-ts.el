@@ -190,7 +190,10 @@ leaf."
   "Ascend from NODE to parent recursively.
 
 Recursion will end when the parent node has a sibling or is the
-root."
+root.
+
+The INITIAL node is used to ensure that a parent is selected even if
+it doesn't have siblings if it changes point (TODO: clarify)."
   (let ((parent (symex-ts--get-parent node))
         (initial (or initial node)))
     (if parent
@@ -416,7 +419,9 @@ This is tree-sitter specific and meant for internal, primitive use."
 If the containing expression terminates earlier than COUNT
 symexes, returns the end point of the last one found.
 
-Note that this mutates point - it should not be called directly."
+Note that this mutates point - it should not be called directly.
+
+See `symex--get-end-point' for more on INCLUDE-SEPARATOR."
   (symex-ts-move-next-named-sibling (1- count))
   (let ((next (treesit-node-next-sibling symex-ts--current-node)))
     (if (and include-separator
@@ -429,7 +434,10 @@ Note that this mutates point - it should not be called directly."
   "Get the point value after COUNT symexes.
 
 If the containing expression terminates earlier than COUNT
-symexes, returns the end point of the last one found."
+symexes, returns the end point of the last one found.
+
+See `symex--get-end-point' for more on INCLUDE-WHITESPACE and
+INCLUDE-SEPARATOR."
   (symex-ts-save-excursion
     (let ((endpoint (symex-ts--get-end-point-helper count
                                                     include-separator)))

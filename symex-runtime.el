@@ -47,7 +47,7 @@
   (save-excursion
     (let ((count (min count
                       (symex-remaining-length))))
-      (dotimes (i count)
+      (dotimes (_ count)
         (symex--evaluate)
         (symex--go-forward)))))
 

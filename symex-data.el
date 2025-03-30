@@ -82,7 +82,9 @@ This sum indicates height and distance along the branches of the tree."
                      (+ y1 y2))))
 
 (defun symex--move-abs-+ (a b)
-  "Add two moves using vector addition of their absolute projections."
+  "Add two moves using vector addition of their absolute projections.
+
+A and B are the moves to be added."
   (let ((x1 (symex--move-x a))
         (y1 (symex--move-y a))
         (x2 (symex--move-x b))
@@ -384,7 +386,7 @@ This is the traversal that will be chosen if the condition is false."
     (error nil)))
 
 (defun symex--deletion-what (deletion)
-  "Get the 'what' component of a DELETION."
+  "Get the `what' component of a DELETION."
   (nth 1 deletion))
 
 (defun symex-paste-p (obj)

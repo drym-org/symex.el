@@ -156,16 +156,18 @@ MARKER is some kind of delimiter for the undo block, TODO."
          (with-current-buffer ,buffer-var
            (symex--undo-collapse-end ',marker))))))
 
-;; Modified from: https://stackoverflow.com/a/24283996
-;; In cases where we mutate the buffer within a save-excursion
-;; (e.g. by using symex--tidy), it seems that save-excursion
-;; does not return to the original point even if the mutation
-;; did not actually result in any changes. Instead, it seems
-;; to return to the beginning of the changed region, which
-;; for our purposes is sometimes one character before the
-;; original position. We use this simple macro to restore point
-;; to its exact original location.
 (defmacro symex--save-point-excursion (&rest forms)
+  "A more reliable `save-excursion' for when the buffer is mutated.
+
+In cases where we mutate the buffer within a save-excursion (e.g. by
+using `symex--tidy'), it seems that save-excursion does not return to
+the original point even if the mutation did not actually result in any
+changes. Instead, it seems to return to the beginning of the changed
+region, which for our purposes is sometimes one character before the
+original position. We use this simple macro to restore point to its
+exact original location.
+
+Modified from: https://stackoverflow.com/a/24283996"
   (declare (indent 0))
   (let ((old-point (gensym "old-point")))
     `(let ((,old-point (point)))
@@ -212,7 +214,7 @@ ring."
   "Compose kill ring entries.
 
 This concatenates the latest kill with the preceding one, treating the
-preceding one as the accumulator. "
+preceding one as the accumulator."
   (let ((latest (symex--kill-ring-pop)))
     (kill-append latest nil)))
 

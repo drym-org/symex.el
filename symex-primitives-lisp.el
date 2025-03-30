@@ -30,10 +30,13 @@
 ;;; Code:
 
 
+(require 'thingatpt)
 (require 'paredit)
 (require 'symex-data)
 (require 'symex-utils)
 (require 'symex-interface)
+
+(declare-function symex--ensure-minor-mode "symex.el")
 
 ;;;;;;;;;;;;;;;;;;
 ;;; PRIMITIVES ;;;
@@ -326,9 +329,9 @@ as special cases here."
       (symex--clojure-deref-reader-macro-p)
       (symex--clojure-literal-lambda-p)))
 
-(defun symex--re-or (&rest args)
-  "An OR combinator for regular expression strings."
-  (concat (string-join args "\\|") ))
+(defun symex--re-or (&rest strings)
+  "An OR combinator for regular expression STRINGS."
+  (concat (string-join strings "\\|") ))
 
 (defun symex--form-offset ()
   "Get the offset for entry into the form."
@@ -445,7 +448,7 @@ Note that this mutates point - it should not be called directly."
 If the containing expression terminates earlier than COUNT
 symexes, returns the end point of the last one found.
 
-If include-whitespace is non-nil, this returns the end point
+If INCLUDE-WHITESPACE is non-nil, this returns the end point
 including trailing whitespace at the end of the last symex."
   (save-excursion
     (let ((endpoint (symex-lisp--get-end-point-helper count)))

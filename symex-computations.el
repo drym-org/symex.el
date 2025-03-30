@@ -120,7 +120,7 @@ INPUT - the input."
   (let ((current (car components))
         (remaining (cdr components)))
     (if current
-        (funcall (symex--computation-decide computation)
+        (funcall (symex--computation-synthesize computation)
                  (symex-ruminate current
                                  input)
                  (symex--ruminate computation
@@ -139,7 +139,9 @@ INPUT - the input."
 (defconst symex--computation-default
   (symex-make-computation :perceive #'list
                           :synthesize #'append)
-  "Each move is wrapped in a list. These are concatenated using list
+  "The default computation done on traversals.
+
+Each move is wrapped in a list. These are concatenated using list
 concatenation.")
 
 (defun symex--const-1 (_x)
@@ -149,25 +151,36 @@ concatenation.")
 (defconst symex--computation-count-moves
   (symex-make-computation :perceive #'symex--const-1
                           :synthesize #'+)
-  "Each move is counted as 1, even zero moves.  The results are
+  "Count the number of moves made.
+
+Each move is counted as 1, even zero moves. The results are
 concatenated by addition.")
 
 (defconst symex--computation-traversal-length
   (symex-make-computation :perceive #'symex--move-length
                           :synthesize #'+)
-  "Each move that actually moves is counted as 1.  The results are
+  "Compute the length of the traversal.
+
+Each move that actually moves is counted as 1.  The results are
 concatenated by addition.")
 
 (defconst symex--computation-net-traversal-dimensions
   (symex-make-computation :perceive #'identity
                           :synthesize #'symex--move-+)
-  "X-axis (forward/backward) and y-axis (up/down) moves are added
-separately. The results are concatenated by vector addition.")
+  "Compute a delta from the initial position in terms of relative moves.
+
+X-axis (forward/backward) and y-axis (up/down) moves are added
+separately. The results are concatenated by vector addition.
+
+All (0, 0) results could be seen as representing positions in the tree
+that are sort of \"conjugate\" with the original.")
 
 (defconst symex--computation-traversal-dimensions
   (symex-make-computation :perceive #'identity
                           :synthesize #'symex--move-abs-+)
-  "X-axis (forward/backward) and y-axis (up/down) moves are added
+  "Compute the dimensions of the traversal in terms of distance covered.
+
+X-axis (forward/backward) and y-axis (up/down) moves are added
 separately as absolute (non-negative) values.  The results are
 concatenated by vector addition and represent how many total up/down
 steps and how many total forward/backward steps were taken.")
@@ -196,7 +209,9 @@ height as the original position."
 (defconst symex--computation-node-distance
   (symex-make-computation :perceive #'identity
                           :synthesize #'symex--move-delta-+)
-  "X-axis (forward/backward) and y-axis (up/down) moves are added
+  "Compute the coordinate distance between two nodes.
+
+X-axis (forward/backward) and y-axis (up/down) moves are added
 separately. The results are concatenated by vector addition. Index
 deltas are only added together when at the same height as the original
 position.")

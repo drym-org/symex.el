@@ -50,6 +50,7 @@
         (t (kill-sexp))))
 
 (defun symex-lisp-replace ()
+  "Replace contents of symex."
   (symex-lisp-clear)
   (forward-char (symex--form-offset)))
 
@@ -119,7 +120,10 @@ text, on the respective side."
     (buffer-substring start (point))))
 
 (defun symex-lisp--padding (&optional before)
-  "Determine paste padding needed for current point position."
+  "Determine paste padding needed for current point position.
+
+Padding is dependent on whether we are pasting BEFORE the current
+symex or after it."
   (if (symex-inside-empty-form-p)
       ""
     (let* ((after (not before))

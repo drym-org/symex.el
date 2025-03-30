@@ -33,7 +33,7 @@
 (declare-function fennel-repl "ext:fennel-mode")
 
 (defun symex-eval-thunk-fennel ()
-  "Evaluate symex as a 'thunk,' i.e. as a function taking no arguments."
+  "Evaluate symex as a \"thunk,\" i.e. as a function taking no arguments."
   (let ((thunk-code (string-join
                      `("("
                        ,(buffer-substring (symex--get-starting-point)

@@ -51,7 +51,7 @@ Based on `racket--send-region-to-repl' from `racket-mode'."
   (unless (racket--repl-session-id)
     (user-error "No REPL session available; run the file first"))
   ;; Capture source buffer in case something changes; see e.g. #407.
-  (let ((source-buffer (current-buffer)))
+  (let ((_source-buffer (current-buffer)))
     (racket--repl-forget-errors)
     (with-racket-repl-buffer
       (save-excursion
@@ -101,7 +101,7 @@ Accounts for different point location in evil vs Emacs mode."
   "Describe symbol at point."
   (let ((original-window (selected-window)))
     (cond (racket-xp-mode (racket-xp-describe))
-          ((eq major-mode 'racket-repl-mode) (racket-repl-describe))
+          ((derived-mode-p 'racket-repl-mode) (racket-repl-describe))
           (t (error "Enable racket-xp-mode or start the REPL!")))
     (select-window original-window)))
 

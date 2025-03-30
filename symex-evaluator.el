@@ -60,9 +60,19 @@ requiring changes to higher-level code that uses the present interface."
 (defun symex-eval-move (move &optional computation result)
   "Execute the MOVE as a traversal.
 
-This returns a list of moves (singleton, in this case) rather than the
-executed move itself.  TODO: not sure this is needed anymore.
-Optional argument COMPUTATION currently unused."
+Executing a move is the main base case of traversal execution, and
+this is where the overall computation is stitched together in terms of
+the executed move and the accumulated result.
+
+To do this, the executed move is first \"perceived\" (i.e., mapped),
+and then \"synthesized\" (i.e., combined) with the RESULT so far, as
+specified in the COMPUTATION being performed on the traversal.
+
+When COMPUTATION is left unspecified, `symex--computation-default' is
+used, guided by which, this function returns a list of moves made.
+Note that, in particular, if RESULT happens to be empty and if a move
+is made, then this doesn't return the executed move itself but rather,
+a singleton list containing the move."
   (let ((executed-move (symex--execute-tree-move move))
         (result (or result
                     (funcall (symex--computation-perceive computation)
@@ -74,12 +84,12 @@ Optional argument COMPUTATION currently unused."
                                  computation))))
 
 (defun symex-eval-maneuver (maneuver computation result)
-  "Attempt to execute a given MANEUVER.
+  "Execute a MANEUVER.
 
 Attempts the maneuver in the order of its phases.  The maneuver
 succeeds only if all of the phases succeed, and otherwise fails.
 
-Evaluates to a COMPUTATION on the traversal actually executed."
+See `symex-eval-move' for more on COMPUTATION and RESULT."
   (if (symex--maneuver-null-p maneuver)
       result
     (let ((current-phase (symex--maneuver-first maneuver))
@@ -93,7 +103,7 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                                executed-phase))))))
 
 (defun symex-eval-venture (venture computation result)
-  "Attempt to execute a given VENTURE.
+  "Execute a VENTURE.
 
 Similar to maneuver execution, except that it accepts partial
 completion.  That is, this attempts the venture in the order of its
@@ -104,7 +114,7 @@ ventured, then even though nothing is gained, it is considered to have
 succeeded.  In particular, venturing nothing is a base case in venture
 evaluation.
 
-Evaluates to a COMPUTATION on the traversal actually executed."
+See `symex-eval-move' for more on COMPUTATION and RESULT."
   (if (symex--venture-null-p venture)
       result
     (let ((current-phase (symex--venture-first venture))
@@ -126,7 +136,7 @@ Evaluates to a COMPUTATION on the traversal actually executed."
 
 This repeats some traversal as specified.
 
-Evaluates to a COMPUTATION on the traversal actually executed."
+See `symex-eval-move' for more on COMPUTATION and RESULT."
   (if (symex--circuit-null-p circuit)
       result
     (let ((traversal (symex--circuit-traversal circuit))
@@ -154,7 +164,7 @@ Evaluates to a COMPUTATION on the traversal actually executed."
 
 This repeats some traversal according to a condition on the computation.
 
-Evaluates to a COMPUTATION on the traversal actually executed."
+See `symex-eval-move' for more on COMPUTATION and RESULT."
   (let ((traversal (symex--loop-traversal loop))
         (condition (symex--loop-condition loop)))
     (let ((accumulated-result (symex-eval traversal
@@ -168,14 +178,14 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                            accumulated-result))))))
 
 (defun symex-eval-detour (detour computation result)
-  "Execute the DETOUR.
+  "Execute a DETOUR.
 
 Apply a reorientation and then attempt the traversal.
 
 If the traversal fails, then the reorientation is attempted as many times as
 necessary until either it succeeds, or the reorientation fails.
 
-Evaluates to a COMPUTATION on the traversal actually executed."
+See `symex-eval-move' for more on COMPUTATION and RESULT."
   (let ((reorientation (symex--detour-reorientation detour))
         (traversal (symex--detour-traversal detour)))
     (let ((executed-reorientation (symex-eval reorientation
@@ -189,12 +199,12 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                       executed-reorientation))))))
 
 (defun symex-eval-precaution (precaution computation result)
-  "Attempt to execute a given PRECAUTION.
+  "Execute a PRECAUTION.
 
 The traversal is only executed if PRE-CONDITION holds, and is reversed if
 POST-CONDITION does not hold after the provisional execution of the traversal.
 
-Evaluates to a COMPUTATION on the traversal actually executed."
+See `symex-eval-move' for more on COMPUTATION and RESULT."
   (let ((traversal (symex--precaution-traversal precaution))
         (pre-condition (symex--precaution-pre-condition precaution))
         (post-condition (symex--precaution-post-condition precaution)))
@@ -206,12 +216,12 @@ Evaluates to a COMPUTATION on the traversal actually executed."
           executed-traversal)))))
 
 (defun symex-eval-protocol (protocol computation result)
-  "Attempt to execute a given PROTOCOL.
+  "Execute a PROTOCOL.
 
 Given a protocol including a set of options, attempt to execute them
 in order until one succeeds.
 
-Evaluates to a COMPUTATION on the traversal actually executed."
+See `symex-eval-move' for more on COMPUTATION and RESULT."
   (unless (symex--protocol-null-p protocol)
     (let ((option (symex--protocol-first protocol))
           (remaining-protocol (symex--protocol-rest protocol)))
@@ -225,12 +235,12 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                                result))))))
 
 (defun symex-eval-decision (decision computation result)
-  "Attempt to execute a given DECISION.
+  "Execute a DECISION.
 
 The consequent traversal is executed if the condition holds, and the
 alternative traversal is executed if the condition does not hold.
 
-Evaluates to a COMPUTATION on the traversal actually executed."
+See `symex-eval-move' for more on COMPUTATION and RESULT."
   (let ((condition (symex--decision-condition decision))
         (consequent (symex--decision-consequent decision))
         (alternative (symex--decision-alternative decision)))
@@ -242,8 +252,8 @@ Evaluates to a COMPUTATION on the traversal actually executed."
                   computation
                   result))))
 
-(defun symex-eval-deletion (deletion computation result)
-  "Attempt to execute a given DELETION.
+(defun symex-eval-deletion (deletion _computation result)
+  "Execute a DELETION.
 
 This could delete `this`, `previous` or `next`. Of these, favor the
 latter two as those are explicit that the placement of point is
@@ -257,17 +267,17 @@ could be selected, or it should leave a void and have point indicate
 the whitespace there rather than explicitly select either the next or
 previous expression.
 
-Evaluates to a COMPUTATION on the traversal actually executed."
+See `symex-eval-move' for more on COMPUTATION and RESULT."
   (let ((what (symex--deletion-what deletion)))
     (let ((this-result (symex-prim-delete what)))
       ;; TODO: compute based on an appropriate result here
       (when this-result
         result))))
 
-(defun symex-eval-paste (paste computation result)
-  "Attempt to execute a given PASTE.
+(defun symex-eval-paste (paste _computation result)
+  "Execute a PASTE.
 
-Evaluates to a COMPUTATION on the traversal actually executed."
+See `symex-eval-move' for more on COMPUTATION and RESULT."
   (let ((side (symex--paste-side paste)))
     (let ((this-result (symex-prim-paste side)))
       ;; TODO: compute based on an appropriate result here
@@ -275,21 +285,23 @@ Evaluates to a COMPUTATION on the traversal actually executed."
         result))))
 
 (defun symex-eval-effect (effect computation result)
-  "Attempt to execute a given EFFECT.
+  "Execute an EFFECT.
 
-Evaluates to a COMPUTATION on the traversal actually executed."
+See `symex-eval-move' for more on COMPUTATION and RESULT."
   (let ((traversal (symex--effect-traversal effect))
         (effect (symex--effect-effect effect)))
     (let ((executed-traversal (symex-eval traversal
                                           computation
                                           result)))
       (when executed-traversal
-        (let ((executed-effect (funcall effect)))
+        (let ((_executed-effect (funcall effect)))
           ;; ignore the result of the effect
           executed-traversal)))))
 
 (defun symex--eval (traversal computation result)
-  "Helper to execute TRAVERSAL and perform COMPUTATION."
+  "Helper to execute TRAVERSAL.
+
+See `symex-eval-move' for more on COMPUTATION and RESULT."
   (cond ((symex-maneuver-p traversal)
          (symex-eval-maneuver traversal
                               computation
@@ -352,7 +364,15 @@ TRAVERSAL could be a move, a maneuver, or any other Symex traversal.
 If it is not a Symex expression, then it is assumed to be an ELisp
 function, and the rule for interpretation is to apply the function.
 
-Evaluates to a COMPUTATION on the traversal actually executed."
+The evaluation is done in a \"tail-recursive\" way, by passing the
+in-progress RESULT forward through subsequent stages of traversal
+evaluation.
+
+This function, along with any of the more specific traversal
+evaluators such as `symex-eval-maneuver', evaluates to a COMPUTATION
+on the traversal actually executed.
+
+See `symex-eval-move' for more on COMPUTATION and RESULT."
   (let* ((computation (if computation
                          computation
                        symex--computation-default))

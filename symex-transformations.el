@@ -65,7 +65,16 @@
 This wraps `defun' and performs a few additional things that we want
 to do as part of executing any Symex command, including updating the
 selected symex after the command, and reindenting. We also declare the
-function as repeatable via `evil-repeat'."
+function as repeatable via `evil-repeat'.
+
+As this is a wrapper around `defun', it takes similar arguments. In
+particular:
+
+NAME - the name of the command.
+ARGS - any arguments, such as a count argument.
+DOCSTRING - a docstring
+INTERACTIVE-DECL - an `interactive' declaration
+BODY - the actual implementation of the command."
   (declare (indent defun))
   (let ((result (gensym)))
     `(progn
@@ -96,7 +105,16 @@ function as repeatable via `evil-repeat'."
                                           interactive-decl
                                           &rest
                                           body)
-  "Define a symex command that enters an insertion state."
+  "Define a symex command that enters an insertion state.
+
+As this is a wrapper around `defun', it takes similar arguments. In
+particular:
+
+NAME - the name of the command.
+ARGS - any arguments, such as a count argument.
+DOCSTRING - a docstring
+INTERACTIVE-DECL - an `interactive' declaration
+BODY - the actual implementation of the command."
   (declare (indent defun))
   `(progn
      (defun ,name ,args
@@ -606,16 +624,28 @@ then no action is taken."
       (symex--shift-forward))))
 
 (defvar symex--delimiters
-  '(("(" . ")") ("[" . "]") ("{" . "}") ("<" . ">") ("\"" . "\"")))
+  '(("(" . ")") ("[" . "]") ("{" . "}") ("<" . ">") ("\"" . "\""))
+  "Known paired delimiters for use in \"surround\" functionality.")
 
 (defun symex--surround (open-delimiter close-delimiter start end)
+  "Wrap region with delimiters.
+
+Wraps the region bounded by START and END with OPEN-DELIMITER and
+CLOSE-DELIMITER, on either end, respectively."
   (goto-char end)
   (insert close-delimiter)
   (goto-char start)
   (insert open-delimiter))
 
 (defun symex--change-delimiter (&optional no-trim)
-  (let* ((open-delimiter (completing-read "Choose opening delimiter: " (mapcar 'car symex--delimiters)))
+  "Change delimiters around current symex.
+
+If NO-TRIM is non-nil (typically when the symex doesn't _already_ have
+delimiters around it), then don't trim the leading and trailing
+characters (i.e., what would be the old delimiters, since there aren't
+any) before wrapping with the new delimiters."
+  (let* ((open-delimiter (completing-read "Choose opening delimiter: "
+                                          (mapcar #'car symex--delimiters)))
          (close-delimiter (or (cdr (assoc open-delimiter symex--delimiters))
                               open-delimiter))
          (start (point-marker))

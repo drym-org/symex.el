@@ -118,7 +118,7 @@ Go forward COUNT times, defaulting to one.
 This is a Lisp motion primitive. It is an internal utility that avoids
 any user-level concerns such as symex selection via advice.  This
 should be used in all internal operations _above_ the primitive layer
-(e.g. favoring it over Emacs internal utilities like `forward-sexp`)
+\(e.g. favoring it over Emacs internal utilities like `forward-sexp`)
 that are not primarily user-directed."
   (interactive)
   (if (symex-ts-available-p)
@@ -133,7 +133,7 @@ Go backward COUNT times, defaulting to one.
 This is a Lisp motion primitive. It is an internal utility that avoids
 any user-level concerns such as symex selection via advice.  This
 should be used in all internal operations _above_ the primitive layer
-(e.g. favoring it over Emacs internal utilities like `forward-sexp`)
+\(e.g. favoring it over Emacs internal utilities like `forward-sexp`)
 that are not primarily user-directed."
   (interactive)
   (if (symex-ts-available-p)
@@ -148,7 +148,7 @@ Enter COUNT times, defaulting to one.
 This is a Lisp motion primitive. It is an internal utility that avoids
 any user-level concerns such as symex selection via advice.  This
 should be used in all internal operations _above_ the primitive layer
-(e.g. favoring it over Emacs internal utilities like `forward-sexp`)
+\(e.g. favoring it over Emacs internal utilities like `forward-sexp`)
 that are not primarily user-directed."
   (interactive)
   (if (symex-ts-available-p)
@@ -163,7 +163,7 @@ Exit COUNT times, defaulting to one.
 This is a Lisp motion primitive. It is an internal utility that avoids
 any user-level concerns such as symex selection via advice.  This
 should be used in all internal operations _above_ the primitive layer
-(e.g. favoring it over Emacs internal utilities like `forward-sexp`)
+\(e.g. favoring it over Emacs internal utilities like `forward-sexp`)
 that are not primarily user-directed."
   (interactive)
   (if (symex-ts-available-p)
@@ -182,7 +182,7 @@ that are not primarily user-directed."
     (indent-region start end)))
 
 (defun symex--tidy (count)
-  "Auto-indent symex and fix any whitespace."
+  "Auto-indent COUNT symexes and fix any whitespace."
   ;; Note that this does not fix leading whitespace
   ;; (e.g. via `symex--fix-leading-whitespace`)
   ;; as that apparently destroys the indentation clues
@@ -208,7 +208,10 @@ that are not primarily user-directed."
   "Delete COUNT symexes.
 
 This is a low-level utility that simply removes the indicated text
-from the buffer."
+from the buffer.
+
+See `symex--get-end-point' for more on INCLUDE-WHITESPACE and
+INCLUDE-SEPARATOR."
   ;; TODO: instead of having the count at the primitive level, have
   ;; each delete operation push onto a (yet to be implemented)
   ;; traversal memory stack. If the traversal is within a larger
@@ -233,7 +236,7 @@ from the buffer."
 (defun symex-prim-delete (what)
   "Delete WHAT symex.
 
-WHAT could be `this`, `next`, or `previous`."
+WHAT could be `this', `next', or `previous'."
   (let ((result))
     (condition-case nil
         (cond ((eq 'this what)
@@ -261,7 +264,7 @@ WHAT could be `this`, `next`, or `previous`."
 (defun symex-prim-paste (where)
   "Paste WHERE.
 
-WHERE could be either 'before or 'after"
+WHERE could be either `before' or `after'."
   ;; TODO: remove counts from primitives
   ;; as they aren't used
   (cond ((eq 'before where)
@@ -315,7 +318,7 @@ original."
 (defmacro symex-save-excursion (&rest body)
   "Execute BODY while preserving position in the tree.
 
-Like `save-excursion`, but in addition to preserving the point
+Like `save-excursion', but in addition to preserving the point
 position, this also preserves the structural position in the tree, for
 languages where point position doesn't uniquely identify a tree
 location (e.g. non-symex-based languages like Python)."
@@ -353,7 +356,14 @@ difference from the lowest such level."
   "Get the point value after COUNT symexes.
 
 If the containing expression terminates earlier than COUNT
-symexes, returns the end point of the last one found."
+symexes, returns the end point of the last one found.
+
+If INCLUDE-WHITESPACE is non-nil, it includes trailing whitespace at
+the end of the last symex.
+
+If INCLUDE-SEPARATOR is non-nil, it includes any trailing separators
+such as commas (Treesitter-only --- this isn't relevant for Lisp where
+there are no separators besides whitespace)."
   (if (symex-ts-available-p)
       (symex-ts--get-end-point count
                                include-whitespace
@@ -369,7 +379,10 @@ symexes, returns the end point of the last one found."
       (buffer-substring start end))))
 
 (defun symex-select-end (count &optional include-whitespace include-separator)
-  "Select endpoint of symex nearest to point."
+  "Select endpoint of COUNT symexes starting nearest to point.
+
+See `symex--get-end-point' for more on INCLUDE-WHITESPACE and
+INCLUDE-SEPARATOR."
   (goto-char (symex--get-end-point count include-whitespace include-separator))
   (point))
 
@@ -389,7 +402,7 @@ symexes, returns the end point of the last one found."
     (symex--go-to-next-non-whitespace-char)))
 
 (defun symex--fix-trailing-whitespace (count)
-  "Fix trailing whitespace."
+  "Fix trailing whitespace after COUNT symexes."
   (condition-case nil
       (save-excursion
         (symex-select-end count nil t)
