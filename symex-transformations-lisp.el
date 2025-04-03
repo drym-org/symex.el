@@ -145,7 +145,7 @@ symex or after it."
            (surrounding-lines-empty (and previous-line-empty
                                          next-line-empty))
            (paste-text-contains-newlines
-            (seq-contains-p (symex--current-kill) ?\n))
+            (string-match-p "\n" (symex--current-kill)))
            (at-eol (condition-case nil
                        (save-excursion (forward-sexp)
                                        (eolp))
