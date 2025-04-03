@@ -303,31 +303,32 @@ original."
   (declare (indent 2))
   (let ((original-major-mode (gensym))
         (mapped-major-mode (gensym))
+        (text-to-transform (gensym))
         (result (gensym)))
-    `(let ((,result))
-       (kill-region ,start ,end)
-       (kill-new
-        (let (,original-major-mode)
-          ;; In using a temp buffer to do the transformation here, we need to
-          ;; ensure that it uses the syntax table of the original buffer, since
-          ;; otherwise it doesn't necessarily treat characters the same way
-          ;; as the original buffer does, separating, for example, characters like
-          ;; `?` and `#` from the rest of the symbol during recursive indentation.
-          ;;
-          ;; The with-temp-buffer macro doesn't see the original syntax table
-          ;; when it is lexically defined here, not sure why. Defining a
-          ;; lexical scope here and then setting it dynamically via `setq`
-          ;; seems to work
-          (setq ,original-major-mode major-mode)
-          (let ((,mapped-major-mode (symex--map-major-mode ,original-major-mode)))
-            (with-temp-buffer
-              (funcall ,mapped-major-mode)
-              (yank)
-              (goto-char 0)
-              ,@body
-              (setq ,result (buffer-string))
-              ,result))))
-       (save-excursion (yank))
+    `(let ((,result)
+           (,text-to-transform (buffer-substring ,start ,end)))
+       ;; TODO: consider using `replace-region-contents'
+       (delete-region ,start ,end)
+       (let (,original-major-mode)
+         ;; In using a temp buffer to do the transformation here, we need to
+         ;; ensure that it uses the syntax table of the original buffer, since
+         ;; otherwise it doesn't necessarily treat characters the same way
+         ;; as the original buffer does, separating, for example, characters like
+         ;; `?` and `#` from the rest of the symbol during recursive indentation.
+         ;;
+         ;; The with-temp-buffer macro doesn't see the original syntax table
+         ;; when it is lexically defined here, not sure why. Defining a
+         ;; lexical scope here and then setting it dynamically via `setq`
+         ;; seems to work
+         (setq ,original-major-mode major-mode)
+         (let ((,mapped-major-mode (symex--map-major-mode ,original-major-mode)))
+           (with-temp-buffer
+             (funcall ,mapped-major-mode)
+             (insert ,text-to-transform)
+             (goto-char 0)
+             ,@body
+             (setq ,result (buffer-string)))))
+       (save-excursion (insert ,result))
        (indent-region (point)
                       (+ (point) (length ,result)))
        (symex-select-nearest))))
