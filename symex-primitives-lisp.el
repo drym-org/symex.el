@@ -463,7 +463,7 @@ including trailing whitespace at the end of the last symex."
 (defun symex-lisp--point-height-offset ()
   "Compute the height offset of the current symex.
 
-This is measured from the lowest symex indicated by point. For
+This is measured from the lowest symex indicated by point.  For
 symex-oriented languages like Lisp, this is always zero."
   0)
 
@@ -726,7 +726,7 @@ line."
   "Take necessary actions upon Symex mode exit.
 
 There are no Lisp-specific actions to take, at the present time, so
-this function does nothing. It is only here for completeness and
+this function does nothing.  It is only here for completeness and
 symmetry with the tree-sitter primitives."
   nil)
 

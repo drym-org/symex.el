@@ -172,7 +172,7 @@ This is the number of times the traversal should be repeated."
   "A circuit defined from the remaining repetitions of the traversal.
 
 This includes the remaining repetitions in CIRCUIT, not counting the
-first. This is useful for structural recursion during circuit
+first.  This is useful for structural recursion during circuit
 execution."
   (let ((traversal (symex--circuit-traversal circuit))
         (times (symex--circuit-times circuit)))

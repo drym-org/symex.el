@@ -161,12 +161,12 @@ MARKER is some kind of delimiter for the undo block, TODO."
 
 Evaluate FORMS, returning point to the original location at the end.
 
-In cases where we mutate the buffer within a `save-excursion' (e.g. by
-using `symex--tidy'), it seems that save-excursion does not return to
+In cases where we mutate the buffer within a `save-excursion' (e.g., by
+using `symex--tidy'), it seems that `save-excursion' does not return to
 the original point even if the mutation did not actually result in any
-changes. Instead, it seems to return to the beginning of the changed
+changes.  Instead, it seems to return to the beginning of the changed
 region, which for our purposes is sometimes one character before the
-original position. We use this simple macro to restore point to its
+original position.  We use this simple macro to restore point to its
 exact original location.
 
 Modified from: https://stackoverflow.com/a/24283996"

@@ -219,7 +219,7 @@ symex or after it."
   "Paste after symex.
 
 If a symex is currently selected, then paste after the end of the
-selected expression. Otherwise, paste in place."
+selected expression.  Otherwise, paste in place."
   (interactive)
   (let ((padding (symex-lisp--padding nil)))
     (when (symex-lisp--point-at-last-symex-p)

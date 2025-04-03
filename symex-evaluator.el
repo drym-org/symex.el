@@ -255,9 +255,9 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
 (defun symex-eval-deletion (deletion _computation result)
   "Execute a DELETION.
 
-This could delete `this`, `previous` or `next`. Of these, favor the
+This could delete `this`, `previous` or `next`.  Of these, favor the
 latter two as those are explicit that the placement of point is
-unaffected by the transformation. On the other hand, the first is
+unaffected by the transformation.  On the other hand, the first is
 provided as a convenience for cases where posterior placement of point
 is irrelevant for the purposes of the traversal, because, indeed,
 there is no fixed rule on where it will be placed.

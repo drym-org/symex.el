@@ -26,7 +26,7 @@
 ;; Sitter to navigate a buffer's abstract syntax tree.
 ;;
 ;; A hydra is also provided, however this is intended for debugging
-;; purposes. It allows the primitives to be used directly without the
+;; purposes.  It allows the primitives to be used directly without the
 ;; rest of Symex.
 
 ;;; Code:
@@ -37,7 +37,7 @@
   "Return a symbol to show what type of tree sitter library is available.
 
 `internal' means that Emacs has been compiled with native tree
-sitter support. `external' means that the `elisp-tree-sitter'
+sitter support.  `external' means that the `elisp-tree-sitter'
 package is being used instead."
   (if (and (fboundp 'treesit-available-p)
            (treesit-available-p))
@@ -157,7 +157,7 @@ start position as NODE."
   "Return the N-th sibling node from SRC-NODE.
 
 TRAVERSAL-FN should be a function which returns the next node in
-the chain. For example, to get the node two positions prior to
+the chain.  For example, to get the node two positions prior to
 SRC-NODE, use `symex-ts--get-prev-named-sibling'.
 
 If N traversals cannot be completed (e.g. if N is 3 but there are

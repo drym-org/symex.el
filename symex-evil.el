@@ -33,7 +33,7 @@
 
 This function is meant to advise `evil-repeat-pre-hook' which
 starts recording a repeation during the `pre-command-hook', but
-only records a repition when in normal or visual state. This
+only records a repition when in normal or visual state.  This
 calls `evil-repeat-start' if the buffer is currently in symex
 state."
   (when evil-local-mode
@@ -60,7 +60,7 @@ state."
 This function is meant to advise `evil-repeat-post-hook' which
 cleans up a recording during the `post-command-hook', but assumes
 no recording was started unless the buffer is in normal or visual
-state. This calls `evil-repeat-stop' if the buffer is currently
+state.  This calls `evil-repeat-stop' if the buffer is currently
 in symex state as well."
   (when (and evil-local-mode evil-recording-repeat)
     (let ((repeat-type (evil-repeat-type this-command t)))

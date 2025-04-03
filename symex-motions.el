@@ -40,7 +40,7 @@
   "Select symex nearest to point.
 
 This user-level interface does the most intuitive thing from the perspective
-of the user, and isn't necessarily deterministic. It may select the next
+of the user, and isn't necessarily deterministic.  It may select the next
 expression, the previous one, or the containing one, depending on context.
 For the deterministic version used at the primitive level, see
 `symex-select-nearest`.
@@ -74,7 +74,7 @@ primitive version."
   "Define a symex motion.
 
 This is a thin wrapper around `defun', and thus takes similar
-arguments. In particular:
+arguments.  In particular:
 
 NAME - the name of the motion.
 ARGS - any arguments, such as a count argument.

@@ -141,7 +141,7 @@ INPUT - the input."
                           :synthesize #'append)
   "The default computation done on traversals.
 
-Each move is wrapped in a list. These are concatenated using list
+Each move is wrapped in a list.  These are concatenated using list
 concatenation.")
 
 (defun symex--const-1 (_x)
@@ -153,7 +153,7 @@ concatenation.")
                           :synthesize #'+)
   "Count the number of moves made.
 
-Each move is counted as 1, even zero moves. The results are
+Each move is counted as 1, even zero moves.  The results are
 concatenated by addition.")
 
 (defconst symex--computation-traversal-length
@@ -170,7 +170,7 @@ concatenated by addition.")
   "Compute a delta from the initial position in terms of relative moves.
 
 X-axis (forward/backward) and y-axis (up/down) moves are added
-separately. The results are concatenated by vector addition.
+separately.  The results are concatenated by vector addition.
 
 All (0, 0) results could be seen as representing positions in the tree
 that are sort of \"conjugate\" with the original.")
@@ -212,7 +212,7 @@ height as the original position."
   "Compute the coordinate distance between two nodes.
 
 X-axis (forward/backward) and y-axis (up/down) moves are added
-separately. The results are concatenated by vector addition. Index
+separately.  The results are concatenated by vector addition.  Index
 deltas are only added together when at the same height as the original
 position.")
 

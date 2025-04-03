@@ -64,10 +64,10 @@
 
 This wraps `defun' and performs a few additional things that we want
 to do as part of executing any Symex command, including updating the
-selected symex after the command, and reindenting. We also declare the
+selected symex after the command, and reindenting.  We also declare the
 function as repeatable via `evil-repeat'.
 
-As this is a wrapper around `defun', it takes similar arguments. In
+As this is a wrapper around `defun', it takes similar arguments.  In
 particular:
 
 NAME - the name of the command.
@@ -107,7 +107,7 @@ BODY - the actual implementation of the command."
                                           body)
   "Define a symex command that enters an insertion state.
 
-As this is a wrapper around `defun', it takes similar arguments. In
+As this is a wrapper around `defun', it takes similar arguments.  In
 particular:
 
 NAME - the name of the command.
@@ -260,7 +260,7 @@ BODY - the actual implementation of the command."
   "Tidy symexes affected by line-oriented operations.
 
 This assumes that point is at the end of whatever change has been
-made, and tidies the next symex if it is on the same line. Then, it
+made, and tidies the next symex if it is on the same line.  Then, it
 continues tidying symexes as long as the next one begins on the same
 line that the preceding one ends on."
   (symex--save-point-excursion

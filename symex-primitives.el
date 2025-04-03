@@ -115,7 +115,7 @@
 
 Go forward COUNT times, defaulting to one.
 
-This is a Lisp motion primitive. It is an internal utility that avoids
+This is a Lisp motion primitive.  It is an internal utility that avoids
 any user-level concerns such as symex selection via advice.  This
 should be used in all internal operations _above_ the primitive layer
 \(e.g. favoring it over Emacs internal utilities like `forward-sexp`)
@@ -130,7 +130,7 @@ that are not primarily user-directed."
 
 Go backward COUNT times, defaulting to one.
 
-This is a Lisp motion primitive. It is an internal utility that avoids
+This is a Lisp motion primitive.  It is an internal utility that avoids
 any user-level concerns such as symex selection via advice.  This
 should be used in all internal operations _above_ the primitive layer
 \(e.g. favoring it over Emacs internal utilities like `forward-sexp`)
@@ -145,7 +145,7 @@ that are not primarily user-directed."
 
 Enter COUNT times, defaulting to one.
 
-This is a Lisp motion primitive. It is an internal utility that avoids
+This is a Lisp motion primitive.  It is an internal utility that avoids
 any user-level concerns such as symex selection via advice.  This
 should be used in all internal operations _above_ the primitive layer
 \(e.g. favoring it over Emacs internal utilities like `forward-sexp`)
@@ -160,7 +160,7 @@ that are not primarily user-directed."
 
 Exit COUNT times, defaulting to one.
 
-This is a Lisp motion primitive. It is an internal utility that avoids
+This is a Lisp motion primitive.  It is an internal utility that avoids
 any user-level concerns such as symex selection via advice.  This
 should be used in all internal operations _above_ the primitive layer
 \(e.g. favoring it over Emacs internal utilities like `forward-sexp`)
