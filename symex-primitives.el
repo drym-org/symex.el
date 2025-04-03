@@ -279,6 +279,21 @@ WHERE could be either `before' or `after'."
 
 ;;; Utilities
 
+(defvar symex--mode-mapping
+  '((inferior-emacs-lisp-mode . emacs-lisp-mode))
+  "Mapping of special modes to ordinary modes for symex transformations.")
+
+(defun symex--map-major-mode (mode)
+  "Map a major MODE to a more suitable one for symex transformations.
+
+This maps special modes like Elisp REPLs to their ordinary
+counterparts used in a source buffer, as using a REPL major mode for a
+transformation would produce unexpected results due to the presence of
+mode entry side effects, read-only regions, and other special regions
+like prompts."
+  (or (cdr (assoc mode symex--mode-mapping))
+      mode))
+
 (defmacro symex--transform-in-isolation (start end &rest body)
   "Transform a region in a temporary buffer and replace the original with it.
 
@@ -287,6 +302,7 @@ BODY, and pastes the result back into the source buffer, replacing the
 original."
   (declare (indent 2))
   (let ((original-major-mode (gensym))
+        (mapped-major-mode (gensym))
         (result (gensym)))
     `(let ((,result))
        (kill-region ,start ,end)
@@ -303,13 +319,14 @@ original."
           ;; lexical scope here and then setting it dynamically via `setq`
           ;; seems to work
           (setq ,original-major-mode major-mode)
-          (with-temp-buffer
-            (funcall ,original-major-mode)
-            (yank)
-            (goto-char 0)
-            ,@body
-            (setq ,result (buffer-string))
-            ,result)))
+          (let ((,mapped-major-mode (symex--map-major-mode ,original-major-mode)))
+            (with-temp-buffer
+              (funcall ,mapped-major-mode)
+              (yank)
+              (goto-char 0)
+              ,@body
+              (setq ,result (buffer-string))
+              ,result))))
        (save-excursion (yank))
        (indent-region (point)
                       (+ (point) (length ,result)))
