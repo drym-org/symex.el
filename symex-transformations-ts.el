@@ -184,19 +184,6 @@ DIRECTION should be either the symbol `before' or `after'."
       (symex-ts-clear)
       (goto-char new-pos))))
 
-(defun symex-ts-yank (count)
-  "Yank (copy) COUNT symexes."
-  (interactive "p")
-  ;; we set `last-command` here to avoid appending to the kill ring
-  ;; when it's a delete followed by a yank. We want to treat each as
-  ;; independent entries in the kill ring
-  (when (symex-ts-get-current-node)
-    (let* ((last-command nil)
-           (node (symex-ts-get-current-node))
-           (start (symex-ts--node-start-position node))
-           (end (symex-ts--get-end-point count t t)))
-      (copy-region-as-kill start end))))
-
 (defun symex-ts-tidy ()
   "Auto-indent symex and fix any whitespace."
   ;; Update current node from point and reindent if necessary

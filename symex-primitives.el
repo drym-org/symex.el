@@ -381,7 +381,9 @@ the end of the last symex.
 
 If INCLUDE-SEPARATOR is non-nil, it includes any trailing separators
 such as commas (Treesitter-only --- this isn't relevant for Lisp where
-there are no separators besides whitespace)."
+there are no separators besides whitespace).
+
+Whitespace in treesitter is counted *after* the separator."
   (if (symex-ts-available-p)
       (symex-ts--get-end-point count
                                include-whitespace
