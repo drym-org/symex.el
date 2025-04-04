@@ -88,7 +88,7 @@ BODY - the actual implementation of the motion."
        ,docstring
        ,interactive-decl
        (let ((,result (progn ,@body)))
-         (symex-user-select-nearest)
+         (symex--selection-side-effects)
          ,result))))
 
 (symex-define-motion symex-go-forward (count)
