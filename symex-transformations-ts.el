@@ -156,7 +156,7 @@ alias for inserting at the end."
 
 (defun symex-ts--append-newline ()
   "Append COUNT newlines after symex."
-  (let ((end (symex--get-end-point 1)))
+  (let ((end (symex--get-end-point 1 nil t)))
     (symex-save-excursion
       (goto-char end)
       (newline-and-indent 1)
