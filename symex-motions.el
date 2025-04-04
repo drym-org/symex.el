@@ -120,26 +120,20 @@ BODY - the actual implementation of the motion."
 (symex-define-motion symex-go-up (count)
   "Move up COUNT symexes."
   (interactive "p")
-  (let ((result (symex-eval
-                 (symex-traversal (circuit (move up)
-                                           count)))))
-    (when result
-      (when symex-remember-branch-positions-p
-        ;; TODO: this should ideally reflect in the traversal result
-        (symex--return-to-branch-position)))
-    result))
+  (if symex-remember-branch-positions-p
+      (symex--go-up-with-memory count)
+    (symex-eval
+     (symex-traversal (circuit (move up)
+                               count)))))
 
 (symex-define-motion symex-go-down (count)
   "Move down COUNT symexes."
   (interactive "p")
-  (let ((position (symex-index)))
-    (let ((result (symex-eval
-                   (symex-traversal (circuit (move down)
-                                             count)))))
-      (when result
-        (when symex-remember-branch-positions-p
-          (symex--remember-branch-position position)))
-      result)))
+  (if symex-remember-branch-positions-p
+      (symex--go-down-with-memory count)
+    (symex-eval
+     (symex-traversal (circuit (move down)
+                               count)))))
 
 (symex-define-motion symex-goto-first ()
   "Select first symex at present level."

@@ -124,11 +124,9 @@ This pushes the current position onto a stack, which is popped
 while ascending."
   (push position symex--branch-memory))
 
-(defun symex--return-to-branch-position ()
-  "Return to recalled position on the branch."
-  (let ((position (pop symex--branch-memory)))
-    (when position
-      (symex--execute-tree-move (symex-make-move position 0)))))
+(defun symex--recall-branch-position ()
+  "Recall position on the branch."
+  (pop symex--branch-memory))
 
 (defun symex--clear-branch-memory ()
   "Clear the branch memory stack.
@@ -154,6 +152,43 @@ This may be worth exploring as a defcustom."
 (defun symex--forget-branch-positions ()
   "Forget any stored branch positions when moving to a different tree."
   (setq symex--branch-memory nil))
+
+(defun symex--go-up-with-memory (count)
+  "Go up COUNT times, recalling previous positions along branches."
+  (let ((position))
+    (symex-eval
+     (symex-traversal
+       (circuit
+        (maneuver
+         (effect (setq position (symex--recall-branch-position))
+                 (move up))
+         (lambda ()
+           ;; As a fallback case, a symex traversal can be any lambda.
+           ;; We use one here because otherwise, if we just used
+           ;; `circuit' directly, `position' would evaluate statically
+           ;; to nil, and it wouldn't have access to its dynamic value
+           ;; read from the branch memory stack
+           (symex-eval
+            (symex-traversal
+              (circuit (move forward)
+                       ;; popping empty stack is nil,
+                       ;; so use 0 there instead
+                       (or position 0))))))
+        count)))))
+
+(defun symex--go-down-with-memory (count)
+  "Go down COUNT times, remembering branch positions along the way."
+  (let ((position))
+    (symex-eval
+     (symex-traversal
+       (circuit
+        (precaution
+         (move down)
+         (beforehand (lambda ()
+                       (setq position (symex-index))))
+         (afterwards (lambda ()
+                       (symex--remember-branch-position position))))
+        count)))))
 
 (provide 'symex-tree)
 ;;; symex-tree.el ends here
