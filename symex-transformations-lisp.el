@@ -103,22 +103,6 @@
              (backward-char))
     (forward-sexp)))
 
-(defun symex-lisp--paste (before after)
-  "Paste before, padding on either side.
-
-Paste text from the paste buffer, padding it with BEFORE and AFTER
-text, on the respective side."
-  (let* ((text-to-paste
-          ;; add the padding to the yanked text
-          (concat before
-                  (symex--current-kill)
-                  after))
-         ;; remember initial point location
-         (start (point)))
-    (insert text-to-paste)
-    (indent-region start (point))
-    (buffer-substring start (point))))
-
 (defun symex-lisp--padding (&optional before)
   "Determine paste padding needed for current point position.
 
@@ -186,6 +170,22 @@ symex or after it."
              ;; then don't add more
              "")
             (t " ")))))
+
+(defun symex-lisp--paste (before after)
+  "Paste before, padding on either side.
+
+Paste text from the paste buffer, padding it with BEFORE and AFTER
+text, on the respective side."
+  (let* ((text-to-paste
+          ;; add the padding to the yanked text
+          (concat before
+                  (symex--current-kill)
+                  after))
+         ;; remember initial point location
+         (start (point)))
+    (insert text-to-paste)
+    (indent-region start (point))
+    (buffer-substring start (point))))
 
 (defun symex-lisp--paste-before ()
   "Paste before symex."

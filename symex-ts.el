@@ -498,6 +498,18 @@ This is measured from the lowest symex indicated by point."
              (symex-ts-move-child offset)
              offset))))
 
+(defun symex-ts--padding (start end &optional before)
+  "Determine paste padding needed for current point position.
+
+Padding is dependent on whether we are pasting BEFORE the current
+symex or after it."
+  (let* ((indent-start (save-excursion (back-to-indentation) (point)))
+         (block-node (or (not (= (line-number-at-pos start)
+                                 (line-number-at-pos end)))
+                         (and (= start indent-start)
+                              (= end (line-end-position))))))
+    (if block-node "\n" " ")))
+
 (defun symex-ts-enter ()
   "Take necessary tree-sitter related actions upon entering Symex mode."
   (symex-ts-add-notifier))

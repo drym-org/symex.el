@@ -135,40 +135,6 @@ alias for inserting at the end."
     (indent-according-to-mode)
     (move-end-of-line 1)))
 
-(defun symex-ts--paste (count direction)
-  "Paste before or after symex, COUNT times, according to DIRECTION.
-
-DIRECTION should be either the symbol `before' or `after'."
-  (interactive)
-  (when (symex-ts-get-current-node)
-    (let* ((node (symex-ts-get-current-node))
-           (start (symex-ts--node-start-position node))
-           (end (symex-ts--get-end-point 1 t t))
-           (indent-start (save-excursion (back-to-indentation) (point)))
-           (block-node (or (not (= (line-number-at-pos start) (line-number-at-pos end)))
-                           (and (= start indent-start)
-                                (= end (line-end-position))))))
-      (goto-char (if (eq direction 'before) start end))
-      (dotimes (_ count)
-        (when (eq direction 'after)
-          (insert (if block-node "\n" " "))
-          (indent-according-to-mode))
-        (yank)
-        (when (eq direction 'before)
-          (insert (if block-node "\n" " "))
-          (indent-according-to-mode))))
-    t))
-
-(defun symex-ts-paste-after (count)
-  "Paste after symex, COUNT times."
-  (symex-ts-save-excursion
-    (symex-ts--paste count 'after)))
-
-(defun symex-ts-paste-before (count)
-  "Paste before symex, COUNT times."
-  (symex-ts-save-excursion
-    (symex-ts--paste count 'before)))
-
 (defun symex-ts-replace ()
   "Replace contents of symex."
   (when symex-ts--current-node

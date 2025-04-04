@@ -317,43 +317,20 @@ by default, joins next symex to current one."
   (let ((count (symex-remaining-length)))
     (symex-yank count)))
 
-(symex-define-command symex-paste-before (count)
-  "Paste before symex, COUNT times."
-  (interactive "p")
-  (when (symex--evil-installed-p)
-    (setq this-command 'evil-paste-before))
-  ;; typically (e.g. to follow the convention in evil), we
-  ;; want to select the start of the pasted text after
-  ;; pasting.
-  ;; TODO: make this post-paste selection a defcustom
-  (symex-eval
-   (symex-traversal
-    (decision (at first)
-              (maneuver (circuit (paste before)
-                                 count)
-                        (circuit (move backward)))
-              (maneuver (move backward)
-                        (circuit (paste after)
-                                 count)
-                        (move forward))))))
-
 (symex-define-command symex-paste-after (count)
   "Paste after symex, COUNT times."
   (interactive "p")
   (when (symex--evil-installed-p)
     (setq this-command 'evil-paste-after))
-  ;; TODO: user-level defcustom of whether to move
-  ;; to indicate pasted text (like evil), which should
-  ;; be checked here and appropriately applied. E.g.
-  ;; in Lisp, (|) currently would move when it shouldn't
-  ;; but it's a default that works in the majority of
-  ;; cases to provide evil-like behavior.
-  (symex-eval
-   (symex-traversal
-    (maneuver (circuit (paste after)
-                       count)
-              ;; select the start of pasted text.
-              (move forward)))))
+  (symex--paste count 'after))
+
+(symex-define-command symex-paste-before (count)
+  "Paste before symex, COUNT times."
+  (interactive "p")
+  (when (symex--evil-installed-p)
+    (setq this-command 'evil-paste-before))
+  (symex-save-excursion
+    (symex--paste count 'before)))
 
 (symex-define-insertion-command symex-open-line-after ()
   "Open new line after symex."

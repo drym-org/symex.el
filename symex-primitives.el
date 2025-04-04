@@ -264,18 +264,33 @@ WHAT could be `this', `next', or `previous'."
 (defun symex-prim-paste (where)
   "Paste WHERE.
 
-WHERE could be either `before' or `after'."
-  ;; TODO: remove counts from primitives
-  ;; as they aren't used
-  (cond ((eq 'before where)
-         (if (symex-ts-available-p)
-             (symex-ts-paste-before 1)
-           (symex-lisp-paste-before)))
-        ((eq 'after where)
-         (if (symex-ts-available-p)
-             (symex-ts-paste-after 1)
-           (symex-lisp-paste-after)))
-        (t (error "Invalid argument for primitive paste!"))))
+WHERE could be either `before' or `after'.
+
+This is the implementation of `paste' used in the DSL."
+  ;; TODO: we might want to introduce delete and paste
+  ;; counts into the DSL
+  (symex--paste 1 where))
+
+(defun symex--paste (count direction)
+  "Paste before or after symex, COUNT times, according to DIRECTION.
+
+DIRECTION should be either the symbol `before' or `after'."
+  (interactive)
+  (let* ((start (symex--get-starting-point))
+         (end (symex--get-end-point 1 nil t))
+         (padding (symex--paste-padding start end (eq direction' before))))
+    (goto-char (if (eq direction 'before)
+                   start
+                 end))
+    (dotimes (_ count)
+      (when (eq direction 'after)
+        (insert padding)
+        (indent-according-to-mode))
+      (yank)
+      (when (eq direction 'before)
+        (insert padding)
+        (indent-according-to-mode))))
+  t)
 
 ;;; Utilities
 
@@ -390,6 +405,15 @@ Whitespace in treesitter is counted *after* the separator."
                                include-separator)
     ;; separator not relevant for lisp
     (symex-lisp--get-end-point count include-whitespace)))
+
+(defun symex--paste-padding (start end &optional before)
+  "Determine paste padding needed for current point position.
+
+Padding is dependent on whether we are pasting BEFORE the current
+symex or after it."
+  (if (symex-ts-available-p)
+      (symex-ts--padding start end before)
+    (symex-lisp--padding before)))
 
 (defun symex-copy (&optional count)
   "Copy COUNT symexes."
