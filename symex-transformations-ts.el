@@ -184,11 +184,6 @@ DIRECTION should be either the symbol `before' or `after'."
       (symex-ts-clear)
       (goto-char new-pos))))
 
-(defun symex-ts-tidy ()
-  "Auto-indent symex and fix any whitespace."
-  ;; Update current node from point and reindent if necessary
-  (indent-according-to-mode))
-
 (defun symex-ts--append-newline ()
   "Append COUNT newlines after symex."
   (let ((end (symex--get-end-point 1)))
