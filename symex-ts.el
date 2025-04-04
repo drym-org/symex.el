@@ -502,7 +502,8 @@ This is measured from the lowest symex indicated by point."
   "Determine paste padding needed for current point position.
 
 Padding is dependent on whether we are pasting BEFORE the current
-symex or after it."
+symex or after it.  START and END are the bounds of the current symex
+that is the context for the paste."
   (let* ((indent-start (save-excursion (back-to-indentation) (point)))
          (block-node (or (not (= (line-number-at-pos start)
                                  (line-number-at-pos end)))

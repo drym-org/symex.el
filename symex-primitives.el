@@ -410,7 +410,8 @@ Whitespace in treesitter is counted *after* the separator."
   "Determine paste padding needed for current point position.
 
 Padding is dependent on whether we are pasting BEFORE the current
-symex or after it."
+symex or after it.  START and END are the bounds of the current symex
+that is the context for the paste."
   (if (symex-ts-available-p)
       (symex-ts--padding start end before)
     (symex-lisp--padding before)))
