@@ -148,12 +148,6 @@ advises functions to enable or disable features based on user configuration."
     (let ((mode-hook (intern (concat (symbol-name mode-name)
                                      "-hook"))))
       (add-hook mode-hook 'symex-mode)))
-  ;; advise functions to enable or disable configured features
-  (when symex-remember-branch-positions-p
-    (advice-add #'symex-go-down :around #'symex--remember-branch-position)
-    (advice-add #'symex-go-up :around #'symex--return-to-branch-position)
-    (advice-add #'symex-go-backward :around #'symex--forget-branch-positions)
-    (advice-add #'symex-go-forward :around #'symex--forget-branch-positions))
   ;; any side effects that should happen as part of selection,
   ;; e.g., update overlay
   (advice-add #'symex-user-select-nearest :after #'symex--selection-side-effects)
@@ -180,10 +174,6 @@ configuration to be disabled and the new one adopted."
                                      "-hook"))))
       (remove-hook mode-hook 'symex-mode)))
   ;; remove all advice
-  (advice-remove #'symex-go-down #'symex--remember-branch-position)
-  (advice-remove #'symex-go-up #'symex--return-to-branch-position)
-  (advice-remove #'symex-go-backward #'symex--forget-branch-positions)
-  (advice-remove #'symex-go-forward #'symex--forget-branch-positions)
   (advice-remove #'symex-user-select-nearest #'symex--selection-side-effects)
   (advice-remove #'symex-select-nearest-in-line #'symex--selection-side-effects)
   (when (symex--evil-installed-p)

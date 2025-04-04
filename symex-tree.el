@@ -117,33 +117,18 @@ measure them anywhere, we do this traversal in O(n)."
                               (= (symex--move-y acc) 0))))))
      symex--computation-node-distance)))
 
-(defun symex--remember-branch-position (orig-fn &rest args)
-  "Remember branch position when descending the tree.
+(defun symex--remember-branch-position (position)
+  "Remember branch POSITION when descending the tree.
 
 This pushes the current position onto a stack, which is popped
-while ascending.
+while ascending."
+  (push position symex--branch-memory))
 
-ORIG-FN applied to ARGS is the invocation being advised."
-  (let ((position (symex-index)))
-    (let ((result (apply orig-fn args)))
-      (when result
-        (push position symex--branch-memory))
-      result)))
-
-(defun symex--return-to-branch-position (orig-fn &rest args)
-  "Return to recalled position on the branch.
-
-ORIG-FN applied to ARGS is the invocation being advised."
-  (let ((result (apply orig-fn args)))
-    (when result
-      (let ((position (pop symex--branch-memory)))
-        (when position
-          (symex--execute-tree-move (symex-make-move position 0))
-          ;; this usually happens in `symex-define-motion'
-          ;; but since this advice happens after the motion
-          ;; is executed, we need to update the overlay here.
-          (symex--selection-side-effects))))
-    result))
+(defun symex--return-to-branch-position ()
+  "Return to recalled position on the branch."
+  (let ((position (pop symex--branch-memory)))
+    (when position
+      (symex--execute-tree-move (symex-make-move position 0)))))
 
 (defun symex--clear-branch-memory ()
   "Clear the branch memory stack.
@@ -166,14 +151,9 @@ assuming no knowledge of the tree at all.
 This may be worth exploring as a defcustom."
   (setq symex--branch-memory nil))
 
-(defun symex--forget-branch-positions (orig-fn &rest args)
-  "Forget any stored branch positions when moving to a different tree.
-
-ORIG-FN applied to ARGS is the invocation being advised."
-  (let ((result (apply orig-fn args)))
-    (when result
-      (setq symex--branch-memory nil))
-    result))
+(defun symex--forget-branch-positions ()
+  "Forget any stored branch positions when moving to a different tree."
+  (setq symex--branch-memory nil))
 
 (provide 'symex-tree)
 ;;; symex-tree.el ends here

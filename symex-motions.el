@@ -98,30 +98,48 @@ BODY - the actual implementation of the motion."
   ;; so that the actual executed traversal
   ;; is (move N 0) rather than
   ;; (move 1 0) executed N times
-  (symex-eval
-   (symex-traversal (circuit (move forward)
-                             count))))
+  (let ((result (symex-eval
+                 (symex-traversal (circuit (move forward)
+                                           count)))))
+    (when result
+      (when symex-remember-branch-positions-p
+        (symex--forget-branch-positions)))
+    result))
 
 (symex-define-motion symex-go-backward (count)
   "Move backward COUNT symexes."
   (interactive "p")
-  (symex-eval
-   (symex-traversal (circuit (move backward)
-                             count))))
+  (let ((result (symex-eval
+                 (symex-traversal (circuit (move backward)
+                                           count)))))
+    (when result
+      (when symex-remember-branch-positions-p
+        (symex--forget-branch-positions)))
+    result))
 
 (symex-define-motion symex-go-up (count)
   "Move up COUNT symexes."
   (interactive "p")
-  (symex-eval
-   (symex-traversal (circuit (move up)
-                             count))))
+  (let ((result (symex-eval
+                 (symex-traversal (circuit (move up)
+                                           count)))))
+    (when result
+      (when symex-remember-branch-positions-p
+        ;; TODO: this should ideally reflect in the traversal result
+        (symex--return-to-branch-position)))
+    result))
 
 (symex-define-motion symex-go-down (count)
   "Move down COUNT symexes."
   (interactive "p")
-  (symex-eval
-   (symex-traversal (circuit (move down)
-                             count))))
+  (let ((position (symex-index)))
+    (let ((result (symex-eval
+                   (symex-traversal (circuit (move down)
+                                             count)))))
+      (when result
+        (when symex-remember-branch-positions-p
+          (symex--remember-branch-position position)))
+      result)))
 
 (symex-define-motion symex-goto-first ()
   "Select first symex at present level."
