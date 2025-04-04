@@ -138,7 +138,11 @@ ORIG-FN applied to ARGS is the invocation being advised."
     (when result
       (let ((position (pop symex--branch-memory)))
         (when position
-          (symex--execute-tree-move (symex-make-move position 0)))))
+          (symex--execute-tree-move (symex-make-move position 0))
+          ;; this usually happens in `symex-define-motion'
+          ;; but since this advice happens after the motion
+          ;; is executed, we need to update the overlay here.
+          (symex--selection-side-effects))))
     result))
 
 (defun symex--clear-branch-memory ()
