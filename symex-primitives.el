@@ -277,7 +277,9 @@ This is the implementation of `paste' used in the DSL."
 DIRECTION should be either the symbol `before' or `after'."
   (interactive)
   (let* ((start (symex--get-starting-point))
-         (end (symex--get-end-point 1 nil t))
+         (end (condition-case nil
+                  (symex--get-end-point 1 nil t)
+                (error start)))
          (padding (symex--paste-padding start end (eq direction' before))))
     (goto-char (if (eq direction 'before)
                    start
