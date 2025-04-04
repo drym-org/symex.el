@@ -212,7 +212,10 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
       (let ((executed-traversal (symex-eval traversal
                                             computation
                                             result)))
-        (when (funcall post-condition)
+        (when (and executed-traversal
+                   (funcall post-condition))
+          ;; only check the post-condition if the traversal
+          ;; was successful
           executed-traversal)))))
 
 (defun symex-eval-protocol (protocol computation result)
