@@ -158,6 +158,10 @@ This may be worth exploring as a defcustom."
   (let ((position))
     (symex-eval
      (symex-traversal
+       ;; ideally, we need a version of `circuit' here that works
+       ;; like a venture rather than a maneuver, that is, which
+       ;; repeats as many times as possible up to count, considering
+       ;; it successful if it is done at least once.
        (circuit
         (maneuver
          (effect (setq position (symex--recall-branch-position))

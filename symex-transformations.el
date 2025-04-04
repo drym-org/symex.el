@@ -67,6 +67,14 @@ to do as part of executing any Symex command, including updating the
 selected symex after the command, and reindenting.  We also declare the
 function as repeatable via `evil-repeat'.
 
+This is meant to be used in defining *user-facing* commands. Commands
+defined this way should not be used programmatically in other features
+provided by Symex. If you ever have the need to do that, then move the
+business logic out of the `symex-define-command' definition into a
+separate `defun', and call it from the original command as well as
+from your new utility that uses that functionality (for an example of
+this, see `symex-tidy-remaining').
+
 As this is a wrapper around `defun', it takes similar arguments.  In
 particular:
 
@@ -248,13 +256,15 @@ BODY - the actual implementation of the command."
   "Join COUNT lines inside symex."
   (interactive "p")
   (dotimes (_ count)
-    (symex--join-lines)))
+    (symex--join-lines))
+  (symex--tidy-remaining))
 
 (symex-define-command symex-join-lines-backwards (count)
   "Join COUNT lines backwards inside symex."
   (interactive "p")
   (dotimes (_ count)
-    (symex--join-lines t)))
+    (symex--join-lines t))
+  (symex--tidy-remaining))
 
 (defun symex--same-line-tidy-affected ()
   "Tidy symexes affected by line-oriented operations.
@@ -411,14 +421,16 @@ New list delimiters are determined by the TYPE."
 (symex-define-command symex-insert-newline (count)
   "Insert COUNT newlines before symex."
   (interactive "p")
-  (newline-and-indent count))
+  (newline-and-indent count)
+  (symex--tidy-remaining))
 
 (symex-define-command symex-append-newline (count)
   "Append COUNT newlines after symex."
   (interactive "p")
   (if (symex-ts-available-p)
       (symex-ts-append-newline count)
-    (symex-lisp-append-newline count)))
+    (symex-lisp-append-newline count))
+  (symex--tidy-remaining))
 
 (symex-define-command symex-swallow ()
   "Swallow the head of the symex.
@@ -857,12 +869,16 @@ implementation."
     (symex--do-while-traversing (apply-partially #'symex-insert-newline 1)
                                 (symex-make-move 1 0))))
 
-(symex-define-command symex-tidy-remaining ()
-  "Tidy the remaining symexes."
-  (interactive)
+(defun symex--tidy-remaining ()
+  "Tidy the remaining symexes at present level."
   (symex--save-point-excursion
     (symex--do-while-traversing (apply-partially #'symex--tidy 1)
                                 (symex-make-move 1 0))))
+
+(symex-define-command symex-tidy-remaining ()
+  "Tidy the remaining symexes."
+  (interactive)
+  (symex--tidy-remaining))
 
 (symex-define-command symex-unfurl ()
   "Unfurl the constituent symexes so they each occupy separate lines."
