@@ -255,12 +255,13 @@ Automatically set it to the node at point if necessary."
 
 (defun symex-ts-set-current-node-from-point ()
   "Set the current node to the top-most node at point."
-  (if (and (looking-at-p symex--re-whitespace)
-           (looking-back symex--re-non-whitespace))
-      (progn (re-search-backward symex--re-whitespace)
-             (forward-char))
-    (symex--go-to-next-non-whitespace-char))
-  (symex-ts--set-current-node (symex-ts-get-topmost-node-at-point)))
+  (cond ((and (not symex-ts--current-node)
+              (looking-at-p symex--re-whitespace)
+              (looking-back symex--re-non-whitespace))
+         (re-search-backward symex--re-whitespace)
+         (forward-char))
+        (t (symex--go-to-next-non-whitespace-char)
+           (symex-ts--set-current-node (symex-ts-get-topmost-node-at-point)))))
 
 (defun symex-ts-get-topmost-node-at-point ()
   "Return the top-most node at the current point."

@@ -31,7 +31,11 @@
 (require 'symex-primitives)
 
 (defun symex-ts--change-notifier (_ranges _parser &rest _args)
-  "Notify of any changes to the contents of the buffer."
+  "Notify of any changes to the contents of the buffer.
+
+While in Symex mode, if there are any changes in the buffer (e.g., due
+to a mutative operation like delete) and if the selected node is no
+longer valid, then refresh to select a new current node near point."
   (when (and symex-editing-mode
              (treesit-node-check symex-ts--current-node 'outdated))
     (symex-ts-set-current-node-from-point)))
