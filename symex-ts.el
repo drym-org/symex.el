@@ -49,6 +49,29 @@
 (declare-function symex-ts--get-parent nil)
 (declare-function symex-ts--node-start-position nil)
 
+;; The use of these functions in this module is guarded by checks for
+;; the presence of tree-sitter in higher-level functions, so these
+;; should never get called on older versions of Emacs (<29.1) that
+;; don't have treesitter. But melpazoid still complains about their
+;; use as it doesn't know that they won't be called, so we declare
+;; these functions here and suppress those checks.
+(declare-function treesit-node-child-count nil)
+(declare-function treesit-node-descendant-for-range nil)
+(declare-function treesit-node-child nil)
+(declare-function treesit-node-parent nil)
+(declare-function treesit-node-prev-sibling nil)
+(declare-function treesit-node-at nil)
+(declare-function treesit-node-end nil)
+(declare-function treesit-node-eq nil)
+(declare-function treesit-node-start nil)
+(declare-function treesit-buffer-root-node nil)
+(declare-function treesit-parser-add-notifier nil)
+(declare-function treesit-parser-remove-notifier nil)
+(declare-function treesit-parser-list nil)
+(declare-function treesit-node-string nil)
+(declare-function treesit-node-type nil)
+(declare-function treesit-node-next-sibling nil)
+
 (defvar symex-clojure-modes)
 
 (defun symex-ts--current-ts-library ()
