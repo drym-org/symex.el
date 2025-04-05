@@ -128,7 +128,7 @@ return nil."
        ;; for it, since the Lisp primitives in Symex are
        ;; more mature than the Tree Sitter ones at the
        ;; present time.
-       (not (member major-mode symex-clojure-modes))))
+       (not (member major-mode symex-lisp-modes))))
 
 (defvar-local symex-ts--current-node nil "The current Tree Sitter node.")
 
