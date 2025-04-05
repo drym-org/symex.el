@@ -40,6 +40,10 @@
 (require 'symex-evaluator)
 (require 'symex-interop)
 
+;; avoid byte-compile warnings
+(declare-function evil-start-undo-step "ext:evil")
+(declare-function evil-add-command-properties "ext:evil")
+
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TRANSFORMATIONS ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;

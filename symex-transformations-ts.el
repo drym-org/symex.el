@@ -30,6 +30,13 @@
 (require 'symex-ts)
 (require 'symex-primitives)
 
+;; avoid byte-compile warnings
+(declare-function symex-ts--get-next-named-sibling "symex-ts.el")
+(declare-function symex-ts--node-end-position "symex-ts.el")
+(declare-function symex-ts--node-start-position "symex-ts.el")
+(declare-function symex-ts--get-nth-named-child "symex-ts.el")
+(declare-function symex-ts--count-named-children "symex-ts.el")
+
 (defun symex-ts--change-notifier (_ranges _parser &rest _args)
   "Notify of any changes to the contents of the buffer.
 

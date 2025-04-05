@@ -27,6 +27,17 @@
 
 (require 'evil nil :no-error)
 (require 'symex-motions)
+(require 'symex-lithium)
+
+;; avoid byte-compile warnings
+(defvar evil-local-mode)
+(defvar evil-recording-repeat)
+
+(declare-function evil-repeat-stop "ext:evil")
+(declare-function evil-repeat-start "ext:evil")
+(declare-function evil-mouse-events-p "ext:evil")
+(declare-function evil-repeat-force-abort-p "ext:evil")
+(declare-function evil-repeat-type "ext:evil")
 
 (defun symex-evil-repeat-start-recording-advice (&rest _)
   "Prepare the current command for recording the repetition.
@@ -78,6 +89,11 @@ in symex state as well."
                  (not (evil-mouse-events-p (this-command-keys)))
                  symex-editing-mode)
         (evil-repeat-stop)))))
+
+(defun symex-select-nearest-advice (&rest _)
+  "Advice to select the nearest symex."
+  (when symex-editing-mode
+    (symex-user-select-nearest)))
 
 (defun symex-initialize-evil ()
   "Initialize evil interop.

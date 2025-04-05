@@ -31,6 +31,13 @@
 
 (declare-function fennel-find-definition  "ext:fennel-mode")
 (declare-function fennel-repl "ext:fennel-mode")
+(declare-function lisp-eval-string "ext:lisp-mode")
+(declare-function lisp-eval-last-sexp "ext:lisp-mode")
+(declare-function lisp-eval-defun "ext:lisp-mode")
+(declare-function lisp-eval-region "ext:lisp-mode")
+
+;; from fennel-mode - avoid byte-compile warnings
+(defvar fennel-program)
 
 (defun symex-eval-thunk-fennel ()
   "Evaluate symex as a \"thunk,\" i.e. as a function taking no arguments."

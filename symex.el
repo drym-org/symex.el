@@ -41,8 +41,7 @@
 
 (require 'symex-lithium)
 (require 'symex-interop)
-(when (symex--evil-installed-p)
-  (require 'symex-evil))
+(require 'symex-evil)
 (require 'symex-motions)
 (require 'symex-tree)
 (require 'symex-interface-builtins)

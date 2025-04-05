@@ -34,10 +34,14 @@
 ;; from racket-mode - avoid byte-compile warnings
 (defvar racket-repl-buffer-name)
 (defvar racket-xp-mode)
+(defvar racket--repl-output-mark)
 
-(declare-function racket-repl "ext:racket-mode")
 (declare-function racket--repl-forget-errors "ext:racket-mode")
 (declare-function with-racket-repl-buffer "ext:racket-mode")
+(declare-function racket-edit-switch-to-repl "ext:racket-mode")
+(declare-function racket--cmd/async "ext:racket-mode")
+(declare-function racket--repl-delete-prompt-mark "ext:racket-mode")
+(declare-function racket--repl-session-id "ext:racket-mode")
 (declare-function racket-send-last-sexp "ext:racket-mode")
 (declare-function racket-send-definition "ext:racket-mode")
 (declare-function racket-xp-describe "ext:racket-mode")

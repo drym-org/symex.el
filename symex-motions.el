@@ -305,10 +305,5 @@ structurally in terms of the tree."
 
 (eldoc-add-command 'symex-previous-visual-line)
 
-(defun symex-select-nearest-advice (&rest _)
-  "Advice to select the nearest symex."
-  (when symex-editing-mode
-    (symex-user-select-nearest)))
-
 (provide 'symex-motions)
 ;;; symex-motions.el ends here

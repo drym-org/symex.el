@@ -31,6 +31,24 @@
 
 ;;; Code:
 
+(require 'treesit nil :no-error)
+
+;; TODO: Emacs can't find these when you try to visit their definitions,
+;; and they also raise byte-compile warnings, though they are locally
+;; defined (but inside the `symex-ts--init-treesit-builtin' function)
+(declare-function symex-ts--node-end-position nil)
+(declare-function symex-ts--get-next-sibling nil)
+(declare-function symex-ts--get-prev-sibling nil)
+(declare-function symex-ts--count-named-children nil)
+(declare-function symex-ts--get-named-descendant-for-position-range nil)
+(declare-function symex-ts--get-nth-named-child nil)
+(declare-function symex-ts--get-next-named-sibling nil)
+(declare-function symex-ts--get-prev-named-sibling nil)
+(declare-function symex-ts--root-node nil)
+(declare-function symex-ts--node-eq nil)
+(declare-function symex-ts--get-parent nil)
+(declare-function symex-ts--node-start-position nil)
+
 (defvar symex-clojure-modes)
 
 (defun symex-ts--current-ts-library ()
@@ -257,7 +275,7 @@ Automatically set it to the node at point if necessary."
   "Set the current node to the top-most node at point."
   (cond ((and (not symex-ts--current-node)
               (looking-at-p symex--re-whitespace)
-              (looking-back symex--re-non-whitespace))
+              (looking-back symex--re-non-whitespace (line-beginning-position)))
          (re-search-backward symex--re-whitespace)
          (forward-char))
         (t (symex--go-to-next-non-whitespace-char)
@@ -499,12 +517,11 @@ This is measured from the lowest symex indicated by point."
              (symex-ts-move-child offset)
              offset))))
 
-(defun symex-ts--padding (start end &optional before)
+(defun symex-ts--padding (start end)
   "Determine paste padding needed for current point position.
 
-Padding is dependent on whether we are pasting BEFORE the current
-symex or after it.  START and END are the bounds of the current symex
-that is the context for the paste."
+START and END are the bounds of the current symex that is the context
+for the paste."
   (let* ((indent-start (save-excursion (back-to-indentation) (point)))
          (block-node (or (not (= (line-number-at-pos start)
                                  (line-number-at-pos end)))

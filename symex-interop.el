@@ -35,6 +35,7 @@
 ;; order so this is unnecessary
 (defvar chimera-symex-mode)
 (defvar rigpa-mode)
+(defvar evil-mode)
 
 ;; temporary stubbing non-evil modal users
 (when (not (boundp 'evil))
@@ -44,6 +45,9 @@
 (declare-function rigpa-enter-higher-level "ext:ignore")
 (declare-function rigpa-enter-lower-level "ext:ignore")
 (declare-function rigpa-enter-lowest-level "ext:ignore")
+(declare-function evil-insert-state "ext:evil")
+(declare-function evil-emacs-state "ext:evil")
+(declare-function evil-normal-state "ext:evil")
 
 (defvar-local symex--original-scroll-margin nil)
 (defvar-local symex--original-max-scroll-margin nil)

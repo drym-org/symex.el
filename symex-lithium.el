@@ -38,6 +38,13 @@
 
 (declare-function symex-exit-mode "symex.el")
 
+;; this is dynamically referenced in the lithium defining macros and
+;; causes a byte compile warning here. The current approach seems
+;; fine; not sure if there's an alternative that would avoid the
+;; warning. But we just handle it in the usual way here, by declaring
+;; the variable.
+(defvar symex-editing-mode-map)
+
 ;; TODO: others that could accept a count argument:
 ;; simple insert/append
 (lithium-define-local-mode symex-editing-mode
