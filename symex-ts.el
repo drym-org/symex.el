@@ -416,7 +416,7 @@ This is tree-sitter specific and meant for internal, primitive use."
 
 (defun symex-ts--get-starting-point ()
   "Get the point value at the start of the current symex."
-  (symex-ts--node-start-position symex-ts--current-node))
+  (symex-ts--node-start-position (symex-ts-get-current-node)))
 
 (defun symex-ts--get-end-point-helper (count &optional include-separator)
   "Helper to get the point value after COUNT symexes.
