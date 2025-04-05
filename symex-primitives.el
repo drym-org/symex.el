@@ -319,8 +319,7 @@ BODY, and pastes the result back into the source buffer, replacing the
 original."
   (declare (indent 0))
   (let ((original-major-mode (gensym))
-        (mapped-major-mode (gensym))
-        (result (gensym)))
+        (mapped-major-mode (gensym)))
     `(let (,original-major-mode)
        ;; In using a temp buffer to do the transformation here, we need to
        ;; ensure that it uses the syntax table of the original buffer, since

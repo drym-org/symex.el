@@ -36,6 +36,7 @@
 (defvar racket-xp-mode)
 (defvar racket--repl-output-mark)
 
+(declare-function racket--send-region-to-repl "ext:racket-mode")
 (declare-function racket-edit-switch-to-repl "ext:racket-mode")
 (declare-function racket-send-last-sexp "ext:racket-mode")
 (declare-function racket-send-definition "ext:racket-mode")
