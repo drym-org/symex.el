@@ -82,14 +82,15 @@ DOCSTRING - a docstring
 INTERACTIVE-DECL - an `interactive' declaration
 BODY - the actual implementation of the motion."
   (declare (indent defun))
-  (eldoc-add-command name)
   (let ((result (gensym)))
-    `(defun ,name ,args
-       ,docstring
-       ,interactive-decl
-       (let ((,result (progn ,@body)))
-         (symex--selection-side-effects)
-         ,result))))
+    `(progn
+       (eldoc-add-command ',name)
+       (defun ,name ,args
+         ,docstring
+         ,interactive-decl
+         (let ((,result (progn ,@body)))
+           (symex--selection-side-effects)
+           ,result)))))
 
 (symex-define-motion symex-go-forward (count)
   "Move forward COUNT symexes."
