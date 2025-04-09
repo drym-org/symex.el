@@ -264,7 +264,12 @@ Modified from: https://stackoverflow.com/a/24283996"
 
 Copies the region from START to END into a temporary buffer, executes
 BODY, and pastes the result back into the source buffer, replacing the
-original."
+original.
+
+Note: if using this in a treesitter buffer, you may need to
+`symex-select-nearest' after the use of this macro to be sure you are
+working on a current version of the buffer. I'm not sure why
+`symex-ts--change-notifier' doesn't already handle this."
   (declare (indent 2))
   (let ((text-to-transform (gensym))
         (result (gensym)))
