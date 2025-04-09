@@ -331,28 +331,6 @@ original."
            ,@body
            (buffer-string))))))
 
-(defmacro symex--transform-in-isolation (start end &rest body)
-  "Transform a region in a temporary buffer and replace the original with it.
-
-Copies the region from START to END into a temporary buffer, executes
-BODY, and pastes the result back into the source buffer, replacing the
-original."
-  (declare (indent 2))
-  (let ((text-to-transform (gensym))
-        (result (gensym)))
-    `(let ((,result)
-           (,text-to-transform (buffer-substring ,start ,end)))
-       ;; TODO: consider using `replace-region-contents'
-       (delete-region ,start ,end)
-       (symex--with-temp-buffer
-         (insert ,text-to-transform)
-         (goto-char 0)
-         ,@body
-         (setq ,result (buffer-string)))
-       (save-excursion (insert ,result))
-       (indent-region (point)
-                      (+ (point) (length ,result))))))
-
 (defmacro symex-save-excursion (&rest body)
   "Execute BODY while preserving position in the tree.
 
