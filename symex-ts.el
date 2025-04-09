@@ -279,12 +279,17 @@ Automatically set it to the node at point if necessary."
   "Helper to adjust point to indicate the correct symex."
   nil)
 
-(defun symex-ts--change-notifier (_ranges _parser &rest _args)
-  "Notify of any changes to the contents of the buffer.
+(defun symex-ts--notify-of-changes (_ranges _parser &rest _args)
+  "Take action when notified of any changes to the contents of the buffer.
 
 While in Symex mode, if there are any changes in the buffer (e.g., due
 to a mutative operation like delete) and if the selected node is no
-longer valid, then refresh to select a new current node near point."
+longer valid, then refresh to select a new current node near point.
+
+Note that, technically, this doesn't \"notify\" anyone, but rather,
+*handles* changes that it is *being notified of* by Emacs. We use the
+term to match its use in builtin treesitter APIs by Emacs, as in
+`treesit-parser-add-notifier'."
   (when (and symex-editing-mode
              (treesit-node-check symex-ts--current-node 'outdated))
     (symex-ts-set-current-node-from-point)))
@@ -293,13 +298,13 @@ longer valid, then refresh to select a new current node near point."
   "Register the change notifier."
   (dolist (parser (treesit-parser-list))
     (treesit-parser-add-notifier parser
-                                 #'symex-ts--change-notifier)))
+                                 #'symex-ts--notify-of-changes)))
 
 (defun symex-ts-remove-notifier ()
   "Unregister the change notifier."
   (dolist (parser (treesit-parser-list))
     (treesit-parser-remove-notifier parser
-                                    #'symex-ts--change-notifier)))
+                                    #'symex-ts--notify-of-changes)))
 
 ;;; Predicates
 

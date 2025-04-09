@@ -269,7 +269,7 @@ original.
 Note: if using this in a treesitter buffer, you may need to
 `symex-select-nearest' after the use of this macro to be sure you are
 working on a current version of the buffer. I'm not sure why
-`symex-ts--change-notifier' doesn't already handle this."
+`symex-ts--notify-of-changes' doesn't already handle this."
   (declare (indent 2))
   (let ((text-to-transform (gensym))
         (result (gensym)))
