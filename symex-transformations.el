@@ -791,16 +791,18 @@ indented version from the temporary buffer.
 When memory is added to the DSL, this would probably have a simpler
 implementation."
   (interactive "p")
-  (let ((start (point))
-        (end (symex--get-end-point count)))
-    (symex--transform-in-isolation start end
-      (symex-eval (symex-traversal
-                    (circuit
-                     symex--traversal-preorder)))
-      (condition-case nil
-          (symex--do-while-traversing (apply-partially #'symex--tidy 1)
-                                      symex--traversal-postorder)
-        (error nil)))))
+  (if (symex-ts-available-p)
+      (symex-ts--not-implemented)
+    (let ((start (point))
+          (end (symex--get-end-point count)))
+      (symex--transform-in-isolation start end
+        (symex-eval (symex-traversal
+                      (circuit
+                       symex--traversal-preorder)))
+        (condition-case nil
+            (symex--do-while-traversing (apply-partially #'symex--tidy 1)
+                                        symex--traversal-postorder)
+          (error nil))))))
 
 (symex-define-command symex-collapse ()
   "Collapse a symex to a single line.
