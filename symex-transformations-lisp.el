@@ -210,17 +210,6 @@ selected expression.  Otherwise, paste in place."
           (symex--same-line-tidy-affected)))
       (not (equal pasted-text "")))))
 
-(defun symex-lisp-yank (count)
-  "Yank (copy) COUNT symexes."
-  (interactive "p")
-  ;; we set `last-command` here to avoid appending to the kill ring
-  ;; when it's a delete followed by a yank. We want to treat each as
-  ;; independent entries in the kill ring
-  (let ((last-command nil))
-    (let ((start (point))
-          (end (symex-lisp--get-end-point count)))
-      (copy-region-as-kill start end))))
-
 (defun symex-lisp--emit-backward ()
   "Emit backward."
   (when (and (symex-left-p)
