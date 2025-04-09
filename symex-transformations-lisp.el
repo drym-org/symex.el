@@ -40,14 +40,17 @@
 
 (defun symex-lisp-clear ()
   "Helper to clear contents of symex."
-  (cond ((symex--go-up) (symex-delete-remaining))
-        ((symex-lisp-string-p) (save-excursion (kill-sexp)
-                                               (insert "\"\"")))
-        ((or (symex-empty-list-p)
-             (symex--special-empty-list-p))
+  (cond ((or (symex-empty-list-p)
+             (symex--special-empty-list-p)
+             ;; for consistency with treatment of ()
+             ;; we also don't do anything for atoms
+             (symex-lisp-atom-p))
          ;; nothing needs to be done
          nil)
-        (t (kill-sexp))))
+        ((symex-lisp-string-p) (save-excursion (kill-sexp)
+                                               (insert "\"\"")))
+        (t (kill-region (1+ (point))
+                        (1- (symex-lisp--get-end-point 1))))))
 
 (defun symex-lisp-replace ()
   "Replace contents of symex."
@@ -103,73 +106,30 @@
              (backward-char))
     (forward-sexp)))
 
-(defun symex-lisp--padding (&optional before)
-  "Determine paste padding needed for current point position.
+(defun symex--same-line-tidy-affected ()
+  "Tidy symexes affected by line-oriented operations.
 
-Padding is dependent on whether we are pasting BEFORE the current
-symex or after it."
-  (if (symex-inside-empty-form-p)
-      ""
-    (let* ((after (not before))
-           (island
-            (and (bolp)
-                 (condition-case nil
-                     (save-excursion (forward-sexp)
-                                     (eolp))
-                   (error nil))))
-           (at-eob
-            (condition-case nil
-                (save-excursion (forward-sexp)
-                                (eobp))
-              (error nil)))
-           (previous-line-empty
-            (symex--previous-line-empty-p))
-           (next-line-empty
-            (symex--following-line-empty-p))
-           (surrounding-lines-empty (and previous-line-empty
-                                         next-line-empty))
-           (paste-text-contains-newlines
-            (string-match-p "\n" (symex--current-kill)))
-           (at-eol (condition-case nil
-                       (save-excursion (forward-sexp)
-                                       (eolp))
-                     (error nil)))
-           (multiline (let ((original-line (line-number-at-pos)))
-                        (condition-case nil
-                            (save-excursion (forward-sexp)
-                                            (not (= original-line
-                                                    (line-number-at-pos))))
-                          (error nil)))))
-      (cond ((and island
-                  ;; if we're at the toplevel, on an "island" symex
-                  ;; (i.e. with no peers occupying the same lines),
-                  (or (and after next-line-empty)
-                      ;; and if the side we want to paste on already
-                      ;; contains an empty line,
-                      (and before previous-line-empty)
-                      ;; or if we happen to be at the end of the buffer
-                      ;; for pasting after, then check the opposite side
-                      ;; instead for the clue on what's expected
-                      (and at-eob previous-line-empty))
-                  ;; and if the text to be pasted contains newlines, or
-                  ;; if both surrounding lines are empty _and_ we aren't
-                  ;; at the first symex
-                  (or paste-text-contains-newlines
-                      (and surrounding-lines-empty
-                           (not (symex--point-at-first-symex-p)))))
-             ;; then we typically want an extra newline separator
-             "\n\n")
-            ((or (symex--point-at-indentation-p)
-                 at-eol
-                 multiline)
-             "\n")
-            ((and before
-                  (string-match-p (concat symex--re-whitespace "$")
-                                  (symex--current-kill)))
-             ;; if the text to be pasted before includes whitespace already,
-             ;; then don't add more
-             "")
-            (t " ")))))
+This assumes that point is at the end of whatever change has been
+made, and tidies the next symex if it is on the same line.  Then, it
+continues tidying symexes as long as the next one begins on the same
+line that the preceding one ends on."
+  (symex--save-point-excursion
+    ;; assume point is at the end of the triggering change
+    (let ((affected (or (symex-lisp--point-at-start-p)
+                        (= (line-number-at-pos)
+                           ;; does the next symex start on the same line?
+                           (if (symex--go-forward)
+                               (line-number-at-pos)
+                             -1)))))
+      (while affected
+        (symex--tidy 1)
+        (setq affected
+              (= (save-excursion  ; does the symex end on the same line
+                   (forward-sexp) ; that the next one begins on?
+                   (line-number-at-pos))
+                 (if (symex--go-forward)
+                     (line-number-at-pos)
+                   -1)))))))
 
 (defun symex-lisp--paste (before after)
   "Paste before, padding on either side.

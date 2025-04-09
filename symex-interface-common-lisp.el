@@ -83,7 +83,7 @@ Accounts for different point location in evil vs Emacs mode."
   ;; so there's no need to move point there
   (if (eq symex-common-lisp-backend 'sly)
       (call-interactively #'sly-mrepl)
-      (slime-repl))
+    (slime-repl))
   (symex-enter-lowest))
 
 (defun symex-run-common-lisp ()

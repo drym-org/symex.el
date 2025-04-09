@@ -39,16 +39,6 @@
 
 (declare-function treesit-node-check nil)
 
-(defun symex-ts--change-notifier (_ranges _parser &rest _args)
-  "Notify of any changes to the contents of the buffer.
-
-While in Symex mode, if there are any changes in the buffer (e.g., due
-to a mutative operation like delete) and if the selected node is no
-longer valid, then refresh to select a new current node near point."
-  (when (and symex-editing-mode
-             (treesit-node-check symex-ts--current-node 'outdated))
-    (symex-ts-set-current-node-from-point)))
-
 (defun symex-ts-clear ()
   "Clear contents of symex."
   (when symex-ts--current-node
@@ -74,15 +64,6 @@ longer valid, then refresh to select a new current node near point."
                       (goto-char end-pos)
                       (comment-dwim nil))
       (symex-ts-set-current-node-from-point))))
-
-(defun symex-ts--reset-after-delete ()
-  "Tidy things up after deletion.
-
-If the deletion results in an empty line it will be removed."
-  (when (symex--current-line-empty-p)
-    (if (symex--previous-line-empty-p)
-        (symex--join-to-non-whitespace)
-      (symex--delete-whole-line))))
 
 (defun symex-ts-delete-node-forward (&optional count)
   "Delete COUNT nodes forward from the current node."

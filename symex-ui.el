@@ -27,6 +27,7 @@
 
 
 (require 'symex-custom)
+(require 'symex-primitives)
 
 (defface symex--current-node-face
   '((t :inherit highlight :extend nil))

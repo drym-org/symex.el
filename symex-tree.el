@@ -69,8 +69,8 @@ This does *not* include the current symex."
 (defun symex--tree-index ()
   "Index of current tree."
   (symex-save-excursion
-   (symex-goto-lowest)
-   (symex-index)))
+    (symex-eval symex--traversal-goto-lowest)
+    (symex-index)))
 
 (defun symex--leap-forward (&optional soar)
   "Leap forward to a neighboring branch, preserving height and position.

@@ -27,6 +27,82 @@
 
 (require 'cl-lib)
 
+;; From Lispy
+(defvar symex--re-left "[([{]"
+  "Opening delimiter.")
+
+;; From Lispy
+(defvar symex--re-right "[])}]"
+  "Closing delimiter.")
+
+(defvar symex--re-comment-line "^[[:space:]]*;"
+  "A comment line.")
+
+(defvar symex--re-empty-line "^$"
+  "An empty line.")
+
+(defvar symex--re-blank-line "^[[:space:]]*$"
+  "A blank line, either empty or containing only whitespace.")
+
+(defvar symex--re-whitespace "[[:space:]|\n]+"
+  "Whitespace that may extend over many lines.")
+
+(defvar symex--re-optional-whitespace "[[:space:]|\n]*"
+  "Optional whitespace that may extend over many lines.")
+
+(defvar symex--re-symex-line "^[[:space:]]*[^;[:space:]\n]"
+  "A line that isn't blank and isn't a comment line.")
+
+(defvar symex--re-racket-syntax-object
+  (concat "#['`]" symex--re-left))
+
+(defvar symex--re-splicing-unquote
+  (concat ",@" symex--re-left))
+
+(defvar symex--re-racket-unquote-syntax
+  (concat "#," symex--re-left))
+
+(defvar symex--re-racket-splicing-unsyntax
+  (concat "#,@" symex--re-left))
+
+(defvar symex--re-quoted-list
+  (concat "['`]" symex--re-left))
+
+(defvar symex--re-unquoted-list
+  (concat "," symex--re-left))
+
+(defvar symex--re-clojure-deref-reader-macro
+  (concat "@" symex--re-left))
+
+(defvar symex--re-clojure-literal-lambda
+  (concat "#" symex--re-left))
+
+;; based on lispy-left-p
+(defun symex-left-p ()
+  "Check if we're at (i.e. after) an opening delimiter."
+  (looking-at symex--re-left))
+
+;; based on lispy-right-p
+(defun symex-right-p ()
+  "Check if we're at (i.e. after) a closing delimiter."
+  (looking-at symex--re-right))
+
+(defun symex-whitespace-p ()
+  "Check if we're looking at whitespace."
+  (looking-at-p symex--re-whitespace))
+
+(defun symex-opening-round-p ()
+  "Check if point is at an opening parenthesis."
+  (looking-at-p "("))
+
+(defun symex-opening-square-p ()
+  "Check if point is at an opening square bracket."
+  (looking-at-p "\\["))
+
+(defun symex-opening-curly-p ()
+  "Check if point is at an opening curly bracket."
+  (looking-at-p "{"))
+
 (defun symex--current-line-empty-p ()
   "Check if the current line is empty.
 
@@ -67,6 +143,12 @@ Emacs docs recommend against using `goto-line`, suggesting
 the following recipe instead."
   (goto-char (point-min))
   (forward-line (1- line-no)))
+
+(defun symex-last-non-blank ()
+  "Go to last non-blank character on line."
+  (end-of-line)
+  (skip-chars-backward " \t")
+  (unless (bolp) (backward-char)))
 
 (defvar symex--re-non-whitespace "[^[:space:]\n]"
   "A non-whitespace character.")

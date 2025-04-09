@@ -270,31 +270,6 @@ BODY - the actual implementation of the command."
     (symex--join-lines t))
   (symex--tidy-remaining))
 
-(defun symex--same-line-tidy-affected ()
-  "Tidy symexes affected by line-oriented operations.
-
-This assumes that point is at the end of whatever change has been
-made, and tidies the next symex if it is on the same line.  Then, it
-continues tidying symexes as long as the next one begins on the same
-line that the preceding one ends on."
-  (symex--save-point-excursion
-    ;; assume point is at the end of the triggering change
-    (let ((affected (or (symex-lisp--point-at-start-p)
-                        (= (line-number-at-pos)
-                           ;; does the next symex start on the same line?
-                           (if (symex--go-forward)
-                               (line-number-at-pos)
-                             -1)))))
-      (while affected
-        (symex--tidy 1)
-        (setq affected
-              (= (save-excursion  ; does the symex end on the same line
-                   (forward-sexp) ; that the next one begins on?
-                   (line-number-at-pos))
-                 (if (symex--go-forward)
-                     (line-number-at-pos)
-                   -1)))))))
-
 (defun symex--join-lines (&optional backwards)
   "Join lines inside symex.
 

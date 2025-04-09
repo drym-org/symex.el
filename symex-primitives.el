@@ -83,13 +83,6 @@
       (symex-ts--point-at-start-p)
     (symex-lisp--point-at-start-p)))
 
-(defun symex--following-line-empty-p ()
-  "Check if the line following the current expression is empty."
-  (save-excursion
-    (symex-select-end 1)
-    (forward-line)
-    (symex--current-line-empty-p)))
-
 (defun symex--previous-p ()
   "Check if a preceding symex exists at this level."
   (if (symex-ts-available-p)
@@ -466,12 +459,6 @@ INCLUDE-SEPARATOR."
         (symex-select-end count nil t)
         (fixup-whitespace))
     (error nil)))
-
-(defun symex-last-non-blank ()
-  "Go to last non-blank character on line."
-  (end-of-line)
-  (skip-chars-backward " \t")
-  (unless (bolp) (backward-char)))
 
 (defun symex--primitive-enter ()
   "Take necessary actions as part of entering Symex mode, at a primitive level."

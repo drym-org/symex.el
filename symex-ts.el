@@ -32,6 +32,9 @@
 ;;; Code:
 
 (require 'treesit nil :no-error)
+(require 'symex-custom)
+(require 'symex-data)
+(require 'symex-utils)
 
 ;; TODO: Emacs can't find these when you try to visit their definitions,
 ;; and they also raise byte-compile warnings, though they are locally
@@ -72,7 +75,7 @@
 (declare-function treesit-node-type nil)
 (declare-function treesit-node-next-sibling nil)
 
-(defvar symex-clojure-modes)
+(defvar symex-editing-mode)
 
 (defun symex-ts--current-ts-library ()
   "Return a symbol to show what type of tree sitter library is available.
@@ -146,18 +149,6 @@ return nil."
   (defalias 'symex-ts--node-start-position #'treesit-node-start)
   (defalias 'symex-ts--root-node #'treesit-buffer-root-node)
   t)
-
-(defun symex-ts-add-notifier ()
-  "Register the change notifier."
-  (dolist (parser (treesit-parser-list))
-    (treesit-parser-add-notifier parser
-                                 #'symex-ts--change-notifier)))
-
-(defun symex-ts-remove-notifier ()
-  "Unregister the change notifier."
-  (dolist (parser (treesit-parser-list))
-    (treesit-parser-remove-notifier parser
-                                    #'symex-ts--change-notifier)))
 
 (defun symex-ts-available-p ()
   "Predicate to show if tree sitter support is available to Symex."
@@ -249,34 +240,6 @@ it doesn't have siblings if it changes point (TODO: clarify)."
               (t (symex-ts--ascend-to-parent-with-sibling parent node)))
       node)))
 
-(defun symex-ts--move-with-count (fn move-delta &optional count)
-  "Move the point from the current node if possible.
-
-Movement is defined by FN, which should be a function which
-returns the appropriate neighbour node.
-
-MOVE-DELTA is a Symex \"move\" describing the desired x and y
-point movement (e.g. `(move -1 0)' for a move \"upward\").
-
-Move COUNT times, defaulting to 1.
-
-Return a Symex move (list with x,y node offsets tagged with
-`move') or nil if no movement was performed."
-  (let ((target-node nil)
-        (move symex--move-zero)
-        (cursor (symex-ts-get-current-node)))
-    (dotimes (_ (or count 1))
-      (let ((new-node (funcall fn cursor)))
-        (when (and new-node (not (symex-ts--node-eq new-node cursor)))
-          (setq move (symex--move-+ move move-delta))
-          (setq cursor new-node
-                target-node cursor))))
-    (when target-node (symex-ts--set-current-node target-node))
-
-    ;; Return the Symex move that was executed, or nil to signify that
-    ;; the movement failed
-    (when (not (symex--are-moves-equal-p move symex--move-zero)) move)))
-
 (defun symex-ts-current-node-sexp ()
   "Print the current node as an s-expression."
   (interactive)
@@ -287,13 +250,6 @@ Return a Symex move (list with x,y node offsets tagged with
   (interactive)
   (message (treesit-node-type symex-ts--current-node)))
 
-(defun symex-ts-get-current-node ()
-  "Return the current node.
-Automatically set it to the node at point if necessary."
-  (unless symex-ts--current-node
-    (symex-ts-set-current-node-from-point))
-  symex-ts--current-node)
-
 (defun symex-ts-set-current-node-from-point ()
   "Set the current node to the top-most node at point."
   (cond ((and (not symex-ts--current-node)
@@ -303,6 +259,13 @@ Automatically set it to the node at point if necessary."
          (forward-char))
         (t (symex--go-to-next-non-whitespace-char)
            (symex-ts--set-current-node (symex-ts-get-topmost-node-at-point)))))
+
+(defun symex-ts-get-current-node ()
+  "Return the current node.
+Automatically set it to the node at point if necessary."
+  (unless symex-ts--current-node
+    (symex-ts-set-current-node-from-point))
+  symex-ts--current-node)
 
 (defun symex-ts-get-topmost-node-at-point ()
   "Return the top-most node at the current point."
@@ -316,7 +279,49 @@ Automatically set it to the node at point if necessary."
   "Helper to adjust point to indicate the correct symex."
   nil)
 
+(defun symex-ts--change-notifier (_ranges _parser &rest _args)
+  "Notify of any changes to the contents of the buffer.
+
+While in Symex mode, if there are any changes in the buffer (e.g., due
+to a mutative operation like delete) and if the selected node is no
+longer valid, then refresh to select a new current node near point."
+  (when (and symex-editing-mode
+             (treesit-node-check symex-ts--current-node 'outdated))
+    (symex-ts-set-current-node-from-point)))
+
+(defun symex-ts-add-notifier ()
+  "Register the change notifier."
+  (dolist (parser (treesit-parser-list))
+    (treesit-parser-add-notifier parser
+                                 #'symex-ts--change-notifier)))
+
+(defun symex-ts-remove-notifier ()
+  "Unregister the change notifier."
+  (dolist (parser (treesit-parser-list))
+    (treesit-parser-remove-notifier parser
+                                    #'symex-ts--change-notifier)))
+
 ;;; Predicates
+
+(defmacro symex-ts-save-excursion (&rest body)
+  "Execute BODY while preserving position in the tree.
+
+Like `save-excursion`, but in addition to preserving the point
+position, this also preserves the structural position in the tree, for
+languages where point position doesn't uniquely identify a tree
+location (e.g. non-symex-based languages like Python).
+
+This is tree-sitter specific and meant for internal, primitive use."
+  (declare (indent 0))
+  (let ((offset (gensym))
+        (result (gensym)))
+    `(let ((,offset (symex-ts--point-height-offset)))
+       (let ((,result
+              (save-excursion
+                ,@body)))
+         (symex-ts-set-current-node-from-point)
+         (symex-ts-move-child ,offset)
+         ,result))))
 
 (defmacro symex-ts--if-stuck (do-what operation &rest body)
   "Attempt OPERATION and if it fails, then do DO-WHAT."
@@ -389,6 +394,34 @@ It could include both identifiers as well as empty lists or forms."
 
 ;;; Navigations
 
+(defun symex-ts--move-with-count (fn move-delta &optional count)
+  "Move the point from the current node if possible.
+
+Movement is defined by FN, which should be a function which
+returns the appropriate neighbour node.
+
+MOVE-DELTA is a Symex \"move\" describing the desired x and y
+point movement (e.g. `(move -1 0)' for a move \"upward\").
+
+Move COUNT times, defaulting to 1.
+
+Return a Symex move (list with x,y node offsets tagged with
+`move') or nil if no movement was performed."
+  (let ((target-node nil)
+        (move symex--move-zero)
+        (cursor (symex-ts-get-current-node)))
+    (dotimes (_ (or count 1))
+      (let ((new-node (funcall fn cursor)))
+        (when (and new-node (not (symex-ts--node-eq new-node cursor)))
+          (setq move (symex--move-+ move move-delta))
+          (setq cursor new-node
+                target-node cursor))))
+    (when target-node (symex-ts--set-current-node target-node))
+
+    ;; Return the Symex move that was executed, or nil to signify that
+    ;; the movement failed
+    (when (not (symex--are-moves-equal-p move symex--move-zero)) move)))
+
 (defun symex-ts-move-prev-sibling (&optional count)
   "Move the point to the current node's previous sibling if possible.
 
@@ -432,26 +465,6 @@ Move COUNT times, defaulting to 1."
   (symex-ts--move-with-count #'symex-ts--descend-to-child-with-sibling (symex-make-move 0 1) count))
 
 ;;; Utilities
-
-(defmacro symex-ts-save-excursion (&rest body)
-  "Execute BODY while preserving position in the tree.
-
-Like `save-excursion`, but in addition to preserving the point
-position, this also preserves the structural position in the tree, for
-languages where point position doesn't uniquely identify a tree
-location (e.g. non-symex-based languages like Python).
-
-This is tree-sitter specific and meant for internal, primitive use."
-  (declare (indent 0))
-  (let ((offset (gensym))
-        (result (gensym)))
-    `(let ((,offset (symex-ts--point-height-offset)))
-       (let ((,result
-              (save-excursion
-                ,@body)))
-         (symex-ts-set-current-node-from-point)
-         (symex-ts-move-child ,offset)
-         ,result))))
 
 (defconst symex-ts-separators '(","))
 
@@ -539,6 +552,15 @@ This is measured from the lowest symex indicated by point."
              (symex-ts-set-current-node-from-point)
              (symex-ts-move-child offset)
              offset))))
+
+(defun symex-ts--reset-after-delete ()
+  "Tidy things up after deletion.
+
+If the deletion results in an empty line it will be removed."
+  (when (symex--current-line-empty-p)
+    (if (symex--previous-line-empty-p)
+        (symex--join-to-non-whitespace)
+      (symex--delete-whole-line))))
 
 (defun symex-ts--padding (start end)
   "Determine paste padding needed for current point position.
