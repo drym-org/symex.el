@@ -567,8 +567,7 @@ then no action is taken."
         (kill-region (point-min) (point-max))
         (insert second)
         (insert separator)
-        (insert first))
-      (symex-select-nearest))
+        (insert first)))
     (symex--go-forward)
     t))
 
