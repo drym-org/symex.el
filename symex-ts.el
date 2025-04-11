@@ -75,8 +75,6 @@
 (declare-function treesit-node-type nil)
 (declare-function treesit-node-next-sibling nil)
 
-(defvar symex-editing-mode)
-
 (defun symex-ts--current-ts-library ()
   "Return a symbol to show what type of tree sitter library is available.
 
@@ -263,7 +261,8 @@ it doesn't have siblings if it changes point (TODO: clarify)."
 (defun symex-ts-get-current-node ()
   "Return the current node.
 Automatically set it to the node at point if necessary."
-  (unless symex-ts--current-node
+  (unless (and symex-ts--current-node
+               (not (treesit-node-check symex-ts--current-node 'outdated)))
     (symex-ts-set-current-node-from-point))
   symex-ts--current-node)
 
@@ -294,7 +293,7 @@ Note that, technically, this doesn't \"notify\" anyone, but rather,
 *handles* changes that it is *being notified of* by Emacs. We use the
 term to match its use in builtin treesitter APIs by Emacs, as in
 `treesit-parser-add-notifier'."
-  (when (and symex-editing-mode
+  (when (and symex-ts--current-node
              (treesit-node-check symex-ts--current-node 'outdated))
     (symex-ts-set-current-node-from-point)))
 
