@@ -83,6 +83,12 @@
       (symex-ts--point-at-start-p)
     (symex-lisp--point-at-start-p)))
 
+(defun symex--selected-p ()
+  "Check if a symex is currently selected."
+  (if (symex-ts-available-p)
+      (symex-ts--selected-p)
+    (symex-lisp--selected-p)))
+
 (defun symex--previous-p ()
   "Check if a preceding symex exists at this level."
   (if (symex-ts-available-p)
@@ -254,38 +260,130 @@ WHAT could be `this', `next', or `previous'."
       ;; should we return the actual motion we took?
       result)))
 
+(defun symex--same-line-tidy-affected ()
+  "Tidy symexes affected by line-oriented operations.
+
+This assumes that point is at the end of whatever change has been
+made, and tidies the next symex if it is on the same line.  Then, it
+continues tidying symexes as long as the next one begins on the same
+line that the preceding one ends on."
+  (symex-save-point-excursion
+    ;; assume point is at the end of the triggering change
+    (let ((affected (or (symex--point-at-start-p)
+                        (= (line-number-at-pos)
+                           ;; does the next symex start on the same line?
+                           (condition-case nil
+                               (line-number-at-pos (symex--get-end-point 2))
+                             (error -1))))))
+      (while affected
+        (symex--tidy 1)
+        (setq affected
+              (= (line-number-at-pos (symex--get-end-point 1))
+                 ;; does the symex end on the same line
+                 ;; that the next one begins on?
+                 (if (symex--go-forward)
+                     (line-number-at-pos)
+                   -1)))))))
+
+(defun symex--paste (before after)
+  "Paste before, padding on either side.
+
+Paste text from the paste buffer, padding it with BEFORE and AFTER
+text, on the respective side."
+  (let* ((text-to-paste
+          ;; add the padding to the yanked text
+          (concat before
+                  (symex--current-kill)
+                  after))
+         ;; remember initial point location
+         (start (point)))
+    (insert text-to-paste)
+    (indent-region start (point))
+    (buffer-substring start (point))))
+
+(defun symex--paste-before ()
+  "Paste before symex."
+  (interactive)
+  (symex--paste ""
+                (symex--paste-padding :before)))
+
+(defun symex-prim-paste-before ()
+  "Paste before symex."
+  (symex--with-undo-collapse
+    (let ((pasted-text (symex--paste-before)))
+      (save-excursion
+        (let* ((end (point))
+               (start (- end (length pasted-text)))
+               (end-line (line-number-at-pos end)))
+          ;; we use end + 1 here since end is the point
+          ;; right before the initial expression, which
+          ;; won't be indented as it thus would fall
+          ;; outside the region to be indented.
+          (indent-region start (1+ end))
+          ;; indenting may add characters (e.g. spaces)
+          ;; to the buffer, so we rely on the line number
+          ;; instead.
+          (symex--goto-line end-line)
+          ;; if the last line has any trailing forms,
+          ;; indent them.
+          (symex--same-line-tidy-affected)
+          (not (equal pasted-text "")))))))
+
+(defun symex--paste-after ()
+  "Paste after symex.
+
+If a symex is currently selected, then paste after the end of the
+selected expression.  Otherwise, paste in place."
+  (interactive)
+  (let ((padding (symex--paste-padding nil)))
+    (when (symex--point-at-last-symex-p)
+      (symex--kill-ring-push
+       (string-trim-right
+        (symex--kill-ring-pop))))
+    (let ((end (condition-case nil
+                   (symex--get-end-point 1 nil t)
+                 (error nil))))
+      (symex-save-excursion
+        (when end (goto-char end)) ; could be (|)
+        (symex--paste padding
+                      "")))))
+
+(defun symex-prim-paste-after ()
+  "Paste after symex."
+  (symex--with-undo-collapse
+    (let ((selected (symex--selected-p))
+          (pasted-text (symex--paste-after)))
+      (symex-save-excursion
+        (when selected
+          ;; if it was (|), then we are already at the start
+          ;; of the pasted text, otherwise, we're at the start
+          ;; of the original symex
+          (let ((current-end (condition-case nil
+                                 (symex--get-end-point 1)
+                               (error nil))))
+            (when current-end
+              (goto-char current-end)))) ; go to beginning of pasted text
+        (let* ((start (point))
+               (end (+ start
+                       (length pasted-text))))
+          (goto-char end)
+          (symex--same-line-tidy-affected)))
+      (not (equal pasted-text "")))))
+
 (defun symex-prim-paste (where)
   "Paste WHERE.
 
-WHERE could be either `before' or `after'.
-
-This is the implementation of `paste' used in the DSL."
+WHERE could be either `before' or `after'."
   ;; TODO: we might want to introduce delete and paste
   ;; counts into the DSL
-  (symex--paste 1 where))
-
-(defun symex--paste (count direction)
-  "Paste before or after symex, COUNT times, according to DIRECTION.
-
-DIRECTION should be either the symbol `before' or `after'."
-  (interactive)
-  (let* ((start (symex--get-starting-point))
-         (end (condition-case nil
-                  (symex--get-end-point 1 nil t)
-                (error start)))
-         (padding (symex--paste-padding start end (eq direction' before))))
-    (goto-char (if (eq direction 'before)
-                   start
-                 end))
-    (dotimes (_ count)
-      (when (eq direction 'after)
-        (insert padding)
-        (indent-according-to-mode))
-      (yank)
-      (when (eq direction 'before)
-        (insert padding)
-        (indent-according-to-mode))))
-  t)
+  ;; It's probably OK for paste, but for delete, having
+  ;; counts would help to capture whitespace and interstitial
+  ;; comments as they are (not structurally)
+  (cond ((eq 'before where)
+         (symex-prim-paste-before))
+        ((eq 'after where)
+         (symex-prim-paste-after))
+        (t (error "Invalid argument for primitive paste!"))))
 
 ;;; Utilities
 
@@ -349,6 +447,31 @@ location (e.g. non-symex-based languages like Python)."
          (symex--go-up ,offset)
          ,result))))
 
+;; TODO: not totally sure this is still needed. But
+;; adding it just to preserve the existing implementation.
+;; Review this at some point and see whether we can get away
+;; with just `symex-save-excursion'
+(defmacro symex-save-point-excursion (&rest body)
+  "Execute BODY while preserving position in the tree.
+
+Like `save-excursion', but in addition to preserving the point
+position, this also preserves the structural position in the tree, for
+languages where point position doesn't uniquely identify a tree
+location (e.g. non-symex-based languages like Python).
+
+Also see `symex--save-point-excursion' re: mutation, and why this
+macro may be necessary."
+  (declare (indent 0))
+  (let ((offset (gensym))
+        (result (gensym)))
+    `(let ((,offset (symex--point-height-offset)))
+       (let ((,result
+              (symex--save-point-excursion
+                ,@body)))
+         (symex-select-nearest)
+         (symex--go-up ,offset)
+         ,result))))
+
 (defun symex--point-height-offset ()
   "Compute the height offset of the current symex.
 
@@ -389,14 +512,16 @@ Whitespace in treesitter is counted *after* the separator."
     ;; separator not relevant for lisp
     (symex-lisp--get-end-point count include-whitespace)))
 
-(defun symex--paste-padding (start end &optional before)
+(defun symex--paste-padding (&optional before)
   "Determine paste padding needed for current point position.
 
-Padding is dependent on whether we are pasting BEFORE the current
-symex or after it.  START and END are the bounds of the current symex
-that is the context for the paste."
+The computed padding is added to separate the current symex and the
+pasted text. Specifically, when pasting BEFORE the current symex, the
+padding is appended at the end of the pasted text, and when pasting
+after the current symex, the padding is added at the end of the
+current symex before the pasted text."
   (if (symex-ts-available-p)
-      (symex-ts--padding start end)
+      (symex-ts--padding)
     (symex-lisp--padding before)))
 
 (defun symex-copy (&optional count)

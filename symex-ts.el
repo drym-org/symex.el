@@ -273,6 +273,10 @@ Automatically set it to the node at point if necessary."
         (p (point)))
     (symex-ts--get-topmost-node (symex-ts--get-named-descendant-for-position-range root p p))))
 
+(defun symex-ts--selected-p ()
+  "Check if a symex is currently selected."
+  symex-ts--current-node)
+
 ;;; User Interface
 
 (defun symex-ts--adjust-point ()
@@ -567,12 +571,14 @@ If the deletion results in an empty line it will be removed."
         (symex--join-to-non-whitespace)
       (symex--delete-whole-line))))
 
-(defun symex-ts--padding (start end)
+(defun symex-ts--padding ()
   "Determine paste padding needed for current point position.
 
 START and END are the bounds of the current symex that is the context
 for the paste."
-  (let* ((indent-start (save-excursion (back-to-indentation) (point)))
+  (let* ((start (symex-ts--get-starting-point))
+         (end (symex-ts--get-end-point 1))
+         (indent-start (save-excursion (back-to-indentation) (point)))
          (block-node (or (not (= (line-number-at-pos start)
                                  (line-number-at-pos end)))
                          (and (= start indent-start)
