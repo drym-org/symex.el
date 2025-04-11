@@ -193,7 +193,7 @@ as special cases here."
   (or (not (symex-lisp-atom-p))
       (symex-empty-list-p)))
 
-(defun symex--intervening-comment-line-p (start end)
+(defun symex-lisp--intervening-comment-line-p (start end)
   "Check if there is a comment line between the positions START and END."
   (save-excursion
     (goto-char start)
@@ -589,7 +589,7 @@ line."
          (end (save-excursion (symex-lisp--forward)
                               (point)))
          (comment-line-position
-          (symex--intervening-comment-line-p start end)))
+          (symex-lisp--intervening-comment-line-p start end)))
     (if comment-line-position
         (delete-region start comment-line-position)
       (delete-region start end))))
@@ -624,8 +624,8 @@ line."
            (when (symex-lisp--backward)
              (save-excursion
                (let ((previous-symex-end-pos (symex-lisp--get-end-point 1)))
-                 (unless (symex--intervening-comment-line-p previous-symex-end-pos
-                                                            original-position)
+                 (unless (symex-lisp--intervening-comment-line-p previous-symex-end-pos
+                                                                 original-position)
                    (goto-char previous-symex-end-pos)
                    ;; ensure that there isn't a comment on the
                    ;; preceding line before joining lines
