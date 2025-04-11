@@ -160,12 +160,23 @@ the following recipe instead."
   "Move point to the next non-whitespace character.
 
 If the current character is non-whitespace, point is not moved."
-  (unless (looking-at-p symex--re-non-whitespace)
+  (if (looking-at-p symex--re-non-whitespace)
+      (point)
     (condition-case nil
         (progn (re-search-forward symex--re-non-whitespace)
                ;; since the re search goes to the end of the match
                (backward-char)
-               t)
+               (point))
+      (error nil))))
+
+(defun symex--go-to-previous-non-whitespace-char ()
+  "Move point to the previous non-whitespace character.
+
+If the current character is non-whitespace, point is not moved."
+  (if (looking-at-p symex--re-non-whitespace)
+      (point)
+    (condition-case nil
+        (re-search-backward symex--re-non-whitespace)
       (error nil))))
 
 (defun symex--join-to-match (pattern)
