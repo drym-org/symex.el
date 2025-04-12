@@ -201,7 +201,8 @@ that are not primarily user-directed."
   ;; fix trailing whitespace (indent region doesn't)
   (symex--fix-trailing-whitespace count)
   (symex--indent count)
-  (symex-select-nearest))
+  (unless (symex--selected-p)
+    (symex-select-nearest)))
 
 (defun symex--remove (count &optional include-whitespace include-separator)
   "Delete COUNT symexes.

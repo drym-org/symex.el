@@ -48,7 +48,8 @@ For the deterministic version used at the primitive level, see
 This also may entail hooks and advice, which would be absent in the
 primitive version."
   (interactive)
-  (symex-select-nearest))
+  (unless (symex--selected-p)
+    (symex-select-nearest)))
 
 (defun symex-select-nearest-in-line ()
   "Select symex nearest to point that's on the current line."

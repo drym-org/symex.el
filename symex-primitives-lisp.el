@@ -287,8 +287,7 @@ as special cases here."
 
 (defun symex-lisp--selected-p ()
   "Check if a symex is currently selected."
-  (and (not (looking-at-p "[[:space:]]"))
-       (not (symex-right-p))))
+  (symex-lisp--point-at-start-p))
 
 ;;; User Interface
 
