@@ -268,20 +268,22 @@ macro may be necessary."
   ;; this does get handled by this function via fixing
   ;; trailing whitespace.
 
-  ;; fixing leading whitespace in lisp, for now
-  ;; probably find a better/uniform way later
-  (unless (symex-ts-available-p)
-    (symex--fix-leading-whitespace))
-  ;; fix trailing whitespace (indent region doesn't)
-  (symex--fix-trailing-whitespace count)
-  (if (symex-ts-available-p)
-      ;; for treesitter / non-symex based languages,
-      ;; indenting lines works better than indenting
-      ;; just the expression
-      (symex--indent-lines count)
-    (symex--indent count))
-  (unless (symex--selected-p)
-    (symex-select-nearest)))
+  (let ((initial-height-offset (symex--point-height-offset)))
+    ;; fixing leading whitespace in lisp, for now
+    ;; probably find a better/uniform way later
+    (unless (symex-ts-available-p)
+      (symex--fix-leading-whitespace))
+    ;; fix trailing whitespace (indent region doesn't)
+    (symex--fix-trailing-whitespace count)
+    (if (symex-ts-available-p)
+        ;; for treesitter / non-symex based languages,
+        ;; indenting lines works better than indenting
+        ;; just the expression
+        (symex--indent-lines count)
+      (symex--indent count))
+    (unless (symex--selected-p)
+      (symex-select-nearest))
+    (symex--go-up initial-height-offset)))
 
 (defun symex--remove (count &optional include-whitespace include-separator)
   "Delete COUNT symexes.
