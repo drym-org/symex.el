@@ -71,9 +71,9 @@ to do as part of executing any Symex command, including updating the
 selected symex after the command, and reindenting.  We also declare the
 function as repeatable via `evil-repeat'.
 
-This is meant to be used in defining *user-facing* commands. Commands
+This is meant to be used in defining *user-facing* commands.  Commands
 defined this way should not be used programmatically in other features
-provided by Symex. If you ever have the need to do that, then move the
+provided by Symex.  If you ever have the need to do that, then move the
 business logic out of the `symex-define-command' definition into a
 separate `defun', and call it from the original command as well as
 from your new utility that uses that functionality (for an example of

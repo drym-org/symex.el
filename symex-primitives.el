@@ -32,6 +32,7 @@
 
 (require 'symex-primitives-lisp)
 (require 'symex-ts)
+(require 'symex-utils)
 
 ;;; User Interface
 
@@ -107,6 +108,13 @@
       (symex-ts-atom-p)
     (symex-lisp-atom-p)))
 
+(defun symex-select-nearest ()
+  "Select symex nearest to point."
+  (if (symex-ts-available-p)
+      (symex-ts-set-current-node-from-point)
+    (symex-lisp-select-nearest))
+  (point))
+
 ;;; Navigation
 
 (defun symex--go-forward (&optional count)
@@ -168,6 +176,62 @@ that are not primarily user-directed."
   (if (symex-ts-available-p)
       (symex-ts-move-parent count)
     (symex-lisp--go-down count)))
+
+(defun symex--point-height-offset ()
+  "Compute the height offset of the current symex.
+
+This is measured from the lowest symex indicated by point.
+
+This will always be zero for symex-oriented languages such as Lisp,
+but in languages like Python where the same point position could
+correspond to multiple hierarchy levels, this function computes the
+difference from the lowest such level."
+  (if (symex-ts-available-p)
+      (symex-ts--point-height-offset)
+    (symex-lisp--point-height-offset)))
+
+(defmacro symex-save-excursion (&rest body)
+  "Execute BODY while preserving position in the tree.
+
+Like `save-excursion', but in addition to preserving the point
+position, this also preserves the structural position in the tree, for
+languages where point position doesn't uniquely identify a tree
+location (e.g. non-symex-based languages like Python)."
+  (declare (indent 0))
+  (let ((offset (gensym))
+        (result (gensym)))
+    `(let ((,offset (symex--point-height-offset)))
+       (let ((,result
+              (save-excursion
+                ,@body)))
+         (symex-select-nearest)
+         (symex--go-up ,offset)
+         ,result))))
+
+;; TODO: not totally sure this is still needed. But
+;; adding it just to preserve the existing implementation.
+;; Review this at some point and see whether we can get away
+;; with just `symex-save-excursion'
+(defmacro symex-save-point-excursion (&rest body)
+  "Execute BODY while preserving position in the tree.
+
+Like `save-excursion', but in addition to preserving the point
+position, this also preserves the structural position in the tree, for
+languages where point position doesn't uniquely identify a tree
+location (e.g. non-symex-based languages like Python).
+
+Also see `symex--save-point-excursion' re: mutation, and why this
+macro may be necessary."
+  (declare (indent 0))
+  (let ((offset (gensym))
+        (result (gensym)))
+    `(let ((,offset (symex--point-height-offset)))
+       (let ((,result
+              (symex--save-point-excursion
+                ,@body)))
+         (symex-select-nearest)
+         (symex--go-up ,offset)
+         ,result))))
 
 ;;; Transformations
 
@@ -445,62 +509,6 @@ original."
            ,@body
            (buffer-string))))))
 
-(defmacro symex-save-excursion (&rest body)
-  "Execute BODY while preserving position in the tree.
-
-Like `save-excursion', but in addition to preserving the point
-position, this also preserves the structural position in the tree, for
-languages where point position doesn't uniquely identify a tree
-location (e.g. non-symex-based languages like Python)."
-  (declare (indent 0))
-  (let ((offset (gensym))
-        (result (gensym)))
-    `(let ((,offset (symex--point-height-offset)))
-       (let ((,result
-              (save-excursion
-                ,@body)))
-         (symex-select-nearest)
-         (symex--go-up ,offset)
-         ,result))))
-
-;; TODO: not totally sure this is still needed. But
-;; adding it just to preserve the existing implementation.
-;; Review this at some point and see whether we can get away
-;; with just `symex-save-excursion'
-(defmacro symex-save-point-excursion (&rest body)
-  "Execute BODY while preserving position in the tree.
-
-Like `save-excursion', but in addition to preserving the point
-position, this also preserves the structural position in the tree, for
-languages where point position doesn't uniquely identify a tree
-location (e.g. non-symex-based languages like Python).
-
-Also see `symex--save-point-excursion' re: mutation, and why this
-macro may be necessary."
-  (declare (indent 0))
-  (let ((offset (gensym))
-        (result (gensym)))
-    `(let ((,offset (symex--point-height-offset)))
-       (let ((,result
-              (symex--save-point-excursion
-                ,@body)))
-         (symex-select-nearest)
-         (symex--go-up ,offset)
-         ,result))))
-
-(defun symex--point-height-offset ()
-  "Compute the height offset of the current symex.
-
-This is measured from the lowest symex indicated by point.
-
-This will always be zero for symex-oriented languages such as Lisp,
-but in languages like Python where the same point position could
-correspond to multiple hierarchy levels, this function computes the
-difference from the lowest such level."
-  (if (symex-ts-available-p)
-      (symex-ts--point-height-offset)
-    (symex-lisp--point-height-offset)))
-
 (defun symex--get-starting-point ()
   "Get the point value at the start of the current symex."
   (if (symex-ts-available-p)
@@ -532,7 +540,7 @@ Whitespace in treesitter is counted *after* the separator."
   "Determine paste padding needed for current point position.
 
 The computed padding is added to separate the current symex and the
-pasted text. Specifically, when pasting BEFORE the current symex, the
+pasted text.  Specifically, when pasting BEFORE the current symex, the
 padding is appended at the end of the pasted text, and when pasting
 after the current symex, the padding is added at the end of the
 current symex before the pasted text."
@@ -553,13 +561,6 @@ current symex before the pasted text."
 See `symex--get-end-point' for more on INCLUDE-WHITESPACE and
 INCLUDE-SEPARATOR."
   (goto-char (symex--get-end-point count include-whitespace include-separator))
-  (point))
-
-(defun symex-select-nearest ()
-  "Select symex nearest to point."
-  (if (symex-ts-available-p)
-      (symex-ts-set-current-node-from-point)
-    (symex-lisp-select-nearest))
   (point))
 
 (defun symex--fix-leading-whitespace ()
