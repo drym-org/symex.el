@@ -40,15 +40,15 @@
 
 (defun symex-lisp-clear ()
   "Helper to clear contents of symex."
-  (cond ((or (symex-empty-list-p)
+  (cond ((symex-lisp-string-p) (save-excursion (kill-sexp)
+                                               (insert "\"\"")))
+        ((or (symex-empty-list-p)
              (symex--special-empty-list-p)
              ;; for consistency with treatment of ()
              ;; we also don't do anything for atoms
              (symex-lisp-atom-p))
          ;; nothing needs to be done
          nil)
-        ((symex-lisp-string-p) (save-excursion (kill-sexp)
-                                               (insert "\"\"")))
         (t (kill-region (1+ (point))
                         (1- (symex-lisp--get-end-point 1))))))
 
