@@ -250,14 +250,14 @@ it doesn't have siblings if it changes point (TODO: clarify)."
 
 (defun symex-ts-set-current-node-from-point ()
   "Set the current node to the top-most node at point."
-  (if (and (not symex-ts--current-node)
-           (looking-at-p symex--re-whitespace)
-           (looking-back symex--re-non-whitespace (line-beginning-position)))
-      (progn (re-search-backward symex--re-whitespace)
-             (forward-char))
-    (unless (symex--go-to-next-non-whitespace-char)
-      (symex--go-to-previous-non-whitespace-char))
-    (symex-ts--set-current-node (symex-ts-get-topmost-node-at-point))))
+  (cond ((and (not symex-ts--current-node)
+              (looking-at-p symex--re-whitespace)
+              (looking-back symex--re-non-whitespace (line-beginning-position)))
+         (re-search-backward symex--re-whitespace)
+         (forward-char))
+        (t (unless (symex--go-to-next-non-whitespace-char)
+             (symex--go-to-previous-non-whitespace-char))
+           (symex-ts--set-current-node (symex-ts-get-topmost-node-at-point)))))
 
 (defun symex-ts-get-current-node ()
   "Return the current node.
