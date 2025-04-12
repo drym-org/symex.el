@@ -106,6 +106,8 @@ BODY - the actual implementation of the command."
            ;; modified, but it would be better to fix `fixup-whitespace`
            ;; so it doesn't mark the buffer as modified if no changes
            ;; were made.
+           ;; TODO: ensure we return a truthy value for commands that
+           ;; succeed, and only tidy on success
            (symex--tidy 1)
            ,result))
        (when (symex--evil-installed-p)
