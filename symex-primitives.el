@@ -180,6 +180,16 @@ that are not primarily user-directed."
                 (error start))))
     (indent-region start end)))
 
+(defun symex--indent-lines (count)
+  "Indent lines for COUNT expressions."
+  (let* ((start (line-beginning-position))
+         (end (condition-case nil
+                  (symex--line-end-for-position
+                   (symex--get-end-point count))
+                ;; if empty, end = start
+                (error start))))
+    (indent-region start end)))
+
 (defun symex--tidy (count)
   "Auto-indent COUNT symexes and fix any whitespace."
   ;; Note that this does not fix leading whitespace
@@ -200,7 +210,12 @@ that are not primarily user-directed."
     (symex--fix-leading-whitespace))
   ;; fix trailing whitespace (indent region doesn't)
   (symex--fix-trailing-whitespace count)
-  (symex--indent count)
+  (if (symex-ts-available-p)
+      ;; for treesitter / non-symex based languages,
+      ;; indenting lines works better than indenting
+      ;; just the expression
+      (symex--indent-lines count)
+    (symex--indent count))
   (unless (symex--selected-p)
     (symex-select-nearest)))
 

@@ -144,6 +144,12 @@ the following recipe instead."
   (goto-char (point-min))
   (forward-line (1- line-no)))
 
+(defun symex--line-end-for-position (pos)
+  "Line end point for position POS in the buffer."
+  (save-excursion
+    (goto-char pos)
+    (line-end-position)))
+
 (defun symex-last-non-blank ()
   "Go to last non-blank character on line."
   (end-of-line)
