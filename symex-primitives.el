@@ -268,7 +268,7 @@ macro may be necessary."
   ;; this does get handled by this function via fixing
   ;; trailing whitespace.
 
-  (let ((initial-height-offset (symex--point-height-offset)))
+  (symex-save-excursion
     ;; fixing leading whitespace in lisp, for now
     ;; probably find a better/uniform way later
     (unless (symex-ts-available-p)
@@ -282,8 +282,7 @@ macro may be necessary."
         (symex--indent-lines count)
       (symex--indent count))
     (unless (symex--selected-p)
-      (symex-select-nearest))
-    (symex--go-up initial-height-offset)))
+      (symex-select-nearest))))
 
 (defun symex--remove (count &optional include-whitespace include-separator)
   "Delete COUNT symexes.
