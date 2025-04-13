@@ -62,8 +62,7 @@
 
 (defcustom symex-lisp-modes (list 'clojure-mode
                                   'clojurescript-mode
-                                  'clojurec-mode
-                                  'clojure-ts-mode)
+                                  'clojurec-mode)
   "List of major modes that should use the Lisp rather than Treesitter parser.
 
 In cases where treesitter isn't available, the Lisp parser would be
