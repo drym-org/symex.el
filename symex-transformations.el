@@ -564,13 +564,14 @@ then no action is taken."
                               end))
            (separator
             (buffer-substring first-end
-                              second-start)))
-      (symex-save-excursion
-        (symex--transform-in-isolation start end
-          (kill-region (point-min) (point-max))
-          (insert second)
-          (insert separator)
-          (insert first)))
+                              second-start))
+           (initial-height-offset (symex--point-height-offset)))
+      (symex--transform-in-isolation start end
+        (kill-region (point-min) (point-max))
+        (insert second)
+        (insert separator)
+        (insert first))
+      (symex--go-up initial-height-offset)
       (symex--go-forward)
       t)))
 
