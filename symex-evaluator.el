@@ -394,10 +394,14 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
                                    result)))
       (if new-result
           new-result
-        ;; TODO: simply returning to the original location
-        ;; isn't enough when the traversal might include
-        ;; transformations. It may be necessary to execute
-        ;; traversals in a temporary buffer.
+        ;; TODO: simply returning to the original location isn't
+        ;; enough when the traversal might include transformations. It
+        ;; may be necessary to execute transformations in a temporary
+        ;; buffer. That should work for Lisp, but it may not work for
+        ;; treesitter as the syntax isn't explicit in the structure
+        ;; and also depends on context. Copying "sufficient" context
+        ;; (e.g., up to a top level definition or "tree root") might
+        ;; work.
         (goto-char original-location)
         (symex-select-nearest)
         (let* ((current-point-height-offset (symex--point-height-offset))
