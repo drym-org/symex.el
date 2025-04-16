@@ -393,13 +393,13 @@ by default, joins next symex to current one."
 
 New list delimiters are determined by the TYPE."
   (save-excursion
-    (cond ((equal type 'round)
+    (cond ((eq type 'round)
            (insert "()"))
-          ((equal type 'square)
+          ((eq type 'square)
            (insert "[]"))
-          ((equal type 'curly)
+          ((eq type 'curly)
            (insert "{}"))
-          ((equal type 'angled)
+          ((eq type 'angled)
            (insert "<>")))))
 
 (symex-define-command symex-create-round ()

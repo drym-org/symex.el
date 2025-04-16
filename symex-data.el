@@ -51,8 +51,8 @@ forward-backward axis, and the Y or in-out axis."
 (defun symex-move-p (obj)
   "Check if OBJ specifies a move."
   (condition-case nil
-      (equal 'move
-             (nth 0 obj))
+      (eq 'move
+          (nth 0 obj))
     (error nil)))
 
 (defconst symex--move-zero (symex-make-move 0 0))
@@ -132,8 +132,8 @@ This is the traversal that is to be executed \"with precautions\"."
 (defun symex-precaution-p (obj)
   "Check if OBJ specifies a precaution."
   (condition-case nil
-      (equal 'precaution
-             (nth 0 obj))
+      (eq 'precaution
+          (nth 0 obj))
     (error nil)))
 
 (defun symex-make-circuit (traversal &optional times)
@@ -147,8 +147,8 @@ If TIMES is nil, repeat indefinitely until the traversal fails."
 (defun symex-circuit-p (obj)
   "Check if OBJ specifies a circuit."
   (condition-case nil
-      (equal 'circuit
-             (nth 0 obj))
+      (eq 'circuit
+          (nth 0 obj))
     (error nil)))
 
 (defun symex--circuit-traversal (circuit)
@@ -189,8 +189,8 @@ If CONDITION is nil, repeat indefinitely until the traversal fails."
 (defun symex-loop-p (obj)
   "Check if OBJ specifies a loop."
   (condition-case nil
-      (equal 'loop
-             (nth 0 obj))
+      (eq 'loop
+          (nth 0 obj))
     (error nil)))
 
 (defun symex--loop-traversal (loop)
@@ -213,8 +213,8 @@ This is the condition for termination of the traversal."
 (defun symex-maneuver-p (obj)
   "Check if OBJ specifies a maneuver."
   (condition-case nil
-      (equal 'maneuver
-             (nth 0 obj))
+      (eq 'maneuver
+          (nth 0 obj))
     (error nil)))
 
 (defun symex--maneuver-phases (maneuver)
@@ -248,8 +248,8 @@ This is useful for structural recursion during maneuver execution."
 (defun symex-venture-p (obj)
   "Check if OBJ specifies a venture."
   (condition-case nil
-      (equal 'venture
-             (nth 0 obj))
+      (eq 'venture
+          (nth 0 obj))
     (error nil)))
 
 (defun symex--venture-phases (venture)
@@ -301,8 +301,8 @@ fails as well."
 (defun symex-detour-p (obj)
   "Check if OBJ specifies a detour."
   (condition-case nil
-      (equal 'detour
-             (nth 0 obj))
+      (eq 'detour
+          (nth 0 obj))
     (error nil)))
 
 (defun symex-make-protocol (&rest options)
@@ -315,8 +315,8 @@ Each option could be any traversal."
 (defun symex-protocol-p (obj)
   "Check if OBJ specifies a protocol."
   (condition-case nil
-      (equal 'protocol
-             (nth 0 obj))
+      (eq 'protocol
+          (nth 0 obj))
     (error nil)))
 
 (defun symex--protocol-options (protocol)
@@ -374,15 +374,15 @@ This is the traversal that will be chosen if the condition is false."
 (defun symex-decision-p (obj)
   "Check if OBJ specifies a decision."
   (condition-case nil
-      (equal 'decision
-             (nth 0 obj))
+      (eq 'decision
+          (nth 0 obj))
     (error nil)))
 
 (defun symex-delete-p (obj)
   "Check if OBJ specifies a deletion."
   (condition-case nil
-      (equal 'delete
-             (nth 0 obj))
+      (eq 'delete
+          (nth 0 obj))
     (error nil)))
 
 (defun symex--deletion-what (deletion)
@@ -392,8 +392,8 @@ This is the traversal that will be chosen if the condition is false."
 (defun symex-paste-p (obj)
   "Check if OBJ specifies a paste."
   (condition-case nil
-      (equal 'paste
-             (nth 0 obj))
+      (eq 'paste
+          (nth 0 obj))
     (error nil)))
 
 (defun symex--paste-side (paste)
@@ -412,8 +412,8 @@ result."
 (defun symex-effect-p (obj)
   "Check if OBJ specifies a traversal with a side effect."
   (condition-case nil
-      (equal 'effect
-             (nth 0 obj))
+      (eq 'effect
+          (nth 0 obj))
     (error nil)))
 
 (defun symex--effect-effect (effect)
