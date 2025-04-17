@@ -94,7 +94,10 @@ BODY - the actual implementation of the motion."
            ,result)))))
 
 (symex-define-motion symex-go-forward (count)
-  "Move forward COUNT symexes."
+  "Move forward COUNT symexes.
+
+This is a user-level command meant to be used interactively. Prefer
+`symex--go-forward' in ELisp code."
   (interactive "p")
   ;; TODO: these should be compiled
   ;; so that the actual executed traversal
@@ -109,7 +112,10 @@ BODY - the actual implementation of the motion."
     result))
 
 (symex-define-motion symex-go-backward (count)
-  "Move backward COUNT symexes."
+  "Move backward COUNT symexes.
+
+This is a user-level command meant to be used interactively. Prefer
+`symex--go-backward' in ELisp code."
   (interactive "p")
   (let ((result (symex-eval
                  (symex-traversal (circuit (move backward)
@@ -120,7 +126,10 @@ BODY - the actual implementation of the motion."
     result))
 
 (symex-define-motion symex-go-up (count)
-  "Move up COUNT symexes."
+  "Move up COUNT symexes.
+
+This is a user-level command meant to be used interactively. Prefer
+`symex--go-up' in ELisp code."
   (interactive "p")
   (if symex-remember-branch-positions-p
       (symex--go-up-with-memory count)
@@ -129,7 +138,10 @@ BODY - the actual implementation of the motion."
                                count)))))
 
 (symex-define-motion symex-go-down (count)
-  "Move down COUNT symexes."
+  "Move down COUNT symexes.
+
+This is a user-level command meant to be used interactively. Prefer
+`symex--go-down' in ELisp code."
   (interactive "p")
   (if symex-remember-branch-positions-p
       (symex--go-down-with-memory count)
