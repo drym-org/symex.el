@@ -40,6 +40,11 @@
   :type 'boolean
   :group 'symex)
 
+(defcustom symex-tidy-after-transforming-p t
+  "Whether to tidy after each transformation."
+  :type 'boolean
+  :group 'symex)
+
 (defcustom symex-toggle-blink-cursor t
   "Whether to disable cursor blinking while in Symex state."
   :type 'boolean

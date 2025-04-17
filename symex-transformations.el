@@ -108,7 +108,8 @@ BODY - the actual implementation of the command."
            ;; were made.
            ;; TODO: ensure we return a truthy value for commands that
            ;; succeed, and only tidy on success
-           (symex--tidy 1)
+           (when symex-tidy-after-transforming-p
+             (symex--tidy 1))
            ,result))
        (when (symex--evil-installed-p)
          (evil-add-command-properties ',name :repeat t)))))
@@ -263,14 +264,16 @@ BODY - the actual implementation of the command."
   (interactive "p")
   (dotimes (_ count)
     (symex--join-lines))
-  (symex--tidy-remaining))
+  (when symex-tidy-after-transforming-p
+    (symex--tidy-remaining)))
 
 (symex-define-command symex-join-lines-backwards (count)
   "Join COUNT lines backwards inside symex."
   (interactive "p")
   (dotimes (_ count)
     (symex--join-lines t))
-  (symex--tidy-remaining))
+  (when symex-tidy-after-transforming-p
+    (symex--tidy-remaining)))
 
 (defun symex--join-lines (&optional backwards)
   "Join lines inside symex.
@@ -426,7 +429,8 @@ New list delimiters are determined by the TYPE."
   "Insert COUNT newlines before symex."
   (interactive "p")
   (newline-and-indent count)
-  (symex--tidy-remaining))
+  (when symex-tidy-after-transforming-p
+    (symex--tidy-remaining)))
 
 (symex-define-command symex-append-newline (count)
   "Append COUNT newlines after symex."
@@ -434,7 +438,8 @@ New list delimiters are determined by the TYPE."
   (if (symex-ts-available-p)
       (symex-ts-append-newline count)
     (symex-lisp-append-newline count))
-  (symex--tidy-remaining))
+  (when symex-tidy-after-transforming-p
+    (symex--tidy-remaining)))
 
 (symex-define-command symex-swallow ()
   "Swallow the head of the symex.
