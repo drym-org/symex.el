@@ -40,6 +40,11 @@
   :type 'boolean
   :group 'symex)
 
+(defcustom symex-ensure-structure-p t
+  "Whether to balance parentheses in Lisp modes."
+  :type 'boolean
+  :group 'symex)
+
 (defcustom symex-tidy-after-transforming-p t
   "Whether to tidy after each transformation."
   :type 'boolean

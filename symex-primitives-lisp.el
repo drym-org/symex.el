@@ -36,7 +36,8 @@
 (require 'symex-utils)
 (require 'symex-interface)
 
-(declare-function symex--ensure-minor-mode "symex.el")
+(declare-function symex-mode "symex.el")
+(defvar symex-mode)
 
 ;;;;;;;;;;;;;;;;;;
 ;;; PRIMITIVES ;;;
@@ -722,6 +723,11 @@ symex or after it."
             (t " ")))))
 
 ;;; Utilities
+
+(defun symex--ensure-minor-mode ()
+  "Enable symex minor mode if it isn't already enabled."
+  (unless symex-mode
+    (symex-mode)))
 
 (defun symex-lisp-enter ()
   "Take necessary actions upon Symex mode entry in Lisp modes."

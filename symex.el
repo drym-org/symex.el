@@ -95,11 +95,6 @@
 
             symex-map))
 
-(defun symex--ensure-minor-mode ()
-  "Enable symex minor mode if it isn't already enabled."
-  (unless symex-mode
-    (symex-mode)))
-
 (defun symex--enter-mode ()
   "Load the modal interface."
   (symex-editing-mode-enter))
@@ -143,10 +138,11 @@ advises functions to enable or disable features based on user configuration."
 
   (symex-register-builtin-interfaces)
   ;; enable the symex minor mode in all recognized lisp modes
-  (dolist (mode-name (symex-get-lisp-modes))
-    (let ((mode-hook (intern (concat (symbol-name mode-name)
-                                     "-hook"))))
-      (add-hook mode-hook 'symex-mode)))
+  (when symex-ensure-structure-p
+    (dolist (mode-name (symex-get-lisp-modes))
+      (let ((mode-hook (intern (concat (symbol-name mode-name)
+                                       "-hook"))))
+        (add-hook mode-hook 'symex-mode))))
   ;; any side effects that should happen as part of selection,
   ;; e.g., update overlay
   (advice-add #'symex-user-select-nearest :after #'symex--selection-side-effects)
@@ -168,10 +164,11 @@ If you are changing symex customizations to enable or disable certain
 features, you may need to call this function after making such changes
 and prior to calling `symex-initialize` again, in order for the former
 configuration to be disabled and the new one adopted."
-  (dolist (mode-name (symex-get-lisp-modes))
-    (let ((mode-hook (intern (concat (symbol-name mode-name)
-                                     "-hook"))))
-      (remove-hook mode-hook 'symex-mode)))
+  (when symex-ensure-structure-p
+    (dolist (mode-name (symex-get-lisp-modes))
+      (let ((mode-hook (intern (concat (symbol-name mode-name)
+                                       "-hook"))))
+        (remove-hook mode-hook 'symex-mode))))
   ;; remove all advice
   (advice-remove #'symex-user-select-nearest #'symex--selection-side-effects)
   (advice-remove #'symex-select-nearest-in-line #'symex--selection-side-effects)
