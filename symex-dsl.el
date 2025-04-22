@@ -78,7 +78,7 @@ TIMES - see underlying Lisp implementation."
 TRAVERSAL - see underlying Lisp implementation.
 CONDITION - see underlying Lisp implementation."
   `(symex-make-loop (symex-traversal ,traversal)
-                    ,condition))
+                    ,(symex--rewrite-condition condition)))
 
 (defun symex--rewrite-condition-list (condition-list)
   "A helper to rewrite a list of conditions.
