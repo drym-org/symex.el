@@ -154,11 +154,14 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
             ;; times executed as success
             result))))))
 
-;; TODO: we could probably avoid having a separate conditional
-;; recursion form by passing the computation result to all predicates
-;; used with Symex, e.g. in precautions, decisions, etc.  Then this
-;; could be implemented as a circuit repeating a precaution on an
-;; underlying traversal.
+;; TODO: we now pass the computation result to all predicates used
+;; with Symex, i.e. in precautions and decisions. This *almost* allows
+;; us to merge `loop` functionality into `circuit`, by implementing it
+;; as a circuit repeating a precaution on an underlying traversal. But
+;; it's a bit awkward since we can't distinguish the initial movement
+;; ("move at least once before checking the condition") in, e.g., leap
+;; forward and backward. Something to revisit to see what, if
+;; anything, can be done.
 (defun symex-eval-loop (loop computation result)
   "Execute a LOOP.
 

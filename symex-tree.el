@@ -86,10 +86,10 @@ traversal instead of a postorder traversal."
                     symex--traversal-preorder-in-tree)))
     (symex-eval
      (symex-traversal
-       (maneuver (loop traverse
-                       (lambda (acc)
-                         (and (= (symex--move-x acc) 0)
-                              (= (symex--move-y acc) 0))))))
+       (loop traverse
+             (lambda (acc)
+               (and (= (symex--move-x acc) 0)
+                    (= (symex--move-y acc) 0)))))
      symex--computation-node-distance)))
 
 (defun symex--leap-backward (&optional soar)
@@ -111,10 +111,10 @@ measure them anywhere, we do this traversal in O(n)."
                     symex--traversal-postorder-in-tree)))
     (symex-eval
      (symex-traversal
-       (maneuver (loop traverse
-                       (lambda (acc)
-                         (and (= (symex--move-x acc) 0)
-                              (= (symex--move-y acc) 0))))))
+       (loop traverse
+             (lambda (acc)
+               (and (= (symex--move-x acc) 0)
+                    (= (symex--move-y acc) 0)))))
      symex--computation-node-distance)))
 
 (defun symex--remember-branch-position (position)
