@@ -160,8 +160,10 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
 ;; as a circuit repeating a precaution on an underlying traversal. But
 ;; it's a bit awkward since we can't distinguish the initial movement
 ;; ("move at least once before checking the condition") in, e.g., leap
-;; forward and backward. Something to revisit to see what, if
-;; anything, can be done.
+;; forward and backward, which requires us to wrap that outer circuit
+;; with *another* precaution to check that it indeed reached the
+;; desired point. That makes the implementation unnecessarily
+;; complicated, so we'll leave `loop` for now.
 (defun symex-eval-loop (loop computation result)
   "Execute a LOOP.
 
