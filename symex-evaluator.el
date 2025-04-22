@@ -208,12 +208,12 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
   (let ((traversal (symex--precaution-traversal precaution))
         (pre-condition (symex--precaution-pre-condition precaution))
         (post-condition (symex--precaution-post-condition precaution)))
-    (when (funcall pre-condition)
+    (when (funcall pre-condition result)
       (let ((executed-traversal (symex-eval traversal
                                             computation
                                             result)))
         (when (and executed-traversal
-                   (funcall post-condition))
+                   (funcall post-condition executed-traversal))
           ;; only check the post-condition if the traversal
           ;; was successful
           executed-traversal)))))
@@ -247,7 +247,7 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
   (let ((condition (symex--decision-condition decision))
         (consequent (symex--decision-consequent decision))
         (alternative (symex--decision-alternative decision)))
-    (if (funcall condition)
+    (if (funcall condition result)
         (symex-eval consequent
                     computation
                     result)

@@ -188,9 +188,9 @@ This may be worth exploring as a defcustom."
        (circuit
         (precaution
          (move down)
-         (beforehand (lambda ()
+         (beforehand (lambda (_result)
                        (setq position (symex-index))))
-         (afterwards (lambda ()
+         (afterwards (lambda (_result)
                        (symex--remember-branch-position position))))
         count)))))
 
