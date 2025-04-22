@@ -164,7 +164,8 @@ This may be worth exploring as a defcustom."
        ;; it successful if it is done at least once.
        (circuit
         (maneuver
-         (effect (setq position (symex--recall-branch-position))
+         (effect (lambda ()
+                   (setq position (symex--recall-branch-position)))
                  (move up))
          (lambda ()
            ;; As a fallback case, a symex traversal can be any lambda.

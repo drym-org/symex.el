@@ -143,13 +143,8 @@ when the way is blocked.")
   (symex-eval
    (symex-traversal
     (circuit
-     (effect (funcall operation)
-             ;; TODO: the semantics of effect is already to
-             ;; wrap the operation with a lambda and then
-             ;; invoke that during evaluation. It may make
-             ;; sense to avoid this double-wrapping.
-             traversal)))
-   nil))
+     (effect operation
+             traversal)))))
 
 
 (provide 'symex-traversals)

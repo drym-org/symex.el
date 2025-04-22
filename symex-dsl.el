@@ -237,7 +237,7 @@ EFFECT - the side effect to perform.  This is any Lisp expression.
 TRAVERSAL - the traversal to perform.  This could be any traversal.  If
 no traversal is specified, then the traversal is treated as the zero
 move, making this a pure side effect."
-  `(symex-make-effect (lambda () ,effect)
+  `(symex-make-effect ,effect
                       ,(if traversal
                            `(symex-traversal ,traversal)
                          symex--move-zero)))
