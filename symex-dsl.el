@@ -258,7 +258,7 @@ TRAVERSAL could be any traversal specification, e.g. a maneuver,
 a detour, a move, etc., which is specified using the Symex DSL."
   (declare (indent 0))
   (cond ((not (listp traversal)) traversal)  ; e.g. a variable containing a traversal
-        ((eq 'protocol (car traversal))
+        ((memq (car traversal) '(protocol any))
          `(symex--compile-protocol ,@(cdr traversal)))
         ((memq (car traversal) '(maneuver do))
          `(symex--compile-maneuver ,@(cdr traversal)))
