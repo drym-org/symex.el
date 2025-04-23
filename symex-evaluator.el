@@ -358,9 +358,10 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
          (symex-eval-effect traversal
                             computation
                             result))
-        ;; TODO: return accumulated result
-        ;; and ignore result of function invocation
-        (t (funcall traversal))))
+        ;; don't support fallback lambdas, as we did formerly, as it
+        ;; is impractical for them to produce a valid traversal result
+        ;; using the in-progress result and the configured computation
+        (t (error "Unknown traversal type!"))))
 
 (defun symex-eval (traversal
                    &optional
