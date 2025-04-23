@@ -108,8 +108,8 @@ PRE-CONDITION is a boolean function executed before the traversal.  The
 traversal is not executed unless this returns true.
 POST-CONDITION is a boolean function executed after the traversal.  The
 executed traversal is reversed if this returns false."
-  (let ((pre-condition (or pre-condition (lambda (_result) t)))
-        (post-condition (or post-condition (lambda (_result) t))))
+  (let ((pre-condition (or pre-condition (lambda (_computation _result) t)))
+        (post-condition (or post-condition (lambda (_computation _result) t))))
     (list 'precaution
           traversal
           pre-condition

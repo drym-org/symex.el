@@ -176,7 +176,9 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
                                           computation
                                           result)))
       (when accumulated-result
-        (if (funcall condition accumulated-result)
+        (if (symex-eval condition
+                        computation
+                        accumulated-result)
             accumulated-result
           (symex-eval-loop loop
                            computation
@@ -213,12 +215,16 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
   (let ((traversal (symex--precaution-traversal precaution))
         (pre-condition (symex--precaution-pre-condition precaution))
         (post-condition (symex--precaution-post-condition precaution)))
-    (when (funcall pre-condition result)
+    (when (symex-eval pre-condition
+                      computation
+                      result)
       (let ((executed-traversal (symex-eval traversal
                                             computation
                                             result)))
         (when (and executed-traversal
-                   (funcall post-condition executed-traversal))
+                   (symex-eval post-condition
+                               computation
+                               executed-traversal))
           ;; only check the post-condition if the traversal
           ;; was successful
           executed-traversal)))))
@@ -252,7 +258,9 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
   (let ((condition (symex--decision-condition decision))
         (consequent (symex--decision-consequent decision))
         (alternative (symex--decision-alternative decision)))
-    (if (funcall condition result)
+    (if (symex-eval condition
+                    computation
+                    result)
         (symex-eval consequent
                     computation
                     result)
@@ -358,10 +366,15 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
          (symex-eval-effect traversal
                             computation
                             result))
-        ;; don't support fallback lambdas, as we did formerly, as it
-        ;; is impractical for them to produce a valid traversal result
-        ;; using the in-progress result and the configured computation
-        (t (error "Unknown traversal type!"))))
+        ;; fall back to a lambda. It must still accept
+        ;; the same arguments as any traversal, so that
+        ;; it could in principle produce a valid result
+        ;; but in practice the fallback lambda may be
+        ;; used for predicates where we only care whether
+        ;; the output is truthy or not.
+        (t (funcall traversal
+                    computation
+                    result))))
 
 (defun symex-eval (traversal
                    &optional
