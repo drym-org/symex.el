@@ -149,45 +149,61 @@ assuming no knowledge of the tree at all.
 This may be worth exploring as a defcustom."
   (setq symex--branch-memory nil))
 
+(defun symex--store-branch-positions (memory)
+  "Restore the branch memory stack to MEMORY."
+  (setq symex--branch-memory memory))
+
 (defun symex--forget-branch-positions ()
   "Forget any stored branch positions when moving to a different tree."
   (setq symex--branch-memory nil))
 
 (defun symex--go-up-with-memory (count)
   "Go up COUNT times, recalling previous positions along branches."
-  (let ((position))
-    (symex-eval
-     (symex-traversal
-       ;; ideally, we need a version of `circuit' here that works
-       ;; like a venture rather than a maneuver, that is, which
-       ;; repeats as many times as possible up to count, considering
-       ;; it successful if it is done at least once.
-       (circuit
-        (maneuver
-         (effect (lambda ()
-                   (setq position (symex--recall-branch-position)))
-                 (move up))
-         (circuit (precaution
-                   (move forward)
-                   (beforehand (lambda (_result)
-                                 (> position 0)))
-                   (afterwards (lambda (_result)
-                                 (setq position (1- position)))))))
-        count)))))
+  (let ((position)
+        (original-memory symex--branch-memory))
+    (let ((result (symex-eval
+                   (symex-traversal
+                     ;; we need a version of `circuit' here that works
+                     ;; like a venture rather than a maneuver, that is, which
+                     ;; repeats as many times as possible up to count, considering
+                     ;; it successful if it is done at least once.
+                     (circuit
+                      (maneuver
+                       (effect (lambda ()
+                                 (setq position (symex--recall-branch-position)))
+                               (move up))
+                       (circuit (precaution
+                                 (move forward)
+                                 (beforehand (lambda (_result)
+                                               (> position 0)))
+                                 (afterwards (lambda (_result)
+                                               (setq position (1- position)))))))
+                      count)))))
+      ;; TODO: all predicates should be traversals too, so that we
+      ;; could wrap the circuit in a decision, and restore the
+      ;; original memory in the event of failed traversal.
+      (unless result
+        (symex--store-branch-positions original-memory)))))
 
 (defun symex--go-down-with-memory (count)
   "Go down COUNT times, remembering branch positions along the way."
-  (let ((position))
-    (symex-eval
-     (symex-traversal
-       (circuit
-        (precaution
-         (move down)
-         (beforehand (lambda (_result)
-                       (setq position (symex-index))))
-         (afterwards (lambda (_result)
-                       (symex--remember-branch-position position))))
-        count)))))
+  (let ((position)
+        (original-memory symex--branch-memory))
+    (let ((result (symex-eval
+                   (symex-traversal
+                     (circuit
+                      (precaution
+                       (move down)
+                       (beforehand (lambda (_result)
+                                     (setq position (symex-index))))
+                       (afterwards (lambda (_result)
+                                     (symex--remember-branch-position position))))
+                      count)))))
+      ;; TODO: all predicates should be traversals too, so that we
+      ;; could wrap the circuit in a decision, and restore the
+      ;; original memory in the event of failed traversal.
+      (unless result
+        (symex--store-branch-positions original-memory)))))
 
 (provide 'symex-tree)
 ;;; symex-tree.el ends here
