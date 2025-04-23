@@ -126,7 +126,7 @@ while ascending."
 
 (defun symex--recall-branch-position ()
   "Recall position on the branch."
-  (pop symex--branch-memory))
+  (or (pop symex--branch-memory) 0))
 
 (defun symex--clear-branch-memory ()
   "Clear the branch memory stack.
@@ -167,18 +167,12 @@ This may be worth exploring as a defcustom."
          (effect (lambda ()
                    (setq position (symex--recall-branch-position)))
                  (move up))
-         (lambda ()
-           ;; As a fallback case, a symex traversal can be any lambda.
-           ;; We use one here because otherwise, if we just used
-           ;; `circuit' directly, `position' would evaluate statically
-           ;; to nil, and it wouldn't have access to its dynamic value
-           ;; read from the branch memory stack
-           (symex-eval
-            (symex-traversal
-              (circuit (move forward)
-                       ;; popping empty stack is nil,
-                       ;; so use 0 there instead
-                       (or position 0))))))
+         (circuit (precaution
+                   (move forward)
+                   (beforehand (lambda (_result)
+                                 (> position 0)))
+                   (afterwards (lambda (_result)
+                                 (setq position (1- position)))))))
         count)))))
 
 (defun symex--go-down-with-memory (count)
