@@ -35,8 +35,6 @@ Symex (pronounced sym-ex, as in symbolic expression) is a modal (like Vim but si
 
 Under the hood, Symex mode uses ``paredit`` and Tree-Sitter for parsing the code syntax tree.
 
-As of Jan 2023, there is "alpha" support for non-Lisp languages via ``tree-sitter``. While motions and a couple of basic transformations should work across languages (i.e. not only Lisp), it should be considered an early preview rather than production-worthy. Full support is planned for completion as part of the `2.0 release coming in Spring '23 <https://github.com/drym-org/symex.el/pull/71>`__.
-
 .. raw:: html
 
   <p align="center">
