@@ -288,7 +288,7 @@ a detour, a move, etc., which is specified using the Symex DSL."
          `(symex--compile-effect ,@(cdr traversal)))
         ;; TODO: instead of an implicit escape, it may be better
         ;; to use an explicit one like (esc ...) or (lisp ...)
-        (t traversal)))  ; function-valued symbols wind up here
+        (t traversal)))  ; ELisp expressions like (symex-make-move 0 0) wind up here
 
 (defmacro symex-deftraversal (name traversal &optional docstring)
   "Define a symex traversal using the Symex DSL.
