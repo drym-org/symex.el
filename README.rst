@@ -61,6 +61,15 @@ Installation
 
 This provides a keybinding to load the symex editing interface, and also enables the symex minor mode in all recognized lisp modes (the minor mode ensures that manual edits respect the tree structure, e.g. keeps parens balanced like paredit).
 
+Documentation
+=============
+
+The best way to learn about Symex is to read the included Info manual, which you can view and navigate efficiently within Emacs.
+
+To view the manual within Emacs, ``C-h R`` and select ``symex`` (or ``C-h i`` and navigate to the Symex manual). You'll need to know some basics of how to navigate Info manuals. If you don't already know, then try ``C-h R`` and select ``info``. This will take you to a helpful and short (~30 minutes) manual that will tell you all you need to know to navigate Info manuals.
+
+For now, some documentation is also included below in this README, but it will eventually be removed in favor of the Info manual (either directly or perhaps as rendered and hosted HTML), to have a single source of truth and avoid errors in documentation.
+
 Usage and Customization
 =======================
 
