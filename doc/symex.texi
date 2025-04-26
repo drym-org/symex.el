@@ -47,7 +47,7 @@ In addition, ``symex'' is also just a more versatile term for talking about the 
 @node A Note on the Name
 @section A Note on the Name
 
-Symex was originally a tool for editing Lisp code (it can be used with more languages, now).
+Symex was originally a tool for editing Lisp code, although it can be used with many languages, now.
 
 Lisp has inherited a few oddball names from its deep prehistory, including the infamous @code{car} and @code{cdr} for the first and the rest of the @uref{https://www.blogbyben.com/2011/04/best-bumper-sticker-ever.html, elements in a list}. But S-expression / sex-puh / symbolic expression — referring to the makeup of Lisp syntax — are all somewhat of a mouthful, too. Here are a few reasons why we might consider using "sym-ex" instead:
 
@@ -305,11 +305,11 @@ Now, try moving around using these commands:
 
 @item j
 @tab @code{symex-move-down}
-@tab Move down the tree to the ``parent'' node. Note that this is oriented with the root being the ``lowest,'' and the most nested expression being the ``highest.'' This orientation is customizable.
+@tab Move down the tree to the ``parent'' node. Note that this is oriented with the root being the ``lowest,'' and the most nested expression being the ``highest.'' This orientation is customizable (@xref{Up and Down}).
 
 @item k
 @tab @code{symex-move-up}
-@tab Move up the tree to a ``child'' node. Note that this is oriented with the root being the ``lowest,'' and the most nested expression being the ``highest.'' This orientation is customizable.
+@tab Move up the tree to a ``child'' node. Note that this is oriented with the root being the ``lowest,'' and the most nested expression being the ``highest.'' This orientation is customizable (@xref{Up and Down}).
 
 @item l
 @tab @code{symex-move-forward}
@@ -430,8 +430,7 @@ To do this, put something resembling this in the @code{:config} (not @code{:cust
 
 @lisp
 (lithium-define-keys symex-editing-mode
-                     (("u" evil-undo)
-                      ("j" symex-go-up)
+                     (("j" symex-go-up)
                       ("k" symex-go-down)
                       ("C-j" symex-climb-branch)
                       ("C-k" symex-descend-branch)
@@ -490,7 +489,11 @@ For non-Lisp (Tree-sitter) languages like Python, Symex does not do any parenthe
 @node Quoting Styles
 @section Quoting Styles
 
-By default, @code{C-'} and @code{C-,} cycle through standard quoting and unquoting prefixes (@code{'}, @code{`} and @code{,}, @code{,@@}, respectively) recognizable to all Lisps. But some Lisps, such as Racket, provide additional quoting styles that you may want to add here. You could also technically add any prefixes here that you may find yourself using often, and they don't have to have anything to do with quoting. To add custom prefixes, add something like this to the @code{:custom} section (not the @code{:config} section) of your @code{use-package} form:
+Symex provides convenient ways to add common prefixes and also remove them from any expression. This is useful especially when editing Lisp code for managing syntax quoting, e.g., turning @code{(a b c)} into @code{'(a b c)} — a standard thing one might do in Lisp — without needing to exit Symex mode.
+
+You could configure any prefixes here that you may find yourself using often, and they don't have to have anything to do with quoting, or even with Lisp.
+
+By default, @code{C-'} and @code{C-,} cycle through standard quoting and unquoting prefixes (@code{'}, @code{`} and @code{,}, @code{,@@}, respectively) recognizable to all Lisps. But some Lisps, such as Racket, provide additional quoting styles that you may want to add here. To add custom prefixes, add something like this to the @code{:custom} section (not the @code{:config} section) of your @code{use-package} form:
 
 @lisp
 (symex-quote-prefix-list (list "'" "`" "#'" "#`"))
@@ -1227,6 +1230,12 @@ If you are attempting to debug a feature implemented as a macro like @code{symex
 @subheading ``Buffer is read-only''
 
 If you're an Evil user, sometimes, the debugger appears to get overridden by Evil keybindings, complaining that the ``Buffer is read-only'' when you attempt to @code{s} to step forward. Saving the buffer (as opposed to debugging an unsaved buffer) seems to solve these issues, and if not, killing and reopening the buffer does.
+
+@subheading Better Stack Traces
+
+The Symex modal UI is written in Lithium which wraps the underlying Symex commands with error handling, and this wrapping code may be byte-compiled. This could make the stack traces hard to read in the event of an error, so if you are encountering an issue with an interactive feature that you are using through the modal UI, then debug it by invoking that function directly, using @code{M-x <symex-command-name>} or via programmatic invocation in IELM or via @code{M-:}. That will show you a clean stack trace.
+
+For instance, instead of @code{x} in Symex mode, use @code{M-x symex-delete}.
 
 @node Print Statements and Asserts
 @subsection Print Statements and Asserts
