@@ -33,7 +33,7 @@ This manual is for Symex
 
 A quick movement out of the corner of your eye, but it’s gone as you turn to look. A rustle in the trees, or did you imagine it? A shadow passing overhead, and a blinding flash as you look up. Was that the Sun, or the gleam in the eye of Symex the Squirrel, as it soared above the treetops?
 
-You’ll never know. The legendary Squirrel is said to possess startling agility and speed, capable of executing mind-bending maneuvers in the trees, traversing impossible distances in a single leap. So they say. Yet, no one has ever seen Symex. Some say that it is much too quick for our eyes to see. Others say that no one has seen Symex because, you fool (they say), Symex isn’t some squirrel out there —-- it’s the squirrel @emph{in you}.
+You’ll never know. The legendary Squirrel is said to possess startling agility and speed, capable of executing mind-bending maneuvers in the trees, traversing impossible distances in a single leap. So they say. Yet, no one has ever seen Symex. Some say that it is much too quick for our eyes to see. Others say that no one has seen Symex because, you fool (they say), Symex isn’t some squirrel out there — it’s the squirrel @emph{in you}.
 
 @node What is Symex?
 @chapter What is Symex?
@@ -91,14 +91,14 @@ Please see the @uref{https://github.com/drym-org/foundation/blob/main/Declaratio
 
 This section compares Symex with related editing tools available for Emacs.
 
-An important thing to remember about Symex is that using it requires you to enter a specific mode on-demand. Due to this modal nature, you can generally use any other editing tool you may be familiar with alongside Symex --- including most of the options discussed below --- and there shouldn't be any conflict. Symex is a friend to all!
+An important thing to remember about Symex is that using it requires you to enter a specific mode on-demand. Due to this modal nature, you can generally use any other editing tool you may be familiar with alongside Symex — including most of the options discussed below — and there shouldn't be any conflict. Symex is a friend to all!
 
 At the same time, Symex is designed in a standalone way and doesn't assume you are using other tools. Consequently, in some cases, you may need to disable some default customizations to avoid conflicts with these other packages that you may like to use for particular purposes, as the sections below explain. Some pairings definitely make more sense than others!
 
 @node Evil
 @subsection Evil
 
-The essential idea of Vim/Evil is that there are motions (nouns) that may be combined with operators (verbs), so that many complex operations on text can be expressed in this compositional manner. Although precise and expressive, this Vim-style interface has a steep learning curve and, out of the box, it isn't appropriate for structural code editing as there is no @emph{symex} noun for dealing with expressions of code. Extending Evil by adding such a noun (or ``text object,'' in Vim parlance) would be one way to allow precise operation on symexes, but there are a few reasons why Symex did not choose to go this route: (1) it leaves out vanilla Emacs users who may not be familiar with Evil at all, and (2) it inflates Evil -- an already substantial interface -- with yet another noun that would compete for keybinding real estate with other nouns such as words and paragraphs.
+The essential idea of Vim/Evil is that there are motions (nouns) that may be combined with operators (verbs), so that many complex operations on text can be expressed in this compositional manner. Although precise and expressive, this Vim-style interface has a steep learning curve and, out of the box, it isn't appropriate for structural code editing as there is no @emph{symex} noun for dealing with expressions of code. Extending Evil by adding such a noun (or ``text object,'' in Vim parlance) would be one way to allow precise operation on symexes, but there are a few reasons why Symex did not choose to go this route: (1) it leaves out vanilla Emacs users who may not be familiar with Evil at all, and (2) it inflates Evil — an already substantial interface — with yet another noun that would compete for keybinding real estate with other nouns such as words and paragraphs.
 
 Yet, augmenting Evil with a symex text object would be a valuable alternative way to achieve a Symex-like experience, and that's what Evil-Cleverparens (another package discussed below) does.
 
@@ -317,7 +317,7 @@ Now, try moving around using these commands:
 
 @end multitable
 
-The first thing you'll notice is Symex's @emph{modal} nature. If you've used Evil or Vim, then it should feel familiar. But if not, don't worry, as Symex isn't anything as complex as Vim. As you can already see, it uses a simple modal style --- a style that we call ``point-free'' editing@footnote{The term is borrowed from functional programming, where it refers to being able to code in a very succinct way in cases where the data can be implicit. With Symex, the ``implicit data'' is the expression indicated by the cursor.}. This style of interface is designed to be precise and efficient while also being easy to learn and use.
+The first thing you'll notice is Symex's @emph{modal} nature. If you've used Evil or Vim, then it should feel familiar. But if not, don't worry, as Symex isn't anything as complex as Vim. As you can already see, it uses a simple modal style — a style that we call ``point-free'' editing@footnote{The term is borrowed from functional programming, where it refers to being able to code in a very succinct way in cases where the data can be implicit. With Symex, the ``implicit data'' is the expression indicated by the cursor.}. This style of interface is designed to be precise and efficient while also being easy to learn and use.
 
 You may notice, as you wander the source tree, that Symex remembers branch positions, so that you can go up and down without losing context.
 
@@ -558,14 +558,14 @@ In writing Lisp code, parentheses are among the most commonly typed characters, 
     (execute-kbd-macro (kbd "("))))
 @end lisp
 
-You could think of ``w'' as ``wrap'' in this context, as in, ``to wrap with parentheses,'' and it matches a similar binding in symex state (i.e. @code{w} to wrap an expression and enter insert state). For the closing parenthesis, you could just use Emacs's @code{C-f} to move forward a character -- since symex (via paredit) ensures that parentheses are balanced, you rarely need to actually type a closing delimiter. The binding @code{C-w} would be fine for Evil users, but vanilla Emacs users may need to find something else here. Of course it goes without saying that the Control key should be conveniently accessible without having to leave home position. I have Control under my right thumb, and Escape in place of Caps Lock.
+You could think of ``w'' as ``wrap'' in this context, as in, ``to wrap with parentheses,'' and it matches a similar binding in symex state (i.e. @code{w} to wrap an expression and enter insert state). For the closing parenthesis, you could just use Emacs's @code{C-f} to move forward a character — since symex (via paredit) ensures that parentheses are balanced, you rarely need to actually type a closing delimiter. The binding @code{C-w} would be fine for Evil users, but vanilla Emacs users may need to find something else here. Of course it goes without saying that the Control key should be conveniently accessible without having to leave home position. I have Control under my right thumb, and Escape in place of Caps Lock.
 
 @node The Symex DSL
 @chapter The Symex DSL
 
 The Symex DSL powers many of Symex's features, and you can use it, too.
 
-The DSL allows you to specify any tree traversal in a cursor-oriented manner. That is, instead of describing traversals from an absolute reference point such as a root node, it allows you to describe traversals from the first-person vantage point of the cursor -- what would you do if you were where this cursor is right now? It allows you to describe what you'd like to do in intuitive terms that make sense for movement in a tree. Symex is the language a squirrel might use to describe their exploits to another squirrel.
+The DSL allows you to specify any tree traversal in a cursor-oriented manner. That is, instead of describing traversals from an absolute reference point such as a root node, it allows you to describe traversals from the first-person vantage point of the cursor — what would you do if you were where this cursor is right now? It allows you to describe what you'd like to do in intuitive terms that make sense for movement in a tree. Symex is the language a squirrel might use to describe their exploits to another squirrel.
 
 Let's now take a journey inside the mind of the squirrel.
 
@@ -803,7 +803,7 @@ or
 
 Do either traversal A or traversal B, depending on whether a condition holds.
 
-The condition can be any predicate -- either a built-in predicate form, or an arbitrary traversal, including a lambda. @xref{Predicates} for details.
+The condition can be any predicate — either a built-in predicate form, or an arbitrary traversal, including a lambda. @xref{Predicates} for details.
 
 @subheading Examples
 
@@ -886,7 +886,7 @@ Repeat a traversal a given number of times or as long as it succeeds. When it fa
 
 Repeat a traversal until a condition is met. If the traversal fails without the condition being met, the traversal is considered to have failed and no move is made.
 
-The condition can be any predicate -- either a built-in predicate form, or an arbitrary traversal, including a lambda. @xref{Predicates} for details.
+The condition can be any predicate — either a built-in predicate form, or an arbitrary traversal, including a lambda. @xref{Predicates} for details.
 
 This is fairly similar to @code{circuit}, but is more natural in some cases where using conditions via precautions may be awkward.
 
@@ -915,7 +915,7 @@ or
 
 Execute a traversal, but ensure that certain conditions hold either before or after executing the traversal (or both). If a condition does not hold, then abort the traversal, considering it to have failed.
 
-Each of the conditions can be any predicate -- either a built-in predicate form, or an arbitrary traversal, including a lambda. @xref{Predicates} for details.
+Each of the conditions can be any predicate — either a built-in predicate form, or an arbitrary traversal, including a lambda. @xref{Predicates} for details.
 
 Note that, as the predicates could be lambdas, you could also perform effects resembling @ref{effect} (say, setting an ELisp variable) using @ref{precaution}, either before or after the traversal. If you'd like to do this, just remember that the effect function you use, as a predicate, must return a truthy value. And further, as a traversal, it must accept the two standard arguments to traversals (@xref{Lambdas}).
 
@@ -1058,19 +1058,19 @@ Symex offers a few standard predicates to use as conditions in traversals like @
 @itemize @bullet{}
 
 @item
-@code{(at root)} -- Are we (i.e. is the cursor) at the root node? Any toplevel form in the source file is considered to be a root node.
+@code{(at root)} — Are we (i.e. is the cursor) at the root node? Any toplevel form in the source file is considered to be a root node.
 
 @item
-@code{(at first)} -- Are we at the first node at the present level / on the current branch of the tree?
+@code{(at first)} — Are we at the first node at the present level / on the current branch of the tree?
 
 @item
-@code{(at last)} -- Are we at the last node at the present level / on the current branch of the tree?
+@code{(at last)} — Are we at the last node at the present level / on the current branch of the tree?
 
 @item
-@code{(at initial)} -- Are we at the first root-level node in the entire file?
+@code{(at initial)} — Are we at the first root-level node in the entire file?
 
 @item
-@code{(at final)} -- Are we at the last root-level node in the entire file?
+@code{(at final)} — Are we at the last root-level node in the entire file?
 
 @end itemize
 
@@ -1198,19 +1198,19 @@ To use it, first evaluate the relevant traversal evaluator (for instance, the @c
 @itemize @bullet{}
 
 @item
-@code{s} -- step forward
+@code{s} — step forward
 
 @item
-@code{i} -- step in
+@code{i} — step in
 
 @item
-@code{o} -- step out
+@code{o} — step out
 
 @item
-@code{g} -- go until next breakpoint
+@code{g} — go until next breakpoint
 
 @item
-@code{q} -- quit
+@code{q} — quit
 
 @end itemize
 
@@ -1281,7 +1281,7 @@ Finally, the @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-sym
 
 @item @code{gj}, @code{gk}
 @tab Linewise down, up
-@tab Don't rely too heavily on these -- e.g. "leap branch" is often better
+@tab Don't rely too heavily on these — e.g. "leap branch" is often better
 
 @item @code{f}, @code{b}
 @tab Traverse forwards, backwards
@@ -1293,7 +1293,7 @@ Finally, the @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-sym
 
 @item @code{F}, @code{B}
 @tab Skip forwards, backwards
-@tab Quick ways to move forwards and backwards -- traverse without entering nested expressions
+@tab Quick ways to move forwards and backwards — traverse without entering nested expressions
 
 @item @code{@{}, @code{@}}
 @tab Leap backwards, forwards
@@ -1607,9 +1607,6 @@ Squirrels in gardens everywhere, for inspiration.
 And @uref{https://github.com/drym-org/symex.el/blob/main/abe/attributions.txt, many@asis{,} many others} who contribute in ways small and large.
 
 @end itemize
-
-@node Index
-@unnumbered Index
 
 @printindex cp
 
