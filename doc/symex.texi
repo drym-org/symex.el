@@ -299,19 +299,19 @@ Now, try moving around using these commands:
 @multitable @columnfractions .15 .45 .4
 @headitem Key @tab Command @tab Description
 
-@item h
+@item @code{h}
 @tab @code{symex-move-backward}
 @tab Move to the previous expression.
 
-@item j
+@item @code{j}
 @tab @code{symex-move-down}
 @tab Move down the tree to the ``parent'' node. Note that this is oriented with the root being the ``lowest,'' and the most nested expression being the ``highest.'' This orientation is customizable (@xref{Up and Down}).
 
-@item k
+@item @code{k}
 @tab @code{symex-move-up}
 @tab Move up the tree to a ``child'' node. Note that this is oriented with the root being the ``lowest,'' and the most nested expression being the ``highest.'' This orientation is customizable (@xref{Up and Down}).
 
-@item l
+@item @code{l}
 @tab @code{symex-move-forward}
 @tab Move to the next expression.
 
@@ -326,11 +326,11 @@ But you may not always want to navigate using such explicit movements. Sometimes
 @multitable @columnfractions .15 .45 .4
 @headitem Key @tab Command @tab Description
 
-@item f
+@item @code{f}
 @tab @code{symex-traverse-forward}
 @tab Traverse forward in the tree.
 
-@item b
+@item @code{b}
 @tab @code{symex-traverse-backward}
 @tab Traverse backwards in the tree.
 
@@ -351,27 +351,27 @@ Try these commands to modify code:
 @multitable @columnfractions .15 .45 .4
 @headitem Key @tab Command @tab Description
 
-@item x
+@item @code{x}
 @tab @code{symex-delete}
 @tab Delete an expression. This accepts counts, so @code{3x} deletes three expressions.
 
-@item c
+@item @code{c}
 @tab @code{symex-change}
 @tab Change an expression to whatever you enter. This leaves Symex mode so that you can enter the replacement in the buffer. This accepts counts, so @code{3c} changes three expressions.
 
-@item y
+@item @code{y}
 @tab @code{symex-yank}
 @tab Copy the expression to the kill ring. This accepts counts, so @code{3y} copies three expressions.
 
-@item p
+@item @code{p}
 @tab @code{symex-paste-after}
 @tab Paste from the kill ring, @emph{after} the current expression. This accepts counts, so @code{3p} pastes three times.
 
-@item P
+@item @code{P}
 @tab @code{symex-paste-before}
 @tab Paste from the kill ring, @emph{before} the current expression. This accepts counts, so @code{3p} pastes three times.
 
-@item <tab>
+@item @code{<tab>}
 @tab @code{symex-tidy}
 @tab Tidies and indents the expression. This accepts counts, so @code{3<tab>} indents three expressions.
 
@@ -387,19 +387,19 @@ There are a few different ways to insert new code, and they are all expressed in
 @multitable @columnfractions .15 .45 .4
 @headitem Key @tab Command @tab Description
 
-@item i
+@item @code{i}
 @tab @code{symex-insert-at-beginning}
 @tab Insert at the @emph{start} of the expression. If it is a form, then insert @emph{inside} the form.
 
-@item a
+@item @code{a}
 @tab @code{symex-insert-at-end}
 @tab Insert at the @emph{end} of the expression. If it is a form, then insert @emph{inside} the form.
 
-@item I
+@item @code{I}
 @tab @code{symex-insert-before}
 @tab Insert @emph{before} the expression. If it is a form, then insert @emph{outside} the form.
 
-@item A
+@item @code{A}
 @tab @code{symex-insert-after}
 @tab Insert @emph{after} the expression. If it is a form, then insert @emph{outside} the form.
 
