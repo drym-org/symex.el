@@ -7,3 +7,6 @@
 *.elc
 dist
 *.html
+
+# rendered info manual
+*.info
