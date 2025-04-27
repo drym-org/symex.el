@@ -292,11 +292,11 @@ like prompts."
       mode))
 
 (defmacro symex--with-temp-buffer (&rest body)
-  "Transform a region in a temporary buffer and replace the original with it.
+  "Evaluate BODY in a temporary buffer.
 
-Copies the region from START to END into a temporary buffer, executes
-BODY, and pastes the result back into the source buffer, replacing the
-original."
+Evaluate BODY in a temporary buffer whose major mode is set to that of
+the source buffer, and return the contents of the buffer as the
+result."
   (declare (indent 0))
   (let ((original-major-mode (gensym))
         (mapped-major-mode (gensym)))
@@ -321,24 +321,22 @@ original."
 (defmacro symex--transform-in-isolation (start end &rest body)
   "Transform a region in a temporary buffer and replace the original with it.
 
-Copies the region from START to END into a temporary buffer, executes
+Copies the region from START to END into a temporary buffer, evaluates
 BODY, and pastes the result back into the source buffer, replacing the
 original."
   (declare (indent 2))
   (let ((text-to-transform (gensym))
         (result (gensym)))
-    `(let ((,result)
-           (,text-to-transform (buffer-substring ,start ,end)))
+    `(let ((,text-to-transform (buffer-substring ,start ,end)))
        ;; TODO: consider using `replace-region-contents'
        (delete-region ,start ,end)
-       (symex--with-temp-buffer
-         (insert ,text-to-transform)
-         (goto-char 0)
-         ,@body
-         (setq ,result (buffer-string)))
-       (save-excursion (insert ,result))
-       (indent-region (point)
-                      (+ (point) (length ,result))))))
+       (let ((,result (symex--with-temp-buffer
+                        (insert ,text-to-transform)
+                        (goto-char 0)
+                        ,@body)))
+         (save-excursion (insert ,result))
+         (indent-region (point)
+                        (+ (point) (length ,result)))))))
 
 (defun symex--combine-alists (al1 al2)
   "Combine two association lists, prioritizing one of them.
