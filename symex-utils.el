@@ -276,6 +276,48 @@ Modified from: https://stackoverflow.com/a/24283996"
            (progn ,@forms)
          (goto-char ,old-point)))))
 
+(defvar symex--mode-mapping
+  '((inferior-emacs-lisp-mode . emacs-lisp-mode))
+  "Mapping of special modes to ordinary modes for symex transformations.")
+
+(defun symex--map-major-mode (mode)
+  "Map a major MODE to a more suitable one for symex transformations.
+
+This maps special modes like Elisp REPLs to their ordinary
+counterparts used in a source buffer, as using a REPL major mode for a
+transformation would produce unexpected results due to the presence of
+mode entry side effects, read-only regions, and other special regions
+like prompts."
+  (or (cdr (assoc mode symex--mode-mapping))
+      mode))
+
+(defmacro symex--with-temp-buffer (&rest body)
+  "Transform a region in a temporary buffer and replace the original with it.
+
+Copies the region from START to END into a temporary buffer, executes
+BODY, and pastes the result back into the source buffer, replacing the
+original."
+  (declare (indent 0))
+  (let ((original-major-mode (gensym))
+        (mapped-major-mode (gensym)))
+    `(let (,original-major-mode)
+       ;; In using a temp buffer to do the transformation here, we need to
+       ;; ensure that it uses the syntax table of the original buffer, since
+       ;; otherwise it doesn't necessarily treat characters the same way
+       ;; as the original buffer does, separating, for example, characters like
+       ;; `?` and `#` from the rest of the symbol during recursive indentation.
+       ;;
+       ;; The with-temp-buffer macro doesn't see the original syntax table
+       ;; when it is lexically defined here, not sure why. Defining a
+       ;; lexical scope here and then setting it dynamically via `setq`
+       ;; seems to work
+       (setq ,original-major-mode major-mode)
+       (let ((,mapped-major-mode (symex--map-major-mode ,original-major-mode)))
+         (with-temp-buffer
+           (funcall ,mapped-major-mode)
+           ,@body
+           (buffer-string))))))
+
 (defmacro symex--transform-in-isolation (start end &rest body)
   "Transform a region in a temporary buffer and replace the original with it.
 

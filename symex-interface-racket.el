@@ -29,6 +29,7 @@
 (require 'subr-x)
 (require 'symex-interop)
 (require 'symex-primitives)
+(require 'symex-utils)
 (require 'symex-interface)
 
 ;; from racket-mode - avoid byte-compile warnings
