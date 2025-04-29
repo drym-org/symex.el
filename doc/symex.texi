@@ -79,7 +79,9 @@ Lisp has inherited a few oddball names from its deep prehistory, including the i
 
 Symex exhibits a ``point-free'' modal experience allowing the expression of a rich array of commands with few keystrokes.
 
-This style of modal interface is in contrast to the @emph{compositional} style of Vim/Evil, where verbs (operators) are combined with nouns (motions or text objects) to form commands. In Symex, all motions and operators are implicitly in relation to the currently selected expression, so that the ``noun'' never needs to be indicated explicitly. The interface does still exhibit narrower forms of composition, for instance in accepting counts for most commands via a numeric prefix argument.
+The archetypical modal editing tool is, of course, Vim. As Vim addresses the general task of editing text, its interface is necessarily complex and subtle, requiring years to master. Although Symex draws inspiration from Vim, it exhibits a different, simpler, modal style that is specialized to the comparatively narrow task of editing code.
+
+More specifically, Vim's (and Evil's) interface exhibits a @emph{compositional} style, where verbs (operators like ``delete'') are combined with nouns (motions or text objects, e.g., relating to words or paragraphs) to form commands. In Symex, all motions and operators are implicitly in relation to the currently selected expression, so that we only ever need to express a verb (like delete), and no composition is needed. The interface does still support narrower forms of composition, for instance in accepting counts for most commands via a numeric prefix argument.
 
 The modal interface is implemented using a dedicated, lightweight, modal interface library called @uref{https://github.com/countvajhula/lithium, Lithium}.
 
