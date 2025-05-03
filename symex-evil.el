@@ -59,8 +59,7 @@ state."
       ;; not set to force abort a repitition
       ;; 2. The current command is not a mouse event
       ;; 3. The buffer is currently in symex state
-      (when (and repeat-type
-                 (not (evil-repeat-force-abort-p repeat-type))
+      (when (and (not (evil-repeat-force-abort-p repeat-type))
                  (not (evil-mouse-events-p (this-command-keys)))
                  symex-editing-mode)
         (evil-repeat-start)))))
@@ -90,6 +89,106 @@ in symex state as well."
                  symex-editing-mode)
         (evil-repeat-stop)))))
 
+;; In principle, setting the repeat property would allow us to
+;; explicitly designate which Symex commands, i.e., specifically
+;; transformations, are repeatable using dot.
+;;
+;; But we typically use these commands via Lithium, where they are
+;; wrapped with additional lambdas that do error handling at the
+;; lithium level, and so `this-command' reflects as an anonymous
+;; lambda when we check to see whether the command is repeatable.
+;; Thus, we find that there is no repeat property set, so we do not
+;; record the command for repetition.
+;;
+;; Indeed, Lithium does set `this-command' to be the wrapped command,
+;; but as the repeat property is checked in the command *pre-hook*, it
+;; happens before the command is invoked at all, so that setting
+;; `this-command' within Lithium doesn't make a difference.
+;;
+;; Currently, the workaround we've adopted is to not set the repeat
+;; property for specific commands, instead considering *all* commands
+;; executed in Symex mode to be repeatable. Consequently we must
+;; *explicitly* exclude those of them that we know shouldn't be (i.e.,
+;; anything other than transformations, like motions), by setting
+;; their repeat property to "abort." evil-repeat interprets this by
+;; aborting the recording of the repetition at the *post-command*
+;; stage. At this point, `this-command' does reflect as the wrapped
+;; command, so that this abort property is found.
+;;
+;; This is not ideal because we would always need to explicitly
+;; exclude any new commands we bind in Symex mode from repetition (if
+;; necessary), and we couldn't just handle this transparently by
+;; setting the repeat property or not.
+;;
+;; Some possible solutions that might be better:
+;;   1. Being able to set `this-command' at the time of definition of
+;;      the command (e.g., within the `interactive' declaration of the
+;;      wrapping lambda) would allow Emacs to know to consider the
+;;      wrapping lambda to be the wrapped command even in the
+;;      pre-command hook. Not sure if there is a way to do this.
+;;   2. Use a generic repeat package that tracks all key events (e.g.,
+;;      using `recent-keys'), and just replays them, maintaining a
+;;      stack like `evil-repeat' does. Instead of treating *commands*
+;;      as repeatable or not, treat *key events* as repeatable or not,
+;;      i.e., repetition is purely in terms of keyboard macros. Then,
+;;      we could customize it by including or excluding certain
+;;      keybindings under certain conditions (e.g., if in symex mode,
+;;      consider "x" repeatable). It could perhaps be implemented
+;;      using Emacs's keyboard macro ring
+;;      (https://www.gnu.org/software/emacs/manual/html_node/emacs/Keyboard-Macro-Ring.html),
+;;      or an analogous implementation. This would be the most general
+;;      solution available even to non-Evil users, but it would need
+;;      to be prototyped and vetted further.
+(defun symex-exclude-non-repeatable-commands ()
+  "Exclude commands from being repeated."
+  (mapc #'evil-declare-abort-repeat
+        '(symex-go-backward
+          symex-go-down
+          symex-go-up
+          symex-go-forward
+          symex-go-backward
+          symex-go-down
+          symex-go-up
+          symex-go-forward
+          backward-char
+          symex-next-visual-line
+          symex-previous-visual-line
+          forward-char
+          symex-traverse-forward
+          symex-traverse-backward
+          symex-traverse-forward-more
+          symex-traverse-backward-more
+          symex-traverse-forward-skip
+          symex-traverse-backward-skip
+          symex-leap-backward
+          symex-leap-forward
+          symex-soar-backward
+          symex-soar-forward
+          symex-climb-branch
+          symex-descend-branch
+          symex-yank
+          symex-yank-remaining
+          symex-evaluate
+          symex-evaluate-remaining
+          symex-evaluate-pretty
+          symex-evaluate-definition
+          symex-eval-recursive
+          symex-evaluate-thunk
+          symex-repl
+          symex-run
+          symex-goto-first
+          symex-goto-first
+          symex-goto-last
+          symex-goto-last
+          symex-goto-lowest
+          symex-goto-highest
+          symex-eval-print
+          symex-evaluate
+          symex--toggle-highlight
+          symex-describe
+          symex-enter-lower
+          symex-escape-higher)))
+
 (defun symex-select-nearest-advice (&rest _)
   "Advice to select the nearest symex."
   (when symex-editing-mode
@@ -108,7 +207,8 @@ to set the state to Normal."
   (when (fboundp 'undo-tree-undo)
     (advice-add #'undo-tree-undo :after #'symex-select-nearest-advice))
   (when (fboundp 'undo-tree-redo)
-    (advice-add #'undo-tree-redo :after #'symex-select-nearest-advice)))
+    (advice-add #'undo-tree-redo :after #'symex-select-nearest-advice))
+  (symex-exclude-non-repeatable-commands))
 
 (defun symex-disable-evil ()
   "Disable evil interop."
@@ -120,7 +220,6 @@ to set the state to Normal."
     (advice-remove #'undo-tree-undo #'symex-select-nearest-advice))
   (when (fboundp 'undo-tree-redo)
     (advice-remove #'undo-tree-redo #'symex-select-nearest-advice)))
-
 
 (provide 'symex-evil)
 ;;; symex-evil.el ends here
