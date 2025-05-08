@@ -27,6 +27,7 @@
 
 (require 'lithium)
 (require 'cl-lib)
+(require 'repeat-ring)
 
 (require 'symex-ui)
 (require 'symex-motions)
@@ -44,6 +45,85 @@
 ;; warning. But we just handle it in the usual way here, by declaring
 ;; the variable.
 (defvar symex-editing-mode-map)
+
+(defvar symex-lithium-repeatable-keys
+  (list (read-kbd-macro "(" :need-vector)
+        (read-kbd-macro "[" :need-vector)
+        (read-kbd-macro ")" :need-vector)
+        (read-kbd-macro "]" :need-vector)
+        (read-kbd-macro "C-'" :need-vector)
+        (read-kbd-macro "C-," :need-vector)
+        (read-kbd-macro "`" :need-vector)
+        (read-kbd-macro "C-`" :need-vector)
+        (read-kbd-macro "p" :need-vector)
+        (read-kbd-macro "P" :need-vector)
+        (read-kbd-macro "x" :need-vector)
+        (read-kbd-macro "X" :need-vector)
+        (read-kbd-macro "D" :need-vector)
+        (read-kbd-macro "C--" :need-vector)
+        (read-kbd-macro "S" :need-vector)
+        (read-kbd-macro "H" :need-vector)
+        (read-kbd-macro "L" :need-vector)
+        (read-kbd-macro "M-H" :need-vector)
+        (read-kbd-macro "M-L" :need-vector)
+        (read-kbd-macro "K" :need-vector) ; revisit kb
+        (read-kbd-macro "C-S-j" :need-vector)
+        (read-kbd-macro "C-(" :need-vector)
+        (read-kbd-macro "C-S-h" :need-vector)
+        (read-kbd-macro "C-{" :need-vector)
+        (read-kbd-macro "C-S-l" :need-vector)
+        (read-kbd-macro "C-}" :need-vector)
+        (read-kbd-macro "C-S-k" :need-vector)
+        (read-kbd-macro "C-)" :need-vector)
+        (read-kbd-macro "z" :need-vector)
+        (read-kbd-macro "Z" :need-vector)
+        (read-kbd-macro "|" :need-vector)
+        (read-kbd-macro "&" :need-vector)
+        (read-kbd-macro "-" :need-vector)
+        (read-kbd-macro ">" :need-vector)
+        (read-kbd-macro "<" :need-vector)
+        (read-kbd-macro "C->" :need-vector)
+        (read-kbd-macro "C-<" :need-vector)
+        (read-kbd-macro "C-S-o" :need-vector)
+        (read-kbd-macro "J" :need-vector)
+        (read-kbd-macro "M-J" :need-vector)
+        (read-kbd-macro "M-<" :need-vector)
+        (read-kbd-macro "M->" :need-vector)
+        (read-kbd-macro "C-M-<" :need-vector)
+        (read-kbd-macro "C-M->" :need-vector)
+        (read-kbd-macro "=" :need-vector)
+        (read-kbd-macro "<tab>" :need-vector)
+        (read-kbd-macro "C-=" :need-vector)
+        (read-kbd-macro "C-<tab>" :need-vector)
+        (read-kbd-macro "M-=" :need-vector)
+        (read-kbd-macro "M-<tab>" :need-vector)
+        (read-kbd-macro ";" :need-vector)
+        (read-kbd-macro "M-;" :need-vector)
+        ;; ("c" symex-change :exit)
+        ;; ("C" symex-change-remaining :exit)
+        ;; ("s" symex-replace :exit)
+        ;; ("o" symex-open-line-after :exit)
+        ;; ("O" symex-open-line-before :exit)
+        ;; ("A" symex-append-after :exit)
+        ;; ("a" symex-insert-at-end :exit)
+        ;; ("i" symex-insert-at-beginning :exit)
+        ;; ("I" symex-insert-before :exit)
+        ;; ("w" symex-wrap :exit)
+        ;; ("W" symex-wrap-and-append :exit)
+        )
+  "Key sequences in Symex (Lithium) mode that are repeatable.")
+
+(defvar symex-repeat-ring
+  (repeat-ring-make (lambda (key-seq)
+                      (and symex-editing-mode
+                           (member key-seq
+                                   symex-lithium-repeatable-keys))))
+  "Repeat ring for use in Symex (Lithium) mode.")
+
+(defun symex-repeat ()
+  "Repeat the last key sequence entered while in Symex mode."
+  (interactive)
+  (repeat-ring-repeat-for-ring symex-repeat-ring))
 
 ;; TODO: others that could accept a count argument:
 ;; simple insert/append
@@ -161,6 +241,7 @@
    ("s-;" symex-evaluate)
    ("H-h" symex--toggle-highlight) ; treats visual as distinct mode
    ("C-?" symex-describe)
+   ("." symex-repeat)
    ;; escapes
    ("<return>" symex-enter-lower :exit)
    ("<escape>" symex-escape-higher :exit))
@@ -171,7 +252,10 @@
   "Initialize lithium modal interface."
   ;; If for whatever reason the Lihium mode must exit, ensure
   ;; that any exit actions for symex mode are taken.
-  (add-hook 'symex-editing-mode-pre-exit-hook #'symex-exit-mode))
+  (add-hook 'symex-editing-mode-pre-exit-hook #'symex-exit-mode)
+  ;; Subscribe the symex repeat ring to key sequences entered
+  ;; in the main Emacs command loop
+  (repeat-ring-subscribe symex-repeat-ring))
 
 
 (provide 'symex-lithium)

@@ -110,12 +110,7 @@ BODY - the actual implementation of the command."
            ;; succeed, and only tidy on success
            (when symex-tidy-after-transforming-p
              (symex--tidy 1))
-           ,result))
-       (when (symex--evil-installed-p)
-         ;; NOTE: this repeat property is currently unused.
-         ;; See the comment about
-         ;; `symex-exclude-non-repeatable-commands' in symex-evil.el
-         (evil-add-command-properties ',name :repeat t)))))
+           ,result)))))
 
 (defmacro symex-define-insertion-command (name
                                           args
