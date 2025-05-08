@@ -57,76 +57,78 @@
 
 (defvar symex-lithium-repeatable-keys
   (symex--kbd-macro-list
-   "("
-   "["
-   ")"
-   "]"
-   "C-'"
-   "C-,"
-   "`"
-   "C-`"
-   "p"
-   "P"
-   "x"
-   "X"
-   "D"
-   "C--"
-   "S"
-   "H"
-   "L"
-   "M-H"
-   "M-L"
-   "K"
-   "C-S-j"
-   "C-("
-   "C-S-h"
-   "C-{"
-   "C-S-l"
-   "C-}"
-   "C-S-k"
-   "C-)"
-   "z"
-   "Z"
-   "|"
-   "&"
-   "-"
-   ">"
-   "<"
-   "C->"
-   "C-<"
-   "C-S-o"
-   "J"
-   "M-J"
-   "M-<"
-   "M->"
-   "C-M-<"
-   "C-M->"
-   "="
-   "<tab>"
-   "C-="
-   "C-<tab>"
-   "M-="
-   "M-<tab>"
-   ";"
-   "M-;")
-  ;; ("c" symex-change :exit)
-  ;; ("C" symex-change-remaining :exit)
-  ;; ("s" symex-replace :exit)
-  ;; ("o" symex-open-line-after :exit)
-  ;; ("O" symex-open-line-before :exit)
-  ;; ("A" symex-append-after :exit)
-  ;; ("a" symex-insert-at-end :exit)
-  ;; ("i" symex-insert-at-beginning :exit)
-  ;; ("I" symex-insert-before :exit)
-  ;; ("w" symex-wrap :exit)
-  ;; ("W" symex-wrap-and-append :exit)
+    "("
+    "["
+    ")"
+    "]"
+    "C-'"
+    "C-,"
+    "`"
+    "C-`"
+    "p"
+    "P"
+    "x"
+    "X"
+    "D"
+    "C--"
+    "S"
+    "H"
+    "L"
+    "M-H"
+    "M-L"
+    "K"
+    "C-S-j"
+    "C-("
+    "C-S-h"
+    "C-{"
+    "C-S-l"
+    "C-}"
+    "C-S-k"
+    "C-)"
+    "z"
+    "Z"
+    "|"
+    "&"
+    "-"
+    ">"
+    "<"
+    "C->"
+    "C-<"
+    "C-S-o"
+    "J"
+    "M-J"
+    "M-<"
+    "M->"
+    "C-M-<"
+    "C-M->"
+    "="
+    "<tab>"
+    "C-="
+    "C-<tab>"
+    "M-="
+    "M-<tab>"
+    ";"
+    "M-;"
+    "c"
+    "C"
+    "s"
+    "o"
+    "O"
+    "A"
+    "a"
+    "i"
+    "I"
+    "w"
+    "W")
   "Key sequences in Symex (Lithium) mode that are repeatable.")
 
 (defvar symex-repeat-ring
   (repeat-ring-make (lambda (key-seq)
                       (and symex-editing-mode
                            (member key-seq
-                                   symex-lithium-repeatable-keys))))
+                                   symex-lithium-repeatable-keys)))
+                    (lambda (_key-seq)
+                      symex-editing-mode))
   "Repeat ring for use in Symex (Lithium) mode.")
 
 (defun symex-repeat ()
