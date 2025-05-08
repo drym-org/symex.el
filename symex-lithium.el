@@ -25,8 +25,9 @@
 
 ;;; Code:
 
-(require 'lithium)
 (require 'cl-lib)
+(require 'edmacro)
+(require 'lithium)
 (require 'repeat-ring)
 
 (require 'symex-ui)
@@ -46,71 +47,79 @@
 ;; the variable.
 (defvar symex-editing-mode-map)
 
+(defmacro symex--kbd-macro-list (&rest keys)
+  "Produce a list of key sequence vectors from KEYS."
+  (declare (indent 0))
+  (let ((key-vectors (seq-map (lambda (key)
+                                `(read-kbd-macro ,key :need-vector))
+                              keys)))
+    `(list ,@key-vectors)))
+
 (defvar symex-lithium-repeatable-keys
-  (list (read-kbd-macro "(" :need-vector)
-        (read-kbd-macro "[" :need-vector)
-        (read-kbd-macro ")" :need-vector)
-        (read-kbd-macro "]" :need-vector)
-        (read-kbd-macro "C-'" :need-vector)
-        (read-kbd-macro "C-," :need-vector)
-        (read-kbd-macro "`" :need-vector)
-        (read-kbd-macro "C-`" :need-vector)
-        (read-kbd-macro "p" :need-vector)
-        (read-kbd-macro "P" :need-vector)
-        (read-kbd-macro "x" :need-vector)
-        (read-kbd-macro "X" :need-vector)
-        (read-kbd-macro "D" :need-vector)
-        (read-kbd-macro "C--" :need-vector)
-        (read-kbd-macro "S" :need-vector)
-        (read-kbd-macro "H" :need-vector)
-        (read-kbd-macro "L" :need-vector)
-        (read-kbd-macro "M-H" :need-vector)
-        (read-kbd-macro "M-L" :need-vector)
-        (read-kbd-macro "K" :need-vector) ; revisit kb
-        (read-kbd-macro "C-S-j" :need-vector)
-        (read-kbd-macro "C-(" :need-vector)
-        (read-kbd-macro "C-S-h" :need-vector)
-        (read-kbd-macro "C-{" :need-vector)
-        (read-kbd-macro "C-S-l" :need-vector)
-        (read-kbd-macro "C-}" :need-vector)
-        (read-kbd-macro "C-S-k" :need-vector)
-        (read-kbd-macro "C-)" :need-vector)
-        (read-kbd-macro "z" :need-vector)
-        (read-kbd-macro "Z" :need-vector)
-        (read-kbd-macro "|" :need-vector)
-        (read-kbd-macro "&" :need-vector)
-        (read-kbd-macro "-" :need-vector)
-        (read-kbd-macro ">" :need-vector)
-        (read-kbd-macro "<" :need-vector)
-        (read-kbd-macro "C->" :need-vector)
-        (read-kbd-macro "C-<" :need-vector)
-        (read-kbd-macro "C-S-o" :need-vector)
-        (read-kbd-macro "J" :need-vector)
-        (read-kbd-macro "M-J" :need-vector)
-        (read-kbd-macro "M-<" :need-vector)
-        (read-kbd-macro "M->" :need-vector)
-        (read-kbd-macro "C-M-<" :need-vector)
-        (read-kbd-macro "C-M->" :need-vector)
-        (read-kbd-macro "=" :need-vector)
-        (read-kbd-macro "<tab>" :need-vector)
-        (read-kbd-macro "C-=" :need-vector)
-        (read-kbd-macro "C-<tab>" :need-vector)
-        (read-kbd-macro "M-=" :need-vector)
-        (read-kbd-macro "M-<tab>" :need-vector)
-        (read-kbd-macro ";" :need-vector)
-        (read-kbd-macro "M-;" :need-vector)
-        ;; ("c" symex-change :exit)
-        ;; ("C" symex-change-remaining :exit)
-        ;; ("s" symex-replace :exit)
-        ;; ("o" symex-open-line-after :exit)
-        ;; ("O" symex-open-line-before :exit)
-        ;; ("A" symex-append-after :exit)
-        ;; ("a" symex-insert-at-end :exit)
-        ;; ("i" symex-insert-at-beginning :exit)
-        ;; ("I" symex-insert-before :exit)
-        ;; ("w" symex-wrap :exit)
-        ;; ("W" symex-wrap-and-append :exit)
-        )
+  (symex--kbd-macro-list
+   "("
+   "["
+   ")"
+   "]"
+   "C-'"
+   "C-,"
+   "`"
+   "C-`"
+   "p"
+   "P"
+   "x"
+   "X"
+   "D"
+   "C--"
+   "S"
+   "H"
+   "L"
+   "M-H"
+   "M-L"
+   "K"
+   "C-S-j"
+   "C-("
+   "C-S-h"
+   "C-{"
+   "C-S-l"
+   "C-}"
+   "C-S-k"
+   "C-)"
+   "z"
+   "Z"
+   "|"
+   "&"
+   "-"
+   ">"
+   "<"
+   "C->"
+   "C-<"
+   "C-S-o"
+   "J"
+   "M-J"
+   "M-<"
+   "M->"
+   "C-M-<"
+   "C-M->"
+   "="
+   "<tab>"
+   "C-="
+   "C-<tab>"
+   "M-="
+   "M-<tab>"
+   ";"
+   "M-;")
+  ;; ("c" symex-change :exit)
+  ;; ("C" symex-change-remaining :exit)
+  ;; ("s" symex-replace :exit)
+  ;; ("o" symex-open-line-after :exit)
+  ;; ("O" symex-open-line-before :exit)
+  ;; ("A" symex-append-after :exit)
+  ;; ("a" symex-insert-at-end :exit)
+  ;; ("i" symex-insert-at-beginning :exit)
+  ;; ("I" symex-insert-before :exit)
+  ;; ("w" symex-wrap :exit)
+  ;; ("W" symex-wrap-and-append :exit)
   "Key sequences in Symex (Lithium) mode that are repeatable.")
 
 (defvar symex-repeat-ring
