@@ -28,6 +28,8 @@
 (require 'cl-lib)
 (require 'edmacro)
 (require 'lithium)
+(require 'pubsub)
+(require 'mantra)
 (require 'repeat-ring)
 
 (require 'symex-ui)
@@ -122,13 +124,19 @@
     "W")
   "Key sequences in Symex (Lithium) mode that are repeatable.")
 
+(defvar symex-mantra-parser
+  (mantra-make-parser
+   "symex"
+   (lambda (key-seq)
+     (and symex-editing-mode
+          (member key-seq
+                  symex-lithium-repeatable-keys)))
+   (lambda (_key-seq)
+     symex-editing-mode))
+  "Parser for symex key sequences.")
+
 (defvar symex-repeat-ring
-  (repeat-ring-make (lambda (key-seq)
-                      (and symex-editing-mode
-                           (member key-seq
-                                   symex-lithium-repeatable-keys)))
-                    (lambda (_key-seq)
-                      symex-editing-mode))
+  (repeat-ring-make "symex")
   "Repeat ring for use in Symex (Lithium) mode.")
 
 (defun symex-repeat ()
@@ -264,9 +272,15 @@
   ;; If for whatever reason the Lihium mode must exit, ensure
   ;; that any exit actions for symex mode are taken.
   (add-hook 'symex-editing-mode-pre-exit-hook #'symex-exit-mode)
-  ;; Subscribe the symex repeat ring to key sequences entered
+  ;; Parse keyboard events for symex commands
+  (mantra-register symex-mantra-parser)
+  ;; Subscribe the symex repeat ring to symex key sequences entered
   ;; in the main Emacs command loop
-  (repeat-ring-subscribe symex-repeat-ring))
+  (let ((add-to-symex-ring (lambda (key-seq)
+                             (repeat-ring-store symex-repeat-ring
+                                                key-seq))))
+    (pubsub-subscribe "symex"
+                      add-to-symex-ring)))
 
 
 (provide 'symex-lithium)
