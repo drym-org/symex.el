@@ -132,17 +132,28 @@
           (member key-seq
                   symex-lithium-repeatable-keys)))
    (lambda (_key-seq)
-     symex-editing-mode))
+     symex-editing-mode)
+   (lambda (_key-seq)
+     (if (or (not (fboundp #'rigpa-current-mode))
+             (not (rigpa-current-mode)))
+         nil
+         (not (member (chimera-mode-name (rigpa-current-mode))
+                      '("insert" "emacs"))))))
   "Parser for symex key sequences.")
 
 (defvar symex-repeat-ring
-  (repeat-ring-make "symex")
+  (repeat-ring-make #'execute-kbd-macro)
   "Repeat ring for use in Symex (Lithium) mode.")
 
 (defun symex-repeat ()
   "Repeat the last key sequence entered while in Symex mode."
   (interactive)
   (repeat-ring-repeat-for-ring symex-repeat-ring))
+
+(defun symex-repeat-pop ()
+  "Cycle through previous repetitions."
+  (interactive)
+  (repeat-ring-repeat-pop symex-repeat-ring))
 
 ;; TODO: others that could accept a count argument:
 ;; simple insert/append
@@ -261,6 +272,7 @@
    ("H-h" symex--toggle-highlight) ; treats visual as distinct mode
    ("C-?" symex-describe)
    ("." symex-repeat)
+   ("C-." symex-repeat-pop)
    ;; escapes
    ("<return>" symex-enter-lower :exit)
    ("<escape>" symex-escape-higher :exit))
@@ -276,11 +288,8 @@
   (mantra-register symex-mantra-parser)
   ;; Subscribe the symex repeat ring to symex key sequences entered
   ;; in the main Emacs command loop
-  (let ((add-to-symex-ring (lambda (key-seq)
-                             (repeat-ring-store symex-repeat-ring
-                                                key-seq))))
-    (pubsub-subscribe "symex"
-                      add-to-symex-ring)))
+  (repeat-ring-subscribe symex-repeat-ring
+                         (mantra-parser-name symex-mantra-parser)))
 
 
 (provide 'symex-lithium)
