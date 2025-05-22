@@ -142,7 +142,7 @@
   "Parser for symex key sequences.")
 
 (defvar symex-repeat-ring
-  (repeat-ring-make #'execute-kbd-macro)
+  (repeat-ring-make)
   "Repeat ring for use in Symex (Lithium) mode.")
 
 (defun symex-repeat ()
@@ -153,7 +153,7 @@
 (defun symex-repeat-pop ()
   "Cycle through previous repetitions."
   (interactive)
-  (repeat-ring-repeat-pop symex-repeat-ring))
+  (repeat-ring-repeat-pop-for-ring symex-repeat-ring))
 
 ;; TODO: others that could accept a count argument:
 ;; simple insert/append
