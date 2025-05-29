@@ -168,18 +168,18 @@
   "Parser for symex key sequences.")
 
 (defvar symex-repeat-ring
-  (repeat-ring-make)
+  (repeat-ring-make "symex" 4) ; TESTING
   "Repeat ring for use in Symex (Lithium) mode.")
 
 (defun symex-repeat ()
   "Repeat the last key sequence entered while in Symex mode."
   (interactive)
-  (repeat-ring-repeat-for-ring symex-repeat-ring))
+  (repeat-ring-repeat symex-repeat-ring))
 
 (defun symex-repeat-pop ()
   "Cycle through previous repetitions."
   (interactive)
-  (repeat-ring-repeat-pop-for-ring symex-repeat-ring))
+  (repeat-ring-repeat-pop symex-repeat-ring))
 
 ;; TODO: others that could accept a count argument:
 ;; simple insert/append
