@@ -181,6 +181,11 @@
   (interactive)
   (repeat-ring-repeat-pop symex-repeat-ring))
 
+(defun symex-repeat-recent ()
+  "Repeat a recent key sequence entered while in Symex mode."
+  (interactive)
+  (repeat-ring-repeat-recent symex-repeat-ring))
+
 ;; TODO: others that could accept a count argument:
 ;; simple insert/append
 (lithium-define-local-mode symex-editing-mode
@@ -299,6 +304,7 @@
    ("C-?" symex-describe)
    ("." symex-repeat)
    ("C-." symex-repeat-pop)
+   ("C-c ." symex-repeat-recent)
    ;; escapes
    ("<return>" symex-enter-lower :exit)
    ("<escape>" symex-escape-higher :exit))
