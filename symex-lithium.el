@@ -59,6 +59,16 @@
 
 (defvar symex-lithium-repeatable-keys
   (symex--kbd-macro-list
+    "0"
+    "1"
+    "2"
+    "3"
+    "4"
+    "5"
+    "6"
+    "7"
+    "8"
+    "9"
     "("
     "["
     ")"
@@ -124,6 +134,19 @@
     "W")
   "Key sequences in Symex (Lithium) mode that are repeatable.")
 
+(defconst symex--ascii-numeral-0 48
+  "The ASCII code for 0.")
+
+(defconst symex--ascii-numeral-9 57
+  "The ASCII code for 9.")
+
+(defun symex--key-number-p (code)
+  "Whether CODE encodes a number."
+  (and (numberp code)
+       (<= symex--ascii-numeral-0
+           code
+           symex--ascii-numeral-9)))
+
 (defvar symex-mantra-parser
   (mantra-make-parser
    "symex"
@@ -131,14 +154,17 @@
      (and symex-editing-mode
           (member key-seq
                   symex-lithium-repeatable-keys)))
-   (lambda (_key-seq)
-     symex-editing-mode)
-   (lambda (_key-seq)
+   (lambda (_key-seq state)
+     (let ((last-entry (aref state (- (length state)
+                                      1))))
+       (and symex-editing-mode
+            (not (symex--key-number-p last-entry)))))
+   (lambda (_key-seq _state)
      (if (or (not (fboundp #'rigpa-current-mode))
              (not (rigpa-current-mode)))
          nil
-         (not (member (chimera-mode-name (rigpa-current-mode))
-                      '("insert" "emacs"))))))
+       (not (member (chimera-mode-name (rigpa-current-mode))
+                    '("symex" "insert" "emacs"))))))
   "Parser for symex key sequences.")
 
 (defvar symex-repeat-ring
