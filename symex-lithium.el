@@ -147,24 +147,33 @@
            code
            symex--ascii-numeral-9)))
 
+(defun symex-mantra-parser-start (key-seq)
+  "Start parsing."
+  (and symex-editing-mode
+       (member key-seq
+               symex-lithium-repeatable-keys)))
+
+(defun symex-mantra-parser-stop (_key-seq state)
+  "Stop (accept) parsing."
+  (let ((last-entry (aref state (- (length state)
+                                   1))))
+    (and symex-editing-mode
+         (not (symex--key-number-p last-entry)))))
+
+(defun symex-mantra-parser-abort (key-seq _state)
+  "Abort parsing."
+  (if (or (not (fboundp #'rigpa-current-mode))
+          (not (rigpa-current-mode)))
+      nil
+    (not (member (chimera-mode-name (rigpa-current-mode))
+                 '("symex" "insert" "emacs")))))
+
 (defvar symex-mantra-parser
   (mantra-make-parser
    "symex"
-   (lambda (key-seq)
-     (and symex-editing-mode
-          (member key-seq
-                  symex-lithium-repeatable-keys)))
-   (lambda (_key-seq state)
-     (let ((last-entry (aref state (- (length state)
-                                      1))))
-       (and symex-editing-mode
-            (not (symex--key-number-p last-entry)))))
-   (lambda (_key-seq _state)
-     (if (or (not (fboundp #'rigpa-current-mode))
-             (not (rigpa-current-mode)))
-         nil
-       (not (member (chimera-mode-name (rigpa-current-mode))
-                    '("symex" "insert" "emacs"))))))
+   #'symex-mantra-parser-start
+   #'symex-mantra-parser-stop
+   #'symex-mantra-parser-abort)
   "Parser for symex key sequences.")
 
 (defvar symex-repeat-ring
