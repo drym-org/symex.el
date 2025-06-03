@@ -165,8 +165,11 @@
   (if (or (not (fboundp #'rigpa-current-mode))
           (not (rigpa-current-mode)))
       nil
-    (not (member (chimera-mode-name (rigpa-current-mode))
-                 '("symex" "insert" "emacs")))))
+    (or (not (member (chimera-mode-name (rigpa-current-mode))
+                     '("symex" "insert" "emacs")))
+        ;; exclude "." itself to avoid an infinite loop
+        ;; TODO: not robust to user customization
+        (equal key-seq (string-to-vector ".")))))
 
 (defvar symex-mantra-parser
   (mantra-make-parser
@@ -180,10 +183,12 @@
   (repeat-ring-make "symex" 4) ; TESTING
   "Repeat ring for use in Symex (Lithium) mode.")
 
-(defun symex-repeat ()
+(defun symex-repeat (count)
   "Repeat the last key sequence entered while in Symex mode."
-  (interactive)
-  (repeat-ring-repeat symex-repeat-ring))
+  (interactive "p")
+  (symex--with-undo-collapse
+    (dotimes (_ count)
+      (repeat-ring-repeat symex-repeat-ring))))
 
 (defun symex-repeat-pop ()
   "Cycle through previous repetitions."
