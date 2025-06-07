@@ -51,8 +51,6 @@
 (require 'symex-custom)
 (require 'symex-ts)
 
-(defvar symex--original-blink-cursor-state nil)
-
 ;;;###autoload
 (define-minor-mode symex-mode
   "An evil way to edit Lisp symbolic expressions as trees."
@@ -105,9 +103,6 @@
   (symex--adjust-point-on-entry)
   (when symex-remember-branch-positions-p
     (symex--clear-branch-memory))
-  (when symex-toggle-blink-cursor
-    (setq symex--original-blink-cursor-state blink-cursor-mode)
-    (blink-cursor-mode -1))
   (symex-user-select-nearest)
   (symex--primitive-enter)
   (when symex-refocus-p
@@ -118,8 +113,6 @@
 
 (defun symex-exit-mode ()
   "Take necessary action upon symex mode exit."
-  (when symex--original-blink-cursor-state
-    (blink-cursor-mode 1))
   (when symex-refocus-p
     (symex--restore-scroll-margin))
   (symex--delete-overlay)
