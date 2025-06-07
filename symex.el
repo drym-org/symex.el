@@ -40,6 +40,7 @@
 ;;; Code:
 
 (require 'symex-lithium)
+(require 'symex-repeat)
 (require 'symex-interop)
 (require 'symex-evil)
 (require 'symex-motions)
@@ -142,6 +143,8 @@ advises functions to enable or disable features based on user configuration."
   (advice-add #'symex-select-nearest-in-line :after #'symex--selection-side-effects)
   ;; initialize modal interface frontend
   (symex-modal-provider-initialize)
+  ;; initialize repeat functionality
+  (symex-repeat-initialize)
   ;; initialize repeat command and other evil interop
   (when (symex--evil-installed-p)
     (symex-initialize-evil))
@@ -166,7 +169,8 @@ configuration to be disabled and the new one adopted."
   (advice-remove #'symex-user-select-nearest #'symex--selection-side-effects)
   (advice-remove #'symex-select-nearest-in-line #'symex--selection-side-effects)
   (when (symex--evil-installed-p)
-    (symex-disable-evil)))
+    (symex-disable-evil))
+  (symex-repeat-disable))
 
 ;;;###autoload
 (defun symex-mode-interface ()
