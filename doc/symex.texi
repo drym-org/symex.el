@@ -584,6 +584,48 @@ By default, @code{C-'} and @code{C-,} cycle through standard quoting and unquoti
 (symex-unquote-prefix-list (list "," ",@@" "#,@@"))
 @end lisp
 
+@node Look and Feel
+@section Look and Feel
+
+@cindex Look and Feel, customizing
+@cindex Hooks, customizing using
+@cindex Lifecycle Hooks
+
+There may be many other things you'd like to customize about Symex which aren't included as customizations, such as how the cursor looks or how the mode line looks. These may be specific to your own Emacs configuration or just to your unique preferences. Symex provides lifecycle hooks that allow you to customize it any way you like:
+
+@itemize @bullet{}
+
+@item
+@code{symex-editing-mode-pre-entry-hook} — Called right before @emph{entering} Symex mode.
+
+@item
+@code{symex-editing-mode-post-entry-hook} — Called right @emph{after} entering Symex mode.
+
+@item
+@code{symex-editing-mode-pre-exit-hook} — Called right before @emph{exiting} Symex mode.
+
+@item
+@code{symex-editing-mode-post-exit-hook} — Called right @emph{after} exiting Symex mode.
+
+@end itemize
+
+For example, since Symex already includes a customizable overlay to highlight selected expressions, you may prefer to disable the regular Emacs cursor upon entry to Symex mode, and re-enable it upon exit. To do this, add this somewhere in your Emacs config for Symex:
+
+@lisp
+(defun my-enable-cursor ()
+  "Enable the cursor."
+  (internal-show-cursor nil t))
+
+(defun my-disable-cursor ()
+  "Disable the cursor."
+  (internal-show-cursor nil nil))
+
+(add-hook 'symex-editing-mode-post-entry-hook
+          #'my-disable-cursor)
+(add-hook 'symex-editing-mode-post-exit-hook
+          #'my-enable-cursor)
+@end lisp
+
 @node Squirrel on a Speedrun - Tips and Tricks
 @chapter Squirrel on a Speedrun - Tips and Tricks
 
