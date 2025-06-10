@@ -178,7 +178,6 @@
   ;; when doing something like `2 .`
   ;; so we explicitly abort any in-progress parsing before
   ;; executing the repetition.
-  ;; TODO: verify infinite loop without this
   ;; TODO: do repeat-pop and repeat-recent need it too?
   (mantra-parser-clear-state symex-repeat-parser)
   (symex--with-undo-collapse
