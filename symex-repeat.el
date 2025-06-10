@@ -130,45 +130,57 @@
            code
            symex--ascii-numeral-9)))
 
-(defun symex-mantra-parser-start (key-seq)
+(defun symex-repeat-parser-start (key-seq)
   "Start parsing."
-  (and symex-editing-mode
-       (member key-seq
-               symex-repeatable-keys)))
+  (member key-seq
+          symex-repeatable-keys))
 
-(defun symex-mantra-parser-stop (_key-seq state)
+(defun symex-repeat-parser-stop (_key-seq state)
   "Stop (accept) parsing."
   (let ((last-entry (aref state (- (length state)
                                    1))))
     (and symex-editing-mode
          (not (symex--key-number-p last-entry)))))
 
-(defun symex-mantra-parser-abort (key-seq _state)
+(defun symex-repeat-parser-abort (key-seq _state)
   "Abort parsing."
   (if (or (not (fboundp #'rigpa-current-mode))
           (not (rigpa-current-mode)))
       nil
-    (or (not (member (chimera-mode-name (rigpa-current-mode))
-                     '("symex" "insert" "emacs")))
-        ;; exclude "." itself to avoid an infinite loop
-        ;; TODO: not robust to user customization
-        (equal key-seq (string-to-vector ".")))))
+    (let ((abort (not (member (chimera-mode-name (rigpa-current-mode))
+                              '("symex" "insert" "emacs")))))
+      (when (and abort (not symex-editing-mode))
+        (symex-repeat-disable))
+      abort)))
 
-(defvar symex-mantra-parser
+(defvar symex-repeat-parser
   (mantra-make-parser
-   "symex"
-   #'symex-mantra-parser-start
-   #'symex-mantra-parser-stop
-   #'symex-mantra-parser-abort)
+   "symex-repeat-parser"
+   #'symex-repeat-parser-start
+   #'symex-repeat-parser-stop
+   #'symex-repeat-parser-abort)
   "Parser for symex key sequences.")
 
 (defvar symex-repeat-ring
-  (repeat-ring-make "symex" 4) ; TESTING
+  ;; use unique names across all clients of the pub/sub
+  ;; system since that is a single namespace. In particular,
+  ;; we can't call both the repeat ring as well as the repeat
+  ;; parser "symex", since one needs to subscribe to the other
+  ;; and they should be distinguishable on the pub/sub side
+  (repeat-ring-make "symex-repeat-ring" 4) ; TESTING
   "Repeat ring for use in Symex (Lithium) mode.")
 
 (defun symex-repeat (count)
   "Repeat the last key sequence entered while in Symex mode."
   (interactive "p")
+  ;; since repeat is "self-referential" in a way,
+  ;; we cannot abort it in the usual way for the parser
+  ;; when doing something like `2 .`
+  ;; so we explicitly abort any in-progress parsing before
+  ;; executing the repetition.
+  ;; TODO: verify infinite loop without this
+  ;; TODO: do repeat-pop and repeat-recent need it too?
+  (mantra-parser-clear-state symex-repeat-parser)
   (symex--with-undo-collapse
     (dotimes (_ count)
       (repeat-ring-repeat symex-repeat-ring))))
@@ -183,20 +195,41 @@
   (interactive)
   (repeat-ring-repeat-recent symex-repeat-ring))
 
+(defvar symex--current-keys nil
+  "The current key sequence.")
+
 (defun symex-repeat-initialize ()
-  "Initialize parsing for repeat."
+  "Do any necessary setup for repeat functionality.
+
+This simply subscribes to and maintains pre-command key sequences in
+order to determine if symex exits need to suspend the repeat parser or
+(if we are exiting as part of a repeatable command) keep it going."
+  (pubsub-subscribe "mantra-key-sequences-pre-command"
+                    "symex--current-keys"
+                    (lambda (key-seq)
+                      (setq symex--current-keys key-seq))))
+
+(defun symex-repeat-teardown ()
+  "Do any necessary teardown for repeat functionality."
+  (pubsub-unsubscribe "mantra-key-sequences-pre-command"
+                      "symex--current-keys"))
+
+(defun symex-repeat-enable ()
+  "Enable parsing for repeat."
   ;; Parse keyboard events for symex commands
-  (mantra-register symex-mantra-parser)
+  (mantra-subscribe "mantra-key-sequences"
+                    symex-repeat-parser)
   ;; Subscribe the symex repeat ring to symex key sequences entered
   ;; in the main Emacs command loop
   (repeat-ring-subscribe symex-repeat-ring
-                         (mantra-parser-name symex-mantra-parser)))
+                         (mantra-parser-name symex-repeat-parser)))
 
 (defun symex-repeat-disable ()
   "Disable parsing for repeat."
-  (mantra-unregister symex-mantra-parser)
+  (mantra-unsubscribe "mantra-key-sequences"
+                      symex-repeat-parser)
   (repeat-ring-unsubscribe symex-repeat-ring
-                           (mantra-parser-name symex-mantra-parser)))
+                           (mantra-parser-name symex-repeat-parser)))
 
 (provide 'symex-repeat)
 ;;; symex-repeat.el ends here

@@ -33,6 +33,7 @@
 (require 'symex-tree)
 (require 'symex-runtime)
 (require 'symex-transformations)
+(require 'symex-repeat)
 (require 'symex-interop)
 (require 'symex-utils)
 

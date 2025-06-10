@@ -106,6 +106,8 @@
     (symex--clear-branch-memory))
   (symex-user-select-nearest)
   (symex--primitive-enter)
+  ;; enable parsing for repeat functionality
+  (symex-repeat-enable)
   (when symex-refocus-p
     ;; smooth scrolling currently not supported
     ;; may add it back in the future
@@ -117,7 +119,11 @@
   (when symex-refocus-p
     (symex--restore-scroll-margin))
   (symex--delete-overlay)
-  (symex--primitive-exit))
+  (symex--primitive-exit)
+  ;; if we are exiting as part of a repeatable action
+  ;; then don't suspend the symex repeat parser
+  (unless (member symex--current-keys symex-repeatable-keys)
+    (symex-repeat-disable)))
 
 (defun symex-modal-provider-initialize ()
   "Initialize the modal interface provider."
@@ -143,9 +149,8 @@ advises functions to enable or disable features based on user configuration."
   (advice-add #'symex-select-nearest-in-line :after #'symex--selection-side-effects)
   ;; initialize modal interface frontend
   (symex-modal-provider-initialize)
-  ;; initialize repeat functionality
+  ;; initialize repeat command and evil interop
   (symex-repeat-initialize)
-  ;; initialize repeat command and other evil interop
   (when (symex--evil-installed-p)
     (symex-initialize-evil))
   (symex-ts--init))
@@ -170,7 +175,7 @@ configuration to be disabled and the new one adopted."
   (advice-remove #'symex-select-nearest-in-line #'symex--selection-side-effects)
   (when (symex--evil-installed-p)
     (symex-disable-evil))
-  (symex-repeat-disable))
+  (symex-repeat-teardown))
 
 ;;;###autoload
 (defun symex-mode-interface ()
