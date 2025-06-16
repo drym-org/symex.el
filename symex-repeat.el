@@ -130,6 +130,100 @@
            code
            symex--ascii-numeral-9)))
 
+(defvar symex--change-series
+  nil
+  "Changes associated with current command.")
+
+(defun symex--push-change (elt)
+  "Push ELT into `symex--change-series' at the end, modifying it in place."
+  ;; TODO: inefficient; use DLL for this?
+  (setq symex--change-series
+        (append symex--change-series
+                (list elt))))
+
+(defun symex--clear-change-series ()
+  "Clear the change series buffer."
+  (setq symex--change-series nil))
+
+(defvar symex--initial-buffer nil
+  "Initial buffer when recording changes.")
+
+(defvar symex--initial-point nil
+  "Initial point position when recording changes.")
+
+(defvar symex--current-keys nil
+  "The current key sequence.")
+
+(defun symex-changes-listener (start end length)
+  "Listen for buffer content changes and store them in the change buffer.
+
+Store the changes in the order they occur, oldest first."
+  (when (eq symex--initial-buffer
+            (current-buffer))
+    (symex--push-change
+     (list start end length))))
+
+(defun symex-insertion-p (change)
+  "Is CHANGE an insertion?"
+  (let ((start (car change))
+        (end (cadr change))
+        (len (caddr change)))
+    (zerop len)))
+
+(defun symex-deletion-p (change)
+  "Is CHANGE a deletion?"
+  (let ((start (car change))
+        (end (cadr change))
+        (len (caddr change)))
+    (and (not (zerop len))
+         (= start end))))
+
+(defun symex-parse-insertion (change)
+  "Parse CHANGE as an insertion."
+  (let ((start (car change))
+        (end (cadr change))
+        (len (caddr change)))
+    (list 'insertion (buffer-substring start end))))
+
+(defun symex-parse-deletion (change)
+  "Parse CHANGE as a deletion."
+  (let* ((original-position symex--initial-point)
+         (start (car change))
+         (change-start (- start original-position)) ; relative to point
+         (len (caddr change)))
+    (list 'deletion change-start len)))
+
+(defun symex-parse-change (change)
+  "Parse a CHANGE."
+  (cond ((symex-insertion-p change)
+         (symex-parse-insertion change))
+        ((symex-deletion-p change)
+         (symex-parse-deletion change))
+        (t nil)))
+
+(defun symex-parse-key+change-series (key-seq change-series)
+  "Parse KEY-SEQ and CHANGE-SERIES."
+  ;; assumes
+  ;;  change-series :=   (change)
+  ;;                   | (deletion insertion)
+  ;;  change := deletion | insertion | neither
+  (cond ((null change-series) key-seq)
+        ((null (cdr change-series))
+         (let ((result (symex-parse-change (car change-series))))
+           (if (or (null result)
+                   (mantra-deletion-p result))
+               key-seq
+             result)))
+        (t (list 'seq
+                 (seq-map #'symex-parse-change
+                          change-series)))))
+
+(defun symex-clear-parsing-state ()
+  "Clear parsing state."
+  (symex--clear-change-series)
+  (setq symex--initial-buffer nil)
+  (setq symex--initial-point nil))
+
 (defun symex-repeat-parser-start (key-seq)
   "Start parsing."
   (member key-seq
@@ -137,10 +231,18 @@
 
 (defun symex-repeat-parser-stop (_key-seq state)
   "Stop (accept) parsing."
-  (let ((last-entry (aref state (- (length state)
-                                   1))))
-    (and symex-editing-mode
-         (not (symex--key-number-p last-entry)))))
+  (message "STATE IS %s" state)
+  (let* ((phases (mantra--seq-phases state))
+         (last-entry (and phases
+                          (nth (- (length phases)
+                                  1)
+                               phases))))
+    (let ((accept (and symex-editing-mode
+                       (or (not (vectorp last-entry))  ;here, fiddle with this
+                           (not (symex--key-number-p last-entry))))))
+      (when accept
+        (symex-clear-parsing-state))
+      accept)))
 
 (defun symex-repeat-parser-abort (key-seq _state)
   "Abort parsing."
@@ -149,16 +251,37 @@
       nil
     (let ((abort (not (member (chimera-mode-name (rigpa-current-mode))
                               '("symex" "insert" "emacs")))))
-      (when (and abort (not symex-editing-mode))
-        (symex-repeat-disable))
+      (when abort
+        (unless symex-editing-mode
+          (symex-repeat-disable))
+        (symex-clear-parsing-state))
       abort)))
+
+(defun symex-repeat-parser-map (key-seq)
+  "Parse each KEY-SEQ for repeat.
+
+If the action did not leave Symex mode, then parse it purely as a key
+sequence.
+
+If it left Symex mode and did not result in any insertions, then, too,
+parse it as a key sequence. Otherwise, if there are any insertions
+associated with the key sequence, then parse it as the series of
+buffer changes (which may include both insertions as well as
+deletions)."
+  (let ((result (symex-parse-key+change-series key-seq
+                                               symex--change-series)))
+    (if (mantra-seq-p result)
+        result
+      (mantra-make-seq result))))
 
 (defvar symex-repeat-parser
   (mantra-make-parser
    "symex-repeat-parser"
    #'symex-repeat-parser-start
    #'symex-repeat-parser-stop
-   #'symex-repeat-parser-abort)
+   #'symex-repeat-parser-abort
+   #'symex-repeat-parser-map
+   #'mantra-seq-compose)
   "Parser for symex key sequences.")
 
 (defvar symex-repeat-ring
@@ -194,8 +317,11 @@
   (interactive)
   (repeat-ring-repeat-recent symex-repeat-ring))
 
-(defvar symex--current-keys nil
-  "The current key sequence.")
+(defun symex-set-pre-command-state (key-seq)
+  "Set the pre-command buffer and point position."
+  (setq symex--initial-buffer (current-buffer))
+  (setq symex--initial-point (point))
+  (setq symex--current-keys key-seq))
 
 (defun symex-repeat-initialize ()
   "Do any necessary setup for repeat functionality.
@@ -204,14 +330,13 @@ This simply subscribes to and maintains pre-command key sequences in
 order to determine if symex exits need to suspend the repeat parser or
 (if we are exiting as part of a repeatable command) keep it going."
   (pubsub-subscribe "mantra-key-sequences-pre-command"
-                    "symex--current-keys"
-                    (lambda (key-seq)
-                      (setq symex--current-keys key-seq))))
+                    "symex-set-pre-command-state"
+                    #'symex-set-pre-command-state))
 
 (defun symex-repeat-teardown ()
   "Do any necessary teardown for repeat functionality."
   (pubsub-unsubscribe "mantra-key-sequences-pre-command"
-                      "symex--current-keys"))
+                      "symex-set-pre-command-state"))
 
 (defun symex-repeat-enable ()
   "Enable parsing for repeat."
@@ -221,14 +346,20 @@ order to determine if symex exits need to suspend the repeat parser or
   ;; Subscribe the symex repeat ring to symex key sequences entered
   ;; in the main Emacs command loop
   (repeat-ring-subscribe symex-repeat-ring
-                         (mantra-parser-name symex-repeat-parser)))
+                         (mantra-parser-name symex-repeat-parser))
+  ;; Listen for buffer changes performed as part
+  ;; of command execution.
+  (add-hook 'after-change-functions
+            #'symex-changes-listener))
 
 (defun symex-repeat-disable ()
   "Disable parsing for repeat."
   (mantra-unsubscribe "mantra-key-sequences"
                       symex-repeat-parser)
   (repeat-ring-unsubscribe symex-repeat-ring
-                           (mantra-parser-name symex-repeat-parser)))
+                           (mantra-parser-name symex-repeat-parser))
+  (remove-hook 'after-change-functions
+               #'symex-changes-listener))
 
 (provide 'symex-repeat)
 ;;; symex-repeat.el ends here
