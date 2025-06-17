@@ -156,7 +156,13 @@
   "Initial point position when recording changes.")
 
 (defvar symex--current-keys nil
-  "The current key sequence.")
+  "The current key sequence.
+
+This is set at the pre-command stage to serve as context throughout
+the duration of the command. In particular, it's used to determine
+whether repeat parsing should be disabled upon exiting Symex mode, or
+not. We want to continue parsing if we happen to exit as part of a
+repeatable command.")
 
 (defun symex-changes-listener (start end length)
   "Listen for buffer content changes and store them in the change buffer.
