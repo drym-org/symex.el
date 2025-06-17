@@ -32,6 +32,10 @@
 
 (require 'symex-utils)
 
+;; defined in symex-lithium
+;; but declaring it as it is used here
+(defvar symex-editing-mode)
+
 (defmacro symex--kbd-macro-list (&rest keys)
   "Produce a list of key sequence vectors from KEYS."
   (declare (indent 0))
@@ -207,16 +211,18 @@ Store the changes in the order they occur, oldest first."
   ;;  change-series :=   (change)
   ;;                   | (deletion insertion)
   ;;  change := deletion | insertion | neither
-  (cond ((null change-series) key-seq)
-        ((null (cdr change-series))
-         (let ((result (symex-parse-change (car change-series))))
-           (if (or (null result)
-                   (mantra-deletion-p result))
-               key-seq
-             result)))
-        (t (list 'seq
-                 (seq-map #'symex-parse-change
-                          change-series)))))
+  (if (and (boundp 'symex-editing-mode) symex-editing-mode)
+      key-seq
+    (cond ((null change-series) key-seq)
+          ((null (cdr change-series))
+           (let ((result (symex-parse-change (car change-series))))
+             (if (or (null result)
+                     (mantra-deletion-p result))
+                 key-seq
+               result)))
+          (t (list 'seq
+                   (seq-map #'symex-parse-change
+                            change-series))))))
 
 (defun symex-clear-parsing-state ()
   "Clear parsing state."
