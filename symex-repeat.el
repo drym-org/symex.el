@@ -286,7 +286,7 @@ deletions)."
   (symex-parse-key+change-series key-seq
                                  symex--change-series))
 
-(defun symex-repeat-sequence-compose (state input)
+(defun symex-repeat-parser-compose (state input)
   "Incorporate INPUT into STATE.
 
 We simply `cons' the input onto the `state' here, as that is
@@ -296,6 +296,14 @@ mantra."
   (message "inp %s state %s" input state)
   (cons input state))
 
+(defun symex-repeat-parser-finish (state)
+  "Finish STATE before publishing it as the result of parsing.
+
+Parse the list of mantras as a seq."
+  (let ((result (apply #'mantra-make-seq state)))
+    (message "publishing %s" result)
+    result))
+
 (defvar symex-repeat-parser
   (mantra-make-parser
    "symex-repeat-parser"
@@ -303,8 +311,9 @@ mantra."
    #'symex-repeat-parser-stop
    #'symex-repeat-parser-abort
    #'symex-repeat-parser-map
-   #'symex-repeat-sequence-compose
-   (mantra-initial-value nil))
+   #'symex-repeat-parser-compose
+   (mantra-initial-value nil)
+   #'symex-repeat-parser-finish)
   "Parser for symex key sequences.")
 
 (defvar symex-repeat-ring
@@ -380,14 +389,10 @@ at the end of parsing, in constructing the final mantra."
   ;; on the main Emacs command loop
   (mantra-subscribe "mantra-key-sequences"
                     symex-repeat-parser)
-  ;; Subscribe to the resulting parsed sequence of Symex activity
-  ;; and republish it as a mantra (a `seq').
-  (pubsub-subscribe (mantra-parser-name symex-repeat-parser)
-                    "symex-mantra-parser"
-                    #'symex-mantra-parse)
-  ;; Subscribe the symex repeat ring to these mantras
+  ;; Subscribe the symex repeat ring to the parsed sequence of Symex
+  ;; activity
   (repeat-ring-subscribe symex-repeat-ring
-                         "symex-mantra-parser")
+                         (mantra-parser-name symex-repeat-parser))
   ;; Listen for buffer changes performed as part
   ;; of command execution.
   (add-hook 'after-change-functions
