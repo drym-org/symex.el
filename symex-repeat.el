@@ -241,17 +241,20 @@ Store the changes in the order they occur, oldest first."
   (member key-seq
           symex-repeatable-keys))
 
+(defun symex--seq-number-p (entry)
+  "Is ENTRY a number?
+
+It is expected to be a mantra seq."
+  (or (not (vectorp entry))
+      (not (symex--key-number-p entry))))
+
 (defun symex-repeat-parser-stop (_key-seq state)
   "Stop (accept) parsing."
   (message "STATE IS %s" state)
-  (let* ((phases (mantra--seq-phases state))
-         (last-entry (and phases
-                          (nth (- (length phases)
-                                  1)
-                               phases))))
+  ;; (message "STOP called")
+  (let* ((last-entry (car state))) ; note state is in reverse order
     (let ((accept (and symex-editing-mode
-                       (or (not (vectorp last-entry))  ;here, fiddle with this
-                           (not (symex--key-number-p last-entry))))))
+                       (symex--seq-number-p last-entry))))
       (when accept
         (symex-clear-parsing-state))
       accept)))
@@ -280,11 +283,18 @@ parse it as a key sequence. Otherwise, if there are any insertions
 associated with the key sequence, then parse it as the series of
 buffer changes (which may include both insertions as well as
 deletions)."
-  (let ((result (symex-parse-key+change-series key-seq
-                                               symex--change-series)))
-    (if (mantra-seq-p result)
-        result
-      (mantra-make-seq result))))
+  (symex-parse-key+change-series key-seq
+                                 symex--change-series))
+
+(defun symex-repeat-sequence-compose (state input)
+  "Incorporate INPUT into STATE.
+
+We simply `cons' the input onto the `state' here, as that is
+efficient. However, it produces the sequence in the reverse order, and
+so it must eventually be reversed before being incorporated into a
+mantra."
+  (message "inp %s state %s" input state)
+  (cons input state))
 
 (defvar symex-repeat-parser
   (mantra-make-parser
@@ -293,7 +303,8 @@ deletions)."
    #'symex-repeat-parser-stop
    #'symex-repeat-parser-abort
    #'symex-repeat-parser-map
-   #'mantra-seq-compose)
+   #'symex-repeat-sequence-compose
+   (mantra-initial-value nil))
   "Parser for symex key sequences.")
 
 (defvar symex-repeat-ring
@@ -350,15 +361,33 @@ order to determine if symex exits need to suspend the repeat parser or
   (pubsub-unsubscribe "mantra-key-sequences-pre-command"
                       "symex-set-pre-command-state"))
 
+(defun symex-mantra-parse (input)
+  "Parse INPUT (a list) as a mantra.
+
+The Symex repeat parser could itself parse a mantra, but doing so
+would have an efficiency cost in order to keep the actions in the
+order they happen, i.e., for each new one to be added *at the end*.
+Instead, we simply build a list by consing each new action at the
+front of the list (which is efficient), and reverse it at one go here,
+at the end of parsing, in constructing the final mantra."
+  (message "final input %s" input)
+  (pubsub-publish "symex-mantra-parser"
+                  (apply #'mantra-make-seq (nreverse input))))
+
 (defun symex-repeat-enable ()
   "Enable parsing for repeat."
-  ;; Parse keyboard events for symex commands
+  ;; Subscribe to symex key sequences entered
+  ;; on the main Emacs command loop
   (mantra-subscribe "mantra-key-sequences"
                     symex-repeat-parser)
-  ;; Subscribe the symex repeat ring to symex key sequences entered
-  ;; in the main Emacs command loop
+  ;; Subscribe to the resulting parsed sequence of Symex activity
+  ;; and republish it as a mantra (a `seq').
+  (pubsub-subscribe (mantra-parser-name symex-repeat-parser)
+                    "symex-mantra-parser"
+                    #'symex-mantra-parse)
+  ;; Subscribe the symex repeat ring to these mantras
   (repeat-ring-subscribe symex-repeat-ring
-                         (mantra-parser-name symex-repeat-parser))
+                         "symex-mantra-parser")
   ;; Listen for buffer changes performed as part
   ;; of command execution.
   (add-hook 'after-change-functions
