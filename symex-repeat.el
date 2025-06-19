@@ -232,7 +232,6 @@ Store the changes in the order they occur, oldest first."
 
 (defun symex-clear-parsing-state ()
   "Clear parsing state."
-  (symex--clear-change-series)
   (setq symex--initial-buffer nil)
   (setq symex--initial-point nil))
 
@@ -252,6 +251,7 @@ It is expected to be a mantra seq."
   "Stop (accept) parsing."
   (message "STATE IS %s" state)
   ;; (message "STOP called")
+  (symex--clear-change-series)
   (let* ((last-entry (car state))) ; note state is in reverse order
     (let ((accept (and symex-editing-mode
                        (symex--seq-number-p last-entry))))
