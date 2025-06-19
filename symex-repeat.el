@@ -346,7 +346,6 @@ Parse the list of mantras as a seq."
   ;; when doing something like `2 .`
   ;; so we explicitly abort any in-progress parsing before
   ;; executing the repetition.
-  ;; TODO: do repeat-pop and repeat-recent need it too?
   (mantra-parser-clear-state symex-repeat-parser)
   (symex--with-undo-collapse
     (dotimes (_ count)
@@ -355,11 +354,13 @@ Parse the list of mantras as a seq."
 (defun symex-repeat-pop ()
   "Cycle through previous repetitions."
   (interactive)
+  (mantra-parser-clear-state symex-repeat-parser)
   (repeat-ring-repeat-pop symex-repeat-ring))
 
 (defun symex-repeat-recent ()
   "Repeat a recent key sequence entered while in Symex mode."
   (interactive)
+  (mantra-parser-clear-state symex-repeat-parser)
   (repeat-ring-repeat-recent symex-repeat-ring))
 
 (defun symex-set-pre-command-state (key-seq)
