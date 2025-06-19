@@ -168,8 +168,9 @@ repeatable command.")
   "Listen for buffer content changes and store them in the change buffer.
 
 Store the changes in the order they occur, oldest first."
-  (when (eq symex--initial-buffer
-            (current-buffer))
+  (when (and (mantra-parsing-in-progress-p symex-repeat-parser)
+             (eq symex--initial-buffer
+                 (current-buffer)))
     (symex--push-change
      (list start end length))))
 
