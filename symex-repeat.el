@@ -140,7 +140,11 @@
 
 (defun symex--push-change (elt)
   "Push ELT into `symex--change-series' at the end, modifying it in place."
-  ;; TODO: inefficient; use DLL for this?
+  ;; appending rather than consing is inefficient in general, but as
+  ;; the change series is cleared after each key sequence is entered,
+  ;; and as each may result in either no buffer changes, an insertion,
+  ;; a deletion, or both, we expect the length of the change series to
+  ;; be small enough (0-2) to be treated as constant.
   (setq symex--change-series
         (append symex--change-series
                 (list elt))))
