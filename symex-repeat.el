@@ -370,19 +370,6 @@ order to determine if symex exits need to suspend the repeat parser or
   (pubsub-unsubscribe "mantra-key-sequences-pre-command"
                       "symex-set-pre-command-state"))
 
-(defun symex-mantra-parse (input)
-  "Parse INPUT (a list) as a mantra.
-
-The Symex repeat parser could itself parse a mantra, but doing so
-would have an efficiency cost in order to keep the actions in the
-order they happen, i.e., for each new one to be added *at the end*.
-Instead, we simply build a list by consing each new action at the
-front of the list (which is efficient), and reverse it at one go here,
-at the end of parsing, in constructing the final mantra."
-  (message "final input %s" input)
-  (pubsub-publish "symex-mantra-parser"
-                  (apply #'mantra-make-seq (nreverse input))))
-
 (defun symex-repeat-enable ()
   "Enable parsing for repeat."
   ;; Subscribe to symex key sequences entered
