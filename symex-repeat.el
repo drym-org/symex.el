@@ -216,25 +216,6 @@ Store the changes in the order they occur, oldest first."
          (symex-parse-deletion change))
         (t nil)))
 
-(defun symex-parse-key+change-series (key-seq change-series)
-  "Parse KEY-SEQ and CHANGE-SERIES."
-  ;; assumes
-  ;;  change-series :=   (change)
-  ;;                   | (deletion insertion)
-  ;;  change := deletion | insertion | neither
-  (if (and (boundp 'symex-editing-mode) symex-editing-mode)
-      key-seq
-    (cond ((null change-series) key-seq)
-          ((null (cdr change-series))
-           (let ((result (symex-parse-change (car change-series))))
-             (if (or (null result)
-                     (mantra-deletion-p result))
-                 key-seq
-               result)))
-          (t (list 'seq
-                   (seq-map #'symex-parse-change
-                            change-series))))))
-
 (defun symex-clear-parsing-state ()
   "Clear parsing state."
   (setq symex--initial-buffer nil)
@@ -296,8 +277,22 @@ parse it as a key sequence. Otherwise, if there are any insertions
 associated with the key sequence, then parse it as the series of
 buffer changes (which may include both insertions as well as
 deletions)."
-  (symex-parse-key+change-series key-seq
-                                 symex--change-series))
+  ;; assumes
+  ;;  change-series :=   (change)
+  ;;                   | (deletion insertion)
+  ;;  change := deletion | insertion | neither
+  (if (and (boundp 'symex-editing-mode) symex-editing-mode)
+      key-seq
+    (cond ((null symex--change-series) key-seq)
+          ((null (cdr symex--change-series))
+           (let ((result (symex-parse-change (car symex--change-series))))
+             (if (or (null result)
+                     (mantra-deletion-p result))
+                 key-seq
+               result)))
+          (t (list 'seq
+                   (seq-map #'symex-parse-change
+                            symex--change-series))))))
 
 (defun symex-repeat-parser-compose (state input)
   "Incorporate INPUT into STATE.
