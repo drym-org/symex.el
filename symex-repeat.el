@@ -300,7 +300,7 @@ mantra."
   "Finish STATE before publishing it as the result of parsing.
 
 Parse the list of mantras as a seq."
-  (let ((result (apply #'mantra-make-seq state)))
+  (let ((result (apply #'mantra-make-seq (nreverse state))))
     (message "publishing %s" result)
     result))
 
