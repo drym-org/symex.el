@@ -237,8 +237,16 @@ Store the changes in the order they occur, oldest first."
 
 (defun symex-repeat-parser-start (key-seq)
   "Start parsing."
-  (member key-seq
-          symex-repeatable-keys))
+  (and (member key-seq
+               symex-repeatable-keys)
+       ;; note that this check isn't enough on its own to prevent a
+       ;; repetition from being parsed afresh, as repetition could be
+       ;; initiated once parsing is _already_ in progress, for
+       ;; instance, following the specification of a count argument.
+       ;; So it is also necessary, in addition, to abort parsing
+       ;; before initiating the repetition (see `symex-repeat' for
+       ;; where that's done).
+       (not (repeat-ring-repeating symex-repeat-ring))))
 
 (defun symex--seq-number-p (entry)
   "Is ENTRY a number?
