@@ -138,6 +138,26 @@
   nil
   "Changes associated with current command.")
 
+(defvar symex-repeat--recorded-length
+  0
+  "Length of the recorded activity.")
+
+(defconst symex-repeat--max-recording-length
+  300
+  "Maximum length of changes to track for repetition.
+
+If exceeded, parsing will be aborted.
+
+Tracking changes is efficient, so there's no real harm in tracking
+even, perhaps, tens of thousands of changes. But it doesn't seem
+useful to track long changes for repetition. We could use an explicit
+keyboard macro if we really mean to do that, or simply copy and paste
+a newly entered (substantial) block of text. So, just for good
+measure, abort parsing if the sequence gets long, as it probably isn't
+intended for repetition, anyway, and at the same time, is a failsafe
+against any pathological bugs where we end up parsing indefinitely for
+some reason.")
+
 (defun symex--push-change (elt)
   "Push ELT into `symex--change-series' at the end, modifying it in place."
   ;; appending rather than consing is inefficient in general, but as
@@ -219,7 +239,8 @@ Store the changes in the order they occur, oldest first."
 (defun symex-clear-parsing-state ()
   "Clear parsing state."
   (setq symex--initial-buffer nil)
-  (setq symex--initial-point nil))
+  (setq symex--initial-point nil)
+  (setq symex-repeat--recorded-length 0))
 
 (defun symex-repeat-parser-start (key-seq)
   "Start parsing."
@@ -258,8 +279,10 @@ It is expected to be a mantra seq."
   (if (or (not (fboundp #'rigpa-current-mode))
           (not (rigpa-current-mode)))
       nil
-    (let ((abort (not (member (chimera-mode-name (rigpa-current-mode))
-                              '("symex" "insert" "emacs")))))
+    (let ((abort (or (not (member (chimera-mode-name (rigpa-current-mode))
+                                  '("symex" "insert" "emacs")))
+                     (> symex-repeat--recorded-length
+                        symex-repeat--max-recording-length))))
       (when abort
         (unless symex-editing-mode
           (symex-repeat-disable))
@@ -290,11 +313,19 @@ If it left Symex mode and did not result in any insertions, then, too,
 parse it as a key sequence. Otherwise, if there are any insertions
 associated with the key sequence, then parse it as the series of
 buffer changes (which may include both insertions as well as
-deletions)."
-  ;; assumes
-  ;;  change-series :=   (change)
-  ;;                   | (deletion insertion)
-  ;;  change := deletion | insertion | neither
+deletions).
+
+This function assumes:
+    change-series :=   (change)
+                     | (deletion insertion)
+    change := deletion | insertion | neither"
+  ;; first, as `map' is called on every input that is to be
+  ;; incorporated into the parsed state, as a side-effect, increment
+  ;; the recorded length counter here. This allows us to efficiently
+  ;; track the length of the recorded sequence, for the purposes of
+  ;; aborting if it gets too long.
+  (setq symex-repeat--recorded-length
+        (1+ symex-repeat--recorded-length))
   (if (and (boundp 'symex-editing-mode) symex-editing-mode)
       key-seq
     (cond ((symex-repeat--noop)
