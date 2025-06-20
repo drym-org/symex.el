@@ -264,8 +264,6 @@ It is expected to be a mantra seq."
 
 (defun symex-repeat-parser-stop (_key-seq state)
   "Stop (accept) parsing."
-  (message "STATE IS %s" state)
-  ;; (message "STOP called")
   (symex--clear-change-series)
   (let* ((last-entry (car state))) ; note state is in reverse order
     (let ((accept (and symex-editing-mode
@@ -348,7 +346,6 @@ We simply `cons' the input onto the `state' here, as that is
 efficient. However, it produces the sequence in the reverse order, and
 so it must eventually be reversed before being incorporated into a
 mantra."
-  (message "inp %s state %s" input state)
   (cons input state))
 
 (defun symex-repeat-parser-finish (state)
@@ -356,7 +353,6 @@ mantra."
 
 Parse the list of mantras as a seq."
   (let ((result (apply #'mantra-make-seq (nreverse state))))
-    (message "publishing %s" result)
     result))
 
 (defvar symex-repeat-parser
