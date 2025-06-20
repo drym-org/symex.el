@@ -4,6 +4,11 @@
     <img src="https://github.com/user-attachments/assets/5c1896bd-f3e6-49b9-b2fe-539e0b741e1a" alt="Symex the Squirrel" title="Symex the Squirrel" style="cursor:default;"/>
   </p>
 
+*Symex (pron. "sym-ex", pl. symexes): A Lisp symbolic expression, which describes a computation to be performed.*
+
+symex.el
+========
+
 .. image:: https://github.com/drym-org/symex.el/actions/workflows/test.yml/badge.svg
     :target: https://github.com/drym-org/symex.el/actions
 
@@ -14,11 +19,6 @@
 .. image:: https://stable.melpa.org/packages/symex-badge.svg
     :alt: MELPA Stable
     :target: https://stable.melpa.org/#/symex
-
-*Symex (pron. "sym-ex", pl. symexes): A Lisp symbolic expression, which describes a computation to be performed.*
-
-symex.el
-========
 
 An intuitive way to edit Lisp symbolic expressions ("symexes") structurally in Emacs.
 
