@@ -373,7 +373,7 @@ Parse the list of mantras as a seq."
   ;; we can't call both the repeat ring as well as the repeat
   ;; parser "symex", since one needs to subscribe to the other
   ;; and they should be distinguishable on the pub/sub side
-  (repeat-ring-make "symex-repeat-ring" 4) ; TESTING
+  (repeat-ring-make "symex-repeat-ring")
   "Repeat ring for use in Symex (Lithium) mode.")
 
 (defun symex-repeat (count)
