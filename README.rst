@@ -9,13 +9,13 @@
     :alt: MELPA Stable
     :target: https://stable.melpa.org/#/symex
 
-*Symex (pron. "sym-ex", pl. symexes): A Lisp symbolic expression, which describes a computation to be performed.*
-
 .. raw:: html
 
   <p align="center">
     <img src="https://github.com/user-attachments/assets/5c1896bd-f3e6-49b9-b2fe-539e0b741e1a" alt="Symex the Squirrel" title="Symex the Squirrel" style="cursor:default;"/>
   </p>
+
+*Symex (pron. "sym-ex", pl. symexes): A Lisp symbolic expression, which describes a computation to be performed.*
 
 symex.el
 ========
