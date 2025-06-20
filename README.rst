@@ -11,16 +11,16 @@
 
 *Symex (pron. "sym-ex", pl. symexes): A Lisp symbolic expression, which describes a computation to be performed.*
 
-symex.el
-========
-
-An intuitive way to edit Lisp symbolic expressions ("symexes") structurally in Emacs.
-
 .. raw:: html
 
   <p align="center">
     <img src="https://github.com/user-attachments/assets/5c1896bd-f3e6-49b9-b2fe-539e0b741e1a" alt="Symex the Squirrel" title="Symex the Squirrel" style="cursor:default;"/>
   </p>
+
+symex.el
+========
+
+An intuitive way to edit Lisp symbolic expressions ("symexes") structurally in Emacs.
 
 .. contents:: :depth: 2
 
