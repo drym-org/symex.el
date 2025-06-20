@@ -283,7 +283,10 @@ deletions)."
   ;;  change := deletion | insertion | neither
   (if (and (boundp 'symex-editing-mode) symex-editing-mode)
       key-seq
-    (cond ((null symex--change-series) key-seq)
+    (cond ((and (null symex--change-series)
+                (boundp 'company-my-keymap) company-my-keymap)
+           mantra--null)
+          ((null symex--change-series) key-seq)
           ((null (cdr symex--change-series))
            (let ((result (symex-parse-change (car symex--change-series))))
              (if (or (null result)
