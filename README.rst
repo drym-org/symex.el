@@ -19,7 +19,7 @@ An intuitive way to edit Lisp symbolic expressions ("symexes") structurally in E
 .. raw:: html
 
   <p align="center">
-    <img src="https://user-images.githubusercontent.com/401668/98453162-e3ca2f00-210a-11eb-8669-c1048ff4547c.jpg" width="618" height="410" alt="Symex the Squirrel" title="Symex the Squirrel" style="cursor:default;"/>
+    <img src="https://github.com/user-attachments/assets/5c1896bd-f3e6-49b9-b2fe-539e0b741e1a" alt="Symex the Squirrel" title="Symex the Squirrel" style="cursor:default;"/>
   </p>
 
 .. contents:: :depth: 2
@@ -467,6 +467,12 @@ If you're on Doom Emacs (or more generally if you're using ``evil-surround`` and
 
 Learn More
 ==========
+
+.. raw:: html
+
+  <p align="center">
+    <img src="https://user-images.githubusercontent.com/401668/98453162-e3ca2f00-210a-11eb-8669-c1048ff4547c.jpg" width="618" height="410" alt="Symex the Squirrel" title="Symex the Squirrel" style="cursor:default;"/>
+  </p>
 
 Read the documentation for the `Symex DSL <https://github.com/drym-org/symex.el/blob/master/DSL-Docs.rst>`_.
 
