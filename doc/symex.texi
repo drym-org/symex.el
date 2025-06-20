@@ -17,6 +17,13 @@ This work is not owned by anyone. Please see the @uref{https://github.com/drym-o
 
 @titlepage
 @title Symex
+
+@sp 3
+
+@center @image{figures/symex-logo, 8cm, , Symex Logo}
+
+@sp 3
+
 @page
 @vskip 0pt plus 1filll
 @insertcopying
@@ -24,9 +31,10 @@ This work is not owned by anyone. Please see the @uref{https://github.com/drym-o
 
 @contents
 
-@c TODO: add index entries at the end
 @node Top
 @top Symex - An Expressive Modal Way to Edit Code
+
+@center @image{figures/symex-logo-small, 3cm, , Symex Logo}
 
 This manual is for Symex
 (version @value{symex-version}).
