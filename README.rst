@@ -90,7 +90,6 @@ To avail of familiar Evil keybindings while in Symex mode, put something like th
   (lithium-define-keys symex-editing-mode
                        (("u" evil-undo)
                         ("C-r" evil-redo)
-                        ("." evil-repeat)
                         ("q" evil-record-macro)
                         ("@" evil-execute-macro)
                         ("/" evil-search-forward)
