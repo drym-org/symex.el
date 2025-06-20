@@ -25,14 +25,15 @@
 
 ;;; Code:
 
-(require 'lithium)
 (require 'cl-lib)
+(require 'lithium)
 
 (require 'symex-ui)
 (require 'symex-motions)
 (require 'symex-tree)
 (require 'symex-runtime)
 (require 'symex-transformations)
+(require 'symex-repeat)
 (require 'symex-interop)
 (require 'symex-utils)
 
@@ -161,6 +162,9 @@
    ("s-;" symex-evaluate)
    ("H-h" symex--toggle-highlight) ; treats visual as distinct mode
    ("C-?" symex-describe)
+   ("." symex-repeat)
+   ("C-." symex-repeat-pop)
+   ("C-c ." symex-repeat-recent)
    ;; escapes
    ("<return>" symex-enter-lower :exit)
    ("<escape>" symex-escape-higher :exit))

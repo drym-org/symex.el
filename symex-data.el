@@ -346,7 +346,7 @@ This is useful for structural recursion during protocol execution."
 If CONDITION is true, then the CONSEQUENT traversal is executed,
 otherwise the ALTERNATIVE traversal is executed.
 
-This is analogous to an `if` statement in common languages."
+This is analogous to an `if' statement in common languages."
   (list 'decision
         condition
         consequent

@@ -3,7 +3,7 @@
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/drym-org/symex.el
 ;; Version: 1.0
-;; Package-Requires: ((emacs "25.1") (paredit "24") (seq "2.22") (lithium "0.1.1"))
+;; Package-Requires: ((emacs "25.1") (paredit "24") (seq "2.22") (lithium "0.1.1") (mantra "0.0") (repeat-ring "0.0") (pubsub "0.0"))
 ;; Keywords: lisp, convenience, languages
 
 ;; This program is "part of the world," in the sense described at
@@ -40,6 +40,7 @@
 ;;; Code:
 
 (require 'symex-lithium)
+(require 'symex-repeat)
 (require 'symex-interop)
 (require 'symex-evil)
 (require 'symex-motions)
@@ -105,6 +106,8 @@
     (symex--clear-branch-memory))
   (symex-user-select-nearest)
   (symex--primitive-enter)
+  ;; enable parsing for repeat functionality
+  (symex-repeat-enable)
   (when symex-refocus-p
     ;; smooth scrolling currently not supported
     ;; may add it back in the future
@@ -116,7 +119,11 @@
   (when symex-refocus-p
     (symex--restore-scroll-margin))
   (symex--delete-overlay)
-  (symex--primitive-exit))
+  (symex--primitive-exit)
+  ;; if we are exiting as part of a repeatable action
+  ;; then don't suspend the symex repeat parser
+  (unless (member symex--current-keys symex-repeatable-keys)
+    (symex-repeat-disable)))
 
 (defun symex-modal-provider-initialize ()
   "Initialize the modal interface provider."
@@ -142,7 +149,8 @@ advises functions to enable or disable features based on user configuration."
   (advice-add #'symex-select-nearest-in-line :after #'symex--selection-side-effects)
   ;; initialize modal interface frontend
   (symex-modal-provider-initialize)
-  ;; initialize repeat command and other evil interop
+  ;; initialize repeat command and evil interop
+  (symex-repeat-initialize)
   (when (symex--evil-installed-p)
     (symex-initialize-evil))
   (symex-ts--init))
@@ -166,7 +174,8 @@ configuration to be disabled and the new one adopted."
   (advice-remove #'symex-user-select-nearest #'symex--selection-side-effects)
   (advice-remove #'symex-select-nearest-in-line #'symex--selection-side-effects)
   (when (symex--evil-installed-p)
-    (symex-disable-evil)))
+    (symex-disable-evil))
+  (symex-repeat-teardown))
 
 ;;;###autoload
 (defun symex-mode-interface ()

@@ -322,7 +322,6 @@ For Evil users, there are some keybindings from Normal state that you might like
 (lithium-define-keys symex-editing-mode
                      (("u" evil-undo)
                       ("C-r" evil-redo)
-                      ("." evil-repeat)
                       ("q" evil-record-macro)
                       ("@@" evil-execute-macro)
                       ("/" evil-search-forward)
@@ -339,6 +338,8 @@ For Evil users, there are some keybindings from Normal state that you might like
                       ("C-i" evil-jump-forward)
                       ("C-o" evil-jump-backward)))
 @end lisp
+
+Note that Symex provides its own ``repeat'' functionality mapped to @code{.} (and @code{C-.}) and should not be overridden by Evil here, as @code{evil-repeat} would have undefined behavior when used with Symex.
 
 @node Getting Started
 @chapter Getting Started
