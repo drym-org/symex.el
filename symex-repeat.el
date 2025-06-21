@@ -149,10 +149,10 @@
 If exceeded, parsing will be aborted.
 
 Tracking changes is efficient, so there's no real harm in tracking
-even, perhaps, tens of thousands of changes. But it doesn't seem
-useful to track long changes for repetition. We could use an explicit
+even, perhaps, tens of thousands of changes.  But it doesn't seem
+useful to track long changes for repetition.  We could use an explicit
 keyboard macro if we really mean to do that, or simply copy and paste
-a newly entered (substantial) block of text. So, just for good
+a newly entered (substantial) block of text.  So, just for good
 measure, abort parsing if the sequence gets long, as it probably isn't
 intended for repetition, anyway, and at the same time, is a failsafe
 against any pathological bugs where we end up parsing indefinitely for
@@ -183,15 +183,17 @@ some reason.")
   "The current key sequence.
 
 This is set at the pre-command stage to serve as context throughout
-the duration of the command. In particular, it's used to determine
+the duration of the command.  In particular, it's used to determine
 whether repeat parsing should be disabled upon exiting Symex mode, or
-not. We want to continue parsing if we happen to exit as part of a
+not.  We want to continue parsing if we happen to exit as part of a
 repeatable command.")
 
 (defun symex-changes-listener (start end length)
   "Listen for buffer content changes and store them in the change buffer.
 
-Store the changes in the order they occur, oldest first."
+Store the changes in the order they occur, oldest first.
+
+See `after-change-functions' for more on START, END, and LENGTH."
   (when (and (mantra-parsing-in-progress-p symex-repeat-parser)
              (eq symex--initial-buffer
                  (current-buffer)))
@@ -236,6 +238,8 @@ Store the changes in the order they occur, oldest first."
          (symex-parse-deletion change))
         (t nil)))
 
+;; TODO: rename to avoid confusion with the parsed state
+;; in the parser itself, which is accepted/aborted.
 (defun symex-clear-parsing-state ()
   "Clear parsing state."
   (setq symex--initial-buffer nil)
@@ -243,7 +247,10 @@ Store the changes in the order they occur, oldest first."
   (setq symex-repeat--recorded-length 0))
 
 (defun symex-repeat-parser-start (key-seq)
-  "Start parsing."
+  "Whether to start parsing.
+
+KEY-SEQ is the currently-entered key sequence on the Emacs command
+loop."
   (and (member key-seq
                symex-repeatable-keys)
        ;; note that this check isn't enough on its own to prevent a
@@ -263,7 +270,11 @@ It is expected to be a mantra seq."
       (not (symex--key-number-p entry))))
 
 (defun symex-repeat-parser-stop (_key-seq state)
-  "Stop (accept) parsing."
+  "Whether to stop (accept) parsing.
+
+STATE is the accumulated parsed state.  Not to be confused with the
+\"parsing state\" referred to in the body of the function, which is
+metadata used in parsing, but isn't what's actually parsed."
   (symex--clear-change-series)
   (let* ((last-entry (car state))) ; note state is in reverse order
     (let ((accept (and symex-editing-mode
@@ -273,7 +284,9 @@ It is expected to be a mantra seq."
       accept)))
 
 (defun symex-repeat-parser-abort (key-seq _state)
-  "Abort parsing."
+  "Abort parsing.
+
+KEY-SEQ is the currently entered key sequence."
   (if (or (not (fboundp #'rigpa-current-mode))
           (not (rigpa-current-mode)))
       nil
@@ -308,7 +321,7 @@ If the action did not leave Symex mode, then parse it purely as a key
 sequence.
 
 If it left Symex mode and did not result in any insertions, then, too,
-parse it as a key sequence. Otherwise, if there are any insertions
+parse it as a key sequence.  Otherwise, if there are any insertions
 associated with the key sequence, then parse it as the series of
 buffer changes (which may include both insertions as well as
 deletions).
@@ -343,8 +356,8 @@ This function assumes:
   "Incorporate INPUT into STATE.
 
 We simply `cons' the input onto the `state' here, as that is
-efficient. However, it produces the sequence in the reverse order, and
-so it must eventually be reversed before being incorporated into a
+efficient.  However, it produces the sequence in the reverse order,
+and so it must eventually be reversed before being incorporated into a
 mantra."
   (cons input state))
 
@@ -377,7 +390,9 @@ Parse the list of mantras as a seq."
   "Repeat ring for use in Symex (Lithium) mode.")
 
 (defun symex-repeat (count)
-  "Repeat the last key sequence entered while in Symex mode."
+  "Repeat the last action performed while in Symex mode.
+
+And do it COUNT times."
   (interactive "p")
   ;; since repeat is "self-referential" in a way,
   ;; we cannot abort it in the usual way for the parser
@@ -402,7 +417,9 @@ Parse the list of mantras as a seq."
   (repeat-ring-repeat-recent symex-repeat-ring))
 
 (defun symex-set-pre-command-state (key-seq)
-  "Set the pre-command buffer and point position."
+  "Set the pre-command buffer and point position.
+
+KEY-SEQ is the currently entered key sequence."
   (setq symex--initial-buffer (current-buffer))
   (setq symex--initial-point (point))
   (setq symex--current-keys key-seq))
@@ -412,7 +429,7 @@ Parse the list of mantras as a seq."
 
 This simply subscribes to and maintains pre-command key sequences in
 order to determine if symex exits need to suspend the repeat parser or
-(if we are exiting as part of a repeatable command) keep it going."
+\(if we are exiting as part of a repeatable command) keep it going."
   (pubsub-subscribe "mantra-key-sequences-pre-command"
                     "symex-set-pre-command-state"
                     #'symex-set-pre-command-state))
