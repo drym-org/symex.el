@@ -175,6 +175,8 @@
   "Initialize lithium modal interface."
   ;; If for whatever reason the Lihium mode must exit, ensure
   ;; that any exit actions for symex mode are taken.
+  (unless lithium-mode
+    (lithium-mode))
   (add-hook 'symex-editing-mode-pre-exit-hook #'symex-exit-mode))
 
 
