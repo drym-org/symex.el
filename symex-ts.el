@@ -256,8 +256,8 @@ it doesn't have siblings if it changes point (TODO: clarify)."
          (re-search-backward symex--re-whitespace)
          (forward-char))
         (t (unless (symex--go-to-next-non-whitespace-char)
-             (symex--go-to-previous-non-whitespace-char))
-           (symex-ts--set-current-node (symex-ts-get-topmost-node-at-point)))))
+             (symex--go-to-previous-non-whitespace-char))))
+  (symex-ts--set-current-node (symex-ts-get-topmost-node-at-point)))
 
 (defun symex-ts-get-current-node ()
   "Return the current node.
