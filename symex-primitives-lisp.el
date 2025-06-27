@@ -315,7 +315,7 @@ as special cases here."
                                   ;; would with (abc)|.
                                   (symex-lisp-string-p))))
     (condition-case nil
-        (backward-sexp)
+        (backward-char)
       (error nil))))
 
 ;;; Navigation
@@ -344,9 +344,7 @@ as special cases here."
   "Get the point value at the start of the current symex."
   (save-excursion
     (unless (symex-lisp--point-at-start-p)
-      (condition-case nil
-          (backward-sexp)
-        (error nil)))
+      (symex-lisp-select-nearest))
     (point)))
 
 (defun symex-lisp--get-end-point-helper (count)
