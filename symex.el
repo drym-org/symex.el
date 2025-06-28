@@ -42,7 +42,6 @@
 (require 'symex-evil)
 (require 'symex-motions)
 (require 'symex-tree)
-(require 'symex-interface-builtins)
 (require 'symex-transformations)
 (require 'symex-primitives)
 (require 'symex-custom)
