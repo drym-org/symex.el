@@ -96,7 +96,6 @@
 This registers symex mode for use in all recognized Lisp modes, and also
 advises functions to enable or disable features based on user configuration."
 
-  (symex-register-builtin-interfaces)
   ;; enable the symex minor mode in all recognized lisp modes
   (when symex-ensure-structure-p
     (dolist (mode-name (symex-get-lisp-modes))

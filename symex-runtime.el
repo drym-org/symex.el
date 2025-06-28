@@ -143,5 +143,9 @@ executing it."
   (interactive)
   (funcall (symex-interface-get-method :run)))
 
+(defun symex-runtime-initialize ()
+  "Initialize runtime integration for symex mode."
+  (symex-register-builtin-interfaces))
+
 (provide 'symex-runtime)
 ;;; symex-runtime.el ends here

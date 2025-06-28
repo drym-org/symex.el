@@ -87,7 +87,7 @@ BODY - the actual implementation of the motion."
          ,docstring
          ,interactive-decl
          (let ((,result (progn ,@body)))
-           (run-hooks symex-selection-hook)
+           (run-hooks 'symex-selection-hook)
            ,result)))))
 
 (symex-define-motion symex-go-forward (count)

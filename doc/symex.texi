@@ -1424,7 +1424,7 @@ Don't hesitate to add print statements (e.g., @code{print} or @code{message}) to
 
 @subheading Disable Advice
 
-Symex uses @uref{https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html, advice} to implement some features such as adding a selection overlay. To minimize complexity while debugging, it may be advisable (so to speak) in certain cases to disable such advice. To do this, find the place in the code where the advice is added, and execute the corresponding function to remove it. Something like, @code{(advice-remove #'symex-user-select-nearest #'symex--selection-side-effects)}. Of course, if disabling the advice causes the error to go away, then you can focus your efforts on debugging the advice itself in isolation!
+Symex uses @uref{https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html, advice} to implement some features such as adding a selection overlay. To minimize complexity while debugging, it may be advisable (so to speak) in certain cases to disable such advice. To do this, find the place in the code where the advice is added, and execute the corresponding function to remove it. Something like, @code{(advice-remove #'symex-user-select-nearest #'symex-mode-highlight-selected)}. Of course, if disabling the advice causes the error to go away, then you can focus your efforts on debugging the advice itself in isolation!
 
 @subheading Comment Out Macros
 
