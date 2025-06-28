@@ -27,6 +27,7 @@
 
 ;;; Code:
 
+;; NOTE: this module should be part of symex-mode
 (require 'evil nil :no-error)
 (require 'symex-custom)
 (require 'symex-primitives)

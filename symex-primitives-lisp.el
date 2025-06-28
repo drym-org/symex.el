@@ -722,15 +722,9 @@ symex or after it."
 
 ;;; Utilities
 
-(defun symex--ensure-minor-mode ()
-  "Enable symex minor mode if it isn't already enabled."
-  (unless symex-mode
-    (symex-mode)))
-
 (defun symex-lisp-enter ()
   "Take necessary actions upon Symex mode entry in Lisp modes."
-  (when (member major-mode (symex-get-lisp-modes))
-    (symex--ensure-minor-mode)))
+  nil)
 
 (defun symex-lisp-exit ()
   "Take necessary actions upon Symex mode exit.

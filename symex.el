@@ -39,95 +39,57 @@
 
 ;;; Code:
 
-(require 'symex-lithium)
-(require 'symex-repeat)
-(require 'symex-interop)
 (require 'symex-evil)
 (require 'symex-motions)
 (require 'symex-tree)
 (require 'symex-interface-builtins)
 (require 'symex-transformations)
 (require 'symex-primitives)
-(require 'symex-ui)
 (require 'symex-custom)
 (require 'symex-ts)
 
+;; TODO: rename this to symex-lisp-mode or symex-balance-paren-mode
 ;;;###autoload
 (define-minor-mode symex-mode
   "An evil way to edit Lisp symbolic expressions as trees."
   :lighter " symex"
   :keymap (let ((symex-map (make-sparse-keymap)))
             (define-key
-              symex-map
-              (kbd "(")
-              #'paredit-open-round)
+             symex-map
+             (kbd "(")
+             #'paredit-open-round)
 
             (define-key
-              symex-map
-              (kbd ")")
-              #'paredit-close-round)
+             symex-map
+             (kbd ")")
+             #'paredit-close-round)
 
             (define-key
-              symex-map
-              (kbd "[")
-              #'paredit-open-square)
+             symex-map
+             (kbd "[")
+             #'paredit-open-square)
 
             (define-key
-              symex-map
-              (kbd "]")
-              #'paredit-close-square)
+             symex-map
+             (kbd "]")
+             #'paredit-close-square)
 
             (define-key
-              symex-map
-              (kbd "<backspace>")
-              #'paredit-backward-delete)
+             symex-map
+             (kbd "<backspace>")
+             #'paredit-backward-delete)
 
             (define-key
-              symex-map
-              (kbd "<DEL>")
-              #'paredit-backward-delete)
+             symex-map
+             (kbd "<DEL>")
+             #'paredit-backward-delete)
 
             (define-key
-              symex-map
-              (kbd "\"")
-              #'paredit-doublequote)
+             symex-map
+             (kbd "\"")
+             #'paredit-doublequote)
 
             symex-map))
-
-(defun symex--enter-mode ()
-  "Load the modal interface."
-  (symex-editing-mode-enter))
-
-;; TODO: put a lot of this in entry hooks
-(defun symex-enter-mode ()
-  "Take necessary action upon symex mode entry."
-  (symex--adjust-point-on-entry)
-  (when symex-remember-branch-positions-p
-    (symex--clear-branch-memory))
-  (symex-user-select-nearest)
-  (symex--primitive-enter)
-  ;; enable parsing for repeat functionality
-  (symex-repeat-enable)
-  (when symex-refocus-p
-    ;; smooth scrolling currently not supported
-    ;; may add it back in the future
-    (symex--set-scroll-margin))
-  (symex--enter-mode))
-
-(defun symex-exit-mode ()
-  "Take necessary action upon symex mode exit."
-  (when symex-refocus-p
-    (symex--restore-scroll-margin))
-  (symex--delete-overlay)
-  (symex--primitive-exit)
-  ;; if we are exiting as part of a repeatable action
-  ;; then don't suspend the symex repeat parser
-  (unless (member symex--current-keys symex-repeatable-keys)
-    (symex-repeat-disable)))
-
-(defun symex-modal-provider-initialize ()
-  "Initialize the modal interface provider."
-  (symex-lithium-initialize))
 
 ;;;###autoload
 (defun symex-initialize ()
@@ -142,15 +104,7 @@ advises functions to enable or disable features based on user configuration."
     (dolist (mode-name (symex-get-lisp-modes))
       (let ((mode-hook (intern (concat (symbol-name mode-name)
                                        "-hook"))))
-        (add-hook mode-hook 'symex-mode))))
-  ;; any side effects that should happen as part of selection,
-  ;; e.g., update overlay
-  (advice-add #'symex-user-select-nearest :after #'symex--selection-side-effects)
-  (advice-add #'symex-select-nearest-in-line :after #'symex--selection-side-effects)
-  ;; initialize modal interface frontend
-  (symex-modal-provider-initialize)
-  ;; initialize repeat command and evil interop
-  (symex-repeat-initialize)
+        (add-hook mode-hook #'symex-mode))))
   (when (symex--evil-installed-p)
     (symex-initialize-evil))
   (symex-ts--init))
@@ -170,20 +124,8 @@ configuration to be disabled and the new one adopted."
       (let ((mode-hook (intern (concat (symbol-name mode-name)
                                        "-hook"))))
         (remove-hook mode-hook 'symex-mode))))
-  ;; remove all advice
-  (advice-remove #'symex-user-select-nearest #'symex--selection-side-effects)
-  (advice-remove #'symex-select-nearest-in-line #'symex--selection-side-effects)
   (when (symex--evil-installed-p)
-    (symex-disable-evil))
-  (symex-repeat-teardown))
-
-;;;###autoload
-(defun symex-mode-interface ()
-  "The main entry point for editing symbolic expressions using symex mode.
-
-Enter the symex evil state, activating symex keybindings."
-  (interactive)
-  (symex-enter-mode))
+    (symex-disable-evil)))
 
 
 (provide 'symex)

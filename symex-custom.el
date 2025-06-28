@@ -27,18 +27,8 @@
 
 
 (defgroup symex nil
-  "A language for editing symbolic expressions."
+  "An expressive modal way to edit code."
   :group 'lisp)
-
-(defcustom symex-highlight-p t
-  "Whether selected symexes should be highlighted."
-  :type 'boolean
-  :group 'symex)
-
-(defcustom symex-refocus-p t
-  "Whether to refocus on the selected symex when it's near the screen's edge."
-  :type 'boolean
-  :group 'symex)
 
 (defcustom symex-ensure-structure-p t
   "Whether to balance parentheses in Lisp modes."

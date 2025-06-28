@@ -158,6 +158,9 @@ return nil."
        ;; for it, since the Lisp primitives in Symex are
        ;; more mature than the Tree Sitter ones at the
        ;; present time.
+       ;; TODO: I don't think this is needed anymore,
+       ;; as clojure-mode doesn't use tree-sitter anyway
+       ;; and clojure-ts-mode cannot use the lisp parser anyway
        (not (member major-mode symex-lisp-modes))))
 
 (defvar-local symex-ts--current-node nil "The current Tree Sitter node.")

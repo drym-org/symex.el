@@ -25,6 +25,7 @@
 
 ;;; Code:
 
+;; NOTE: this module is part of symex-mode
 (require 'evil nil :no-error)
 (require 'symex-motions)
 (require 'symex-lithium)

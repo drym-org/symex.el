@@ -32,7 +32,6 @@
 (require 'symex-traversals)
 (require 'symex-tree)
 (require 'symex-interop)
-(require 'symex-ui)
 
 ;; TODO: these "selection" functions aren't motions; maybe they ought
 ;; to be filed in another module (`symex-user`?)
@@ -61,10 +60,8 @@ primitive version."
                  (line-number-at-pos original-pos))
         (goto-char original-pos)))))
 
-(defun symex--selection-side-effects (&rest _)
-  "Things to do as part of symex selection, e.g. after navigations."
-  (when symex-highlight-p
-    (symex--update-overlay)))
+(defvar symex-selection-hook nil
+  "Hook run whenever a symex is selected.")
 
 (defmacro symex-define-motion (name
                                args
@@ -90,7 +87,7 @@ BODY - the actual implementation of the motion."
          ,docstring
          ,interactive-decl
          (let ((,result (progn ,@body)))
-           (symex--selection-side-effects)
+           (run-hooks symex-selection-hook)
            ,result)))))
 
 (symex-define-motion symex-go-forward (count)

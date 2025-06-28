@@ -31,7 +31,6 @@
 (require 'symex-traversals)
 (require 'symex-tree)
 (require 'symex-interface)
-(require 'symex-ui)
 
 (defun symex--evaluate ()
   "Evaluate symex."
