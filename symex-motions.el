@@ -33,6 +33,9 @@
 (require 'symex-tree)
 (require 'symex-interop)
 
+(defvar symex-selection-hook nil
+  "Hook run whenever a symex is selected.")
+
 ;; TODO: these "selection" functions aren't motions; maybe they ought
 ;; to be filed in another module (`symex-user`?)
 (defun symex-user-select-nearest ()
@@ -48,7 +51,8 @@ This also may entail hooks and advice, which would be absent in the
 primitive version."
   (interactive)
   (unless (symex--selected-p)
-    (symex-select-nearest)))
+    (symex-select-nearest)
+    (run-hooks 'symex-selection-hook)))
 
 (defun symex-select-nearest-in-line ()
   "Select symex nearest to point that's on the current line."
@@ -58,10 +62,8 @@ primitive version."
       (symex-select-nearest)
       (unless (= (line-number-at-pos)
                  (line-number-at-pos original-pos))
-        (goto-char original-pos)))))
-
-(defvar symex-selection-hook nil
-  "Hook run whenever a symex is selected.")
+        (goto-char original-pos))
+      (run-hooks 'symex-selection-hook))))
 
 (defmacro symex-define-motion (name
                                args

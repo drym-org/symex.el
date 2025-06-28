@@ -119,9 +119,6 @@
   "Initialize the modal interface."
   ;; any side effects that should happen as part of selection,
   ;; e.g., update overlay
-  ;; TODO: are these still needed with the selection hook in place?
-  (advice-add #'symex-user-select-nearest :after #'symex-mode-highlight-selected)
-  (advice-add #'symex-select-nearest-in-line :after #'symex-mode-highlight-selected)
   ;; initialize modal interface provider
   (symex-modal-provider-initialize)
   ;; initialize repeat command and evil interop
@@ -132,8 +129,6 @@
 (defun symex-modal-disable ()
   "Disable symex modal interface."
   ;; remove all advice
-  (advice-remove #'symex-user-select-nearest #'symex-mode-highlight-selected)
-  (advice-remove #'symex-select-nearest-in-line #'symex-mode-highlight-selected)
   (symex-repeat-teardown))
 
 ;;;###autoload
