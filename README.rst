@@ -57,7 +57,7 @@ Installation
     (symex-initialize)
     (global-set-key (kbd "s-;") 'symex-mode-interface))  ; or whatever keybinding you like
 
-This provides a keybinding to load the symex editing interface, and also enables the symex minor mode in all recognized lisp modes (the minor mode ensures that manual edits respect the tree structure, e.g. keeps parens balanced like paredit).
+This provides a keybinding to load the symex editing interface, and also enables the ``symex-lisp`` minor mode in all recognized lisp modes (the minor mode ensures that manual edits respect the tree structure, e.g. keeps parens balanced like paredit).
 
 Documentation
 =============
@@ -452,7 +452,7 @@ In writing Lisp code, parentheses are among the most commonly typed characters, 
 ::
 
    (define-key
-     symex-mode-map
+     symex-lisp-mode-map
      (kbd "C-w")
      (lambda ()
        (interactive)

@@ -47,9 +47,8 @@
 (require 'symex-custom)
 (require 'symex-ts)
 
-;; TODO: rename this to symex-lisp-mode or symex-balance-paren-mode
 ;;;###autoload
-(define-minor-mode symex-mode
+(define-minor-mode symex-lisp-mode
   "An evil way to edit Lisp symbolic expressions as trees."
   :lighter " symex"
   :keymap (let ((symex-map (make-sparse-keymap)))
@@ -103,7 +102,7 @@ advises functions to enable or disable features based on user configuration."
     (dolist (mode-name (symex-get-lisp-modes))
       (let ((mode-hook (intern (concat (symbol-name mode-name)
                                        "-hook"))))
-        (add-hook mode-hook #'symex-mode))))
+        (add-hook mode-hook #'symex-lisp-mode))))
   (when (symex--evil-installed-p)
     (symex-initialize-evil))
   (symex-ts--init))
@@ -122,7 +121,7 @@ configuration to be disabled and the new one adopted."
     (dolist (mode-name (symex-get-lisp-modes))
       (let ((mode-hook (intern (concat (symbol-name mode-name)
                                        "-hook"))))
-        (remove-hook mode-hook 'symex-mode))))
+        (remove-hook mode-hook 'symex-lisp-mode))))
   (when (symex--evil-installed-p)
     (symex-disable-evil)))
 

@@ -36,9 +36,6 @@
 (require 'symex-utils)
 (require 'symex-interface)
 
-(declare-function symex-mode "symex.el")
-(defvar symex-mode)
-
 ;;;;;;;;;;;;;;;;;;
 ;;; PRIMITIVES ;;;
 ;;;;;;;;;;;;;;;;;;

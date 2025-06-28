@@ -699,7 +699,7 @@ In writing Lisp code, parentheses are among the most commonly typed characters, 
 
 @lisp
 (define-key
-  symex-mode-map
+  symex-lisp-mode-map
   (kbd "C-w")
   (lambda ()
     (interactive)
