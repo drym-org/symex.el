@@ -25,7 +25,6 @@
 
 ;;; Code:
 
-(require 'symex-interop)
 (require 'symex-interface)
 
 (defun symex-eval-elisp ()
@@ -59,8 +58,7 @@ open in most recently used other window."
           (t
            (other-window -1)
            (ielm)))
-    (goto-char (point-max))
-    (symex-enter-lowest)))
+    (goto-char (point-max))))
 
 (defvar symex-elisp-modes (list 'lisp-interaction-mode
                                 'emacs-lisp-mode

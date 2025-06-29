@@ -29,7 +29,6 @@
 (require 'slime-repl nil 'noerror)
 (require 'sly        nil 'noerror)
 (require 'sly-mrepl  nil 'noerror)
-(require 'symex-interop)
 (require 'symex-custom)
 (require 'symex-interface)
 
@@ -83,8 +82,7 @@ Accounts for different point location in evil vs Emacs mode."
   ;; so there's no need to move point there
   (if (eq symex-common-lisp-backend 'sly)
       (call-interactively #'sly-mrepl)
-    (slime-repl))
-  (symex-enter-lowest))
+    (slime-repl)))
 
 (defun symex-run-common-lisp ()
   "Evaluate buffer."

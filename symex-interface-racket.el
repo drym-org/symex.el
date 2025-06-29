@@ -27,7 +27,6 @@
 
 (require 'racket-mode nil 'noerror)
 (require 'subr-x)
-(require 'symex-interop)
 (require 'symex-primitives)
 (require 'symex-utils)
 (require 'symex-interface)
@@ -89,8 +88,7 @@
     (unless (eq original-window (selected-window))
       ;; if the REPL window is currently being created
       ;; then don't attempt to go to the bottom
-      (goto-char (point-max))
-      (symex-enter-lowest))))
+      (goto-char (point-max)))))
 
 (defvar symex-racket-modes (list 'racket-mode
                                  'racket-repl-mode))

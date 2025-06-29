@@ -26,7 +26,6 @@
 ;;; Code:
 
 (require 'arc nil 'noerror)
-(require 'symex-interop)
 (require 'symex-interface)
 
 (declare-function arc-send-last-sexp "ext:arc")
@@ -47,8 +46,7 @@
 (defun symex-repl-arc ()
   "Go to REPL."
   (arc-repl)
-  (goto-char (point-max))
-  (symex-enter-lowest))
+  (goto-char (point-max)))
 
 (defvar symex-arc-modes (list 'arc-mode))
 
