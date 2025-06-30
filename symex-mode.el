@@ -95,6 +95,10 @@
     ;; smooth scrolling currently not supported
     ;; may add it back in the future
     (symex--set-scroll-margin))
+  (unless (or (member major-mode (symex-get-lisp-modes))
+              (symex-ts-available-p))
+    (message "WARNING (Symex): Consider using a tree-sitter enabled major mode for %s."
+             (buffer-name)))
   (symex--enter-mode))
 
 (defun symex-exit-mode ()
