@@ -546,6 +546,18 @@ The current expression is highlighted by default using an overlay. If you'd like
 (symex-highlight-p nil)
 @end lisp
 
+@node Point Placement on Entry
+@section Point Placement on Entry
+
+@cindex Point placement, customizing
+@cindex Idempotent entry to Symex Mode
+
+Upon entry into Symex mode, point is positioned at the start of the currently selected symex. If you'd like to preserve point at its original location, instead, so that entry into Symex mode is ``idempotent,'' then add this to the @code{:custom} section (not the @code{:config} section) of your @code{use-package} form:
+
+@lisp
+(symex-preserve-point-on-entry-p t)
+@end lisp
+
 @node Auto-Indenting
 @section Auto-Indenting
 

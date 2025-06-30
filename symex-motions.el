@@ -54,6 +54,12 @@ primitive version."
     (symex-select-nearest))
   (run-hooks 'symex-selection-hook))
 
+(defun symex-user-select-nearest-idempotent ()
+  "A version of `symex-user-select-nearest' that doesn't move point."
+  (interactive)
+  (save-excursion
+    (symex-user-select-nearest)))
+
 (defun symex-select-nearest-in-line ()
   "Select symex nearest to point that's on the current line."
   (interactive)

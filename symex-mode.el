@@ -67,6 +67,14 @@
   :type 'boolean
   :group 'symex-mode)
 
+(defcustom symex-preserve-point-on-entry-p nil
+  "Whether point should be preserved upon entry to Symex.
+
+The default value of `nil' means that point is moved to indicate the
+selected symex, in a strict fashion."
+  :type 'boolean
+  :group 'symex-mode)
+
 (defun symex-mode-highlight-selected (&rest _)
   "Things to do as part of symex selection, e.g. after navigations."
   (when symex-highlight-p
@@ -84,7 +92,9 @@
   (symex--adjust-point-on-entry)
   (when symex-remember-branch-positions-p
     (symex--clear-branch-memory))
-  (symex-user-select-nearest)
+  (if symex-preserve-point-on-entry-p
+      (symex-user-select-nearest-idempotent)
+    (symex-user-select-nearest))
   ;; TODO: this concept of primitive entry should be removed.
   ;; it enables the change notifier mainly, and we should
   ;; instead do that via a symex-treesit-mode, perhaps
