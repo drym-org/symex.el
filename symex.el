@@ -95,7 +95,6 @@
 
 This registers symex mode for use in all recognized Lisp modes, and also
 advises functions to enable or disable features based on user configuration."
-
   ;; enable the symex minor mode in all recognized lisp modes
   (when symex-ensure-structure-p
     (dolist (mode-name (symex-get-lisp-modes))
@@ -120,7 +119,7 @@ configuration to be disabled and the new one adopted."
     (dolist (mode-name (symex-get-lisp-modes))
       (let ((mode-hook (intern (concat (symbol-name mode-name)
                                        "-hook"))))
-        (remove-hook mode-hook 'symex-lisp-mode))))
+        (remove-hook mode-hook #'symex-lisp-mode))))
   (when (symex--evil-installed-p)
     (symex-disable-evil)))
 
