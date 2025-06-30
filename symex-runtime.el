@@ -33,21 +33,6 @@
 (require 'symex-interface)
 (require 'symex-interface-builtins)
 
-(defcustom symex-lisp-modes (list 'clojure-mode
-                                  'clojurescript-mode
-                                  'clojurec-mode)
-  "List of major modes that should use the Lisp rather than Treesitter parser.
-
-In cases where treesitter isn't available, the Lisp parser would be
-used at any rate, but this option allows you to override the use of
-Treesitter for modes where you'd prefer to use the Lisp parser even
-though treesitter is available.
-
-The Lisp parser has some differences from the Treesitter parser,
-including not treating comments as symexes."
-  :type '(repeat symbol)
-  :group 'symex)
-
 (defcustom symex-common-lisp-backend 'slime
   "Backend provider for Common Lisp interactive features.  One of:
 
