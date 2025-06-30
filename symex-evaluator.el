@@ -405,6 +405,8 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
     ;; where it conditionally returns to the original
     ;; point / node depending on whether BODY succeeds
     ;; or which tests for success before moving point
+    (unless (symex--selected-p)
+      (symex-select-nearest))
     (let ((original-location (point))
           (original-point-height-offset
            (symex--point-height-offset))

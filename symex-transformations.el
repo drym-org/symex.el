@@ -93,6 +93,7 @@ BODY - the actual implementation of the command."
        (defun ,name ,args
          ,docstring
          ,interactive-decl
+         (symex-user-select-nearest)
          (let ((,result (progn ,@body)))
            (symex-user-select-nearest)
            ;; Note that the built-in `fixup-whitespace` that's used in
@@ -133,6 +134,7 @@ BODY - the actual implementation of the command."
      (defun ,name ,args
        ,docstring
        ,interactive-decl
+       (symex-user-select-nearest)
        (when (symex--evil-installed-p)
          (evil-start-undo-step))
        ,@body
