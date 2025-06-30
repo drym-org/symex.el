@@ -51,8 +51,8 @@ This also may entail hooks and advice, which would be absent in the
 primitive version."
   (interactive)
   (unless (symex--selected-p)
-    (symex-select-nearest)
-    (run-hooks 'symex-selection-hook)))
+    (symex-select-nearest))
+  (run-hooks 'symex-selection-hook))
 
 (defun symex-select-nearest-in-line ()
   "Select symex nearest to point that's on the current line."
