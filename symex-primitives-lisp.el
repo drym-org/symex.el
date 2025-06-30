@@ -34,7 +34,6 @@
 (require 'paredit)
 (require 'symex-data)
 (require 'symex-utils)
-(require 'symex-interface)
 
 ;;;;;;;;;;;;;;;;;;
 ;;; PRIMITIVES ;;;
@@ -43,9 +42,53 @@
 ;;; Configuration
 
 ;;; List major modes in which symex should be active.
+;; NOTE: we maintain an independent list here in addition to the
+;; implicit one in Symex's supported runtime interfaces, because the
+;; runtime integration is now a higher-level package that will not
+;; always be present in a given Symex user's Emacs config. As this
+;; list is used to determine whether to balance parentheses or not in
+;; the core Symex package, there needs to be a way to get that
+;; information here. There may be better ways of doing this, for
+;; instance, leaving it entirely to the user to balance parens using
+;; something like paredit, but we don't do that, for the moment,
+;; because unbalanced parentheses likely break a lot of Symex
+;; features, so it seems necessary for Symex itself to provide a way
+;; to do that without imposing an informal (yet essential) dependency
+;; on the user.
+(defvar symex-lisp-modes
+  '(fennel-mode
+    arc-mode
+    lisp-mode
+    slime-repl-mode
+    sly-mrepl-mode
+    clojure-mode
+    clojurescript-mode
+    clojurec-mode
+    scheme-mode
+    racket-mode
+    racket-repl-mode
+    lisp-interaction-mode
+    emacs-lisp-mode
+    inferior-emacs-lisp-mode
+    fennel-mode
+    arc-mode
+    lisp-mode
+    slime-repl-mode
+    sly-mrepl-mode
+    clojure-mode
+    clojurescript-mode
+    clojurec-mode
+    scheme-mode
+    racket-mode
+    racket-repl-mode
+    lisp-interaction-mode
+    emacs-lisp-mode
+    inferior-emacs-lisp-mode)
+  "List of known Lisp major modes.")
+
 (defun symex-get-lisp-modes ()
   "List modes that implement the symex interface."
-  (mapcar #'car symex-interfaces))
+  symex-lisp-modes)
 
 ;;; Parsing
 
