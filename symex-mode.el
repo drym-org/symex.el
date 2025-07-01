@@ -132,6 +132,8 @@ selected symex, in a strict fashion."
 ;;;###autoload
 (defun symex-modal-initialize ()
   "Initialize the modal interface."
+  (unless symex-mode
+    (symex-mode 1))
   ;; any side effects that should happen as part of selection,
   ;; e.g., update overlay
   ;; initialize modal interface provider
