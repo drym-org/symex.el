@@ -39,6 +39,7 @@
 
 ;;; Code:
 
+(require 'lithium)
 (require 'symex-motions)
 (require 'symex-tree)
 (require 'symex-custom)
@@ -81,11 +82,6 @@ selected symex, in a strict fashion."
   (when symex-highlight-p
     (symex--update-overlay)))
 
-(defun symex--enter-mode ()
-  "Load the modal interface."
-  (symex-editing-mode-enter))
-
-;; TODO: put a lot of this in entry hooks
 (defun symex-enter-mode ()
   "Take necessary action upon symex mode entry."
   (add-hook 'symex-selection-hook
@@ -109,8 +105,7 @@ selected symex, in a strict fashion."
   (unless (or (member major-mode (symex-get-lisp-modes))
               (symex-ts-available-p))
     (message "WARNING (Symex): Consider using a tree-sitter enabled major mode for %s."
-             (buffer-name)))
-  (symex--enter-mode))
+             (buffer-name))))
 
 (defun symex-exit-mode ()
   "Take necessary action upon symex mode exit."
@@ -125,26 +120,26 @@ selected symex, in a strict fashion."
   (unless (member symex--current-keys symex-repeatable-keys)
     (symex-repeat-disable)))
 
-(defun symex-modal-provider-initialize ()
-  "Initialize the modal interface provider."
-  (symex-lithium-initialize))
-
 ;;;###autoload
 (defun symex-modal-initialize ()
   "Initialize the modal interface."
-  (unless symex-mode
-    (symex-mode 1))
   ;; any side effects that should happen as part of selection,
   ;; e.g., update overlay
-  ;; initialize modal interface provider
-  (symex-modal-provider-initialize)
+  (unless symex-mode
+    (symex-mode 1))
+  (unless lithium-mode
+    (lithium-mode 1))
   ;; initialize repeat command and evil interop
   (symex-repeat-initialize)
   ;; initialize runtime integrations with various language backends
   (symex-runtime-initialize)
   ;; enable any evil integrations like nearest selection on evil-undo
   (when (symex--evil-installed-p)
-    (symex-initialize-evil)))
+    (symex-initialize-evil))
+  (add-hook 'symex-editing-mode-pre-entry-hook
+            #'symex-enter-mode)
+  (add-hook 'symex-editing-mode-pre-exit-hook
+            #'symex-exit-mode))
 
 (defun symex-modal-disable ()
   "Disable symex modal interface."
@@ -160,7 +155,7 @@ selected symex, in a strict fashion."
 
 Enter the symex evil state, activating symex keybindings."
   (interactive)
-  (symex-enter-mode))
+  (symex-editing-mode-enter))
 
 
 (provide 'symex-mode)

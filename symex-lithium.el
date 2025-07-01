@@ -37,8 +37,6 @@
 (require 'symex-interop)
 (require 'symex-utils)
 
-(declare-function symex-exit-mode "symex.el")
-
 ;; this is dynamically referenced in the lithium defining macros and
 ;; causes a byte compile warning here. The current approach seems
 ;; fine; not sure if there's an alternative that would avoid the
@@ -170,14 +168,6 @@
    ("<escape>" symex-escape-higher :exit))
   :lighter " symex"
   :group 'symex)
-
-(defun symex-lithium-initialize ()
-  "Initialize lithium modal interface."
-  ;; If for whatever reason the Lihium mode must exit, ensure
-  ;; that any exit actions for symex mode are taken.
-  (unless lithium-mode
-    (lithium-mode))
-  (add-hook 'symex-editing-mode-pre-exit-hook #'symex-exit-mode))
 
 
 (provide 'symex-lithium)
