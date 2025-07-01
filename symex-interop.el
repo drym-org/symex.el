@@ -27,7 +27,10 @@
 
 ;;; Code:
 
-;; NOTE: this module should be part of symex-mode
+;; NOTE: this module is part of symex-core, for now. We should ideally
+;; eliminate it, maybe by moving a lot of this into user config, or a
+;; separate package for each integration, e.g., symex-rigpa,
+;; symex-evil
 (require 'evil nil :no-error)
 (require 'symex-custom)
 (require 'symex-primitives)
