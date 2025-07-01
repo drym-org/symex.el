@@ -32,7 +32,6 @@
 ;;; Code:
 
 (require 'treesit nil :no-error)
-(require 'symex-custom)
 (require 'symex-data)
 (require 'symex-utils)
 
