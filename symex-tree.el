@@ -136,7 +136,8 @@ positions are no longer relevant on a different tree than the one on
 which they were recorded.  To be conservative and err on the side of
 determinism here, we clear branch memory upon entering symex mode,
 since may enter at arbitrary points in the code, i.e. on arbitrary
-trees.
+trees. We also clear branch memory when moving to a different tree
+while still in Symex mode.
 
 TODO: Yet, hypothetically if there were two identical trees next to
 one another, then the positions from one would naturally carry over to
@@ -152,10 +153,6 @@ This may be worth exploring as a defcustom."
 (defun symex--store-branch-positions (memory)
   "Restore the branch memory stack to MEMORY."
   (setq symex--branch-memory memory))
-
-(defun symex--forget-branch-positions ()
-  "Forget any stored branch positions when moving to a different tree."
-  (setq symex--branch-memory nil))
 
 (defun symex--go-up-with-memory (count)
   "Go up COUNT times, recalling previous positions along branches."

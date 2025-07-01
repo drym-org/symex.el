@@ -113,7 +113,7 @@ This is a user-level command meant to be used interactively. Prefer
                                            count)))))
     (when result
       (when symex-remember-branch-positions-p
-        (symex--forget-branch-positions)))
+        (symex--clear-branch-memory)))
     result))
 
 (symex-define-motion symex-go-backward (count)
@@ -127,7 +127,7 @@ This is a user-level command meant to be used interactively. Prefer
                                            count)))))
     (when result
       (when symex-remember-branch-positions-p
-        (symex--forget-branch-positions)))
+        (symex--clear-branch-memory)))
     result))
 
 (symex-define-motion symex-go-up (count)
