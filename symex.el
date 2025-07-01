@@ -50,6 +50,7 @@
 (define-minor-mode symex-lisp-mode
   "A minor mode to balance parentheses while editing Lisp buffers."
   :lighter " symex-lisp"
+  :group 'symex
   :keymap (let ((symex-map (make-sparse-keymap)))
             (define-key
              symex-map
@@ -122,6 +123,8 @@ configuration to be disabled and the new one adopted."
 (define-minor-mode symex-mode
   "An evil way to edit Lisp symbolic expressions as trees."
   :lighter " symex"
+  :global t
+  :group 'symex
   (if symex-mode
       (symex-initialize)
     (symex-disable)))
