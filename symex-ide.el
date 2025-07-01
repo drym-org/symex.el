@@ -1,4 +1,4 @@
-;;; symex-runtime.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
+;;; symex-ide.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
 
 ;; URL: https://github.com/drym-org/symex.el
 
@@ -120,9 +120,9 @@ executing it."
   (interactive)
   (funcall (symex-interface-get-method :run)))
 
-(defun symex-runtime-initialize ()
+(defun symex-ide-initialize ()
   "Initialize runtime integration for symex mode."
   (symex-register-builtin-interfaces))
 
-(provide 'symex-runtime)
-;;; symex-runtime.el ends here
+(provide 'symex-ide)
+;;; symex-ide.el ends here

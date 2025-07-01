@@ -50,7 +50,7 @@
 
 (require 'symex-lithium)
 (require 'symex-repeat)
-(require 'symex-runtime)
+(require 'symex-ide)
 (require 'symex-ui)
 (require 'symex-interop)
 (require 'symex-evil)
@@ -132,7 +132,7 @@ selected symex, in a strict fashion."
   ;; initialize repeat command and evil interop
   (symex-repeat-initialize)
   ;; initialize runtime integrations with various language backends
-  (symex-runtime-initialize)
+  (symex-ide-initialize)
   ;; enable any evil integrations like nearest selection on evil-undo
   (when (symex--evil-installed-p)
     (symex-initialize-evil))

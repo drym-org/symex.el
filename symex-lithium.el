@@ -31,7 +31,7 @@
 (require 'symex-ui)
 (require 'symex-motions)
 (require 'symex-tree)
-(require 'symex-runtime)
+(require 'symex-ide)
 (require 'symex-transformations)
 (require 'symex-repeat)
 (require 'symex-interop)
