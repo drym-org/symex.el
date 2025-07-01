@@ -52,6 +52,7 @@
 (require 'symex-runtime)
 (require 'symex-ui)
 (require 'symex-interop)
+(require 'symex-evil)
 
 (defgroup symex-mode nil
   "Point-free modal UI for Symex."
@@ -138,12 +139,18 @@ selected symex, in a strict fashion."
   ;; initialize repeat command and evil interop
   (symex-repeat-initialize)
   ;; initialize runtime integrations with various language backends
-  (symex-runtime-initialize))
+  (symex-runtime-initialize)
+  ;; enable any evil integrations like nearest selection on evil-undo
+  (when (symex--evil-installed-p)
+    (symex-initialize-evil)))
 
 (defun symex-modal-disable ()
   "Disable symex modal interface."
   ;; remove all advice
-  (symex-repeat-teardown))
+  (symex-repeat-teardown)
+  ;; disable any evil integrations
+  (when (symex--evil-installed-p)
+    (symex-disable-evil)))
 
 ;;;###autoload
 (defun symex-mode-interface ()

@@ -39,7 +39,6 @@
 
 ;;; Code:
 
-(require 'symex-evil)
 (require 'symex-motions)
 (require 'symex-tree)
 (require 'symex-transformations)
@@ -101,8 +100,6 @@ advises functions to enable or disable features based on user configuration."
       (let ((mode-hook (intern (concat (symbol-name mode-name)
                                        "-hook"))))
         (add-hook mode-hook #'symex-lisp-mode))))
-  (when (symex--evil-installed-p)
-    (symex-initialize-evil))
   (symex-ts--init))
 
 (defun symex-disable ()
@@ -119,9 +116,7 @@ configuration to be disabled and the new one adopted."
     (dolist (mode-name (symex-get-lisp-modes))
       (let ((mode-hook (intern (concat (symbol-name mode-name)
                                        "-hook"))))
-        (remove-hook mode-hook #'symex-lisp-mode))))
-  (when (symex--evil-installed-p)
-    (symex-disable-evil)))
+        (remove-hook mode-hook #'symex-lisp-mode)))))
 
 
 (provide 'symex)
