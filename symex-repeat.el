@@ -287,18 +287,15 @@ metadata used in parsing, but isn't what's actually parsed."
   "Abort parsing.
 
 KEY-SEQ is the currently entered key sequence."
-  (if (or (not (fboundp #'rigpa-current-mode))
-          (not (rigpa-current-mode)))
-      nil
-    (let ((abort (or (not (member (chimera-mode-name (rigpa-current-mode))
-                                  '("symex" "insert" "emacs")))
-                     (> symex-repeat--recorded-length
-                        symex-repeat--max-recording-length))))
-      (when abort
-        (unless symex-editing-mode
-          (symex-repeat-disable))
-        (symex-clear-parsing-state))
-      abort)))
+  (let ((abort (or (not (eq symex--initial-buffer
+                            (current-buffer)))
+                   (> symex-repeat--recorded-length
+                      symex-repeat--max-recording-length))))
+    (when abort
+      (unless symex-editing-mode
+        (symex-repeat-disable))
+      (symex-clear-parsing-state))
+    abort))
 
 (defun symex-repeat--noop ()
   "Did the current key sequence have no effect in the source buffer?"
