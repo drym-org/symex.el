@@ -26,6 +26,9 @@
 
 ;;; Code:
 
+(require 'lithium)
+(require 'symex-mode)
+
 (require 'symex-primitives)
 (require 'symex-evaluator)
 (require 'symex-traversals)
@@ -122,7 +125,19 @@ executing it."
 
 (defun symex-ide-initialize ()
   "Initialize runtime integration for symex mode."
-  (symex-register-builtin-interfaces))
+  (symex-register-builtin-interfaces)
+  (lithium-define-keys symex-editing-mode
+    (("e" symex-evaluate)
+     ("E" symex-evaluate-remaining)
+     ("C-M-e" symex-evaluate-pretty)
+     ("d" symex-evaluate-definition)
+     ("M-e" symex-eval-recursive)
+     ("T" symex-evaluate-thunk)
+     ("r" symex-repl)
+     ("R" symex-run)
+     ("C-;" symex-eval-print) ; weird pre-offset (in both)
+     ("s-;" symex-evaluate)
+     ("C-?" symex-describe))))
 
 (provide 'symex-ide)
 ;;; symex-ide.el ends here
