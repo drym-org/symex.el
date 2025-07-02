@@ -123,6 +123,7 @@ executing it."
   (interactive)
   (funcall (symex-interface-get-method :run)))
 
+;;;###autoload
 (defun symex-ide-initialize ()
   "Initialize runtime integration for symex mode."
   (symex-register-builtin-interfaces)
