@@ -349,6 +349,17 @@ For Evil users, there are some keybindings from Normal state that you might like
 
 Note that Symex provides its own ``repeat'' functionality mapped to @code{.} (and @code{C-.}) and should not be overridden by Evil here, as @code{evil-repeat} would have undefined behavior when used with Symex.
 
+For other useful options on using Symex with Evil, @xref{Escaping to Symex Instead of Normal State} and @xref{Easy Entry Into Symex Mode}.
+
+@node Symex and Rigpa
+@section Symex and Rigpa
+
+@cindex Rigpa, using together with
+
+@uref{https://github.com/countvajhula/rigpa, Rigpa} is a structured and flexible way to manage modal user interfaces like Symex and Evil. It allows you to visually define transitions between different modes via keybindings like Enter and Escape, making it convenient to use modal UIs (such as Symex and Evil) together. Note that the package, although fairly mature, is not yet available on Emacs package archives, and must be installed directly from GitHub using Straight or Elpaca. In addition to installing Rigpa, you'll also need @uref{https://github.com/countvajhula/symex-rigpa, @code{symex-rigpa}} which integrates Symex with Rigpa for smooth operation.
+
+Please see the Rigpa and Symex-Rigpa documentation for their respective installation instructions.
+
 @node Getting Started
 @chapter Getting Started
 
@@ -660,9 +671,9 @@ Now that we've learned the basics, let's learn some ways to be even more precise
 @cindex Normal state, interoperation with
 @cindex Rigpa, managing modes with
 
-For evil users, when you ``escape'' from Insert state, you may prefer to enter Symex state rather than Normal state while in Lisp buffers.
+For Evil users, when you ``escape'' from Insert state, you may prefer to enter Symex state rather than Normal state while in Lisp buffers.
 
-@uref{https://github.com/countvajhula/rigpa, Rigpa} is a structured and flexible way to manage modes in this way. Note, however, that the package, although fairly mature, is not yet available on Emacs package archives, and must be installed directly from GitHub using Straight or Elpaca.
+Please @xref{Symex and Rigpa} for the recommended way of achieving this.
 
 If you're not using Rigpa, you could still write one-off keybindings to achieve this, for instance, see @url{https://github.com/drym-org/symex.el/issues/24#issuecomment-815110143, this recipe} by @@tommy-mor.
 
