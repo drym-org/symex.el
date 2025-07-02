@@ -37,18 +37,12 @@
 
 ;; to avoid byte compile warnings.  eventually sort out the dependency
 ;; order so this is unnecessary
-(defvar chimera-symex-mode)
-(defvar rigpa-mode)
 (defvar evil-mode)
 
 ;; temporary stubbing non-evil modal users
 (when (not (boundp 'evil))
   (setq evil-state nil))
 
-;; misc bindings defined elsewhere
-(declare-function rigpa-enter-higher-level "ext:ignore")
-(declare-function rigpa-enter-lower-level "ext:ignore")
-(declare-function rigpa-enter-lowest-level "ext:ignore")
 (declare-function evil-insert-state "ext:evil")
 (declare-function evil-emacs-state "ext:evil")
 (declare-function evil-normal-state "ext:evil")
@@ -70,14 +64,6 @@ right symex when we enter Symex mode."
             (member evil-state '(insert emacs)))
     (symex--adjust-point)))
 
-(defun symex--rigpa-installed-p ()
-  "Check if rigpa is installed."
-  (boundp 'rigpa-mode))
-
-(defun symex--rigpa-enabled-p ()
-  "Check if rigpa is enabled."
-  (and (symex--rigpa-installed-p) rigpa-mode))
-
 (defun symex--evil-installed-p ()
   "Check if evil is installed."
   (boundp 'evil-mode))
@@ -93,9 +79,7 @@ right symex when we enter Symex mode."
 (defun symex-escape-higher ()
   "Exit symex mode via an \"escape\"."
   (interactive)
-  (cond ((symex--rigpa-enabled-p)
-         (rigpa-enter-higher-level))
-        ((symex--evil-enabled-p)
+  (cond ((symex--evil-enabled-p)
          (evil-normal-state))
         ((symex--evil-installed-p)
          (evil-emacs-state))
@@ -105,9 +89,7 @@ right symex when we enter Symex mode."
 (defun symex-enter-lower ()
   "Exit symex mode via an \"enter\"."
   (interactive)
-  (cond ((symex--rigpa-enabled-p)
-         (rigpa-enter-lower-level))
-        ((symex--evil-enabled-p)
+  (cond ((symex--evil-enabled-p)
          (evil-insert-state))
         ((symex--evil-installed-p)
          (evil-emacs-state))
@@ -117,9 +99,7 @@ right symex when we enter Symex mode."
 (defun symex-enter-lowest ()
   "Enter the lowest (manual) editing level."
   (interactive)
-  (cond ((symex--rigpa-enabled-p)
-         (rigpa-enter-lowest-level))
-        ((symex--evil-enabled-p)
+  (cond ((symex--evil-enabled-p)
          (evil-insert-state))
         ((symex--evil-installed-p)
          (evil-emacs-state))
