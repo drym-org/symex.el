@@ -42,7 +42,6 @@
 
 ;; avoid byte-compile warnings
 (declare-function evil-start-undo-step "ext:evil")
-(declare-function evil-add-command-properties "ext:evil")
 
 (defun symex--evil-installed-p ()
   "Check if evil is installed."
@@ -72,8 +71,7 @@
 
 This wraps `defun' and performs a few additional things that we want
 to do as part of executing any Symex command, including updating the
-selected symex after the command, and reindenting.  We also declare the
-function as repeatable via `evil-repeat'.
+selected symex after the command, and reindenting.
 
 This is meant to be used in defining *user-facing* commands.  Commands
 defined this way should not be used programmatically in other features
@@ -140,12 +138,10 @@ BODY - the actual implementation of the command."
        ,interactive-decl
        (symex-user-select-nearest)
        (when (symex--evil-installed-p)
+         ;; perhaps, (undo-boundary)
          (evil-start-undo-step))
        ,@body
-       ;; perhaps, (undo-boundary)
-       (symex-enter-lowest))
-     (when (symex--evil-installed-p)
-       (evil-add-command-properties ',name :repeat t))))
+       (symex-enter-lowest))))
 
 (defun symex--delete (count)
   "Delete COUNT symexes."
@@ -319,8 +315,6 @@ by default, joins next symex to current one."
 (symex-define-command symex-paste-before (count)
   "Paste before symex, COUNT times."
   (interactive "p")
-  (when (symex--evil-installed-p)
-    (setq this-command 'evil-paste-before))
   ;; typically (e.g. to follow the convention in evil), we
   ;; want to select the start of the pasted text after
   ;; pasting.
@@ -339,8 +333,6 @@ by default, joins next symex to current one."
 (symex-define-command symex-paste-after (count)
   "Paste after symex, COUNT times."
   (interactive "p")
-  (when (symex--evil-installed-p)
-    (setq this-command 'evil-paste-after))
   ;; TODO: user-level defcustom of whether to move
   ;; to indicate pasted text (like evil), which should
   ;; be checked here and appropriately applied. E.g.
