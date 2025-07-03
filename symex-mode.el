@@ -51,7 +51,6 @@
 (require 'symex-lithium)
 (require 'symex-repeat)
 (require 'symex-ui)
-(require 'symex-interop)
 
 (defgroup symex-mode nil
   "Point-free modal UI for Symex."

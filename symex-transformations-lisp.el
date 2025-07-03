@@ -32,7 +32,6 @@
 (require 'symex-primitives-lisp)
 (require 'symex-utils)
 (require 'symex-traversals)
-(require 'symex-interop)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TRANSFORMATIONS ;;;
