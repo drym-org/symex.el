@@ -31,79 +31,30 @@
 ;; eliminate it, maybe by moving a lot of this into user config, or a
 ;; separate package for each integration, e.g., symex-rigpa,
 ;; symex-evil
-(require 'evil nil :no-error)
 (require 'symex-custom)
 (require 'symex-primitives)
-
-;; to avoid byte compile warnings.  eventually sort out the dependency
-;; order so this is unnecessary
-(defvar evil-mode)
-
-;; temporary stubbing non-evil modal users
-(when (not (boundp 'evil))
-  (setq evil-state nil))
-
-(declare-function evil-insert-state "ext:evil")
-(declare-function evil-emacs-state "ext:evil")
-(declare-function evil-normal-state "ext:evil")
 
 (defvar-local symex--original-scroll-margin nil)
 (defvar-local symex--original-max-scroll-margin nil)
 
-(defun symex--adjust-point-on-entry ()
-  "Adjust point context from the Emacs to the Vim interpretation.
-
-If entering symex mode from Insert or Emacs mode, then translate point
-so it indicates the appropriate symex in Symex mode.  This is necessary
-because in Emacs, the symex preceding point is indicated.  In Vim, the
-symex \"under\" point is indicated.  We want to make sure to select the
-right symex when we enter Symex mode."
-  (interactive)
-  (when (or (not (symex--evil-installed-p))
-            (symex--evil-disabled-p)
-            (member evil-state '(insert emacs)))
-    (symex--adjust-point)))
-
-(defun symex--evil-installed-p ()
-  "Check if evil is installed."
-  (boundp 'evil-mode))
-
-(defun symex--evil-enabled-p ()
-  "Check if evil is enabled."
-  (and (symex--evil-installed-p) evil-mode))
-
-(defun symex--evil-disabled-p ()
-  "Check if evil is disabled."
-  (and (symex--evil-installed-p) (not evil-mode)))
-
+;; Note that these three functions are overridden
+;; in packages like symex-evil and symex-rigpa
 (defun symex-escape-higher ()
   "Exit symex mode via an \"escape\"."
   (interactive)
-  (cond ((symex--evil-enabled-p)
-         (evil-normal-state))
-        ((symex--evil-installed-p)
-         (evil-emacs-state))
-        ((fboundp 'symex-user-defined-higher-mode)
+  (cond ((fboundp 'symex-user-defined-higher-mode)
          (symex-user-defined-higher-mode))))
 
 (defun symex-enter-lower ()
   "Exit symex mode via an \"enter\"."
   (interactive)
-  (cond ((symex--evil-enabled-p)
-         (evil-insert-state))
-        ((symex--evil-installed-p)
-         (evil-emacs-state))
-        ((fboundp 'symex-user-defined-lower-mode)
+  (cond ((fboundp 'symex-user-defined-lower-mode)
          (symex-user-defined-lower-mode))))
 
 (defun symex-enter-lowest ()
   "Enter the lowest (manual) editing level."
   (interactive)
-  (cond ((symex--evil-enabled-p)
-         (evil-insert-state))
-        ((symex--evil-installed-p)
-         (evil-emacs-state))
-        ((fboundp 'symex-user-defined-lowest-mode)
+  (cond ((fboundp 'symex-user-defined-lowest-mode)
          (symex-user-defined-lowest-mode))))
 
 (defun symex--set-scroll-margin ()

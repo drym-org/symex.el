@@ -272,10 +272,6 @@ Automatically set it to the node at point if necessary."
 
 ;;; User Interface
 
-(defun symex-ts--adjust-point ()
-  "Helper to adjust point to indicate the correct symex."
-  nil)
-
 (defun symex-ts--notify-of-changes (_ranges _parser &rest _args)
   "Take action when notified of any changes to the contents of the buffer.
 

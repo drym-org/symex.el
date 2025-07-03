@@ -330,34 +330,6 @@ as special cases here."
   "Check if a symex is currently selected."
   (symex-lisp--point-at-start-p))
 
-;;; User Interface
-
-(defun symex-lisp--adjust-point ()
-  "Helper to adjust point to indicate the correct symex."
-  (unless (or (bobp)
-              (bolp)
-              (symex-lisp--point-at-start-p)
-              (looking-back "[,'`]" (line-beginning-position))
-              (save-excursion (backward-char)  ; just inside symex
-                              (or (symex-left-p)
-                                  ;; this is to exclude the case where
-                                  ;; we're inside a string, "|abc"
-                                  ;; which "inverts" the code structure
-                                  ;; and causes unexpected behavior when
-                                  ;; navigating using Emacs's built-in
-                                  ;; primitive symex motions. Unlike normal
-                                  ;; forms, opening and closing delimiters
-                                  ;; are not distinguished for strings and
-                                  ;; so we can't specifically check for
-                                  ;; "open quote," with the result that
-                                  ;; in the case "abc"|, we don't always
-                                  ;; select the right symex the way we
-                                  ;; would with (abc)|.
-                                  (symex-lisp-string-p))))
-    (condition-case nil
-        (backward-char)
-      (error nil))))
-
 ;;; Navigation
 
 (defun symex-lisp-select-nearest ()

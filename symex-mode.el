@@ -52,7 +52,6 @@
 (require 'symex-repeat)
 (require 'symex-ui)
 (require 'symex-interop)
-(require 'symex-evil)
 
 (defgroup symex-mode nil
   "Point-free modal UI for Symex."
@@ -85,7 +84,6 @@ selected symex, in a strict fashion."
   "Take necessary action upon symex mode entry."
   (add-hook 'symex-selection-hook
             #'symex-mode-highlight-selected)
-  (symex--adjust-point-on-entry)
   (when symex-remember-branch-positions-p
     (symex--clear-branch-memory))
   (if symex-preserve-point-on-entry-p
@@ -128,11 +126,8 @@ selected symex, in a strict fashion."
     (symex-mode 1))
   (unless lithium-mode
     (lithium-mode 1))
-  ;; initialize repeat command and evil interop
+  ;; initialize repeat command
   (symex-repeat-initialize)
-  ;; enable any evil integrations like nearest selection on evil-undo
-  (when (symex--evil-installed-p)
-    (symex-initialize-evil))
   (add-hook 'symex-editing-mode-pre-entry-hook
             #'symex-enter-mode)
   (add-hook 'symex-editing-mode-pre-exit-hook
@@ -141,16 +136,13 @@ selected symex, in a strict fashion."
 (defun symex-modal-disable ()
   "Disable symex modal interface."
   ;; remove all advice
-  (symex-repeat-teardown)
-  ;; disable any evil integrations
-  (when (symex--evil-installed-p)
-    (symex-disable-evil)))
+  (symex-repeat-teardown))
 
 ;;;###autoload
 (defun symex-mode-interface ()
   "The main entry point for editing symbolic expressions using symex mode.
 
-Enter the symex evil state, activating symex keybindings."
+Enter the symex modal interface, activating symex keybindings."
   (interactive)
   (symex-editing-mode-enter))
 

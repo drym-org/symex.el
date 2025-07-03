@@ -44,6 +44,10 @@
 (declare-function evil-start-undo-step "ext:evil")
 (declare-function evil-add-command-properties "ext:evil")
 
+(defun symex--evil-installed-p ()
+  "Check if evil is installed."
+  (boundp 'evil-mode))
+
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;; TRANSFORMATIONS ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -138,6 +142,7 @@ BODY - the actual implementation of the command."
        (when (symex--evil-installed-p)
          (evil-start-undo-step))
        ,@body
+       ;; perhaps, (undo-boundary)
        (symex-enter-lowest))
      (when (symex--evil-installed-p)
        (evil-add-command-properties ',name :repeat t))))

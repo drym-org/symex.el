@@ -34,14 +34,6 @@
 (require 'symex-ts)
 (require 'symex-utils)
 
-;;; User Interface
-
-(defun symex--adjust-point ()
-  "Helper to adjust point to indicate the correct symex."
-  (if (symex-ts-available-p)
-      (symex-ts--adjust-point)
-    (symex-lisp--adjust-point)))
-
 ;;; Predicates
 
 (defun symex--point-at-root-symex-p ()
