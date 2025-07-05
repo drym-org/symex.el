@@ -132,5 +132,5 @@ configuration to be disabled and the new one adopted."
     (symex-disable)))
 
 
-(provide 'symex)
-;;; symex.el ends here
+(provide 'symex-core)
+;;; symex-core.el ends here
