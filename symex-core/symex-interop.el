@@ -27,11 +27,6 @@
 
 ;;; Code:
 
-;; NOTE: this module is part of symex-core, for now. We should ideally
-;; eliminate it, maybe by moving a lot of this into user config, or a
-;; separate package for each integration, e.g., symex-rigpa,
-;; symex-evil
-
 ;; Note that these three functions are overridden
 ;; in packages like symex-evil and symex-rigpa
 (defun symex-escape-higher ()
