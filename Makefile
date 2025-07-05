@@ -26,7 +26,7 @@ help:
 	@echo "build - byte compile the package"
 	@echo "test - run tests"
 
-clean :
+clean:
 	${CASK} clean-elc
 
 install:
@@ -54,7 +54,7 @@ checkdoc:
 	                      -l "dev/build-utils.el"  \
 	                      --eval '(flycheck/batch-checkdoc ".")'
 
-build :
+build:
 	${CASK} build
 
 test: build
