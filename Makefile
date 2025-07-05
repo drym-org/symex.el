@@ -26,6 +26,15 @@ help:
 	@echo "build - byte compile the package"
 	@echo "test - run tests"
 
+clean-core:
+	cd symex-core && ${CASK} clean-elc
+
+install-core:
+	cd symex-core && ${CASK} install
+
+build-core:
+	cd symex-core && ${CASK} build
+
 clean-symex:
 	cd symex && ${CASK} clean-elc
 
@@ -35,11 +44,11 @@ install-symex:
 build-symex:
 	cd symex && ${CASK} build
 
-clean: clean-symex
+clean: clean-core clean-symex
 
-install: install-symex
+install: install-core install-symex
 
-build: build-symex
+build: build-core build-symex
 
 lint:
 	${CASK} exec $(EMACS) -Q --batch  \
