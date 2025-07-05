@@ -1,7 +1,7 @@
 ;;; symex-rigpa.el --- Use Symex with Rigpa -*- lexical-binding: t -*-
 
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
-;; URL: https://github.com/countvajhula/symex-rigpa
+;; URL: https://github.com/drym-org/symex.el
 ;; Version: 0.0
 ;; Package-Requires: ((emacs "25.1") (symex "2.0"))
 ;; Keywords: lisp, convenience, languages

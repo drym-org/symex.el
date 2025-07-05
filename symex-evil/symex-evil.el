@@ -1,7 +1,7 @@
 ;;; symex-evil.el --- Use Symex with Evil -*- lexical-binding: t -*-
 
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
-;; URL: https://github.com/countvajhula/symex-evil
+;; URL: https://github.com/drym-org/symex.el
 ;; Version: 0.0
 ;; Package-Requires: ((emacs "25.1") (evil "1.2.14") (symex "2.0"))
 ;; Keywords: lisp, convenience, languages

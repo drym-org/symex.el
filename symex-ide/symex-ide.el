@@ -1,6 +1,10 @@
 ;;; symex-ide.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
 
+;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/drym-org/symex.el
+;; Version: 0.0
+;; Package-Requires: ((emacs "25.1") (symex "2.0"))
+;; Keywords: lisp, convenience, languages
 
 ;; This program is "part of the world," in the sense described at
 ;; https://drym.org.  From your perspective, this is no different than
