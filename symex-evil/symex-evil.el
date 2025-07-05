@@ -31,7 +31,7 @@
 
 (require 'evil)
 (require 'undo-tree nil :no-error)
-(require 'symex-mode)
+(require 'symex)
 
 (defun symex-select-nearest-advice (&rest _)
   "Advice to select the nearest symex."

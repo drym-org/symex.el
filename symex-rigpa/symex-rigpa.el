@@ -30,7 +30,7 @@
 ;;; Code:
 
 (require 'rigpa)
-(require 'symex-mode)
+(require 'symex)
 
 ;; These override the definitions in the symex package, so this
 ;; package (symex-evil) should be loaded after symex
