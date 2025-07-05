@@ -44,11 +44,29 @@ install-symex:
 build-symex:
 	cd symex && ${CASK} build
 
-clean: clean-core clean-symex
+clean-ide:
+	cd symex-ide && ${CASK} clean-elc
 
-install: install-core install-symex
+install-ide:
+	cd symex-ide && ${CASK} install
 
-build: build-core build-symex
+build-ide:
+	cd symex-ide && ${CASK} build
+
+clean-evil:
+	cd symex-evil && ${CASK} clean-elc
+
+install-evil:
+	cd symex-evil && ${CASK} install
+
+build-evil:
+	cd symex-evil && ${CASK} build
+
+clean: clean-core clean-symex clean-ide clean-evil
+
+install: install-core install-symex install-ide install-evil
+
+build: build-core build-symex build-ide build-evil
 
 lint:
 	${CASK} exec $(EMACS) -Q --batch  \
