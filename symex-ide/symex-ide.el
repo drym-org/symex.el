@@ -27,7 +27,7 @@
 ;;; Code:
 
 (require 'lithium)
-(require 'symex-mode)
+(require 'symex)
 
 (require 'symex-primitives)
 (require 'symex-evaluator)
