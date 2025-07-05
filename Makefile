@@ -26,11 +26,20 @@ help:
 	@echo "build - byte compile the package"
 	@echo "test - run tests"
 
-clean:
-	${CASK} clean-elc
+clean-symex:
+	cd symex && ${CASK} clean-elc
 
-install:
-	${CASK} install
+install-symex:
+	cd symex && ${CASK} install
+
+build-symex:
+	cd symex && ${CASK} build
+
+clean: clean-symex
+
+install: install-symex
+
+build: build-symex
 
 lint:
 	${CASK} exec $(EMACS) -Q --batch  \
@@ -53,9 +62,6 @@ checkdoc:
 	                      --eval $(INIT_PACKAGE_EL)  \
 	                      -l "dev/build-utils.el"  \
 	                      --eval '(flycheck/batch-checkdoc ".")'
-
-build:
-	${CASK} build
 
 test: build
 	${CASK} exec ert-runner
