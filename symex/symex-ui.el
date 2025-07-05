@@ -29,6 +29,9 @@
 (require 'symex-custom)
 (require 'symex-primitives)
 
+(defvar-local symex--original-scroll-margin nil)
+(defvar-local symex--original-max-scroll-margin nil)
+
 (defface symex--current-node-face
   '((t :inherit highlight :extend nil))
   "Face used to highlight the current tree node."
