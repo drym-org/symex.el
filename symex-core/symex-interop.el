@@ -31,11 +31,6 @@
 ;; eliminate it, maybe by moving a lot of this into user config, or a
 ;; separate package for each integration, e.g., symex-rigpa,
 ;; symex-evil
-(require 'symex-custom)
-(require 'symex-primitives)
-
-(defvar-local symex--original-scroll-margin nil)
-(defvar-local symex--original-max-scroll-margin nil)
 
 ;; Note that these three functions are overridden
 ;; in packages like symex-evil and symex-rigpa
