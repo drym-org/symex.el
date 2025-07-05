@@ -146,5 +146,5 @@ Enter the symex modal interface, activating symex keybindings."
   (symex-editing-mode-enter))
 
 
-(provide 'symex-mode)
-;;; symex-mode.el ends here
+(provide 'symex)
+;;; symex.el ends here
