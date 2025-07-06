@@ -324,30 +324,14 @@ Clojure is a language that is both a Lisp and has a Tree-sitter enabled major mo
 
 If you happen to be an Evil user, using Symex should feel familiar (although as we saw in @ref{Point-Free Modal Editing}, Symex exhibits a simpler modal style, making it accessible to those who aren't familiar with Vim/Evil).
 
-For Evil users, there are some keybindings from Normal state that you might like to retain in Symex mode. To do that, put something like this in your config:
+For Evil users, there are many generic keybindings from Normal state that you might like to retain in Symex mode, such as undo and redo, scrolling, searching, and various other navigations. In addition, it's also useful for such Evil operations performed while in Symex mode to preserve a sensible symex selection. To ensure a seamless integration with Evil including such UI niceties, install the @code{symex-evil} package:
 
 @lisp
-(lithium-define-keys symex-editing-mode
-                     (("u" evil-undo)
-                      ("C-r" evil-redo)
-                      ("q" evil-record-macro)
-                      ("@@" evil-execute-macro)
-                      ("/" evil-search-forward)
-                      ("?" evil-search-backward)
-                      ("#" evil-search-word-backward)
-                      ("*" evil-search-word-forward)
-                      ("n" evil-search-next)
-                      ("N" evil-search-previous)
-                      ("C-d" evil-scroll-down)
-                      ("C-u" evil-scroll-up)
-                      ("C-e" evil-scroll-line-down)
-                      ("C-y" evil-scroll-line-up)
-                      ("C-]" evil-jump-to-tag)
-                      ("C-i" evil-jump-forward)
-                      ("C-o" evil-jump-backward)))
+  (use-package symex-evil
+    :after (symex)
+    :config
+    (symex-evil-initialize))
 @end lisp
-
-Note that Symex provides its own ``repeat'' functionality mapped to @code{.} (and @code{C-.}) and should not be overridden by Evil here, as @code{evil-repeat} would have undefined behavior when used with Symex.
 
 For other useful options on using Symex with Evil, @xref{Escaping to Symex Instead of Normal State} and @xref{Easy Entry Into Symex Mode}.
 
