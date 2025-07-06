@@ -62,11 +62,20 @@ install-evil:
 build-evil:
 	cd symex-evil && ${CASK} build
 
-clean: clean-core clean-symex clean-ide clean-evil
+clean-rigpa:
+	cd symex-rigpa && ${CASK} clean-elc
 
-install: install-core install-symex install-ide install-evil
+install-rigpa:
+	cd symex-rigpa && ${CASK} install
 
-build: build-core build-symex build-ide build-evil
+build-rigpa:
+	cd symex-rigpa && ${CASK} build
+
+clean: clean-core clean-symex clean-ide clean-evil clean-rigpa
+
+install: install-core install-symex install-ide install-evil install-rigpa
+
+build: build-core build-symex build-ide build-evil build-rigpa
 
 lint:
 	${CASK} exec $(EMACS) -Q --batch  \
