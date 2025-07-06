@@ -95,9 +95,19 @@ right symex when we enter Symex mode."
   (interactive)
   (cond (evil-mode (evil-insert-state))))
 
+(evil-define-state symex
+  "Symex state."
+  :tag " <λ> "
+  :message "-- SYMEX --")
+
 ;;;###autoload
 (defun symex-evil-initialize ()
   "Evil interconnects for Symex."
+  ;; It's necessary to override all these keys because enabling normal
+  ;; state in symex evil state overrides Symex's handling of counts
+  ;; (though it otherwise works fine). So we must leave normal state
+  ;; disabled in symex state, which necessitates redefining the
+  ;; relevant bindings in symex mode explicitly.
   (lithium-define-keys symex-editing-mode
     (("u" evil-undo)
      ("C-r" evil-redo)
@@ -131,7 +141,9 @@ right symex when we enter Symex mode."
     (advice-add #'undo-tree-redo
                 :after #'symex-select-nearest-advice))
   (add-hook 'symex-editing-mode-pre-entry-hook
-            #'symex--adjust-point-on-entry))
+            #'symex--adjust-point-on-entry)
+  (add-hook 'symex-editing-mode-pre-entry-hook
+            #'evil-symex-state))
 
 (defun symex-evil-disable ()
   "Disable evil interop."
@@ -140,7 +152,11 @@ right symex when we enter Symex mode."
     (advice-remove #'undo-tree-undo
                    #'symex-select-nearest-advice)
     (advice-remove #'undo-tree-redo
-                   #'symex-select-nearest-advice)))
+                   #'symex-select-nearest-advice))
+  (remove-hook 'symex-editing-mode-pre-entry-hook
+               #'symex--adjust-point-on-entry)
+  (remove-hook 'symex-editing-mode-pre-entry-hook
+               #'evil-symex-state))
 
 
 (provide 'symex-evil)
