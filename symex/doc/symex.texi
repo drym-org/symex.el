@@ -324,7 +324,7 @@ Clojure is a language that is both a Lisp and has a Tree-sitter enabled major mo
 
 If you happen to be an Evil user, using Symex should feel familiar (although as we saw in @ref{Point-Free Modal Editing}, Symex exhibits a simpler modal style, making it accessible to those who aren't familiar with Vim/Evil).
 
-For Evil users, there are many generic keybindings from Normal state that you might like to retain in Symex mode, such as undo and redo, scrolling, searching, and various other navigations. In addition, it's also useful for such Evil operations performed while in Symex mode to preserve a sensible symex selection. To ensure a seamless integration with Evil including such UI niceties, install the @code{symex-evil} package:
+For the most seamless integration with Evil, install the @code{symex-evil} package:
 
 @lisp
   (use-package symex-evil
@@ -332,6 +332,8 @@ For Evil users, there are many generic keybindings from Normal state that you mi
     :config
     (symex-evil-initialize))
 @end lisp
+
+This supports generic keybindings from Normal state that are useful to retain in Symex mode, such as undo and redo, scrolling, searching, and various other navigations. In addition, it also ensures that such Evil operations performed while in Symex mode preserve a sensible symex selection.
 
 For other useful options on using Symex with Evil, @xref{Escaping to Symex Instead of Normal State} and @xref{Easy Entry Into Symex Mode}.
 
