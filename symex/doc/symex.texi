@@ -231,6 +231,19 @@ This section covers installing Symex and setting it up, and information about su
 
 This provides a keybinding to enter symex editing mode, and also performs any setup necessary to ensure that Symex operates smoothly.
 
+3. (Optional) If you also want some integrated ``IDE'' facilities for different languages, such as the ability to conveniently evaluate expressions, enter a REPL, and so on, then consider also installing the @code{symex-ide} package:
+
+@lisp
+(use-package symex-ide
+  :after (symex)
+  :config
+  (symex-ide-initialize))
+@end lisp
+
+Finally, if you'd like to use Symex features directly (for instance, in a structural-editing library of your own), without the modal UI, then you could install just the @code{symex-core} package. @xref{Overview of Symex Packages} for more about these packages.
+
+The following sections contain information on Evil and Rigpa integration, if you happen to be a user of these.
+
 @node Languages Supported
 @section Languages Supported
 
@@ -345,6 +358,28 @@ For other useful options on using Symex with Evil, @xref{Escaping to Symex Inste
 @uref{https://github.com/countvajhula/rigpa, Rigpa} is a structured and flexible way to manage modal user interfaces like Symex and Evil. It allows you to visually define transitions between different modes via keybindings like Enter and Escape, making it convenient to use modal UIs (such as Symex and Evil) together. Note that the package, although fairly mature, is not yet available on Emacs package archives, and must be installed directly from GitHub using Straight or Elpaca. In addition to installing Rigpa, you'll also need @uref{https://github.com/countvajhula/symex-rigpa, @code{symex-rigpa}} which integrates Symex with Rigpa for smooth operation.
 
 Please see the Rigpa and Symex-Rigpa documentation for their respective installation instructions.
+
+@node Overview of Symex Packages
+@section Overview of Symex Packages
+
+@cindex Packages, Symex
+@cindex Symex packages
+
+Symex consists of several lean and composable packages so that you can choose the ones you need and not have anything extra. The preceding installation instructions gave some idea of when to use each, but here is a short overview:
+
+@enumerate
+
+@item @code{symex-core}. This contains the core functionality of Symex, including the structural editing DSL and underlying Lisp and Tree-Sitter primitives. This is a dependency of the other Symex packages.
+
+@item @code{symex}. This contains the modal UI that makes Symex features convenient to use. All of the remaining packages in this list depend on, and extend, this modal UI package.
+
+@item @code{symex-ide}. This contains ``IDE''-like features, including the ability to evaluate expressions, enter a REPL for your language, and more.
+
+@item @code{symex-evil}. This contains Evil integration, including familiar keybindings, advising Evil functions to play well with Symex mode, and other functionality to make using Symex with Evil seamless.
+
+@item @code{symex-rigpa}. This integrates Symex with Rigpa, allowing you to conveniently manage Symex as a mode within the broader Rigpa modal framework, including defining convenient entry and exit via familiar key sequences such as @code{Enter} and @code{Escape}.
+
+@end enumerate
 
 @node Getting Started
 @chapter Getting Started
