@@ -102,4 +102,4 @@ checkdoc:
 test: build
 	${CASK} exec ert-runner
 
-.PHONY:	help lint lint+less lint-no-noise lint-noiseless checkdoc build clean install test
+.PHONY: help clean install build lint lint+less lint-no-noise lint-noiseless checkdoc test clean-core install-core build-core clean-symex install-symex build-symex clean-ide install-ide build-ide clean-evil install-evil build-evil clean-rigpa install-rigpa build-rigpa
