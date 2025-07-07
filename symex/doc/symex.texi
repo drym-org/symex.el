@@ -171,7 +171,7 @@ For most other packages on this list, it's easy to use them together with Symex,
 
 Combobulate is similar to Symex in its aims to be precise and intuitive. It differs in the style of interface and the feature set, providing a lot more grammar-aware and IDE-like features than Symex does. Symex has a minimal interface and offers more diverse features for elementary structural manipulation.
 
-Ultimately, while there is some overlap in features, there's also a lot offered by each that's not present in the other, so that it might make sense to use one and cherry-pick features from the other. For instance, to employ specific Combobulate features from Symex, you could use a similar recipe as @ref{Symex and Evil}. It may also be feasible to integrate them more at a library level, although it might require both packages to be offered via smaller, more modular, packages, for that to be practical.
+Ultimately, while there is some overlap in features, there's also a lot offered by each that's not present in the other, so that it might make sense to use one and cherry-pick features from the other. For instance, to employ specific Combobulate features from Symex, you could use a similar recipe as @ref{Symex and Evil}. It may also be feasible to integrate them more at a library level. As part of the 2.0 release, Symex --- a formerly monolithic package --- was decomposed into small and modular packages in order to facilitate such goals.
 
 Combobulate is thoughtfully designed and sophisticated, and may be a good fit for you. Try both and see which one (or both!) fits your style better!
 
