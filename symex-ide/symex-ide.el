@@ -33,10 +33,6 @@
 (require 'lithium)
 (require 'symex)
 
-(require 'symex-primitives)
-(require 'symex-evaluator)
-(require 'symex-traversals)
-(require 'symex-tree)
 (require 'symex-interface)
 (require 'symex-interface-builtins)
 

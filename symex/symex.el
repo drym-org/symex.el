@@ -40,13 +40,7 @@
 ;;; Code:
 
 (require 'lithium)
-(require 'symex-motions)
-(require 'symex-tree)
-(require 'symex-custom)
-
-;; TODO: for primitive-entry/exit
-;; eliminate, in favor of a ts minor mode.
-(require 'symex-primitives)
+(require 'symex-core)
 
 (require 'symex-lithium)
 (require 'symex-repeat)
@@ -91,6 +85,7 @@ selected symex, in a strict fashion."
   ;; TODO: this concept of primitive entry should be removed.
   ;; it enables the change notifier mainly, and we should
   ;; instead do that via a symex-treesit-mode, perhaps
+  ;; eliminate, in favor of a ts minor mode.
   (symex--primitive-enter)
   ;; enable parsing for repeat functionality
   (symex-repeat-enable)
