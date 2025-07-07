@@ -357,7 +357,25 @@ For other useful options on using Symex with Evil, @xref{Escaping to Symex Inste
 
 @uref{https://github.com/countvajhula/rigpa, Rigpa} is a structured and flexible way to manage modal user interfaces like Symex and Evil. It allows you to visually define transitions between different modes via keybindings like Enter and Escape, making it convenient to use modal UIs (such as Symex and Evil) together. Note that the package, although fairly mature, is not yet available on Emacs package archives, and must be installed directly from GitHub using Straight or Elpaca. In addition to installing Rigpa, you'll also need @uref{https://github.com/countvajhula/symex-rigpa, @code{symex-rigpa}} which integrates Symex with Rigpa for smooth operation.
 
-Please see the Rigpa and Symex-Rigpa documentation for their respective installation instructions.
+Please see the Rigpa documentation for instructions on installing Rigpa. Then, once you've done that, add the following to your @code{.emacs.d} config:
+
+@lisp
+  (use-package symex-rigpa
+    :after (symex rigpa symex-evil)
+    :straight
+    (symex-rigpa
+     :repo "drym-org/symex.el"
+     :host github
+     :type git
+     :files ("symex-rigpa"))
+    :config
+    (symex-rigpa-initialize))
+
+  (with-eval-after-load 'rigpa
+    (with-eval-after-load 'symex-rigpa
+      (rigpa--create-editing-structures)
+      (rigpa--provide-editing-structures)))
+@end lisp
 
 @node Overview of Symex Packages
 @section Overview of Symex Packages
