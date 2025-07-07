@@ -60,11 +60,20 @@
                      :entry-hook 'symex-editing-mode-post-entry-hook
                      :exit-hook 'symex-editing-mode-pre-exit-hook
                      :manage-hooks nil))
+
+(defun rigpa--on-symex-mode-post-exit ()
+  "Actions to take upon exiting line mode."
+  ;; TODO: return to tower instead. See
+  ;; comment on line mode post exit
+  (rigpa--enter-local-evil-state))
+
 ;;;###autoload
 (defun symex-rigpa-initialize ()
   "Rigpa interconnects for Symex."
   (rigpa-register-mode chimera-symex-mode
-                       :post-exit #'rigpa--on-symex-mode-post-exit))
+                       :post-exit #'rigpa--on-symex-mode-post-exit)
+  (ht-set rigpa-lithium-modes
+          'symex-editing-mode "symex"))
 
 
 (provide 'symex-rigpa)
