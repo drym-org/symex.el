@@ -31,6 +31,8 @@
 
 (require 'rigpa)
 (require 'symex)
+(require 'chimera)
+
 
 ;; These override the definitions in the symex package, so this
 ;; package (symex-evil) should be loaded after symex
@@ -49,10 +51,20 @@
   (interactive)
   (rigpa-enter-lowest-level))
 
+(defvar chimera-symex-mode
+  (make-chimera-mode :name "symex"
+                     :enter #'symex-mode-interface
+                     :exit #'symex-editing-mode-exit
+                     :pre-entry-hook 'symex-editing-mode-pre-entry-hook
+                     :post-exit-hook 'symex-editing-mode-post-exit-hook
+                     :entry-hook 'symex-editing-mode-post-entry-hook
+                     :exit-hook 'symex-editing-mode-pre-exit-hook
+                     :manage-hooks nil))
 ;;;###autoload
 (defun symex-rigpa-initialize ()
   "Rigpa interconnects for Symex."
-  nil)
+  (rigpa-register-mode chimera-symex-mode
+                       :post-exit #'rigpa--on-symex-mode-post-exit))
 
 
 (provide 'symex-rigpa)
