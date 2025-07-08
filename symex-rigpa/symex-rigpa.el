@@ -33,7 +33,6 @@
 (require 'symex)
 (require 'chimera)
 
-
 ;; These override the definitions in the symex package, so this
 ;; package (symex-evil) should be loaded after symex
 (defun symex-escape-higher ()
@@ -67,13 +66,34 @@
   ;; comment on line mode post exit
   (rigpa--enter-local-evil-state))
 
+(defvar symex-rigpa--lisp-modes
+  (append symex-lisp-modes
+          ;; and some treesitter modes too
+          '(clojure-ts-mode))
+  "Modes where it should use the Lisp tower.")
+
 ;;;###autoload
 (defun symex-rigpa-initialize ()
   "Rigpa interconnects for Symex."
   (rigpa-register-mode chimera-symex-mode
                        :post-exit #'rigpa--on-symex-mode-post-exit)
   (ht-set rigpa-lithium-modes
-          'symex-editing-mode "symex"))
+          'symex-editing-mode "symex")
+  (setq symex-rigpa-lisp-tower
+        (make-editing-ensemble :name "lisp"
+                               :default "symex"
+                               :members (list chimera-insert-mode
+                                              chimera-symex-mode
+                                              chimera-normal-mode)))
+  (setf (editing-ensemble-members rigpa-general-complex)
+        (append (editing-ensemble-members rigpa-general-complex)
+                (list symex-rigpa-lisp-tower)))
+  (dolist (mode-name symex-rigpa--lisp-modes)
+    (let ((mode-hook (intern (concat (symbol-name mode-name)
+                                     "-hook"))))
+      (add-hook mode-hook (lambda ()
+                            (setq rigpa--current-tower-index 3)
+                            (setq rigpa--current-level 2))))))
 
 
 (provide 'symex-rigpa)
