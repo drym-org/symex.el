@@ -427,6 +427,7 @@ KEY-SEQ is the currently entered key sequence."
 This simply subscribes to and maintains pre-command key sequences in
 order to determine if symex exits need to suspend the repeat parser or
 \(if we are exiting as part of a repeatable command) keep it going."
+  (mantra-connect)
   (pubsub-subscribe "mantra-key-sequences-pre-command"
                     "symex-set-pre-command-state"
                     #'symex-set-pre-command-state))
