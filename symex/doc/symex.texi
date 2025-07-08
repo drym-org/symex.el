@@ -395,6 +395,8 @@ Symex consists of several lean and composable packages so that you can choose th
 
 @end enumerate
 
+@xref{Installing Symex}, @xref{Symex and Evil} and @xref{Symex and Rigpa} for instructions on installing these packages.
+
 @node Getting Started
 @chapter Getting Started
 
@@ -692,6 +694,15 @@ For example, since Symex already includes a customizable overlay to highlight se
 (add-hook 'symex-editing-mode-post-exit-hook
           #'my-enable-cursor)
 @end lisp
+
+@node Custom Keybindings
+@section Custom Keybindings
+
+@cindex keybindings, customizing
+
+You can add any custom keybindings you like to the Symex modal UI by using the underlying Lithium facilities for this purpose, as described in the @uref{https://github.com/countvajhula/lithium, Lithium} documentation.
+
+Also @xref{Point-Free Modal Editing} for more on Lithium.
 
 @node Squirrel on a Speedrun - Tips and Tricks
 @chapter Squirrel on a Speedrun - Tips and Tricks
@@ -1504,7 +1515,7 @@ The @code{symex-traversal} form accepts a @emph{single} traversal argument. If y
 
 @cindex Keybindings
 
-The table below lists the key bindings in Symex mode. You can also always use Emacs's @code{C-h k} to learn what a key does, as another way of learning the bindings.
+The table below lists the key bindings in Symex mode. You can always use Emacs's @code{C-h k} to learn what a key does, of course, as another way to learn these bindings. But as the underlying commands are wrapped by @ref{Point-Free Modal Editing, Lithium}, you would need to visually parse through the Lithium logic to spot the wrapped command in the result.
 
 Finally, the @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/, Animated Guide to Symex} shows each of these commands in action and includes tips on their usage.
 
@@ -1662,7 +1673,6 @@ Finally, the @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-sym
 @tab Comment out, comment out remaining
 @tab
 
-
 @item @code{i}, @code{a}
 @tab Insert at beginning, append at end
 @tab
@@ -1687,12 +1697,22 @@ Finally, the @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-sym
 @tab Cycle quoting, cycle unquoting, add quoting level, remove quoting level
 @tab
 
+@item @code{<return>}
+@tab Enter insertion state
+@tab
+
+@item @code{<escape>}
+@tab Exit
+@tab
+
 @end multitable
 
-@node Control
-@section Control
+@node IDE
+@section IDE
 
 @cindex Other keybindings
+
+These are included in the @code{symex-ide} package (@xref{Overview of Symex Packages}).
 
 @multitable @columnfractions .15 .45 .4
 @headitem Key @tab Action @tab Remarks
@@ -1700,18 +1720,6 @@ Finally, the @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-sym
 @item @code{e}, @code{E}, @code{d}, @code{M-e}, @code{C-M-e}, @code{T}
 @tab Evaluate, evaluate remaining, evaluate definition, evaluate recursively, pretty evaluate, evaluate as "thunk"
 @tab @code{T} evaluates the indicated symex as if it were wrapped with parentheses, i.e. invoking it as a function, passing no arguments
-
-@item @code{:}
-@tab Evaluate an expression
-@tab Evaluate an arbitrary expression in the minibuffer
-
-@item @code{t}
-@tab Switch to a scratch buffer
-@tab
-
-@item @code{M}
-@tab Display the messages buffer alongside
-@tab
 
 @item @code{r}
 @tab Go to REPL
@@ -1731,14 +1739,6 @@ Finally, the @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-sym
 
 @item @code{?}
 @tab Describe / lookup documentation
-@tab
-
-@item @code{<return>}
-@tab Enter insertion state
-@tab
-
-@item @code{<escape>}
-@tab Exit
 @tab
 
 @end multitable
