@@ -29,9 +29,15 @@
 (require 'slime-repl nil 'noerror)
 (require 'sly        nil 'noerror)
 (require 'sly-mrepl  nil 'noerror)
-(require 'symex-interop)
-(require 'symex-custom)
 (require 'symex-interface)
+
+(defcustom symex-common-lisp-backend 'slime
+  "Backend provider for Common Lisp interactive features.  One of:
+
+  - SLIME: The Superior Lisp Interaction Mode for Emacs.
+  - SLY: Sylvestors Common Lisp IDE for Emacs.  A fork of SLIME."
+  :type 'symbol
+  :group 'symex)
 
 ;; Make the bytecompiler aware of slime
 (declare-function slime-eval-last-expression "ext:slime")
@@ -83,8 +89,7 @@ Accounts for different point location in evil vs Emacs mode."
   ;; so there's no need to move point there
   (if (eq symex-common-lisp-backend 'sly)
       (call-interactively #'sly-mrepl)
-    (slime-repl))
-  (symex-enter-lowest))
+    (slime-repl)))
 
 (defun symex-run-common-lisp ()
   "Evaluate buffer."

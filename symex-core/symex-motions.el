@@ -32,7 +32,9 @@
 (require 'symex-traversals)
 (require 'symex-tree)
 (require 'symex-interop)
-(require 'symex-ui)
+
+(defvar symex-selection-hook nil
+  "Hook run whenever a symex is selected.")
 
 ;; TODO: these "selection" functions aren't motions; maybe they ought
 ;; to be filed in another module (`symex-user`?)
@@ -49,7 +51,14 @@ This also may entail hooks and advice, which would be absent in the
 primitive version."
   (interactive)
   (unless (symex--selected-p)
-    (symex-select-nearest)))
+    (symex-select-nearest))
+  (run-hooks 'symex-selection-hook))
+
+(defun symex-user-select-nearest-idempotent ()
+  "A version of `symex-user-select-nearest' that doesn't move point."
+  (interactive)
+  (save-excursion
+    (symex-user-select-nearest)))
 
 (defun symex-select-nearest-in-line ()
   "Select symex nearest to point that's on the current line."
@@ -59,12 +68,8 @@ primitive version."
       (symex-select-nearest)
       (unless (= (line-number-at-pos)
                  (line-number-at-pos original-pos))
-        (goto-char original-pos)))))
-
-(defun symex--selection-side-effects (&rest _)
-  "Things to do as part of symex selection, e.g. after navigations."
-  (when symex-highlight-p
-    (symex--update-overlay)))
+        (goto-char original-pos))
+      (run-hooks 'symex-selection-hook))))
 
 (defmacro symex-define-motion (name
                                args
@@ -90,7 +95,7 @@ BODY - the actual implementation of the motion."
          ,docstring
          ,interactive-decl
          (let ((,result (progn ,@body)))
-           (symex--selection-side-effects)
+           (run-hooks 'symex-selection-hook)
            ,result)))))
 
 (symex-define-motion symex-go-forward (count)
@@ -108,7 +113,7 @@ This is a user-level command meant to be used interactively. Prefer
                                            count)))))
     (when result
       (when symex-remember-branch-positions-p
-        (symex--forget-branch-positions)))
+        (symex--clear-branch-memory)))
     result))
 
 (symex-define-motion symex-go-backward (count)
@@ -122,7 +127,7 @@ This is a user-level command meant to be used interactively. Prefer
                                            count)))))
     (when result
       (when symex-remember-branch-positions-p
-        (symex--forget-branch-positions)))
+        (symex--clear-branch-memory)))
     result))
 
 (symex-define-motion symex-go-up (count)

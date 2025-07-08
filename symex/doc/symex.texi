@@ -171,7 +171,7 @@ For most other packages on this list, it's easy to use them together with Symex,
 
 Combobulate is similar to Symex in its aims to be precise and intuitive. It differs in the style of interface and the feature set, providing a lot more grammar-aware and IDE-like features than Symex does. Symex has a minimal interface and offers more diverse features for elementary structural manipulation.
 
-Ultimately, while there is some overlap in features, there's also a lot offered by each that's not present in the other, so that it might make sense to use one and cherry-pick features from the other. For instance, to employ specific Combobulate features from Symex, you could use a similar recipe as @ref{Symex and Evil}. It may also be feasible to integrate them more at a library level, although it might require both packages to be offered via smaller, more modular, packages, for that to be practical.
+Ultimately, while there is some overlap in features, there's also a lot offered by each that's not present in the other, so that it might make sense to use one and cherry-pick features from the other. For instance, to employ specific Combobulate features from Symex, you could use a similar recipe as @ref{Symex and Evil}. It may also be feasible to integrate them more at a library level. As part of the 2.0 release, Symex --- a formerly monolithic package --- was decomposed into small and modular packages in order to facilitate such goals.
 
 Combobulate is thoughtfully designed and sophisticated, and may be a good fit for you. Try both and see which one (or both!) fits your style better!
 
@@ -230,6 +230,19 @@ This section covers installing Symex and setting it up, and information about su
 @end lisp
 
 This provides a keybinding to enter symex editing mode, and also performs any setup necessary to ensure that Symex operates smoothly.
+
+3. (Optional) If you also want some integrated ``IDE'' facilities for different languages, such as the ability to conveniently evaluate expressions, enter a REPL, and so on, then consider also installing the @code{symex-ide} package:
+
+@lisp
+(use-package symex-ide
+  :after (symex)
+  :config
+  (symex-ide-initialize))
+@end lisp
+
+Finally, if you'd like to use Symex features directly (for instance, in a structural-editing library of your own), without the modal UI, then you could install just the @code{symex-core} package. @xref{Overview of Symex Packages} for more about these packages.
+
+The following sections contain information on Evil and Rigpa integration, if you happen to be a user of these.
 
 @node Languages Supported
 @section Languages Supported
@@ -324,30 +337,62 @@ Clojure is a language that is both a Lisp and has a Tree-sitter enabled major mo
 
 If you happen to be an Evil user, using Symex should feel familiar (although as we saw in @ref{Point-Free Modal Editing}, Symex exhibits a simpler modal style, making it accessible to those who aren't familiar with Vim/Evil).
 
-For Evil users, there are some keybindings from Normal state that you might like to retain in Symex mode. To do that, put something like this in your config:
+For the most seamless integration with Evil, install the @code{symex-evil} package:
 
 @lisp
-(lithium-define-keys symex-editing-mode
-                     (("u" evil-undo)
-                      ("C-r" evil-redo)
-                      ("q" evil-record-macro)
-                      ("@@" evil-execute-macro)
-                      ("/" evil-search-forward)
-                      ("?" evil-search-backward)
-                      ("#" evil-search-word-backward)
-                      ("*" evil-search-word-forward)
-                      ("n" evil-search-next)
-                      ("N" evil-search-previous)
-                      ("C-d" evil-scroll-down)
-                      ("C-u" evil-scroll-up)
-                      ("C-e" evil-scroll-line-down)
-                      ("C-y" evil-scroll-line-up)
-                      ("C-]" evil-jump-to-tag)
-                      ("C-i" evil-jump-forward)
-                      ("C-o" evil-jump-backward)))
+  (use-package symex-evil
+    :after (symex)
+    :config
+    (symex-evil-initialize))
 @end lisp
 
-Note that Symex provides its own ``repeat'' functionality mapped to @code{.} (and @code{C-.}) and should not be overridden by Evil here, as @code{evil-repeat} would have undefined behavior when used with Symex.
+This supports generic keybindings from Normal state that are useful to retain in Symex mode, such as undo and redo, scrolling, searching, and various other navigations. In addition, it also ensures that such Evil operations performed while in Symex mode preserve a sensible symex selection.
+
+For other useful options on using Symex with Evil, @xref{Escaping to Symex Instead of Normal State} and @xref{Easy Entry Into Symex Mode}.
+
+@node Symex and Rigpa
+@section Symex and Rigpa
+
+@cindex Rigpa, using together with
+
+@uref{https://github.com/countvajhula/rigpa, Rigpa} is a structured and flexible way to manage modal user interfaces like Symex and Evil. It allows you to visually define transitions between different modes via keybindings like Enter and Escape, making it convenient to use modal UIs (such as Symex and Evil) together. Note that the package, although fairly mature, is not yet available on Emacs package archives, and must be installed directly from the source repository using Straight or Elpaca. In addition to installing Rigpa, you'll also need the @code{symex-evil} package mentioned in the previous section (currently, Rigpa does assume that you are an Evil user) as well as @uref{https://github.com/countvajhula/symex-rigpa, @code{symex-rigpa}} which integrates Symex with Rigpa for smooth operation.
+
+Please see the Rigpa documentation for instructions on installing Rigpa, and the preceding section of this manual for instructions on installing @code{symex-evil}. Once you've done that, add the following to your @code{.emacs.d} config:
+
+@lisp
+  (use-package symex-rigpa
+    :after (symex rigpa symex-evil)
+    :straight
+    (symex-rigpa
+     :repo "drym-org/symex.el"
+     :host github
+     :type git
+     :files ("symex-rigpa"))
+    :config
+    (symex-rigpa-initialize))
+@end lisp
+
+@node Overview of Symex Packages
+@section Overview of Symex Packages
+
+@cindex Packages, Symex
+@cindex Symex packages
+
+Symex consists of several lean and composable packages so that you can choose the ones you need and not have anything extra. The preceding installation instructions gave some idea of when to use each, but here is a short overview:
+
+@enumerate
+
+@item @code{symex-core}. This contains the core functionality of Symex, including the structural editing DSL and underlying Lisp and Tree-Sitter primitives. This is a dependency of the other Symex packages.
+
+@item @code{symex}. This contains the modal UI that makes Symex features convenient to use. All of the remaining packages in this list depend on, and extend, this modal UI package.
+
+@item @code{symex-ide}. This contains ``IDE''-like features, including the ability to evaluate expressions, enter a REPL for your language, and more.
+
+@item @code{symex-evil}. This contains Evil integration, including familiar keybindings, advising Evil functions to play well with Symex mode, and other functionality to make using Symex with Evil seamless.
+
+@item @code{symex-rigpa}. This integrates Symex with Rigpa, allowing you to conveniently manage Symex as a mode within the broader Rigpa modal framework, including defining convenient entry and exit via familiar key sequences such as @code{Enter} and @code{Escape}.
+
+@end enumerate
 
 @node Getting Started
 @chapter Getting Started
@@ -546,6 +591,18 @@ The current expression is highlighted by default using an overlay. If you'd like
 (symex-highlight-p nil)
 @end lisp
 
+@node Point Placement on Entry
+@section Point Placement on Entry
+
+@cindex Point placement, customizing
+@cindex Idempotent entry to Symex Mode
+
+Upon entry into Symex mode, point is positioned at the start of the currently selected symex. If you'd like to preserve point at its original location, instead, so that entry into Symex mode is ``idempotent,'' then add this to the @code{:custom} section (not the @code{:config} section) of your @code{use-package} form:
+
+@lisp
+(symex-preserve-point-on-entry-p t)
+@end lisp
+
 @node Auto-Indenting
 @section Auto-Indenting
 
@@ -648,9 +705,9 @@ Now that we've learned the basics, let's learn some ways to be even more precise
 @cindex Normal state, interoperation with
 @cindex Rigpa, managing modes with
 
-For evil users, when you ``escape'' from Insert state, you may prefer to enter Symex state rather than Normal state while in Lisp buffers.
+For Evil users, when you ``escape'' from Insert state, you may prefer to enter Symex state rather than Normal state while in Lisp buffers.
 
-@uref{https://github.com/countvajhula/rigpa, Rigpa} is a structured and flexible way to manage modes in this way. Note, however, that the package, although fairly mature, is not yet available on Emacs package archives, and must be installed directly from GitHub using Straight or Elpaca.
+Please @xref{Symex and Rigpa} for the recommended way of achieving this.
 
 If you're not using Rigpa, you could still write one-off keybindings to achieve this, for instance, see @url{https://github.com/drym-org/symex.el/issues/24#issuecomment-815110143, this recipe} by @@tommy-mor.
 
@@ -699,7 +756,7 @@ In writing Lisp code, parentheses are among the most commonly typed characters, 
 
 @lisp
 (define-key
-  symex-mode-map
+  symex-lisp-mode-map
   (kbd "C-w")
   (lambda ()
     (interactive)
@@ -1424,7 +1481,7 @@ Don't hesitate to add print statements (e.g., @code{print} or @code{message}) to
 
 @subheading Disable Advice
 
-Symex uses @uref{https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html, advice} to implement some features such as adding a selection overlay. To minimize complexity while debugging, it may be advisable (so to speak) in certain cases to disable such advice. To do this, find the place in the code where the advice is added, and execute the corresponding function to remove it. Something like, @code{(advice-remove #'symex-user-select-nearest #'symex--selection-side-effects)}. Of course, if disabling the advice causes the error to go away, then you can focus your efforts on debugging the advice itself in isolation!
+Symex uses @uref{https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html, advice} to implement some features such as adding a selection overlay. To minimize complexity while debugging, it may be advisable (so to speak) in certain cases to disable such advice. To do this, find the place in the code where the advice is added, and execute the corresponding function to remove it. Something like, @code{(advice-remove #'symex-user-select-nearest #'symex-mode-highlight-selected)}. Of course, if disabling the advice causes the error to go away, then you can focus your efforts on debugging the advice itself in isolation!
 
 @subheading Comment Out Macros
 

@@ -26,8 +26,6 @@
 ;;; Code:
 
 (require 'fennel-mode nil 'noerror)
-(require 'symex-interop)
-
 
 (declare-function fennel-find-definition  "ext:fennel-mode")
 (declare-function fennel-repl "ext:fennel-mode")
@@ -55,8 +53,7 @@
     (unless (eq original-window (selected-window))
       ;; if the REPL window is currently being created
       ;; then don't attempt to go to the bottom
-      (goto-char (point-max))
-      (symex-enter-lowest))))
+      (goto-char (point-max)))))
 
 (defun symex-run-fennel ()
   "Evaluate buffer."

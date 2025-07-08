@@ -26,11 +26,56 @@ help:
 	@echo "build - byte compile the package"
 	@echo "test - run tests"
 
-clean :
-	${CASK} clean-elc
+clean-core:
+	cd symex-core && ${CASK} clean-elc
 
-install:
-	${CASK} install
+install-core:
+	cd symex-core && ${CASK} install
+
+build-core:
+	cd symex-core && ${CASK} build
+
+clean-symex:
+	cd symex && ${CASK} clean-elc
+
+install-symex:
+	cd symex && ${CASK} install
+
+build-symex:
+	cd symex && ${CASK} build
+
+clean-ide:
+	cd symex-ide && ${CASK} clean-elc
+
+install-ide:
+	cd symex-ide && ${CASK} install
+
+build-ide:
+	cd symex-ide && ${CASK} build
+
+clean-evil:
+	cd symex-evil && ${CASK} clean-elc
+
+install-evil:
+	cd symex-evil && ${CASK} install
+
+build-evil:
+	cd symex-evil && ${CASK} build
+
+clean-rigpa:
+	cd symex-rigpa && ${CASK} clean-elc
+
+install-rigpa:
+	cd symex-rigpa && ${CASK} install
+
+build-rigpa:
+	cd symex-rigpa && ${CASK} build
+
+clean: clean-core clean-symex clean-ide clean-evil clean-rigpa
+
+install: install-core install-symex install-ide install-evil install-rigpa
+
+build: build-core build-symex build-ide build-evil build-rigpa
 
 lint:
 	${CASK} exec $(EMACS) -Q --batch  \
@@ -54,10 +99,7 @@ checkdoc:
 	                      -l "dev/build-utils.el"  \
 	                      --eval '(flycheck/batch-checkdoc ".")'
 
-build :
-	${CASK} build
-
 test: build
 	${CASK} exec ert-runner
 
-.PHONY:	help lint lint+less lint-no-noise lint-noiseless checkdoc build clean install test
+.PHONY: help clean install build lint lint+less lint-no-noise lint-noiseless checkdoc test clean-core install-core build-core clean-symex install-symex build-symex clean-ide install-ide build-ide clean-evil install-evil build-evil clean-rigpa install-rigpa build-rigpa

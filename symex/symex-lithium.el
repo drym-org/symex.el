@@ -31,13 +31,10 @@
 (require 'symex-ui)
 (require 'symex-motions)
 (require 'symex-tree)
-(require 'symex-runtime)
 (require 'symex-transformations)
 (require 'symex-repeat)
 (require 'symex-interop)
 (require 'symex-utils)
-
-(declare-function symex-exit-mode "symex.el")
 
 ;; this is dynamically referenced in the lithium defining macros and
 ;; causes a byte compile warning here. The current approach seems
@@ -114,14 +111,6 @@
    ("C-)" symex-capture-forward)
    ("z" symex-swallow)
    ("Z" symex-swallow-tail)
-   ("e" symex-evaluate)
-   ("E" symex-evaluate-remaining)
-   ("C-M-e" symex-evaluate-pretty)
-   ("d" symex-evaluate-definition)
-   ("M-e" symex-eval-recursive)
-   ("T" symex-evaluate-thunk)
-   ("r" symex-repl)
-   ("R" symex-run)
    ("|" symex-split)
    ("&" symex-join)
    ("-" symex-splice)
@@ -158,10 +147,7 @@
    ("W" symex-wrap-and-append :exit)
    (";" symex-comment)
    ("M-;" symex-comment-remaining)
-   ("C-;" symex-eval-print) ; weird pre-offset (in both)
-   ("s-;" symex-evaluate)
-   ("H-h" symex--toggle-highlight) ; treats visual as distinct mode
-   ("C-?" symex-describe)
+   ("H-h" symex--toggle-highlight)
    ("." symex-repeat)
    ("C-." symex-repeat-pop)
    ("C-c ." symex-repeat-recent)
@@ -170,14 +156,6 @@
    ("<escape>" symex-escape-higher :exit))
   :lighter " symex"
   :group 'symex)
-
-(defun symex-lithium-initialize ()
-  "Initialize lithium modal interface."
-  ;; If for whatever reason the Lihium mode must exit, ensure
-  ;; that any exit actions for symex mode are taken.
-  (unless lithium-mode
-    (lithium-mode))
-  (add-hook 'symex-editing-mode-pre-exit-hook #'symex-exit-mode))
 
 
 (provide 'symex-lithium)

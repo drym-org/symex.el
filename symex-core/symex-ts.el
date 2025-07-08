@@ -32,7 +32,6 @@
 ;;; Code:
 
 (require 'treesit nil :no-error)
-(require 'symex-custom)
 (require 'symex-data)
 (require 'symex-utils)
 
@@ -152,13 +151,7 @@ return nil."
   "Predicate to show if tree sitter support is available to Symex."
   (and (fboundp 'treesit-available-p)
        (treesit-available-p)
-       (> (length (treesit-parser-list)) 0)
-       ;; We use the Lisp primitives for Clojure
-       ;; even though Emacs 29 provides tree-sitter APIs
-       ;; for it, since the Lisp primitives in Symex are
-       ;; more mature than the Tree Sitter ones at the
-       ;; present time.
-       (not (member major-mode symex-lisp-modes))))
+       (> (length (treesit-parser-list)) 0)))
 
 (defvar-local symex-ts--current-node nil "The current Tree Sitter node.")
 
@@ -278,10 +271,6 @@ Automatically set it to the node at point if necessary."
   symex-ts--current-node)
 
 ;;; User Interface
-
-(defun symex-ts--adjust-point ()
-  "Helper to adjust point to indicate the correct symex."
-  nil)
 
 (defun symex-ts--notify-of-changes (_ranges _parser &rest _args)
   "Take action when notified of any changes to the contents of the buffer.

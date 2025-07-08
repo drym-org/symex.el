@@ -26,7 +26,6 @@
 ;;; Code:
 
 (require 'cider nil 'noerror)
-(require 'symex-interop)
 (require 'symex-interface)
 
 (declare-function cider-eval-last-sexp "ext:cider")
@@ -49,8 +48,7 @@
   "Go to REPL."
   ;; this already goes to the active repl prompt
   ;; so there's no need to move point there
-  (cider-switch-to-repl-buffer)
-  (symex-enter-lowest))
+  (cider-switch-to-repl-buffer))
 
 (defvar symex-clojure-modes (list 'clojure-mode
                                   'clojurescript-mode

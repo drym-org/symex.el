@@ -27,18 +27,8 @@
 
 
 (defgroup symex nil
-  "A language for editing symbolic expressions."
+  "An expressive modal way to edit code."
   :group 'lisp)
-
-(defcustom symex-highlight-p t
-  "Whether selected symexes should be highlighted."
-  :type 'boolean
-  :group 'symex)
-
-(defcustom symex-refocus-p t
-  "Whether to refocus on the selected symex when it's near the screen's edge."
-  :type 'boolean
-  :group 'symex)
 
 (defcustom symex-ensure-structure-p t
   "Whether to balance parentheses in Lisp modes."
@@ -63,29 +53,6 @@
 (defcustom symex-unquote-prefix-list (list "," ",@")
   "List of prefixes to cycle through while using `symex-cycle-unquote`."
   :type '(repeat string)
-  :group 'symex)
-
-(defcustom symex-lisp-modes (list 'clojure-mode
-                                  'clojurescript-mode
-                                  'clojurec-mode)
-  "List of major modes that should use the Lisp rather than Treesitter parser.
-
-In cases where treesitter isn't available, the Lisp parser would be
-used at any rate, but this option allows you to override the use of
-Treesitter for modes where you'd prefer to use the Lisp parser even
-though treesitter is available.
-
-The Lisp parser has some differences from the Treesitter parser,
-including not treating comments as symexes."
-  :type '(repeat symbol)
-  :group 'symex)
-
-(defcustom symex-common-lisp-backend 'slime
-  "Backend provider for Common Lisp interactive features.  One of:
-
-  - SLIME: The Superior Lisp Interaction Mode for Emacs.
-  - SLY: Sylvestors Common Lisp IDE for Emacs.  A fork of SLIME."
-  :type 'symbol
   :group 'symex)
 
 (provide 'symex-custom)

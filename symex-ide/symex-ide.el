@@ -1,6 +1,10 @@
-;;; symex-runtime.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
+;;; symex-ide.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
 
+;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/drym-org/symex.el
+;; Version: 0.0
+;; Package-Requires: ((emacs "25.1") (symex "2.0"))
+;; Keywords: lisp, convenience, languages
 
 ;; This program is "part of the world," in the sense described at
 ;; https://drym.org.  From your perspective, this is no different than
@@ -26,12 +30,11 @@
 
 ;;; Code:
 
-(require 'symex-primitives)
-(require 'symex-evaluator)
-(require 'symex-traversals)
-(require 'symex-tree)
+(require 'lithium)
+(require 'symex)
+
 (require 'symex-interface)
-(require 'symex-ui)
+(require 'symex-interface-builtins)
 
 (defun symex--evaluate ()
   "Evaluate symex."
@@ -120,5 +123,22 @@ executing it."
   (interactive)
   (funcall (symex-interface-get-method :run)))
 
-(provide 'symex-runtime)
-;;; symex-runtime.el ends here
+;;;###autoload
+(defun symex-ide-initialize ()
+  "Initialize runtime integration for symex mode."
+  (symex-register-builtin-interfaces)
+  (lithium-define-keys symex-editing-mode
+    (("e" symex-evaluate)
+     ("E" symex-evaluate-remaining)
+     ("C-M-e" symex-evaluate-pretty)
+     ("d" symex-evaluate-definition)
+     ("M-e" symex-eval-recursive)
+     ("T" symex-evaluate-thunk)
+     ("r" symex-repl)
+     ("R" symex-run)
+     ("C-;" symex-eval-print) ; weird pre-offset (in both)
+     ("s-;" symex-evaluate)
+     ("C-?" symex-describe))))
+
+(provide 'symex-ide)
+;;; symex-ide.el ends here

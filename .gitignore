@@ -8,5 +8,11 @@
 dist
 *.html
 
-# rendered info manual
+# rendered info manual artifacts
 *.info
+*.aux
+*.cp
+*.cps
+*.log
+*.pdf
+*.toc
