@@ -355,9 +355,9 @@ For other useful options on using Symex with Evil, @xref{Escaping to Symex Inste
 
 @cindex Rigpa, using together with
 
-@uref{https://github.com/countvajhula/rigpa, Rigpa} is a structured and flexible way to manage modal user interfaces like Symex and Evil. It allows you to visually define transitions between different modes via keybindings like Enter and Escape, making it convenient to use modal UIs (such as Symex and Evil) together. Note that the package, although fairly mature, is not yet available on Emacs package archives, and must be installed directly from GitHub using Straight or Elpaca. In addition to installing Rigpa, you'll also need @uref{https://github.com/countvajhula/symex-rigpa, @code{symex-rigpa}} which integrates Symex with Rigpa for smooth operation.
+@uref{https://github.com/countvajhula/rigpa, Rigpa} is a structured and flexible way to manage modal user interfaces like Symex and Evil. It allows you to visually define transitions between different modes via keybindings like Enter and Escape, making it convenient to use modal UIs (such as Symex and Evil) together. Note that the package, although fairly mature, is not yet available on Emacs package archives, and must be installed directly from the source repository using Straight or Elpaca. In addition to installing Rigpa, you'll also need the @code{symex-evil} package mentioned in the previous section (currently, Rigpa does assume that you are an Evil user) as well as @uref{https://github.com/countvajhula/symex-rigpa, @code{symex-rigpa}} which integrates Symex with Rigpa for smooth operation.
 
-Please see the Rigpa documentation for instructions on installing Rigpa. Then, once you've done that, add the following to your @code{.emacs.d} config:
+Please see the Rigpa documentation for instructions on installing Rigpa, and the preceding section of this manual for instructions on installing @code{symex-evil}. Once you've done that, add the following to your @code{.emacs.d} config:
 
 @lisp
   (use-package symex-rigpa
@@ -370,11 +370,6 @@ Please see the Rigpa documentation for instructions on installing Rigpa. Then, o
      :files ("symex-rigpa"))
     :config
     (symex-rigpa-initialize))
-
-  (with-eval-after-load 'rigpa
-    (with-eval-after-load 'symex-rigpa
-      (rigpa--create-editing-structures)
-      (rigpa--provide-editing-structures)))
 @end lisp
 
 @node Overview of Symex Packages
