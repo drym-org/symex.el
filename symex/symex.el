@@ -50,6 +50,24 @@
   "Point-free modal UI for Symex."
   :group 'symex)
 
+(defcustom symex-orientation 'inverted
+  "This determines the meaning of 'up' and 'down' in navigating code as trees.
+
+A value of `inverted' means that more nested expressions are
+considered \"lower\" and less nested expressions are \"higher.\" This
+corresponds to a familiar sense of \"tree\" in programming contexts.
+
+A value of `squirrel' means that more nested expressions are
+considered \"higher,\" with the root being the \"lowest\" node, like
+actual trees growing in the ground outside. Think going down towards
+the root and up towards the nest.
+
+Note that modules in the Symex library itself use the \"squirrel\"
+sense in all internal naming conventions, as this was formerly the
+default (and only) orientation."
+  :type 'symbol
+  :group 'symex-mode)
+
 (defcustom symex-highlight-p t
   "Whether selected symexes should be highlighted."
   :type 'boolean
@@ -111,6 +129,26 @@ selected symex, in a strict fashion."
   (unless (member symex--current-keys symex-repeatable-keys)
     (symex-repeat-disable)))
 
+(defun symex-initialize-orientation ()
+  "Initialize keybindings according to user customization of the orientation."
+  (cond ((eq 'squirrel symex-orientation)
+         (lithium-define-keys symex-editing-mode
+           (("k" symex-go-up)
+            ("j" symex-go-down)
+            ("C-k" symex-climb-branch)
+            ("C-j" symex-descend-branch)
+            ("M-k" symex-goto-highest)
+            ("M-j" symex-goto-lowest))))
+        ((eq 'inverted symex-orientation)
+         (lithium-define-keys symex-editing-mode
+           (("j" symex-go-up)
+            ("k" symex-go-down)
+            ("C-j" symex-climb-branch)
+            ("C-k" symex-descend-branch)
+            ("M-j" symex-goto-highest)
+            ("M-k" symex-goto-lowest))))
+        (t (error "Invalid Symex orientation!"))))
+
 ;;;###autoload
 (defun symex-modal-initialize ()
   "Initialize the modal interface."
@@ -125,7 +163,8 @@ selected symex, in a strict fashion."
   (add-hook 'symex-editing-mode-pre-entry-hook
             #'symex-enter-mode)
   (add-hook 'symex-editing-mode-pre-exit-hook
-            #'symex-exit-mode))
+            #'symex-exit-mode)
+  (symex-initialize-orientation))
 
 (defun symex-modal-disable ()
   "Disable symex modal interface."
