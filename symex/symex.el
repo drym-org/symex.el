@@ -124,7 +124,7 @@ selected symex, in a strict fashion."
   (unless (member symex--current-keys symex-repeatable-keys)
     (symex-repeat-disable)))
 
-(defun symex-initialize-orientation ()
+(defun symex-set-orientation ()
   "Initialize keybindings according to user customization of the orientation."
   (cond ((eq 'squirrel symex-orientation)
          (lithium-define-keys symex-editing-mode
@@ -159,7 +159,7 @@ selected symex, in a strict fashion."
             #'symex-enter-mode)
   (add-hook 'symex-editing-mode-pre-exit-hook
             #'symex-exit-mode)
-  (symex-initialize-orientation))
+  (symex-set-orientation))
 
 (defun symex-modal-disable ()
   "Disable symex modal interface."
