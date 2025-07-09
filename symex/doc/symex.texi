@@ -554,21 +554,11 @@ Most of the customizations below go in the @code{:custom} section of your @code{
 
 @cindex Up and down, customizing
 
-The default keybindings in Symex mode treat increasingly nested code as being ``higher,'' and elements closer to the root as ``lower.'' Think as a squirrel would — going ``up'' to the nest and ``down'' to the root. But you can invert this orientation or any other keybindings to whatever you may find most natural.
-
-To do this, put something resembling this in the @code{:config} (not @code{:custom}) section of your @code{use-package} declaration:
+The default keybindings in Symex mode treat increasingly nested code as being ``lower,'' and elements closer to the root as ``higher.'' This may be familiar from the sense of ``tree'' in computer science, which is ``inverted'' from the orientation of actual trees growing outside. You can, if you like, flip this to correspond to the latter, which was formerly the default orientation of Symex. The latter orientation would mean thinking as a squirrel would — going ``up'' to the nest and ``down'' to the root. Choose whatever you may find most natural by putting the following in the @code{:custom} section of your @code{use-package} declaration:
 
 @lisp
-(lithium-define-keys symex-editing-mode
-                     (("j" symex-go-up)
-                      ("k" symex-go-down)
-                      ("C-j" symex-climb-branch)
-                      ("C-k" symex-descend-branch)
-                      ("M-j" symex-goto-highest)
-                      ("M-k" symex-goto-lowest)))
+(symex-orientation 'squirrel)  ; either 'squirrel or 'inverted (the default)
 @end lisp
-
-Note that Symex uses @uref{https://github.com/countvajhula/lithium, Lithium} to implement its modal interface. Lithium augments Emacs minor modes to provide the ``point-free'' modal experience. That's why we use @code{lithium-define-keys} here.
 
 @node Branch Memory
 @section Branch Memory
