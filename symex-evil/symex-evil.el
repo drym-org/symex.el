@@ -31,6 +31,7 @@
 
 (require 'evil)
 (require 'undo-tree nil :no-error)
+(require 'lithium)
 (require 'symex)
 
 (defun symex-select-nearest-advice (&rest _)

@@ -27,8 +27,7 @@
 
 (require 'racket-mode nil 'noerror)
 (require 'subr-x)
-(require 'symex-primitives)
-(require 'symex-utils)
+(require 'symex-core)
 (require 'symex-interface)
 
 ;; from racket-mode - avoid byte-compile warnings

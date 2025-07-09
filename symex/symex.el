@@ -68,11 +68,6 @@ default (and only) orientation."
   :type 'symbol
   :group 'symex-mode)
 
-(defcustom symex-highlight-p t
-  "Whether selected symexes should be highlighted."
-  :type 'boolean
-  :group 'symex-mode)
-
 (defcustom symex-refocus-p t
   "Whether to refocus on the selected symex when it's near the screen's edge."
   :type 'boolean

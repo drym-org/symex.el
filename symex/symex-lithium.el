@@ -29,12 +29,8 @@
 (require 'lithium)
 
 (require 'symex-ui)
-(require 'symex-motions)
-(require 'symex-tree)
-(require 'symex-transformations)
 (require 'symex-repeat)
-(require 'symex-interop)
-(require 'symex-utils)
+(require 'symex-core)
 
 ;; this is dynamically referenced in the lithium defining macros and
 ;; causes a byte compile warning here. The current approach seems

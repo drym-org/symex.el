@@ -26,11 +26,15 @@
 ;;; Code:
 
 
-(require 'symex-custom)
-(require 'symex-primitives)
+(require 'symex-core)
 
 (defvar-local symex--original-scroll-margin nil)
 (defvar-local symex--original-max-scroll-margin nil)
+
+(defcustom symex-highlight-p t
+  "Whether selected symexes should be highlighted."
+  :type 'boolean
+  :group 'symex-mode)
 
 (defface symex--current-node-face
   '((t :inherit highlight :extend nil))
