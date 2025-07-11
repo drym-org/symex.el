@@ -93,11 +93,38 @@ lint-no-noise:
 lint-noiseless:
 	@$(MAKE) -f $(THIS_FILE) lint-no-noise 2>&1 | less
 
-checkdoc:
-	${CASK} exec $(EMACS) -Q --batch  \
+checkdoc-core:
+	cd symex-core && ${CASK} exec $(EMACS) -Q --batch  \
 	                      --eval $(INIT_PACKAGE_EL)  \
-	                      -l "dev/build-utils.el"  \
+	                      -l "../dev/build-utils.el"  \
 	                      --eval '(flycheck/batch-checkdoc ".")'
+
+checkdoc-symex:
+	cd symex && ${CASK} exec $(EMACS) -Q --batch  \
+	                      --eval $(INIT_PACKAGE_EL)  \
+	                      -l "../dev/build-utils.el"  \
+	                      --eval '(flycheck/batch-checkdoc ".")'
+
+checkdoc-ide:
+	cd symex-ide && ${CASK} exec $(EMACS) -Q --batch  \
+	                      --eval $(INIT_PACKAGE_EL)  \
+	                      -l "../dev/build-utils.el"  \
+	                      --eval '(flycheck/batch-checkdoc ".")'
+
+checkdoc-evil:
+	cd symex-evil && ${CASK} exec $(EMACS) -Q --batch  \
+	                      --eval $(INIT_PACKAGE_EL)  \
+	                      -l "../dev/build-utils.el"  \
+	                      --eval '(flycheck/batch-checkdoc ".")'
+
+checkdoc-rigpa:
+	cd symex-rigpa && ${CASK} exec $(EMACS) -Q --batch  \
+	                      --eval $(INIT_PACKAGE_EL)  \
+	                      -l "../dev/build-utils.el"  \
+	                      --eval '(flycheck/batch-checkdoc ".")'
+
+# Run with make -k to ignore errors
+checkdoc: checkdoc-core checkdoc-symex checkdoc-ide checkdoc-evil checkdoc-rigpa
 
 test: build
 	${CASK} exec ert-runner
