@@ -77,12 +77,42 @@ install: install-core install-symex install-ide install-evil install-rigpa
 
 build: build-core build-symex build-ide build-evil build-rigpa
 
-lint:
-	${CASK} exec $(EMACS) -Q --batch  \
+lint-core:
+	cd symex-core && ${CASK} exec $(EMACS) -Q --batch  \
 	                      --eval $(INIT_PACKAGE_EL)  \
 	                      -l "package-lint.el"  \
 	                      -f "package-lint-batch-and-exit"  \
 	                      ${PROJECT_FILES}
+
+lint-symex:
+	cd symex && ${CASK} exec $(EMACS) -Q --batch  \
+	                      --eval $(INIT_PACKAGE_EL)  \
+	                      -l "package-lint.el"  \
+	                      -f "package-lint-batch-and-exit"  \
+	                      ${PROJECT_FILES}
+
+lint-ide:
+	cd symex-ide && ${CASK} exec $(EMACS) -Q --batch  \
+	                      --eval $(INIT_PACKAGE_EL)  \
+	                      -l "package-lint.el"  \
+	                      -f "package-lint-batch-and-exit"  \
+	                      ${PROJECT_FILES}
+
+lint-evil:
+	cd symex-evil && ${CASK} exec $(EMACS) -Q --batch  \
+	                      --eval $(INIT_PACKAGE_EL)  \
+	                      -l "package-lint.el"  \
+	                      -f "package-lint-batch-and-exit"  \
+	                      ${PROJECT_FILES}
+
+lint-rigpa:
+	cd symex-rigpa && ${CASK} exec $(EMACS) -Q --batch  \
+	                      --eval $(INIT_PACKAGE_EL)  \
+	                      -l "package-lint.el"  \
+	                      -f "package-lint-batch-and-exit"  \
+	                      ${PROJECT_FILES}
+
+lint: lint-core lint-symex lint-ide lint-evil lint-rigpa
 
 lint+less:
 	@$(MAKE) -f $(THIS_FILE) lint 2>&1 | less
