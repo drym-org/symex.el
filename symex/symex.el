@@ -59,7 +59,7 @@ corresponds to a familiar sense of \"tree\" in programming contexts.
 
 A value of `squirrel' means that more nested expressions are
 considered \"higher,\" with the root being the \"lowest\" node, like
-actual trees growing in the ground outside. Think going down towards
+actual trees growing in the ground outside.  Think going down towards
 the root and up towards the nest.
 
 Note that modules in the Symex library itself use the \"squirrel\"
@@ -76,7 +76,7 @@ default (and only) orientation."
 (defcustom symex-preserve-point-on-entry-p nil
   "Whether point should be preserved upon entry to Symex.
 
-The default value of `nil' means that point is moved to indicate the
+The default value of nil means that point is moved to indicate the
 selected symex, in a strict fashion."
   :type 'boolean
   :group 'symex-mode)

@@ -136,7 +136,7 @@ positions are no longer relevant on a different tree than the one on
 which they were recorded.  To be conservative and err on the side of
 determinism here, we clear branch memory upon entering symex mode,
 since may enter at arbitrary points in the code, i.e. on arbitrary
-trees. We also clear branch memory when moving to a different tree
+trees.  We also clear branch memory when moving to a different tree
 while still in Symex mode.
 
 TODO: Yet, hypothetically if there were two identical trees next to
