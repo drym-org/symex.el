@@ -125,7 +125,7 @@ The essential idea of Vim/Evil is that there are motions (nouns) that may be com
 
 Yet, augmenting Evil with a symex text object would be a valuable alternative way to achieve a Symex-like experience, and that's what Evil-Cleverparens (another package discussed below) does.
 
-Symex and Evil go very well together. Please @xref{Symex and Evil} for more on optimizing the experience of using them together.
+Symex and Evil go very well together. Please @xref{Symex and Evil} for instructions on using them together.
 
 @node Lispy
 @subsection Lispy
@@ -338,7 +338,7 @@ Clojure is a language that is both a Lisp and has a Tree-sitter enabled major mo
 
 If you happen to be an Evil user, using Symex should feel familiar (although as we saw in @ref{Point-Free Modal Editing}, Symex exhibits a simpler modal style, making it accessible to those who aren't familiar with Vim/Evil).
 
-For the most seamless integration with Evil, install the @code{symex-evil} package:
+For a seamless integration with Evil, it is essential to install the @code{symex-evil} package:
 
 @lisp
   (use-package symex-evil
@@ -347,7 +347,7 @@ For the most seamless integration with Evil, install the @code{symex-evil} packa
     (symex-evil-initialize))
 @end lisp
 
-This supports generic keybindings from Normal state that are useful to retain in Symex mode, such as undo and redo, scrolling, searching, and various other navigations. In addition, it also ensures that such Evil operations performed while in Symex mode preserve a sensible symex selection.
+This ensures that insertion commands that exit Symex enter Insert state to put you in a position to enter text, as intended, as opposed to leaving you in Normal state. It also supports generic keybindings from Normal state that are useful to retain in Symex mode, such as undo and redo, scrolling, searching, and various other navigations. In addition, it also ensures that such Evil operations performed while in Symex mode preserve a sensible symex selection.
 
 For other useful options on using Symex with Evil, @xref{Escaping to Symex Instead of Normal State} and @xref{Easy Entry Into Symex Mode}.
 
@@ -691,6 +691,8 @@ For example, since Symex already includes a customizable overlay to highlight se
 @cindex keybindings, customizing
 
 You can add any custom keybindings you like to the Symex modal UI by using the underlying Lithium facilities for this purpose, as described in the @uref{https://github.com/countvajhula/lithium, Lithium} documentation.
+
+@strong{PLEASE NOTE}: if you use custom keybindings, it is essential to preserve the intended ``exiting'' behavior of the commands. For instance, all insertion commands in Symex are designated with @code{:exit} in the keybinding specification, which ensures that it exits the Lithium mode to allow you to enter text. If you choose to override these, remember to retain the @code{:exit} flag (described further in the Lithium documentation).
 
 Also @xref{Point-Free Modal Editing} for more on Lithium.
 
