@@ -12,14 +12,6 @@ symex.el
 .. image:: https://github.com/drym-org/symex.el/actions/workflows/test.yml/badge.svg
     :target: https://github.com/drym-org/symex.el/actions
 
-.. image:: https://melpa.org/packages/symex-badge.svg
-    :alt: MELPA
-    :target: https://melpa.org/#/symex
-
-.. image:: https://stable.melpa.org/packages/symex-badge.svg
-    :alt: MELPA Stable
-    :target: https://stable.melpa.org/#/symex
-
 An intuitive way to edit Lisp symbolic expressions ("symexes") structurally in Emacs.
 
 .. contents:: :depth: 2
