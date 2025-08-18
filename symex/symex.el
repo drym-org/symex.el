@@ -149,8 +149,8 @@ selected symex, in a strict fashion."
   "Initialize the modal interface."
   ;; any side effects that should happen as part of selection,
   ;; e.g., update overlay
-  (unless symex-mode
-    (symex-mode 1))
+  (unless symex-core-mode
+    (symex-core-mode 1))
   (unless lithium-mode
     (lithium-mode 1))
   ;; initialize repeat command
@@ -173,6 +173,16 @@ selected symex, in a strict fashion."
 Enter the symex modal interface, activating symex keybindings."
   (interactive)
   (symex-editing-mode-enter))
+
+;;;###autoload
+(define-minor-mode symex-mode
+  "An evil way to edit Lisp symbolic expressions as trees."
+  :lighter " symex"
+  :global t
+  :group 'symex
+  (if symex-mode
+      (symex-modal-initialize)
+    (symex-modal-disable)))
 
 
 (provide 'symex)

@@ -226,7 +226,6 @@ This section covers installing Symex and setting it up, and information about su
   (use-package symex
     :config
     (symex-mode 1)
-    (symex-modal-initialize)
     (global-set-key (kbd "s-;") 'symex-mode-interface))  ; or whatever keybinding you like
 @end lisp
 

@@ -122,12 +122,12 @@ configuration to be disabled and the new one adopted."
         (remove-hook mode-hook #'symex-lisp-mode)))))
 
 ;;;###autoload
-(define-minor-mode symex-mode
+(define-minor-mode symex-core-mode
   "An evil way to edit Lisp symbolic expressions as trees."
-  :lighter " symex"
+  :lighter " symex-core"
   :global t
   :group 'symex
-  (if symex-mode
+  (if symex-core-mode
       (symex-initialize)
     (symex-disable)))
 
