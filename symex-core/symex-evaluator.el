@@ -433,6 +433,8 @@ See `symex-eval-move' for more on COMPUTATION and RESULT."
           (symex--go-up height-differential))
         new-result))))
 
+(define-obsolete-function-alias 'symex-execute-traversal 'symex-eval "2.0")
+
 
 (provide 'symex-evaluator)
 ;;; symex-evaluator.el ends here
