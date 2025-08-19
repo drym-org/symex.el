@@ -140,5 +140,19 @@ executing it."
      ("s-;" symex-evaluate)
      ("C-?" symex-describe))))
 
+(defun symex-ide-disable ()
+  "Disable Symex IDE."
+  nil)
+
+;;;###autoload
+(define-minor-mode symex-ide-mode
+  "A mode adding IDE-like features to Symex mode."
+  :lighter " symex-ide"
+  :global t
+  :group 'symex
+  (if symex-ide-mode
+      (symex-ide-initialize)
+    (symex-ide-disable)))
+
 (provide 'symex-ide)
 ;;; symex-ide.el ends here

@@ -92,5 +92,19 @@
                             (setq rigpa--current-level 2))))))
 
 
+(defun symex-rigpa-disable ()
+  "Disable Symex and Rigpa integration."
+  nil)
+
+;;;###autoload
+(define-minor-mode symex-rigpa-mode
+  "A mode seamlessly integrating Symex with Rigpa."
+  :lighter " symex-rigpa"
+  :global t
+  :group 'symex
+  (if symex-rigpa-mode
+      (symex-rigpa-initialize)
+    (symex-rigpa-disable)))
+
 (provide 'symex-rigpa)
 ;;; symex-rigpa.el ends here

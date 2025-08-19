@@ -159,6 +159,16 @@ right symex when we enter Symex mode."
   (remove-hook 'symex-editing-mode-pre-entry-hook
                #'evil-symex-state))
 
+;;;###autoload
+(define-minor-mode symex-evil-mode
+  "A mode seamlessly integrating Symex with Evil."
+  :lighter " symex-evil"
+  :global t
+  :group 'symex
+  (if symex-evil-mode
+      (symex-evil-initialize)
+    (symex-evil-disable)))
+
 
 (provide 'symex-evil)
 ;;; symex-evil.el ends here
