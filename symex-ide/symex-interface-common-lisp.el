@@ -31,13 +31,17 @@
 (require 'sly-mrepl  nil 'noerror)
 (require 'symex-interface)
 
+(defgroup symex-ide nil
+  "IDE features for Symex."
+  :group 'symex)
+
 (defcustom symex-common-lisp-backend 'slime
   "Backend provider for Common Lisp interactive features.  One of:
 
   - SLIME: The Superior Lisp Interaction Mode for Emacs.
   - SLY: Sylvestors Common Lisp IDE for Emacs.  A fork of SLIME."
   :type 'symbol
-  :group 'symex)
+  :group 'symex-ide)
 
 ;; Make the bytecompiler aware of slime
 (declare-function slime-eval-last-expression "ext:slime")
