@@ -271,7 +271,7 @@ Symex natively supports all flavors of Lisp, as well as many other languages via
 @cindex Common Lisp
 @cindex Fennel
 
-Symex provides expressive structural editing for any flavor of Lisp. In addition to this core functionality, it also includes convenient integration with popular development environments for some Lisps:
+Symex provides expressive structural editing for any flavor of Lisp. In addition to this core functionality, it also includes convenient integration with popular development environments for some Lisps, via the @code{symex-ide} package (@xref{Overview of Symex Packages}):
 
 @table @asis
 @item @emph{Flavor}
@@ -1342,6 +1342,11 @@ It may be used as follows:
 This counts the number of moves made in traversing forward to the end of the containing expression.
 
 Note that traversals sometimes return ``zero'' moves, that is, @code{(move 0 0)}, to indicate an intentional absence of movement, as opposed to @code{nil} which indicates a failed traversal, so this computed result may return more moves than the actual number of steps taken. It is just an example of a simple computation, though, perhaps, not a very useful one.
+
+@node Expressive Power
+@section Expressive Power
+
+As the Symex DSL includes loops, conditionals, and more, theoretically, it is more expressive than regular expressions, and at least as expressive as a "pushdown" automaton (i.e., state machine with stack-based memory). With its ability to interpolate ELisp in traversals, it could perhaps be considered Turing Complete, or could be made so if there is a need for a feature that cannot easily be implemented in the DSL in its current form (please submit an issue describing your desired feature!).
 
 @node Full DSL Code Example
 @section Full DSL Code Example
