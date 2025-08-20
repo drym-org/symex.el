@@ -218,7 +218,7 @@ This section covers installing Symex and setting it up, and information about su
 @cindex Packages, Symex
 @cindex Symex packages
 
-Symex is distributed as a collection of small, composable packages, hosted directly at the source repository. This allows you maximum flexibility to install just the functionality you actually need, without getting anything extra. But it also means that you must explicitly list the Symex packages you are interested in. Each of the Symex packages is described below, along with sample installation config using Straight.el.
+Symex is distributed as a collection of small, composable packages, hosted directly at the source repository. This allows you maximum flexibility to install just the functionality you actually need, without getting anything extra. But it also means that you must explicitly list the Symex packages you are interested in. Each of the Symex packages is described below, along with sample installation config using Straight.el (if you are using another package manager, @xref{Instructions for Other Package Managers}).
 
 @enumerate
 
@@ -250,7 +250,6 @@ This core package provides the structural editing engine, supporting both Lisp (
   :config
   (symex-mode 1)
   (global-set-key (kbd "s-;") #'symex-mode-interface))  ; or whatever keybinding you like
-
   ;; and any other customizations you like
 @end lisp
 
@@ -304,6 +303,188 @@ All of the remaining packages in this list depend on, and extend, this modal UI 
 @end lisp
 
 @end enumerate
+
+@node Instructions for Other Package Managers
+@section Instructions for Other Package Managers
+
+The sample installation instructions in the previous section use Straight.el and use-package, but if you are using another package manager, the present section provides some guidance on translating the configuration for your needs.
+
+@node Package.el
+@subsection Package.el
+
+Symex is hosted directly at its source repository, so you'll likely need to use the @code{:vc} flag in your @code{use-package} config (requires Emacs 30+), either by pointing it straight at the upstream repository, or potentially cloning the repo locally first.
+
+The following instructions use the latter approach (warning: untested):
+
+@lisp
+;; First, clone the repo to /path/to/symex
+;; Then:
+
+(use-package symex
+  :vc t
+  :load-path ("/path/to/symex/symex-core"
+              "/path/to/symex/symex"
+              "/path/to/symex/symex-ide"      ; if desired
+              "/path/to/symex/symex-evil"     ; if desired
+              "/path/to/symex/symex-rigpa")   ; if desired
+  :config
+  (symex-mode 1)
+  (global-set-key (kbd "s-;") #'symex-mode-interface)
+  ;; allow emacs to find the Info manual
+  (add-to-list 'Info-directory-list
+               (expand-file-name "/path/to/symex/symex/doc/")))
+@end lisp
+
+If you try this and it doesn't work, or if you get it to work and have alternative instructions, please consider contributing them or at least notifying Symex contributors about it so that we can update these instructions for the next person.
+
+If these instructions don't work, and if you're keen on using Package.el (and perhaps you are on an older version of Emacs that doesn't support installing directly from source repositories), then fear not, as you can still install Symex using Quelpa (@xref{Quelpa}).
+
+@node Straight.el
+@subsection Straight.el
+
+Please @xref{Installing Symex} which uses Straight.el.
+
+@node Elpaca
+@subsection Elpaca
+
+Elpaca instructions for installing each of the packages described in the previous section are below (please only install the ones you want, as described in @xref{Installing Symex}):
+
+@lisp
+(use-package symex-core
+  :ensure (:recipe
+           (:host github
+            :repo "drym-org/symex.el"
+            :files ("symex-core/symex*.el"))))
+
+(use-package symex
+  :ensure (:recipe
+           (:host github
+            :repo "drym-org/symex.el"
+            :files ("symex/symex*.el" "symex/doc/*.texi" "symex/doc/figures")))
+  :after (symex-core)
+  :config
+  (symex-mode 1)
+  (global-set-key (kbd "s-;") #'symex-mode-interface))  ; or whatever keybinding you like
+  ;; and any other customizations you like
+
+(use-package symex-ide
+  :ensure (:recipe
+           (:host github
+            :repo "drym-org/symex.el"
+            :files ("symex-ide/symex*.el")))
+  :after (symex)
+  :config
+  (symex-ide-mode 1))
+
+(use-package symex-evil
+  :ensure (:recipe
+           (:host github
+            :repo "drym-org/symex.el"
+            :files ("symex-evil/symex*.el")))
+  :after (symex evil)
+  :config
+  (symex-evil-mode 1))
+
+(use-package symex-rigpa
+  :ensure (:recipe
+           (:host github
+            :repo "drym-org/symex.el"
+            :files ("symex-rigpa/symex*.el")))
+  :after (symex rigpa symex-evil)
+  :config
+  (symex-rigpa-mode 1))
+@end lisp
+
+@node Quelpa
+@subsection Quelpa
+
+Quelpa allows you to maintain local a recipe repository in an ordinary folder on disk that is treated no differently from standard online recipe repositories such as MELPA. Consult the Quelpa docs on how to do this. The following instructions are not tested (please send feedback if you try them!).
+
+Likely, you could create a local folder on disk to hold recipes, say, @code{/path/to/my/recipes}. Add this folder to Quelpa's known recipe stores:
+
+@lisp
+(add-to-list 'quelpa-melpa-recipe-stores "/path/to/my/recipes")
+@end lisp
+
+Then, create files there named @code{symex-core}, @code{symex}, @code{symex-ide}, @code{symex-evil}, and @code{symex-rigpa}, with no extension, and depending on which packages you want to install. These files should contain something like:
+
+@code{symex-core}:
+
+@lisp
+(symex-core
+ :fetcher github
+ :repo "drym-org/symex.el"
+ :files ("symex-core/symex*.el"))
+@end lisp
+
+@code{symex}:
+
+@lisp
+(symex
+ :fetcher github
+ :repo "drym-org/symex.el"
+ :files ("symex/symex*.el" "symex/doc/*.texi" "symex/doc/figures"))
+@end lisp
+
+@code{symex-ide}:
+
+@lisp
+(symex-ide
+ :fetcher github
+ :repo "drym-org/symex.el"
+ :files ("symex-ide/symex*.el"))
+@end lisp
+
+@code{symex-evil}:
+
+@lisp
+(symex-evil
+ :fetcher github
+ :repo "drym-org/symex.el"
+ :files ("symex-evil/symex*.el"))
+@end lisp
+
+@code{symex-rigpa}:
+
+@lisp
+(symex-rigpa
+ :fetcher github
+ :repo "drym-org/symex.el"
+ :files ("symex-rigpa/symex*.el"))
+@end lisp
+
+With the package recipes added, you should now be able to install the packages using @uref{https://github.com/quelpa/quelpa-use-package, @code{quelpa-use-package}}:
+
+@lisp
+(use-package symex-core
+  :quelpa t)
+
+(use-package symex
+  :quelpa t
+  :after (symex-core)
+  :config
+  (symex-mode 1)
+  (global-set-key (kbd "s-;") #'symex-mode-interface))  ; or whatever keybinding you like
+  ;; and any other customizations you like
+
+(use-package symex-ide
+  :quelpa t
+  :after (symex)
+  :config
+  (symex-ide-mode 1))
+
+(use-package symex-evil
+  :quelpa t
+  :after (symex evil)
+  :config
+  (symex-evil-mode 1))
+
+(use-package symex-rigpa
+  :quelpa t
+  :after (symex rigpa symex-evil)
+  :config
+  (symex-rigpa-mode 1))
+@end lisp
 
 @node Symex and Evil
 @section Symex and Evil
