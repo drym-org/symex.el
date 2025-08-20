@@ -215,34 +215,118 @@ This section covers installing Symex and setting it up, and information about su
 @section Installing Symex
 
 @cindex Installing Symex
+@cindex Packages, Symex
+@cindex Symex packages
+
+Symex is distributed as a collection of small, composable packages, hosted directly at the source repository. This allows you maximum flexibility to install just the functionality you actually need, without getting anything extra. But it also means that you must explicitly list the Symex packages you are interested in. Each of the Symex packages is described below, along with sample installation config using Straight.el.
 
 @enumerate
-@item Symex is available on @uref{https://melpa.org/, MELPA}, so you can install the package in your usual preferred way (e.g., @code{M-x package-install}).
 
-@item Assuming you're using @uref{https://github.com/jwiegley/use-package, use-package} to manage your configuration, add the following config to your @code{init.d}:
-@end enumerate
+@item @code{symex-core}. This includes a DSL for structural operations, which is the core functionality of Symex, and is required for all users of Symex.
 
 @lisp
-  (use-package symex
-    :config
-    (symex-mode 1)
-    (global-set-key (kbd "s-;") 'symex-mode-interface))  ; or whatever keybinding you like
+(use-package symex-core
+  :straight
+  (symex-core
+   :type git
+   :host github
+   :repo "drym-org/symex.el"
+   :files ("symex-core/symex*.el")))
 @end lisp
 
-This provides a keybinding to enter symex editing mode, and also performs any setup necessary to ensure that Symex operates smoothly.
+This core package provides the structural editing engine, supporting both Lisp (via @code{paredit}) and other languages (via Treesitter). This is a lean package with few dependencies, so that, in addition to use by end users, it's also appropriate as a library dependency for third party packages to gain Symex features.
 
-3. (Optional) If you also want some integrated ``IDE'' facilities for different languages, such as the ability to conveniently evaluate expressions, enter a REPL, and so on, then consider also installing the @code{symex-ide} package:
+@item @code{symex}. The main user-facing package, required for all end users. It provides the modal UI that makes Symex features easy to use.
+
+@lisp
+(use-package symex
+  :after (symex-core)
+  :straight
+  (symex
+   :type git
+   :host github
+   :repo "drym-org/symex.el"
+   :files ("symex/symex*.el" "symex/doc/*.texi" "symex/doc/figures"))
+  :config
+  (symex-mode 1)
+  (global-set-key (kbd "s-;") #'symex-mode-interface))  ; or whatever keybinding you like
+
+  ;; and any other customizations you like
+@end lisp
+
+Note the keybinding ``s-;`` which enters the Symex modal UI. Feel free to set it to whatever you find convenient. There are many ways to enter Symex mode in different contexts, and we'll cover these in detail as we go along.
+
+All of the remaining packages in this list depend on, and extend, this modal UI package.
+
+@item @code{symex-ide}. A recommended, optional, extension integrating Symex with major modes for IDE-like features, such as easy evaluation and documentation lookup, and entering a REPL.
 
 @lisp
 (use-package symex-ide
   :after (symex)
+  :straight
+  (symex-ide
+   :type git
+   :host github
+   :repo "drym-org/symex.el"
+   :files ("symex-ide/symex*.el"))
   :config
-  (symex-ide-initialize))
+  (symex-ide-mode 1))
 @end lisp
 
-Finally, if you'd like to use Symex features directly (for instance, in a structural-editing library of your own), without the modal UI, then you could install just the @code{symex-core} package. @xref{Overview of Symex Packages} for more about these packages.
+@item @code{symex-evil}. An extension for integration with Evil mode, including familiar keybindings, advising Evil functions to play well with Symex mode, and other functionality to make using Symex with Evil seamless. This is only required for Evil users.
 
-The following sections contain information on Evil and Rigpa integration, if you happen to be a user of these.
+@lisp
+(use-package symex-evil
+  :after (symex evil)
+  :straight
+  (symex-evil
+   :type git
+   :host github
+   :repo "drym-org/symex.el"
+   :files ("symex-evil/symex*.el"))
+  :config
+  (symex-evil-mode 1))
+@end lisp
+
+@item @code{symex-rigpa}. This integrates Symex with Rigpa, allowing you to conveniently manage Symex as a mode within the broader Rigpa modal framework, including defining convenient entry and exit via familiar key sequences such as @code{Enter} and @code{Escape}. This is only required for Rigpa users.
+
+@lisp
+(use-package symex-rigpa
+  :after (symex rigpa symex-evil)
+  :straight
+  (symex-rigpa
+   :type git
+   :host github
+   :repo "drym-org/symex.el"
+   :files ("symex-rigpa/symex*.el"))
+  :config
+  (symex-rigpa-mode 1))
+@end lisp
+
+@end enumerate
+
+@node Symex and Evil
+@section Symex and Evil
+
+@cindex Evil, using together with
+@cindex Normal state, keybindings
+
+If you happen to be an Evil user, using Symex should feel familiar (although as we saw in @ref{Point-Free Modal Editing}, Symex exhibits a simpler modal style, making it accessible to those who aren't familiar with Vim/Evil).
+
+For a seamless integration with Evil, it is essential to install the @code{symex-evil} package. @xref{Installing Symex} for instructions on that.
+
+This ensures that insertion commands that exit Symex enter Insert state to put you in a position to enter text, as intended, as opposed to leaving you in Normal state. It also supports generic keybindings from Normal state that are useful to retain in Symex mode, such as undo and redo, scrolling, searching, and various other navigations. In addition, it also ensures that such Evil operations performed while in Symex mode preserve a sensible symex selection.
+
+For other useful options on using Symex with Evil, @xref{Escaping to Symex Instead of Normal State} and @xref{Easy Entry Into Symex Mode}.
+
+@node Symex and Rigpa
+@section Symex and Rigpa
+
+@cindex Rigpa, using together with
+
+@uref{https://github.com/countvajhula/rigpa, Rigpa} is a structured and flexible way to manage modal user interfaces like Symex and Evil. It allows you to visually define transitions between different modes via keybindings like Enter and Escape, making it convenient to use modal UIs (such as Symex and Evil) together. Note that the package, although fairly mature, is not yet available on Emacs package archives, and must be installed directly from the source repository using Straight or Elpaca. In addition to installing Rigpa, you'll also need the @code{symex-evil} package mentioned in the previous section (currently, Rigpa does assume that you are an Evil user) as well as @uref{https://github.com/countvajhula/symex-rigpa, @code{symex-rigpa}} which integrates Symex with Rigpa for smooth operation.
+
+Please see the Rigpa documentation for instructions on installing Rigpa, and @xref{Installing Symex} for instructions on installing @code{symex-evil} and @code{symex-rigpa}.
 
 @node Languages Supported
 @section Languages Supported
@@ -271,7 +355,7 @@ Symex natively supports all flavors of Lisp, as well as many other languages via
 @cindex Common Lisp
 @cindex Fennel
 
-Symex provides expressive structural editing for any flavor of Lisp. In addition to this core functionality, it also includes convenient integration with popular development environments for some Lisps, via the @code{symex-ide} package (@xref{Overview of Symex Packages}):
+Symex provides expressive structural editing for any flavor of Lisp. In addition to this core functionality, it also includes convenient integration with popular development environments for some Lisps, via the @code{symex-ide} package (@xref{Installing Symex}):
 
 @table @asis
 @item @emph{Flavor}
@@ -328,73 +412,6 @@ If you feel that support for your favorite language could be improved, we want t
 @cindex Clojure, using with
 
 Clojure is a language that is both a Lisp and has a Tree-sitter enabled major mode. In this case, you could use either Symex's Lisp parser or Tree-Sitter parser. But, as the Lisp parser is more mature and provides a tailored experience for Lisp, it's recommended when using Symex with Clojure, at least for the moment, that you use @code{clojure-mode} rather than @code{clojure-ts-mode}.
-
-@node Symex and Evil
-@section Symex and Evil
-
-@cindex Evil, using together with
-@cindex Normal state, keybindings
-
-If you happen to be an Evil user, using Symex should feel familiar (although as we saw in @ref{Point-Free Modal Editing}, Symex exhibits a simpler modal style, making it accessible to those who aren't familiar with Vim/Evil).
-
-For a seamless integration with Evil, it is essential to install the @code{symex-evil} package:
-
-@lisp
-  (use-package symex-evil
-    :after (symex)
-    :config
-    (symex-evil-initialize))
-@end lisp
-
-This ensures that insertion commands that exit Symex enter Insert state to put you in a position to enter text, as intended, as opposed to leaving you in Normal state. It also supports generic keybindings from Normal state that are useful to retain in Symex mode, such as undo and redo, scrolling, searching, and various other navigations. In addition, it also ensures that such Evil operations performed while in Symex mode preserve a sensible symex selection.
-
-For other useful options on using Symex with Evil, @xref{Escaping to Symex Instead of Normal State} and @xref{Easy Entry Into Symex Mode}.
-
-@node Symex and Rigpa
-@section Symex and Rigpa
-
-@cindex Rigpa, using together with
-
-@uref{https://github.com/countvajhula/rigpa, Rigpa} is a structured and flexible way to manage modal user interfaces like Symex and Evil. It allows you to visually define transitions between different modes via keybindings like Enter and Escape, making it convenient to use modal UIs (such as Symex and Evil) together. Note that the package, although fairly mature, is not yet available on Emacs package archives, and must be installed directly from the source repository using Straight or Elpaca. In addition to installing Rigpa, you'll also need the @code{symex-evil} package mentioned in the previous section (currently, Rigpa does assume that you are an Evil user) as well as @uref{https://github.com/countvajhula/symex-rigpa, @code{symex-rigpa}} which integrates Symex with Rigpa for smooth operation.
-
-Please see the Rigpa documentation for instructions on installing Rigpa, and the preceding section of this manual for instructions on installing @code{symex-evil}. Once you've done that, add the following to your @code{.emacs.d} config:
-
-@lisp
-  (use-package symex-rigpa
-    :after (symex rigpa symex-evil)
-    :straight
-    (symex-rigpa
-     :repo "drym-org/symex.el"
-     :host github
-     :type git
-     :files ("symex-rigpa"))
-    :config
-    (symex-rigpa-initialize))
-@end lisp
-
-@node Overview of Symex Packages
-@section Overview of Symex Packages
-
-@cindex Packages, Symex
-@cindex Symex packages
-
-Symex consists of several lean and composable packages so that you can choose the ones you need and not have anything extra. The preceding installation instructions gave some idea of when to use each, but here is a short overview:
-
-@enumerate
-
-@item @code{symex-core}. This contains the core functionality of Symex, including the structural editing DSL and underlying Lisp and Tree-Sitter primitives. This is a dependency of the other Symex packages.
-
-@item @code{symex}. This contains the modal UI that makes Symex features convenient to use. All of the remaining packages in this list depend on, and extend, this modal UI package.
-
-@item @code{symex-ide}. This contains ``IDE''-like features, including the ability to evaluate expressions, enter a REPL for your language, and more.
-
-@item @code{symex-evil}. This contains Evil integration, including familiar keybindings, advising Evil functions to play well with Symex mode, and other functionality to make using Symex with Evil seamless.
-
-@item @code{symex-rigpa}. This integrates Symex with Rigpa, allowing you to conveniently manage Symex as a mode within the broader Rigpa modal framework, including defining convenient entry and exit via familiar key sequences such as @code{Enter} and @code{Escape}.
-
-@end enumerate
-
-@xref{Installing Symex}, @xref{Symex and Evil} and @xref{Symex and Rigpa} for instructions on installing these packages.
 
 @node Getting Started
 @chapter Getting Started
@@ -1708,7 +1725,7 @@ Finally, the @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-sym
 
 @cindex Other keybindings
 
-These are included in the @code{symex-ide} package (@xref{Overview of Symex Packages}).
+These are included in the @code{symex-ide} package (@xref{Installing Symex}).
 
 @multitable @columnfractions .15 .45 .4
 @headitem Key @tab Action @tab Remarks
