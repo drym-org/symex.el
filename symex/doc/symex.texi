@@ -554,14 +554,14 @@ The commands we've seen so far are only a small sampling of the available operat
 
 As you become more familiar with Symex, it will be useful to refer to the @ref{Keybinding Cheat Sheet} to discover more capabilities, and also the @ref{Resources} for further study. For tips and tricks, see @ref{Squirrel on a Speedrun - Tips and Tricks}.
 
-When you're using Symex, because these operations are so convenient and intuitive, you'll find that you use a @emph{lot} of them, all the time. It's just like speaking a language. We don't typically count the distinct words we use in speech, but if we did, we'd find that we routinely use a lot of them, without breaking a sweat! It's the same with Symex, and incidentally, Symex really takes this language idea to heart, as we'll see later.
+When you're using Symex, because these operations are so convenient and intuitive, you'll find that you use a @emph{lot} of them, all the time. It's just like speaking a language. We don't typically count the distinct words we use in speech, but if we did, we'd find that we routinely use a lot of them, without breaking a sweat! It's the same with Symex.
 
 @node Customizing Symex
 @chapter Customizing Symex
 
 @cindex Customizing Symex
 
-Symex allows you to customize many aspects of its operation in order so that you might tailor it to your preferences, and also so as to operate harmoniously with other packages you might be using.
+You can customize most any aspect of Symex to tailor it to your preferences and to operate harmoniously with other packages that you might be using.
 
 Most of the customizations below go in the @code{:custom} section of your @code{use-package} declaration, unless otherwise specified.
 
@@ -712,6 +712,60 @@ You can add any custom keybindings you like to the Symex modal UI by using the u
 
 Also @xref{Point-Free Modal Editing} for more on Lithium.
 
+@node Features
+@chapter Features
+
+Symex allows you to edit and interact with code structurally using a modal UI. The @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/, Animated Guide} is a good way to see many of these features in operation, but this chapter provides an overview and an idea of the kinds of features, and why they exist.
+
+@node Getting Around
+@section Getting Around
+
+Typical cursor movements in Emacs navigate the two-dimensional plane of buffer rows and columns, so that left, right, up and down mean moving by column and by row, respectively. This is a very general way of moving around that you can use for any kind of text, including code.
+
+Symex motions are more specialized and navigate the two-dimensional tree structure of your code, so that left and right move to adjacent expressions, and up and down move across nesting depth. When you're working with code, this is more precise, and often, therefore, more efficient and more scalable.
+
+In addition to these basic motions, Symex also provides many other ways to get around that are intuitive for trees but which don't have analogues for unstructured, coordinate-based buffer navigation. For instance, ``traversing'' forwards and backwards visits every expression at every depth, precisely and in a predictable order, while ``skipping,'' ``climbing,'' and ``descending'' offer ways to get around faster in specific directions when you know where you're trying to go. Finally, you can also ``leap'' to nearby branches at the same height as your current position without explicitly navigating to them. This is very common as code frequently has repeating shapes and patterns --- patterns which you may wish to exploit to get around quickly or even for automating repetitive tasks via macros.
+
+@xref{Movement} for the full list of movement commands and keybindings.
+
+@node Editing Features
+@section Editing Features
+
+Symex provides structural features for manipulating code, metacommands to reflect on and repeat actions from your own command history, as well as rich macros for automating repetitive tasks. The following sections describe these features.
+
+For the full list of editing commands and keybindings, @xref{Editing}.
+
+@node Structural features
+@subsection Structural features
+
+Symex allows you to delete expressions, change them to something else, move them around, translate them lower or higher in the tree, detach them from one branch and attach them to another, and so on.
+
+These operations are all @emph{strict} about structure, so, for instance, you cannot accidentally shift an expression out to a lower or higher level if you are using a lateral shift operator like @code{symex-shift-backward} (@code{H}) or @code{symex-shift-forward} (@code{L}).
+
+The strictness of these operations allows you to be precise about code transformations. This is useful not just at the time of performing the action, but pays compounding dividends when you consider that macros and repetition can formally repeat these actions in new contexts, as the next section elaborates.
+
+@node Macros and Repetition
+@subsection Macros and Repetition
+
+Symex includes an advanced command repetition feature, accessible via @code{.}. This simply replays your most recent command. This command could even include insertion of text into the buffer, and even the use of completion frameworks during such insertion. @code{.} will repeat the command, in all cases.
+
+This feature is similar to Vim's well-known ``dot'' command, but in addition, it also maintains a history of recent commands on a ``repeat ring,'' so after pressing @code{.}, you can cycle through recent repetitions using @code{C-.}. This ability to repeat recent commands is similar to Evil's implementation of ``dot'' which includes the analogous ``repeat-pop'' feature.
+
+Symex's repeat feature uses the standalone @uref{https://github.com/countvajhula/repeat-ring, @code{repeat-ring}} package and the @uref{https://github.com/countvajhula/mantra, @code{mantra}} parsing library. These packages were developed to support Symex, but they enable any package to develop and provide very general and highly customizable repeat functionality.
+
+@xref{Macros} for ways to record and repeat longer sequences of commands.
+
+@node IDE Features
+@section IDE Features
+
+Symex provides, via the optional @code{symex-ide} extension (@xref{Installing Symex}), a handful of ways to conveniently leverage major mode features for languages, via short keybindings.
+
+For instance, for some languages (especially Lisp languages), @code{e} evaluates the selected expression in a REPL, @code{?} looks up documentation on the selected expression (identifier), and @code{r} enters a REPL.
+
+These easy integrations with important coding facilities can help you get quick feedback during development. As generations of Lisp users attest, such tight feedback loops are often the engines of quick progress on any task.
+
+@xref{IDE} for the full list of IDE commands and keybindings.
+
 @node Squirrel on a Speedrun - Tips and Tricks
 @chapter Squirrel on a Speedrun - Tips and Tricks
 
@@ -753,9 +807,9 @@ The vanilla mode line in Emacs does show some textual indication of your current
 
 @lisp
 (defface telephone-line-evil-symex
-    '((t (:background "SlateBlue3" :inherit telephone-line-evil)))
-    "Face used in evil color-coded segments when in Symex state."
-    :group 'telephone-line-evil)
+  '((t (:background "SlateBlue3" :inherit telephone-line-evil)))
+  "Face used in evil color-coded segments when in Symex state."
+  :group 'telephone-line-evil)
 @end lisp
 
 @node Easy Entry Into Symex Mode
@@ -1710,6 +1764,10 @@ Finally, the @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-sym
 @tab Cycle quoting, cycle unquoting, add quoting level, remove quoting level
 @tab
 
+@item @code{.}, @code{C-.}
+@tab Repeat last command, cycle through recent commands
+@tab Similar to Evil's ``dot'' operator and ``repeat-pop'' command
+
 @item @code{<return>}
 @tab Enter insertion state
 @tab
@@ -1833,7 +1891,7 @@ Where to find and connect with the Symex and broader Emacs community.
 @url{https://www.emacswiki.org/emacs/EmacsChannel, #emacs} — Symex contributors sometimes hang out on IRC in #emacs. It could be a good place to ask for help.
 
 @item
-Look for Emacs meetups in your town! Like @url{https://www.meetup.com/Emacs-SF/, EmacsSF} in the Bay Area.
+Look for Emacs meetups in your town! Like @url{https://www.meetup.com/Emacs-SF/, EmacsSF} in the San Francisco Bay Area.
 
 @item
 @url{https://calendar.google.com/calendar/u/0/embed?src=4a464a65d09d47948cfb879659b77f56c293b588990ae718302530412265589b@@group.calendar.google.com, ABE Calendar} — Symex is part of the ABE community, which meets regularly to work on open source and broader economic and accounting issues.
@@ -1856,7 +1914,7 @@ Here are some helpful resources for further study.
 @itemize @bullet{}
 
 @item
-@url{https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/, The Animated Guide to Symex} — contains animations, and tips for leveling up!
+@url{https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/, The Animated Guide to Symex} — contains animations as well as tips for leveling up!
 
 @item
 @url{https://www.youtube.com/watch?v=a5s1ScTx8Zk, Symex Mode: Editing Lisp Code in a Vim-like Way} — a ``deep dive'' video presentation at EmacsSF
@@ -1883,6 +1941,8 @@ Soumya, for gentle encouragement to release this package when it was just sittin
 Jeff, for organizing a meetup in San Francisco where Symex was presented for the first time.
 @item
 Oleh, for the Hydra package which made it easy to prototype Symex.
+@item
+Alan, for making the best logo ever.
 @item
 Squirrels in gardens everywhere, for inspiration.
 @item
