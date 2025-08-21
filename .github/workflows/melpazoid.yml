@@ -25,7 +25,7 @@ jobs:
       env:
         LOCAL_REPO: ${{ github.workspace }}
         # RECIPE is your recipe as written for MELPA:
-        RECIPE: (symex :repo "drym-org/symex.el" :fetcher github)
+        RECIPE: (symex-core :fetcher github :repo "drym-org/symex.el" :branch "2.0-integration" :files ("symex-core/symex*.el"))
         # set this to false (or remove it) if the package isn't on MELPA:
-        EXIST_OK: true
+        EXIST_OK: false
       run: echo $GITHUB_REF && make -C ~/melpazoid
