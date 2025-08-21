@@ -6,13 +6,6 @@ THIS_FILE := $(lastword $(MAKEFILE_LIST))
 EMACS=emacs
 CASK ?= cask
 
-INIT_PACKAGE_EL="(progn  \
-  (require 'package)  \
-  (push '(\"melpa\" . \"http://melpa.org/packages/\") package-archives)  \
-  (package-initialize)  \
-  (unless package-archive-contents \
-     (package-refresh-contents)))"
-
 PROJECT_FILES=`${CASK} files`
 
 help:
@@ -79,35 +72,30 @@ build: build-core build-symex build-ide build-evil build-rigpa
 
 lint-core:
 	cd symex-core && ${CASK} exec $(EMACS) -Q --batch  \
-	                      --eval $(INIT_PACKAGE_EL)  \
 	                      -l "package-lint.el"  \
 	                      -f "package-lint-batch-and-exit"  \
 	                      ${PROJECT_FILES}
 
 lint-symex:
 	cd symex && ${CASK} exec $(EMACS) -Q --batch  \
-	                      --eval $(INIT_PACKAGE_EL)  \
 	                      -l "package-lint.el"  \
 	                      -f "package-lint-batch-and-exit"  \
 	                      ${PROJECT_FILES}
 
 lint-ide:
 	cd symex-ide && ${CASK} exec $(EMACS) -Q --batch  \
-	                      --eval $(INIT_PACKAGE_EL)  \
 	                      -l "package-lint.el"  \
 	                      -f "package-lint-batch-and-exit"  \
 	                      ${PROJECT_FILES}
 
 lint-evil:
 	cd symex-evil && ${CASK} exec $(EMACS) -Q --batch  \
-	                      --eval $(INIT_PACKAGE_EL)  \
 	                      -l "package-lint.el"  \
 	                      -f "package-lint-batch-and-exit"  \
 	                      ${PROJECT_FILES}
 
 lint-rigpa:
 	cd symex-rigpa && ${CASK} exec $(EMACS) -Q --batch  \
-	                      --eval $(INIT_PACKAGE_EL)  \
 	                      -l "package-lint.el"  \
 	                      -f "package-lint-batch-and-exit"  \
 	                      ${PROJECT_FILES}
