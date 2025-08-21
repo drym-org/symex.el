@@ -398,7 +398,7 @@ Elpaca instructions for installing each of the packages described in the previou
 @node Quelpa
 @subsection Quelpa
 
-Quelpa allows you to maintain local a recipe repository in an ordinary folder on disk that is treated no differently from standard online recipe repositories such as MELPA. Consult the Quelpa docs on how to do this. The following instructions are not tested (please send feedback if you try them!).
+Quelpa allows you to maintain a local recipe repository in an ordinary folder on disk that is treated no differently from standard online recipe repositories such as MELPA. Consult the Quelpa docs on how to set this up. The following instructions are not tested (please send feedback if you try them!).
 
 Likely, you could create a local folder on disk to hold recipes, say, @code{/path/to/my/recipes}. Add this folder to Quelpa's known recipe stores:
 
