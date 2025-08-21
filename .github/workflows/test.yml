@@ -15,9 +15,6 @@ jobs:
           - '27.1'
           - 'snapshot'
     name: Test on Emacs ${{ matrix.emacs_version }}
-    defaults:
-      run:
-        working-directory: ./symex
     steps:
       - name: Install Python
         uses: actions/setup-python@v4
