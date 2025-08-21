@@ -125,31 +125,26 @@ lint-noiseless:
 
 checkdoc-core:
 	cd symex-core && ${CASK} exec $(EMACS) -Q --batch  \
-	                      --eval $(INIT_PACKAGE_EL)  \
 	                      -l "../dev/build-utils.el"  \
 	                      --eval '(flycheck/batch-checkdoc ".")'
 
 checkdoc-symex:
 	cd symex && ${CASK} exec $(EMACS) -Q --batch  \
-	                      --eval $(INIT_PACKAGE_EL)  \
 	                      -l "../dev/build-utils.el"  \
 	                      --eval '(flycheck/batch-checkdoc ".")'
 
 checkdoc-ide:
 	cd symex-ide && ${CASK} exec $(EMACS) -Q --batch  \
-	                      --eval $(INIT_PACKAGE_EL)  \
 	                      -l "../dev/build-utils.el"  \
 	                      --eval '(flycheck/batch-checkdoc ".")'
 
 checkdoc-evil:
 	cd symex-evil && ${CASK} exec $(EMACS) -Q --batch  \
-	                      --eval $(INIT_PACKAGE_EL)  \
 	                      -l "../dev/build-utils.el"  \
 	                      --eval '(flycheck/batch-checkdoc ".")'
 
 checkdoc-rigpa:
 	cd symex-rigpa && ${CASK} exec $(EMACS) -Q --batch  \
-	                      --eval $(INIT_PACKAGE_EL)  \
 	                      -l "../dev/build-utils.el"  \
 	                      --eval '(flycheck/batch-checkdoc ".")'
 
