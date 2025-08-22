@@ -172,7 +172,7 @@ BODY - the actual implementation of the command."
                previous)
       (goto-char previous))))
 
-(symex-define-command symex-delete-backwards (count)
+(symex-define-command symex-delete-backward (count)
   "Delete COUNT symexes backwards."
   (interactive "p")
   (let* ((preceding-length (symex-preceding-length))
@@ -180,6 +180,8 @@ BODY - the actual implementation of the command."
                      count)))
     (symex--go-backward count)
     (symex--delete count)))
+
+(define-obsolete-function-alias 'symex-delete-backwards 'symex-delete-backward "2.0")
 
 (symex-define-command symex-delete-remaining ()
   "Delete remaining symexes at this level."
@@ -268,13 +270,15 @@ BODY - the actual implementation of the command."
   (when symex-tidy-after-transforming-p
     (symex--tidy-remaining)))
 
-(symex-define-command symex-join-lines-backwards (count)
+(symex-define-command symex-join-lines-backward (count)
   "Join COUNT lines backwards inside symex."
   (interactive "p")
   (dotimes (_ count)
     (symex--join-lines t))
   (when symex-tidy-after-transforming-p
     (symex--tidy-remaining)))
+
+(define-obsolete-function-alias 'symex-join-lines-backwards 'symex-join-lines-backward "2.0")
 
 (defun symex--join-lines (&optional backwards)
   "Join lines inside symex.
@@ -381,12 +385,14 @@ by default, joins next symex to current one."
       (symex-ts-insert-at-beginning)
     (symex-lisp-insert-at-beginning)))
 
-(symex-define-insertion-command symex-insert-at-end ()
+(symex-define-insertion-command symex-append-at-end ()
   "Insert at end of symex."
   (interactive)
   (if (symex-ts-available-p)
       (symex-ts-insert-at-end)
     (symex-lisp-insert-at-end)))
+
+(define-obsolete-function-alias 'symex-insert-at-end 'symex-append-at-end "2.0")
 
 (defun symex--create (type)
   "Create new symex (list).

@@ -715,7 +715,7 @@ There are a few different ways to insert new code, and they are all expressed in
 @tab Insert at the @emph{start} of the expression. If it is a form, then insert @emph{inside} the form.
 
 @item @code{a}
-@tab @code{symex-insert-at-end}
+@tab @code{symex-append-at-end}
 @tab Insert at the @emph{end} of the expression. If it is a form, then insert @emph{inside} the form.
 
 @item @code{I}
