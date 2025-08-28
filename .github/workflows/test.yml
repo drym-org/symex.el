@@ -25,10 +25,6 @@ jobs:
         uses: purcell/setup-emacs@master
         with:
           version: ${{ matrix.emacs_version }}
-      - name: Install Cask
-        uses: conao3/setup-cask@master
-        with:
-          version: 'snapshot'
       - name: Checkout
         uses: actions/checkout@master
       - name: Install Package and its Dependencies
