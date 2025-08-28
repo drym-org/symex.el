@@ -35,7 +35,8 @@
 (defun ci-lint-package (pkg-name)
   "Run package-lint on PKG-NAME, print all output,
 and return a shell-friendly exit code."
-  (let* ((source-dir (expand-file-name pkg-name "../"))
+  (let* ((repo-root (expand-file-name ".."))
+         (source-dir (expand-file-name pkg-name repo-root))
          ;; Set the main file in the package so that package-lint
          ;; can parse dependencies, etc.
          (main-file (expand-file-name (concat pkg-name ".el") source-dir))

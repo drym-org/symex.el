@@ -25,7 +25,8 @@
 (defun ci-checkdoc-package (pkg-name)
   "Run checkdoc on PKG-NAME in a separate process, print all output,
 and return a shell-friendly exit code based on whether output was generated."
-  (let* ((source-dir (expand-file-name pkg-name "../"))
+  (let* ((repo-root (expand-file-name ".."))
+         (source-dir (expand-file-name pkg-name repo-root))
          (deps-dirs (mapcar #'straight--build-dir
                             (straight--flatten (straight-dependencies pkg-name))))
          (load-path-args (mapcan (lambda (dir) (list "-L" dir))
