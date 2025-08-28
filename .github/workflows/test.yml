@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         emacs_version:
-          - '27.1'
+          - '29.1'
           - 'snapshot'
     name: Test on Emacs ${{ matrix.emacs_version }}
     steps:
