@@ -1,5 +1,6 @@
 ;; ci-install.el
 ;; This script bootstraps straight.el and installs all package dependencies.
+;; -*- lexical-binding: t -*-
 
 (defvar straight-base-dir (expand-file-name "ci-init"))
 
@@ -24,22 +25,25 @@
 ;; --- Install all packages ---
 (message "--- Installing packages ---")
 
-(straight-use-package
- `(symex-core :local-repo ,(expand-file-name "symex" "../../") :files ("symex-core/*.el")))
+;; The repository root is the parent directory of the `ci/` directory
+;; where this script is located.
+(let ((repo-root (expand-file-name "..")))
+  (straight-use-package
+   `(symex-core :local-repo ,repo-root :files ("symex-core/*.el")))
 
-(straight-use-package
- `(symex :local-repo ,(expand-file-name "symex" "../../") :files ("symex/*.el")))
+  (straight-use-package
+   `(symex :local-repo ,repo-root :files ("symex/*.el")))
 
-(straight-use-package
- `(symex-ide :local-repo ,(expand-file-name "symex" "../../") :files ("symex-ide/*.el")))
+  (straight-use-package
+   `(symex-ide :local-repo ,repo-root :files ("symex-ide/*.el")))
 
-(straight-use-package
- `(symex-evil :local-repo ,(expand-file-name "symex" "../../") :files ("symex-evil/*.el")))
+  (straight-use-package
+   `(symex-evil :local-repo ,repo-root :files ("symex-evil/*.el"))))
 
 ;; (straight-use-package
 ;;  `(rigpa :repo "countvajhula/rigpa" :host github :type git))
 
 ;; (straight-use-package
-;;  `(symex-rigpa :repo nil :host nil :local-repo ,(expand-file-name "symex.el" "..") :type git :files ("symex-rigpa/*.el")))
+;;  `(symex-rigpa :local-repo ,repo-root :files ("symex-rigpa/*.el")))
 
 (message "--- Package installation complete ---")
