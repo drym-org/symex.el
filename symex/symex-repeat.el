@@ -202,9 +202,7 @@ See `after-change-functions' for more on START, END, and LENGTH."
 
 (defun symex-insertion-p (change)
   "Is CHANGE an insertion?"
-  (let ((start (car change))
-        (end (cadr change))
-        (len (caddr change)))
+  (pcase-let ((`(,_start ,_end ,len) change))
     (zerop len)))
 
 (defun symex-deletion-p (change)

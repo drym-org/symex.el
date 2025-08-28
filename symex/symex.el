@@ -51,7 +51,7 @@
   :group 'symex)
 
 (defcustom symex-orientation 'inverted
-  "This determines the meaning of 'up' and 'down' in navigating code as trees.
+  "This determines the meaning of \"up\" and \"down\" in navigating code as trees.
 
 A value of `inverted' means that more nested expressions are
 considered \"lower\" and less nested expressions are \"higher.\" This

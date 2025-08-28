@@ -34,6 +34,9 @@
 (require 'lithium)
 (require 'symex)
 
+(declare-function undo-tree-undo "ext:undo-tree")
+(declare-function undo-tree-redo "ext:undo-tree")
+
 (defun symex-select-nearest-advice (&rest _)
   "Advice to select the nearest symex."
   (when symex-editing-mode
@@ -149,7 +152,7 @@ right symex when we enter Symex mode."
 (defun symex-evil-disable ()
   "Disable evil interop."
   (when (and (eq 'undo-tree evil-undo-system)
-         (fboundp #'undo-tree-undo))
+             (fboundp #'undo-tree-undo))
     (advice-remove #'undo-tree-undo
                    #'symex-select-nearest-advice)
     (advice-remove #'undo-tree-redo
