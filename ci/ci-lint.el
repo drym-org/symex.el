@@ -45,7 +45,6 @@ and return a shell-friendly exit code."
          (linter-dir (straight--build-dir "package-lint"))
          (load-path-args (mapcan (lambda (dir) (list "-L" dir))
                                  (append deps-dirs (list source-dir linter-dir))))
-         ;; Get the full, absolute paths for the .el files to be linted.
          (files-to-lint (directory-files source-dir t "\\.el$"))
          (output-buffer (generate-new-buffer " *lint-output*")))
 
@@ -63,7 +62,7 @@ and return a shell-friendly exit code."
                              '("-f" "package-lint-batch-and-exit")
                              files-to-lint))
                (exit-code (apply #'call-process
-                                 (executable-find "emacs") nil output-buffer nil args)))
+                                 (executable-find "emacs") nil output-buffer t args)))
           (with-current-buffer output-buffer
             (princ (buffer-string)))
           exit-code)
