@@ -215,9 +215,7 @@ See `after-change-functions' for more on START, END, and LENGTH."
 
 (defun symex-parse-insertion (change)
   "Parse CHANGE as an insertion."
-  (let ((start (car change))
-        (end (cadr change))
-        (len (caddr change)))
+  (pcase-let ((`(,start ,end ,_len) change))
     (list 'insertion (buffer-substring start end))))
 
 (defun symex-parse-deletion (change)
