@@ -207,9 +207,7 @@ See `after-change-functions' for more on START, END, and LENGTH."
 
 (defun symex-deletion-p (change)
   "Is CHANGE a deletion?"
-  (let ((start (car change))
-        (end (cadr change))
-        (len (caddr change)))
+  (pcase-let ((`(,start ,end ,len) change))
     (and (not (zerop len))
          (= start end))))
 
@@ -220,11 +218,11 @@ See `after-change-functions' for more on START, END, and LENGTH."
 
 (defun symex-parse-deletion (change)
   "Parse CHANGE as a deletion."
-  (let* ((original-position symex--initial-point)
-         (start (car change))
-         (change-start (- start original-position)) ; relative to point
-         (len (caddr change)))
-    (list 'deletion change-start len)))
+  (pcase-let ((`(,start ,_end ,len) change))
+    ;; relative to point
+    (let* ((original-position symex--initial-point)
+           (change-start (- start original-position)))
+      (list 'deletion change-start len))))
 
 (defun symex-parse-change (change)
   "Parse a CHANGE."
@@ -279,7 +277,7 @@ metadata used in parsing, but isn't what's actually parsed."
         (symex-clear-parsing-state))
       accept)))
 
-(defun symex-repeat-parser-abort (key-seq _state)
+(defun symex-repeat-parser-abort (_key-seq _state)
   "Abort parsing.
 
 KEY-SEQ is the currently entered key sequence."
