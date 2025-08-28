@@ -1,6 +1,13 @@
 ;; ci-lint.el
 ;; This script runs package-lint on the packages.
 ;; It must be run *after* ci-install.el has successfully completed.
+;; -*- lexical-binding: t -*-
+;;
+;; Note: some flags passed to checkdoc and lint from a calling script
+;; (e.g., this one) typically presuppose dynamic binding, but in the
+;; present case we're running those tools as subprocesses, so they
+;; should use the default dynamic binding, even though this script
+;; uses lexical binding.
 
 (defvar straight-base-dir (expand-file-name "ci-init"))
 
