@@ -50,6 +50,8 @@ and return a shell-friendly exit code."
          (output-buffer (generate-new-buffer " *lint-output*")))
 
     (message (format "--- Linting %s ---" pkg-name))
+    ;; Force the header message to display immediately.
+    (sit-for 0)
     (unwind-protect
         (let* ((args (append '("-Q" "--batch")
                              load-path-args
@@ -63,9 +65,11 @@ and return a shell-friendly exit code."
                              '("-f" "package-lint-batch-and-exit")
                              files-to-lint))
                (exit-code (apply #'call-process
-                                 (executable-find "emacs") nil output-buffer t args)))
+                                 (executable-find "emacs") nil output-buffer nil args)))
           (with-current-buffer output-buffer
-            (princ (buffer-string)))
+            (princ (buffer-string))
+            ;; Force the captured output to flush immediately.
+            (sit-for 0))
           exit-code)
       (when (buffer-live-p output-buffer)
         (kill-buffer output-buffer)))))
