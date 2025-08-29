@@ -228,7 +228,6 @@ Symex is distributed as a collection of small, composable packages, hosted direc
 (use-package symex-core
   :straight
   (symex-core
-   :type git
    :host github
    :repo "drym-org/symex.el"
    :files ("symex-core/symex*.el")))
@@ -243,7 +242,6 @@ This core package provides the structural editing engine, supporting both Lisp (
   :after (symex-core)
   :straight
   (symex
-   :type git
    :host github
    :repo "drym-org/symex.el"
    :files ("symex/symex*.el" "symex/doc/*.texi" "symex/doc/figures"))
@@ -264,7 +262,6 @@ All of the remaining packages in this list depend on, and extend, this modal UI 
   :after (symex)
   :straight
   (symex-ide
-   :type git
    :host github
    :repo "drym-org/symex.el"
    :files ("symex-ide/symex*.el"))
@@ -279,7 +276,6 @@ All of the remaining packages in this list depend on, and extend, this modal UI 
   :after (symex evil)
   :straight
   (symex-evil
-   :type git
    :host github
    :repo "drym-org/symex.el"
    :files ("symex-evil/symex*.el"))
@@ -294,7 +290,6 @@ All of the remaining packages in this list depend on, and extend, this modal UI 
   :after (symex rigpa symex-evil)
   :straight
   (symex-rigpa
-   :type git
    :host github
    :repo "drym-org/symex.el"
    :files ("symex-rigpa/symex*.el"))

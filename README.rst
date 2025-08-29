@@ -48,7 +48,6 @@ This includes a DSL for structural operations, which is the core functionality o
   (use-package symex-core
     :straight
     (symex-core
-     :type git
      :host github
      :repo "drym-org/symex.el"
      :files ("symex-core/symex*.el")))
@@ -66,7 +65,6 @@ The main user-facing package, required for all end users. It provides a modal UI
     :after (symex-core)
     :straight
     (symex
-     :type git
      :host github
      :repo "drym-org/symex.el"
      :files ("symex/symex*.el" "symex/doc/*.texi" "symex/doc/figures"))
@@ -91,7 +89,6 @@ A recommended, optional, extension integrating Symex with major modes for IDE-li
     :after (symex)
     :straight
     (symex-ide
-     :type git
      :host github
      :repo "drym-org/symex.el"
      :files ("symex-ide/symex*.el"))
@@ -109,7 +106,6 @@ An extension for seamless integration with Evil mode. This is only required for 
     :after (symex evil)
     :straight
     (symex-evil
-     :type git
      :host github
      :repo "drym-org/symex.el"
      :files ("symex-evil/symex*.el"))
@@ -127,7 +123,6 @@ An extension for seamless integration with the `Rigpa <https://github.com/countv
     :after (symex rigpa symex-evil)
     :straight
     (symex-rigpa
-     :type git
      :host github
      :repo "drym-org/symex.el"
      :files ("symex-rigpa/symex*.el"))
