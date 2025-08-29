@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Point-Free Modal Editing (Symex)</title>
+
+<meta name="description" content="Point-Free Modal Editing (Symex)">
+<meta name="keywords" content="Point-Free Modal Editing (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="What-is-Symex_003f.html" rel="up" title="What is Symex?">
+<link href="Symex-is-a-Friend-to-All.html" rel="next" title="Symex is a Friend to All">
+<link href="A-Note-on-the-Name.html" rel="prev" title="A Note on the Name">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Point_002dFree-Modal-Editing">
+<div class="nav-panel">
+<p>
+Next: <a href="Symex-is-a-Friend-to-All.html" accesskey="n" rel="next">Symex is a Friend to All</a>, Previous: <a href="A-Note-on-the-Name.html" accesskey="p" rel="prev">A Note on the Name</a>, Up: <a href="What-is-Symex_003f.html" accesskey="u" rel="up">What is Symex?</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Point_002dFree-Modal-Editing-1"><span>1.2 Point-Free Modal Editing<a class="copiable-link" href="#Point_002dFree-Modal-Editing-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-modal-interface_002c-understanding"></a>
+<a class="index-entry-id" id="index-Lithium-modal-interface-library"></a>
+<a class="index-entry-id" id="index-Vim"></a>
+
+<p>Symex exhibits a &ldquo;point-free&rdquo; modal experience allowing the expression of a rich array of commands with few keystrokes.
+</p>
+<p>The archetypical modal editing tool is, of course, Vim. As Vim addresses the general task of editing text, its interface is necessarily complex and subtle, requiring years to master. Although Symex draws inspiration from Vim, it exhibits a different, simpler, modal style that is specialized to the comparatively narrow task of editing code.
+</p>
+<p>More specifically, Vim&rsquo;s (and Evil&rsquo;s) interface exhibits a <em class="emph">compositional</em> style, where verbs (operators like &ldquo;delete&rdquo;) are combined with nouns (motions or text objects, e.g., relating to words or paragraphs) to form commands. In Symex, all motions and operators are implicitly in relation to the currently selected expression, so that we only ever need to express a verb (like delete), and no composition is needed. The interface does still support narrower forms of composition, for instance in accepting counts for most commands via a numeric prefix argument.
+</p>
+<p>The modal interface is implemented using a dedicated, lightweight, modal interface library called <a class="uref" href="https://github.com/countvajhula/lithium">Lithium</a>.
+</p>
+<p>You may customize any Symex keybinding in the standard way described in Lithium documentation, for instance, using <code class="code">lithium-define-keys</code>.
+</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>protocol (Symex)</title>
+
+<meta name="description" content="protocol (Symex)">
+<meta name="keywords" content="protocol (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Language.html" rel="up" title="Language">
+<link href="detour.html" rel="next" title="detour">
+<link href="venture.html" rel="prev" title="venture">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="protocol">
+<div class="nav-panel">
+<p>
+Next: <a href="detour.html" accesskey="n" rel="next"><code class="code">detour</code></a>, Previous: <a href="venture.html" accesskey="p" rel="prev"><code class="code">venture</code></a>, Up: <a href="Language.html" accesskey="u" rel="up">Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="protocol-1"><span>7.2.4 <code class="code">protocol</code><a class="copiable-link" href="#protocol-1"> &para;</a></span></h4>
+
+<h4 class="subheading" id="Syntax-3"><span>Syntax<a class="copiable-link" href="#Syntax-3"> &para;</a></span></h4>
+
+<p><code class="code">(protocol traversal ...)</code>
+</p>
+<p>or
+</p>
+<p><code class="code">(any traversal ...)</code>
+</p>
+<h4 class="subheading" id="Description-3"><span>Description<a class="copiable-link" href="#Description-3"> &para;</a></span></h4>
+
+<p>Try executing traversals, in order, until one succeeds (and then stop).
+</p>
+<h4 class="subheading" id="Examples-3"><span>Examples<a class="copiable-link" href="#Examples-3"> &para;</a></span></h4>
+
+<p>&quot;Try going forward, if that doesn&rsquo;t work try going backward.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (any (move forward)
+         (move backward))))
+</pre></div>
+
+<p>&quot;Try going forward and up, if that doesn&rsquo;t work try going backward and down.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (any (do (move forward)
+             (move up))
+         (do (move backward)
+             (move down)))))
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

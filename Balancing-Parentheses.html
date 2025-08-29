@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Balancing Parentheses (Symex)</title>
+
+<meta name="description" content="Balancing Parentheses (Symex)">
+<meta name="keywords" content="Balancing Parentheses (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Customizing-Symex.html" rel="up" title="Customizing Symex">
+<link href="Quoting-Styles.html" rel="next" title="Quoting Styles">
+<link href="Auto_002dIndenting.html" rel="prev" title="Auto-Indenting">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Balancing-Parentheses">
+<div class="nav-panel">
+<p>
+Next: <a href="Quoting-Styles.html" accesskey="n" rel="next">Quoting Styles</a>, Previous: <a href="Auto_002dIndenting.html" accesskey="p" rel="prev">Auto-Indenting</a>, Up: <a href="Customizing-Symex.html" accesskey="u" rel="up">Customizing Symex</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Balancing-Parentheses-1"><span>4.6 Balancing Parentheses<a class="copiable-link" href="#Balancing-Parentheses-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Parenthesis-balancing_002c-customizing"></a>
+
+<h4 class="subheading" id="Lisp-2"><span>Lisp<a class="copiable-link" href="#Lisp-2"> &para;</a></span></h4>
+
+<p>While editing Lisp, Symex relies on the code having valid structure. If that structure is ever broken, i.e., if parentheses become unbalanced, things may behave unexpectedly as Symex can no longer reliably reason about the code.
+</p>
+<p>In order to ensure this structural integrity, Symex implicitly balances parentheses during any edits you make, using the well-known Paredit library for this purpose. But if you prefer to use another strategy for keeping parentheses balanced, such as Smartparens or Parinfer or even Paredit itself, you may prefer to disable this built-in parenthesis balancing behavior. Use this to do that:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-ensure-structure-p nil)
+</pre></div>
+
+<h4 class="subheading" id="Non_002dLisp-_0028Tree_002dsitter_0029-Languages"><span>Non-Lisp (Tree-sitter) Languages<a class="copiable-link" href="#Non_002dLisp-_0028Tree_002dsitter_0029-Languages"> &para;</a></span></h4>
+
+<p>For non-Lisp (Tree-sitter) languages like Python, Symex does not do any parenthesis balancing. If you&rsquo;d like to have this feature, we recommend using a package like Smartparens for this purpose alongside Symex, and there would be no conflict with Symex.
+</p>
+</div>
+
+
+
+</body>
+</html>

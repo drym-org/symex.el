@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Macros and Repetition (Symex)</title>
+
+<meta name="description" content="Macros and Repetition (Symex)">
+<meta name="keywords" content="Macros and Repetition (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Editing-Features.html" rel="up" title="Editing Features">
+<link href="Structural-features.html" rel="prev" title="Structural features">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Macros-and-Repetition">
+<div class="nav-panel">
+<p>
+Previous: <a href="Structural-features.html" accesskey="p" rel="prev">Structural features</a>, Up: <a href="Editing-Features.html" accesskey="u" rel="up">Editing Features</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Macros-and-Repetition-1"><span>5.2.2 Macros and Repetition<a class="copiable-link" href="#Macros-and-Repetition-1"> &para;</a></span></h4>
+
+<p>Symex includes an advanced command repetition feature, accessible via <code class="code">.</code>. This simply replays your most recent command. This command could even include insertion of text into the buffer, and even the use of completion frameworks during such insertion. <code class="code">.</code> will repeat the command, in all cases.
+</p>
+<p>This feature is similar to Vim&rsquo;s well-known &ldquo;dot&rdquo; command, but in addition, it also maintains a history of recent commands on a &ldquo;repeat ring,&rdquo; so after pressing <code class="code">.</code>, you can cycle through recent repetitions using <code class="code">C-.</code>. This ability to repeat recent commands is similar to Evil&rsquo;s implementation of &ldquo;dot&rdquo; which includes the analogous &ldquo;repeat-pop&rdquo; feature.
+</p>
+<p>Symex&rsquo;s repeat feature uses the standalone <a class="uref" href="https://github.com/countvajhula/repeat-ring"><code class="code">repeat-ring</code></a> package and the <a class="uref" href="https://github.com/countvajhula/mantra"><code class="code">mantra</code></a> parsing library. These packages were developed to support Symex, but they enable any package to develop and provide very general and highly customizable repeat functionality.
+</p>
+<p>See <a class="xref" href="Macros.html">Macros</a> for ways to record and repeat longer sequences of commands.
+</p>
+</div>
+
+
+
+</body>
+</html>

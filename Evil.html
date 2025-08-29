@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Evil (Symex)</title>
+
+<meta name="description" content="Evil (Symex)">
+<meta name="keywords" content="Evil (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Comparison-with-Similar-Packages.html" rel="up" title="Comparison with Similar Packages">
+<link href="Lispy.html" rel="next" title="Lispy">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Evil">
+<div class="nav-panel">
+<p>
+Next: <a href="Lispy.html" accesskey="n" rel="next">Lispy</a>, Up: <a href="Comparison-with-Similar-Packages.html" accesskey="u" rel="up">Comparison with Similar Packages</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Evil-1"><span>1.4.1 Evil<a class="copiable-link" href="#Evil-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Evil_002c-comparison-with"></a>
+
+<p>The essential idea of Vim/Evil is that there are motions (nouns) that may be combined with operators (verbs), so that many complex operations on text can be expressed in this compositional manner. Although precise and expressive, this Vim-style interface has a steep learning curve and, out of the box, it isn&rsquo;t appropriate for structural code editing as there is no <em class="emph">symex</em> noun for dealing with expressions of code. Extending Evil by adding such a noun (or &ldquo;text object,&rdquo; in Vim parlance) would be one way to allow precise operation on symexes, but there are a few reasons why Symex did not choose to go this route: (1) it leaves out vanilla Emacs users who may not be familiar with Evil at all, and (2) it inflates Evil — an already substantial interface — with yet another noun that would compete for keybinding real estate with other nouns such as words and paragraphs.
+</p>
+<p>Yet, augmenting Evil with a symex text object would be a valuable alternative way to achieve a Symex-like experience, and that&rsquo;s what Evil-Cleverparens (another package discussed below) does.
+</p>
+<p>Symex and Evil go very well together. Please See <a class="xref" href="Symex-and-Evil.html">Symex and Evil</a> for instructions on using them together.
+</p>
+</div>
+
+
+
+</body>
+</html>

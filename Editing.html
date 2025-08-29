@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Editing (Symex)</title>
+
+<meta name="description" content="Editing (Symex)">
+<meta name="keywords" content="Editing (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Keybinding-Cheat-Sheet.html" rel="up" title="Keybinding Cheat Sheet">
+<link href="IDE.html" rel="next" title="IDE">
+<link href="Movement.html" rel="prev" title="Movement">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Editing">
+<div class="nav-panel">
+<p>
+Next: <a href="IDE.html" accesskey="n" rel="next">IDE</a>, Previous: <a href="Movement.html" accesskey="p" rel="prev">Movement</a>, Up: <a href="Keybinding-Cheat-Sheet.html" accesskey="u" rel="up">Keybinding Cheat Sheet</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Editing-1"><span>8.2 Editing<a class="copiable-link" href="#Editing-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Editing_002c-keybindings-for"></a>
+
+<table class="multitable">
+<thead><tr><th width="15%">Key</th><th width="45%">Action</th><th width="40%">Remarks</th></tr></thead>
+<tbody><tr><td width="15%"><code class="code">w</code>, <code class="code">W</code></td><td width="45%">Wrap with parens and insert, wrap and append</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">x</code>, <code class="code">X</code>, <code class="code">D</code></td><td width="45%">Delete, delete backwards, delete remaining</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">c</code>, <code class="code">C</code></td><td width="45%">Change, change remaining</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">y</code>, <code class="code">Y</code>, <code class="code">p</code>, <code class="code">P</code></td><td width="45%">Yank (copy), yank remaining, paste after, paste before</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">C--</code>, <code class="code">s</code></td><td width="45%">Clear, replace/substitute</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">S</code></td><td width="45%">Change &quot;surrounding&quot; delimiter</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">H</code>, <code class="code">L</code></td><td width="45%">Move/shift symex backwards, forwards</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">M-H</code>, <code class="code">M-L</code></td><td width="45%">Move/shift symex backwards, forwards as far as possible on line or column</td><td width="40%">Remember that usually the Meta prefix <code class="code">M-</code> means &quot;the most&quot; and the Shift prefix <code class="code">S-</code> means an action or &quot;to shift&quot; in a direction</td></tr>
+<tr><td width="15%"><code class="code">K</code></td><td width="45%">Raise</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">C-S-j</code> / <code class="code">C-{</code>, <code class="code">C-S-k</code> / <code class="code">C-}</code></td><td width="45%">Emit backwards, forwards</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">C-S-h</code> / <code class="code">C-(</code>, <code class="code">C-S-l</code> / <code class="code">C-)</code></td><td width="45%">Capture backwards, forwards</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">z</code>, <code class="code">Z</code></td><td width="45%">Swallow head, swallow tail</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">|</code>, <code class="code">&amp;</code></td><td width="45%">Split, join/merge</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">-</code></td><td width="45%">Splice</td><td width="40%">Clip the delimiters, joining the symex to the containing expression</td></tr>
+<tr><td width="15%"><code class="code">&gt;</code>, <code class="code">C-&gt;</code> / <code class="code">C-S-o</code></td><td width="45%">Insert newline before, append newline after</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">&lt;</code>,  <code class="code">J</code> / <code class="code">C-&lt;</code></td><td width="45%">Join with preceding line, join with next line</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">M-J</code> / <code class="code">M-&lt;</code></td><td width="45%">Collapse to a single line</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">M-&gt;</code></td><td width="45%">Unfurl across multiple lines</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">C-M-&lt;</code>, <code class="code">C-M-&gt;</code></td><td width="45%">Collapse remaining, unfurl remaining</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">=</code>, <code class="code">&lt;tab&gt;</code></td><td width="45%">Tidy</td><td width="40%">Indent and remove extraneous whitespace</td></tr>
+<tr><td width="15%"><code class="code">C-=</code>, <code class="code">C-&lt;tab&gt;</code></td><td width="45%">Tidy remaining</td><td width="40%">Tidy remaining symexes at this level</td></tr>
+<tr><td width="15%"><code class="code">M-=</code> / <code class="code">M-&lt;tab&gt;</code></td><td width="45%">Tidy recursively</td><td width="40%">Tidies while traversing the symex from the highest branch to the root, for cases where a simple tidy isn&rsquo;t adequate</td></tr>
+<tr><td width="15%"><code class="code">;</code>, <code class="code">M-;</code></td><td width="45%">Comment out, comment out remaining</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">i</code>, <code class="code">a</code></td><td width="45%">Insert at beginning, append at end</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">I</code>, <code class="code">A</code></td><td width="45%">Insert before, append after</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">o</code>, <code class="code">O</code></td><td width="45%">Open line below, above</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">(</code>, <code class="code">[</code></td><td width="45%">Create symex with indicated delimiter</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">)</code>, <code class="code">]</code></td><td width="45%">Wrap symex with indicated delimiter</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">C-'</code>, <code class="code">C-,</code>, <code class="code">`</code>, <code class="code">C-`</code></td><td width="45%">Cycle quoting, cycle unquoting, add quoting level, remove quoting level</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">.</code>, <code class="code">C-.</code></td><td width="45%">Repeat last command, cycle through recent commands</td><td width="40%">Similar to Evil&rsquo;s &ldquo;dot&rdquo; operator and &ldquo;repeat-pop&rdquo; command</td></tr>
+<tr><td width="15%"><code class="code">&lt;return&gt;</code></td><td width="45%">Enter insertion state</td><td width="40%"></td></tr>
+<tr><td width="15%"><code class="code">&lt;escape&gt;</code></td><td width="45%">Exit</td><td width="40%"></td></tr>
+</tbody>
+</table>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="IDE.html">IDE</a>, Previous: <a href="Movement.html">Movement</a>, Up: <a href="Keybinding-Cheat-Sheet.html">Keybinding Cheat Sheet</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Minimizing Complexity (Symex)</title>
+
+<meta name="description" content="Minimizing Complexity (Symex)">
+<meta name="keywords" content="Minimizing Complexity (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Debugging.html" rel="up" title="Debugging">
+<link href="Gotchas.html" rel="next" title="Gotchas">
+<link href="Print-Statements-and-Asserts.html" rel="prev" title="Print Statements and Asserts">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Minimizing-Complexity">
+<div class="nav-panel">
+<p>
+Next: <a href="Gotchas.html" accesskey="n" rel="next">Gotchas</a>, Previous: <a href="Print-Statements-and-Asserts.html" accesskey="p" rel="prev">Print Statements and Asserts</a>, Up: <a href="Debugging.html" accesskey="u" rel="up">Debugging</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Minimizing-Complexity-1"><span>7.6.6 Minimizing Complexity<a class="copiable-link" href="#Minimizing-Complexity-1"> &para;</a></span></h4>
+
+<h4 class="subheading" id="Disable-Advice"><span>Disable Advice<a class="copiable-link" href="#Disable-Advice"> &para;</a></span></h4>
+
+<p>Symex uses <a class="uref" href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html">advice</a> to implement some features such as adding a selection overlay. To minimize complexity while debugging, it may be advisable (so to speak) in certain cases to disable such advice. To do this, find the place in the code where the advice is added, and execute the corresponding function to remove it. Something like, <code class="code">(advice-remove #'symex-user-select-nearest #'symex-mode-highlight-selected)</code>. Of course, if disabling the advice causes the error to go away, then you can focus your efforts on debugging the advice itself in isolation!
+</p>
+<h4 class="subheading" id="Comment-Out-Macros"><span>Comment Out Macros<a class="copiable-link" href="#Comment-Out-Macros"> &para;</a></span></h4>
+
+<p>It may also be advisable to comment out macros like <code class="code">symex-save-excursion</code> to see if the problem persists. Commenting out macros like <code class="code">symex--with-undo-collapse</code> will also help you use the debugger in code wrapped by such macros.
+</p>
+<p>Also See <a class="xref" href="Troubleshooting.html">Troubleshooting</a>.
+</p>
+</div>
+
+
+
+</body>
+</html>

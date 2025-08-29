@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>circuit (Symex)</title>
+
+<meta name="description" content="circuit (Symex)">
+<meta name="keywords" content="circuit (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Language.html" rel="up" title="Language">
+<link href="loop.html" rel="next" title="loop">
+<link href="decision.html" rel="prev" title="decision">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="circuit">
+<div class="nav-panel">
+<p>
+Next: <a href="loop.html" accesskey="n" rel="next"><code class="code">loop</code></a>, Previous: <a href="decision.html" accesskey="p" rel="prev"><code class="code">decision</code></a>, Up: <a href="Language.html" accesskey="u" rel="up">Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="circuit-1"><span>7.2.7 <code class="code">circuit</code><a class="copiable-link" href="#circuit-1"> &para;</a></span></h4>
+
+<h4 class="subheading" id="Syntax-6"><span>Syntax<a class="copiable-link" href="#Syntax-6"> &para;</a></span></h4>
+
+<p><code class="code">(circuit traversal [times])</code>
+</p>
+<p>or
+</p>
+<p><code class="code">(repeat traversal [times])</code>
+</p>
+<h4 class="subheading" id="Description-6"><span>Description<a class="copiable-link" href="#Description-6"> &para;</a></span></h4>
+
+<p>Repeat a traversal a given number of times or as long as it succeeds. When it fails, stop.
+</p>
+<h4 class="subheading" id="Examples-6"><span>Examples<a class="copiable-link" href="#Examples-6"> &para;</a></span></h4>
+
+<p>&quot;Move forward three times.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (repeat (move forward) 3)))
+</pre></div>
+
+<p>&quot;Keep moving forward.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (repeat (move forward))))
+</pre></div>
+
+<p>&quot;Keep moving down and forward, as long as we don&rsquo;t descend to the root node.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (repeat
+      (carefully
+        (try (move down)
+             (move forward))
+        (afterwards (not (at root)))))))
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Using a REPL (Symex)</title>
+
+<meta name="description" content="Using a REPL (Symex)">
+<meta name="keywords" content="Using a REPL (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Debugging.html" rel="up" title="Debugging">
+<link href="Using-a-Debugger-_0028EDebug_0029.html" rel="next" title="Using a Debugger (EDebug)">
+<link href="Directly-Evaluating-Expressions.html" rel="prev" title="Directly Evaluating Expressions">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Using-a-REPL">
+<div class="nav-panel">
+<p>
+Next: <a href="Using-a-Debugger-_0028EDebug_0029.html" accesskey="n" rel="next">Using a Debugger (EDebug)</a>, Previous: <a href="Directly-Evaluating-Expressions.html" accesskey="p" rel="prev">Directly Evaluating Expressions</a>, Up: <a href="Debugging.html" accesskey="u" rel="up">Debugging</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Using-a-REPL-1"><span>7.6.2 Using a REPL<a class="copiable-link" href="#Using-a-REPL-1"> &para;</a></span></h4>
+
+<p>Another strategy is to open a REPL in an adjacent window and run code in the REPL while having it take effect in the source buffer alongside.
+</p>
+<p>To do this, open an IELM buffer in a window next to a source buffer, and use this snippet in the REPL:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(with-current-buffer (window-buffer (other-window 1))
+  (symex-eval
+   (symex-traversal
+    (maneuver (move forward)
+              (move up))))
+  (other-window 1))
+</pre></div>
+
+<p>Here, you can substitute the contents of <code class="code">(symex-traversal ...)</code> with whatever traversal you like.
+</p>
+</div>
+
+
+
+</body>
+</html>

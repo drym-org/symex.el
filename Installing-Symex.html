@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Installing Symex (Symex)</title>
+
+<meta name="description" content="Installing Symex (Symex)">
+<meta name="keywords" content="Installing Symex (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Installation-and-Setup.html" rel="up" title="Installation and Setup">
+<link href="Instructions-for-Other-Package-Managers.html" rel="next" title="Instructions for Other Package Managers">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Installing-Symex">
+<div class="nav-panel">
+<p>
+Next: <a href="Instructions-for-Other-Package-Managers.html" accesskey="n" rel="next">Instructions for Other Package Managers</a>, Up: <a href="Installation-and-Setup.html" accesskey="u" rel="up">Installation and Setup</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Installing-Symex-1"><span>2.1 Installing Symex<a class="copiable-link" href="#Installing-Symex-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Installing-Symex"></a>
+<a class="index-entry-id" id="index-Packages_002c-Symex"></a>
+<a class="index-entry-id" id="index-Symex-packages"></a>
+
+<p>Symex is distributed as a collection of small, composable packages, hosted directly at the source repository. This allows you maximum flexibility to install just the functionality you actually need, without getting anything extra. But it also means that you must explicitly list the Symex packages you are interested in. Each of the Symex packages is described below, along with sample installation config using Straight.el (if you are using another package manager, See <a class="xref" href="Instructions-for-Other-Package-Managers.html">Instructions for Other Package Managers</a>).
+</p>
+<ol class="enumerate">
+<li> <code class="code">symex-core</code>. This includes a DSL for structural operations, which is the core functionality of Symex, and is required for all users of Symex.
+
+<div class="example lisp">
+<pre class="lisp-preformatted">(use-package symex-core
+  :straight
+  (symex-core
+   :host github
+   :repo &quot;drym-org/symex.el&quot;
+   :files (&quot;symex-core/symex*.el&quot;)))
+</pre></div>
+
+<p>This core package provides the structural editing engine, supporting both Lisp (via <code class="code">paredit</code>) and other languages (via Treesitter). This is a lean package with few dependencies, so that, in addition to use by end users, it&rsquo;s also appropriate as a library dependency for third party packages to gain Symex features.
+</p>
+</li><li> <code class="code">symex</code>. The main user-facing package, required for all end users. It provides the modal UI that makes Symex features easy to use.
+
+<div class="example lisp">
+<pre class="lisp-preformatted">(use-package symex
+  :after (symex-core)
+  :straight
+  (symex
+   :host github
+   :repo &quot;drym-org/symex.el&quot;
+   :files (&quot;symex/symex*.el&quot; &quot;symex/doc/*.texi&quot; &quot;symex/doc/figures&quot;))
+  :config
+  (symex-mode 1)
+  (global-set-key (kbd &quot;s-;&quot;) #'symex-mode-interface))  ; or whatever keybinding you like
+  ;; and any other customizations you like
+</pre></div>
+
+<p>Note the keybinding &ldquo;s-;&ldquo; which enters the Symex modal UI. Feel free to set it to whatever you find convenient. There are many ways to enter Symex mode in different contexts, and we&rsquo;ll cover these in detail as we go along.
+</p>
+<p>All of the remaining packages in this list depend on, and extend, this modal UI package.
+</p>
+</li><li> <code class="code">symex-ide</code>. A recommended, optional, extension integrating Symex with major modes for IDE-like features, such as easy evaluation and documentation lookup, and entering a REPL.
+
+<div class="example lisp">
+<pre class="lisp-preformatted">(use-package symex-ide
+  :after (symex)
+  :straight
+  (symex-ide
+   :host github
+   :repo &quot;drym-org/symex.el&quot;
+   :files (&quot;symex-ide/symex*.el&quot;))
+  :config
+  (symex-ide-mode 1))
+</pre></div>
+
+</li><li> <code class="code">symex-evil</code>. An extension for integration with Evil mode, including familiar keybindings, advising Evil functions to play well with Symex mode, and other functionality to make using Symex with Evil seamless. This is only required for Evil users.
+
+<div class="example lisp">
+<pre class="lisp-preformatted">(use-package symex-evil
+  :after (symex evil)
+  :straight
+  (symex-evil
+   :host github
+   :repo &quot;drym-org/symex.el&quot;
+   :files (&quot;symex-evil/symex*.el&quot;))
+  :config
+  (symex-evil-mode 1))
+</pre></div>
+
+</li><li> <code class="code">symex-rigpa</code>. This integrates Symex with Rigpa, allowing you to conveniently manage Symex as a mode within the broader Rigpa modal framework, including defining convenient entry and exit via familiar key sequences such as <code class="code">Enter</code> and <code class="code">Escape</code>. This is only required for Rigpa users.
+
+<div class="example lisp">
+<pre class="lisp-preformatted">(use-package symex-rigpa
+  :after (symex rigpa symex-evil)
+  :straight
+  (symex-rigpa
+   :host github
+   :repo &quot;drym-org/symex.el&quot;
+   :files (&quot;symex-rigpa/symex*.el&quot;))
+  :config
+  (symex-rigpa-mode 1))
+</pre></div>
+
+</li></ol>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Instructions-for-Other-Package-Managers.html">Instructions for Other Package Managers</a>, Up: <a href="Installation-and-Setup.html">Installation and Setup</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

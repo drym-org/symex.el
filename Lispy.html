@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Lispy (Symex)</title>
+
+<meta name="description" content="Lispy (Symex)">
+<meta name="keywords" content="Lispy (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Comparison-with-Similar-Packages.html" rel="up" title="Comparison with Similar Packages">
+<link href="Paredit.html" rel="next" title="Paredit">
+<link href="Evil.html" rel="prev" title="Evil">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Lispy">
+<div class="nav-panel">
+<p>
+Next: <a href="Paredit.html" accesskey="n" rel="next">Paredit</a>, Previous: <a href="Evil.html" accesskey="p" rel="prev">Evil</a>, Up: <a href="Comparison-with-Similar-Packages.html" accesskey="u" rel="up">Comparison with Similar Packages</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Lispy-1"><span>1.4.2 Lispy<a class="copiable-link" href="#Lispy-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Lispy_002c-comparison-with"></a>
+
+<p>Lispy addresses the problem of leveraging known context (i.e., that you are engaged in editing symexes) by having keybindings take on special meaning depending on the cursor&rsquo;s position in relation to the expression as a whole. This approach is as efficient as it gets, and many find it intuitive and fun.
+</p>
+<p>As it requires placing the cursor at special points in order to achieve the desired transformations, the paradigm is difficult to scale for complex or batch tasks. Symex&rsquo;s pointfree modal style allows it to emulate this desirable property of Vim/Evil while still exhibiting simplicity and efficiency like Lispy.
+</p>
+<p>The choice to use Lispy or Symex is mostly a matter of personal preference. Lispy offers a compromise between modal and modeless editing that may be favored by those used to the modeless style, gaining some benefits of the former while still exhibiting the latter. Symex is minimally, yet formally, modal, with all that comes along with that.
+</p>
+<p>You can still use these two packages together, but as their functionality overlaps to a great extent, this is perhaps inadvisable.
+</p>
+</div>
+
+
+
+</body>
+</html>

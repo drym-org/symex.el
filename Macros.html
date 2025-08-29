@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Macros (Symex)</title>
+
+<meta name="description" content="Macros (Symex)">
+<meta name="keywords" content="Macros (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Squirrel-on-a-Speedrun-_002d-Tips-and-Tricks.html" rel="up" title="Squirrel on a Speedrun - Tips and Tricks">
+<link href="Mode-Line-Enhancements.html" rel="next" title="Mode Line Enhancements">
+<link href="Escaping-to-Symex-Instead-of-Normal-State.html" rel="prev" title="Escaping to Symex Instead of Normal State">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Macros">
+<div class="nav-panel">
+<p>
+Next: <a href="Mode-Line-Enhancements.html" accesskey="n" rel="next">Mode Line Enhancements</a>, Previous: <a href="Escaping-to-Symex-Instead-of-Normal-State.html" accesskey="p" rel="prev">Escaping to Symex Instead of Normal State</a>, Up: <a href="Squirrel-on-a-Speedrun-_002d-Tips-and-Tricks.html" accesskey="u" rel="up">Squirrel on a Speedrun - Tips and Tricks</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Macros-1"><span>6.2 Macros<a class="copiable-link" href="#Macros-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Macros_002c-tips-and-tricks"></a>
+
+<p>Ordinary keyboard macros are already very useful, allowing you to carefully construct repeatable actions to automate batch tasks. But with Symex, they become much more powerful, since the keystrokes recorded by the macros represent not elementary cursor movements and manual edits, but complex traversals and rich structural operations.
+</p>
+<p>When you define macros in symex mode (e.g., via <code class="code">C-x (</code>, or via <code class="code">q</code> for Evil users), make sure that the commands you use are those that have the same effect in every situation. For instance, the &ldquo;up&rdquo; and &ldquo;down&rdquo; motions (default: <code class="code">k</code> and <code class="code">j</code>) could vary based on &ldquo;branch memory&rdquo; — up may sometimes move you to the first position on the higher level, but at other times it may move you to the third position, if that happens to be your most recent position. Using up and down in your macro would mean that it could have different results in each tree depending on your activities in the tree, unless you remember to reset the frame of reference by using something like <code class="code">0</code> or <code class="code">$</code>. Instead, it may be more natural to use the &ldquo;flow&rdquo; traversal commands (default: <code class="code">f</code> and <code class="code">b</code>), repeating them or prefixing them with count arguments if necessary, to move around in a fully deterministic way. This will ensure that your macros behave the same way in every case.
+</p>
+
+</div>
+
+
+
+</body>
+</html>

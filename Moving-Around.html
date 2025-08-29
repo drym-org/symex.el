@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Moving Around (Symex)</title>
+
+<meta name="description" content="Moving Around (Symex)">
+<meta name="keywords" content="Moving Around (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Getting-Started.html" rel="up" title="Getting Started">
+<link href="Transforming-Code.html" rel="next" title="Transforming Code">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Moving-Around">
+<div class="nav-panel">
+<p>
+Next: <a href="Transforming-Code.html" accesskey="n" rel="next">Transforming Code</a>, Up: <a href="Getting-Started.html" accesskey="u" rel="up">Getting Started</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Moving-Around-1"><span>3.1 Moving Around<a class="copiable-link" href="#Moving-Around-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Movement_002c-basic"></a>
+
+<p>In your source buffer, enter Symex mode using the keybinding that you configured for <code class="code">symex-mode-interface</code> (See <a class="xref" href="Installing-Symex.html">Installing Symex</a>).
+</p>
+<p>Now, try moving around using these commands:
+</p>
+<table class="multitable">
+<thead><tr><th width="15%">Key</th><th width="45%">Command</th><th width="40%">Description</th></tr></thead>
+<tbody><tr><td width="15%"><code class="code">h</code></td><td width="45%"><code class="code">symex-move-backward</code></td><td width="40%">Move to the previous expression.</td></tr>
+<tr><td width="15%"><code class="code">j</code></td><td width="45%"><code class="code">symex-move-down</code></td><td width="40%">Move down the tree to the &ldquo;parent&rdquo; node. Note that this is oriented with the root being the &ldquo;lowest,&rdquo; and the most nested expression being the &ldquo;highest.&rdquo; This orientation is customizable (See <a class="xref" href="Up-and-Down.html">Up and Down</a>).</td></tr>
+<tr><td width="15%"><code class="code">k</code></td><td width="45%"><code class="code">symex-move-up</code></td><td width="40%">Move up the tree to a &ldquo;child&rdquo; node. Note that this is oriented with the root being the &ldquo;lowest,&rdquo; and the most nested expression being the &ldquo;highest.&rdquo; This orientation is customizable (See <a class="xref" href="Up-and-Down.html">Up and Down</a>).</td></tr>
+<tr><td width="15%"><code class="code">l</code></td><td width="45%"><code class="code">symex-move-forward</code></td><td width="40%">Move to the next expression.</td></tr>
+</tbody>
+</table>
+
+<p>The first thing you&rsquo;ll notice is Symex&rsquo;s <em class="emph">modal</em> nature. If you&rsquo;ve used Evil or Vim, then it should feel familiar. But if not, don&rsquo;t worry, as Symex isn&rsquo;t anything as complex as Vim. As you can already see, it uses a simple modal style — a style that we call &ldquo;point-free&rdquo; editing<a class="footnote" id="DOCF1" href="#FOOT1"><sup>1</sup></a>. This style of interface is designed to be precise and efficient while also being easy to learn and use.
+</p>
+<p>You may notice, as you wander the source tree, that Symex remembers branch positions, so that you can go up and down without losing context.
+</p>
+<p>But you may not always want to navigate using such explicit movements. Sometimes, you just want to traverse trees forwards and backwards to find the right spot.
+</p>
+<table class="multitable">
+<thead><tr><th width="15%">Key</th><th width="45%">Command</th><th width="40%">Description</th></tr></thead>
+<tbody><tr><td width="15%"><code class="code">f</code></td><td width="45%"><code class="code">symex-traverse-forward</code></td><td width="40%">Traverse forward in the tree.</td></tr>
+<tr><td width="15%"><code class="code">b</code></td><td width="45%"><code class="code">symex-traverse-backward</code></td><td width="40%">Traverse backwards in the tree.</td></tr>
+</tbody>
+</table>
+
+<p>Symex offers many such ways to get around. Next, we&rsquo;ll see some ways to <em class="emph">transform</em> the source code.
+</p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT1" href="#DOCF1">(1)</a></h5>
+<p>The term is borrowed from functional programming, where it refers to being able to code in a very succinct way in cases where the data can be implicit. With Symex, the &ldquo;implicit data&rdquo; is the expression indicated by the cursor.</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Transforming-Code.html">Transforming Code</a>, Up: <a href="Getting-Started.html">Getting Started</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

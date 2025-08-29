@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Symex and Evil (Symex)</title>
+
+<meta name="description" content="Symex and Evil (Symex)">
+<meta name="keywords" content="Symex and Evil (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Installation-and-Setup.html" rel="up" title="Installation and Setup">
+<link href="Symex-and-Rigpa.html" rel="next" title="Symex and Rigpa">
+<link href="Instructions-for-Other-Package-Managers.html" rel="prev" title="Instructions for Other Package Managers">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Symex-and-Evil">
+<div class="nav-panel">
+<p>
+Next: <a href="Symex-and-Rigpa.html" accesskey="n" rel="next">Symex and Rigpa</a>, Previous: <a href="Instructions-for-Other-Package-Managers.html" accesskey="p" rel="prev">Instructions for Other Package Managers</a>, Up: <a href="Installation-and-Setup.html" accesskey="u" rel="up">Installation and Setup</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Symex-and-Evil-1"><span>2.3 Symex and Evil<a class="copiable-link" href="#Symex-and-Evil-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Evil_002c-using-together-with"></a>
+<a class="index-entry-id" id="index-Normal-state_002c-keybindings"></a>
+
+<p>If you happen to be an Evil user, using Symex should feel familiar (although as we saw in <a class="ref" href="Point_002dFree-Modal-Editing.html">Point-Free Modal Editing</a>, Symex exhibits a simpler modal style, making it accessible to those who aren&rsquo;t familiar with Vim/Evil).
+</p>
+<p>For a seamless integration with Evil, it is essential to install the <code class="code">symex-evil</code> package. See <a class="xref" href="Installing-Symex.html">Installing Symex</a> for instructions on that.
+</p>
+<p>This ensures that insertion commands that exit Symex enter Insert state to put you in a position to enter text, as intended, as opposed to leaving you in Normal state. It also supports generic keybindings from Normal state that are useful to retain in Symex mode, such as undo and redo, scrolling, searching, and various other navigations. In addition, it also ensures that such Evil operations performed while in Symex mode preserve a sensible symex selection.
+</p>
+<p>For other useful options on using Symex with Evil, See <a class="xref" href="Escaping-to-Symex-Instead-of-Normal-State.html">Escaping to Symex Instead of Normal State</a> and See <a class="xref" href="Easy-Entry-Into-Symex-Mode.html">Easy Entry Into Symex Mode</a>.
+</p>
+</div>
+
+
+
+</body>
+</html>

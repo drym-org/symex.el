@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Branch Memory (Symex)</title>
+
+<meta name="description" content="Branch Memory (Symex)">
+<meta name="keywords" content="Branch Memory (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Customizing-Symex.html" rel="up" title="Customizing Symex">
+<link href="Highlighting.html" rel="next" title="Highlighting">
+<link href="Up-and-Down.html" rel="prev" title="Up and Down">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Branch-Memory">
+<div class="nav-panel">
+<p>
+Next: <a href="Highlighting.html" accesskey="n" rel="next">Highlighting</a>, Previous: <a href="Up-and-Down.html" accesskey="p" rel="prev">Up and Down</a>, Up: <a href="Customizing-Symex.html" accesskey="u" rel="up">Customizing Symex</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Branch-Memory-1"><span>4.2 Branch Memory<a class="copiable-link" href="#Branch-Memory-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Branch-memory_002c-customizing"></a>
+
+<p>When going up and down, the choice of initial position on the branch is arbitrary. By default, the first position is picked initially, and then Symex the squirrel remembers where it was on each branch after that, so that you return to your last position when going up and down the tree. If you&rsquo;d like to move to the first or last position at any point, you could use (for instance) <code class="code">M-h</code> or <code class="code">M-l</code> at each level, as usual, or traverse the tree using <code class="code">f</code> and <code class="code">b</code>, instead.
+</p>
+<p>If, on the other hand, you&rsquo;d like to start always at the first position when going up (as it was in older versions of Symex), disable the branch memory feature by adding this to the <code class="code">:custom</code> section (not the <code class="code">:config</code> section) of your<code class="code">use-package</code> form:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-remember-branch-position-p nil)
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

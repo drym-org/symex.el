@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Quelpa (Symex)</title>
+
+<meta name="description" content="Quelpa (Symex)">
+<meta name="keywords" content="Quelpa (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Instructions-for-Other-Package-Managers.html" rel="up" title="Instructions for Other Package Managers">
+<link href="Elpaca.html" rel="prev" title="Elpaca">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Quelpa">
+<div class="nav-panel">
+<p>
+Previous: <a href="Elpaca.html" accesskey="p" rel="prev">Elpaca</a>, Up: <a href="Instructions-for-Other-Package-Managers.html" accesskey="u" rel="up">Instructions for Other Package Managers</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Quelpa-1"><span>2.2.4 Quelpa<a class="copiable-link" href="#Quelpa-1"> &para;</a></span></h4>
+
+<p>Quelpa allows you to maintain a local recipe repository in an ordinary folder on disk that is treated no differently from standard online recipe repositories such as MELPA. Consult the Quelpa docs on how to set this up. The following instructions are not tested (please send feedback if you try them!).
+</p>
+<p>Likely, you could create a local folder on disk to hold recipes, say, <code class="code">/path/to/my/recipes</code>. Add this folder to Quelpa&rsquo;s known recipe stores:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(add-to-list 'quelpa-melpa-recipe-stores &quot;/path/to/my/recipes&quot;)
+</pre></div>
+
+<p>Then, create files there named <code class="code">symex-core</code>, <code class="code">symex</code>, <code class="code">symex-ide</code>, <code class="code">symex-evil</code>, and <code class="code">symex-rigpa</code>, with no extension, and depending on which packages you want to install. These files should contain something like:
+</p>
+<p><code class="code">symex-core</code>:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-core
+ :fetcher github
+ :repo &quot;drym-org/symex.el&quot;
+ :files (&quot;symex-core/symex*.el&quot;))
+</pre></div>
+
+<p><code class="code">symex</code>:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex
+ :fetcher github
+ :repo &quot;drym-org/symex.el&quot;
+ :files (&quot;symex/symex*.el&quot; &quot;symex/doc/*.texi&quot; &quot;symex/doc/figures&quot;))
+</pre></div>
+
+<p><code class="code">symex-ide</code>:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-ide
+ :fetcher github
+ :repo &quot;drym-org/symex.el&quot;
+ :files (&quot;symex-ide/symex*.el&quot;))
+</pre></div>
+
+<p><code class="code">symex-evil</code>:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-evil
+ :fetcher github
+ :repo &quot;drym-org/symex.el&quot;
+ :files (&quot;symex-evil/symex*.el&quot;))
+</pre></div>
+
+<p><code class="code">symex-rigpa</code>:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-rigpa
+ :fetcher github
+ :repo &quot;drym-org/symex.el&quot;
+ :files (&quot;symex-rigpa/symex*.el&quot;))
+</pre></div>
+
+<p>With the package recipes added, you should now be able to install the packages using <a class="uref" href="https://github.com/quelpa/quelpa-use-package"><code class="code">quelpa-use-package</code></a>:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(use-package symex-core
+  :quelpa t)
+
+(use-package symex
+  :quelpa t
+  :after (symex-core)
+  :config
+  (symex-mode 1)
+  (global-set-key (kbd &quot;s-;&quot;) #'symex-mode-interface))  ; or whatever keybinding you like
+  ;; and any other customizations you like
+
+(use-package symex-ide
+  :quelpa t
+  :after (symex)
+  :config
+  (symex-ide-mode 1))
+
+(use-package symex-evil
+  :quelpa t
+  :after (symex evil)
+  :config
+  (symex-evil-mode 1))
+
+(use-package symex-rigpa
+  :quelpa t
+  :after (symex rigpa symex-evil)
+  :config
+  (symex-rigpa-mode 1))
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="Elpaca.html">Elpaca</a>, Up: <a href="Instructions-for-Other-Package-Managers.html">Instructions for Other Package Managers</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

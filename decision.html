@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>decision (Symex)</title>
+
+<meta name="description" content="decision (Symex)">
+<meta name="keywords" content="decision (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Language.html" rel="up" title="Language">
+<link href="circuit.html" rel="next" title="circuit">
+<link href="detour.html" rel="prev" title="detour">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="decision">
+<div class="nav-panel">
+<p>
+Next: <a href="circuit.html" accesskey="n" rel="next"><code class="code">circuit</code></a>, Previous: <a href="detour.html" accesskey="p" rel="prev"><code class="code">detour</code></a>, Up: <a href="Language.html" accesskey="u" rel="up">Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="decision-1"><span>7.2.6 <code class="code">decision</code><a class="copiable-link" href="#decision-1"> &para;</a></span></h4>
+
+<h4 class="subheading" id="Syntax-5"><span>Syntax<a class="copiable-link" href="#Syntax-5"> &para;</a></span></h4>
+
+<p><code class="code">(decision condition traversal-A traversal-B)</code>
+</p>
+<p>or
+</p>
+<p><code class="code">(if condition traversal-A traversal-B)</code>
+</p>
+<h4 class="subheading" id="Description-5"><span>Description<a class="copiable-link" href="#Description-5"> &para;</a></span></h4>
+
+<p>Do either traversal A or traversal B, depending on whether a condition holds.
+</p>
+<p>The condition can be any predicate — either a built-in predicate form, or an arbitrary traversal, including a lambda. See <a class="xref" href="Predicates.html">Predicates</a> for details.
+</p>
+<h4 class="subheading" id="Examples-5"><span>Examples<a class="copiable-link" href="#Examples-5"> &para;</a></span></h4>
+
+<p>&quot;If we&rsquo;re at the root of the tree, then go forward, otherwise go down.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (if (at root)
+        (move forward)
+        (move down))))
+</pre></div>
+
+<p>&quot;If we are somewhere before a previously stored position in the buffer, then go forward, otherwise don&rsquo;t move.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+ (symex-traversal
+   (if (lambda (_computation _result)
+         (&lt; (point) previously-stored-position))
+       (move forward)
+       symex--move-zero)))
+</pre></div>
+
+<p>We&rsquo;ll ignore the arguments of the lambda here, for now, and will soon see what they&rsquo;re for. <code class="code">symex--move-zero</code> is just a convenient traversal for cases where you need to indicate a traversal but would like to not move at all. It is defined as <code class="code">(symex-make-move 0 0)</code>.
+</p>
+</div>
+
+
+
+</body>
+</html>

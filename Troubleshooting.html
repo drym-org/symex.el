@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Troubleshooting (Symex)</title>
+
+<meta name="description" content="Troubleshooting (Symex)">
+<meta name="keywords" content="Troubleshooting (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Debugging.html" rel="up" title="Debugging">
+<link href="Print-Statements-and-Asserts.html" rel="next" title="Print Statements and Asserts">
+<link href="Using-a-Debugger-_0028EDebug_0029.html" rel="prev" title="Using a Debugger (EDebug)">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Troubleshooting">
+<div class="nav-panel">
+<p>
+Next: <a href="Print-Statements-and-Asserts.html" accesskey="n" rel="next">Print Statements and Asserts</a>, Previous: <a href="Using-a-Debugger-_0028EDebug_0029.html" accesskey="p" rel="prev">Using a Debugger (EDebug)</a>, Up: <a href="Debugging.html" accesskey="u" rel="up">Debugging</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Troubleshooting-1"><span>7.6.4 Troubleshooting<a class="copiable-link" href="#Troubleshooting-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Troubleshooting"></a>
+<a class="index-entry-id" id="index-Debugging-macros"></a>
+<a class="index-entry-id" id="index-stack-traces_002c-improving"></a>
+
+<h4 class="subheading" id="Debugging-Macros-vs-Functions"><span>Debugging Macros vs Functions<a class="copiable-link" href="#Debugging-Macros-vs-Functions"> &para;</a></span></h4>
+
+<p>If you are attempting to debug a feature implemented as a macro like <code class="code">symex-define-command</code>, you would need to evaluate the primitive functions for debugging, rather than the macro, or if necessary, copy the contents of the command to a new function and call that function from the macro, in order to be able to debug it. To be clear, you would need to evaluate the <em class="emph">function</em> for debugging rather than the macro. Naively, if you attempt to debug the macro, the debugger is triggered at compile time (i.e., as soon as you attempt to evaluate it for debugging!) and not at runtime when you&rsquo;re actually interested in using it. For the same reason, if you attempt to &ldquo;step into&rdquo; a macro invocation while the debugger is active, it won&rsquo;t do anything. You can only debug functions. If what you are interested in debugging is not a function, then put it in a function and debug that.
+</p>
+<h4 class="subheading" id="g_t_0060_0060Buffer-is-read_002donly_0027_0027"><span>&ldquo;Buffer is read-only&rdquo;<a class="copiable-link" href="#g_t_0060_0060Buffer-is-read_002donly_0027_0027"> &para;</a></span></h4>
+
+<p>If you&rsquo;re an Evil user, sometimes, the debugger appears to get overridden by Evil keybindings, complaining that the &ldquo;Buffer is read-only&rdquo; when you attempt to <code class="code">s</code> to step forward. Saving the buffer (as opposed to debugging an unsaved buffer) seems to solve these issues, and if not, killing and reopening the buffer does.
+</p>
+<h4 class="subheading" id="Better-Stack-Traces"><span>Better Stack Traces<a class="copiable-link" href="#Better-Stack-Traces"> &para;</a></span></h4>
+
+<p>The Symex modal UI is written in Lithium which wraps the underlying Symex commands with error handling, and this wrapping code may be byte-compiled. This could make the stack traces hard to read in the event of an error, so if you are encountering an issue with an interactive feature that you are using through the modal UI, then debug it by invoking that function directly, using <code class="code">M-x &lt;symex-command-name&gt;</code> or via programmatic invocation in IELM or via <code class="code">M-:</code>. That will show you a clean stack trace.
+</p>
+<p>For instance, instead of <code class="code">x</code> in Symex mode, use <code class="code">M-x symex-delete</code>.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Print-Statements-and-Asserts.html">Print Statements and Asserts</a>, Previous: <a href="Using-a-Debugger-_0028EDebug_0029.html">Using a Debugger (EDebug)</a>, Up: <a href="Debugging.html">Debugging</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Usage (Symex)</title>
+
+<meta name="description" content="Usage (Symex)">
+<meta name="keywords" content="Usage (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="The-Symex-DSL.html" rel="up" title="The Symex DSL">
+<link href="Language.html" rel="next" title="Language">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Usage">
+<div class="nav-panel">
+<p>
+Next: <a href="Language.html" accesskey="n" rel="next">Language</a>, Up: <a href="The-Symex-DSL.html" accesskey="u" rel="up">The Symex DSL</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Usage-1"><span>7.1 Usage<a class="copiable-link" href="#Usage-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Symex-DSL_002c-using"></a>
+
+<p>The main entry point to Symex from ELisp is the <code class="code">symex-traversal</code> form, which can also be used via the definition form, <code class="code">symex-deftraversal</code>. These forms allow you to define traversals (e.g., movements or transformations of code) using the Symex language, and they are analogous to <code class="code">lambda</code> and <code class="code">defun</code> (for defining functions in ELisp), respectively. Traversals defined this way may be evaluated using <code class="code">symex-eval</code> and would execute in relation to the selected expression. Symex considers point (i.e., the cursor) to indicate the <em class="emph">start</em> of the selected expression.
+</p>
+<p>Here is what performing a very basic traversal looks like. We&rsquo;ll soon learn more about what it means:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (do (move up)
+        (move forward))))
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

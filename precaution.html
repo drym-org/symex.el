@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>precaution (Symex)</title>
+
+<meta name="description" content="precaution (Symex)">
+<meta name="keywords" content="precaution (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Language.html" rel="up" title="Language">
+<link href="delete.html" rel="next" title="delete">
+<link href="loop.html" rel="prev" title="loop">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="precaution">
+<div class="nav-panel">
+<p>
+Next: <a href="delete.html" accesskey="n" rel="next"><code class="code">delete</code></a>, Previous: <a href="loop.html" accesskey="p" rel="prev"><code class="code">loop</code></a>, Up: <a href="Language.html" accesskey="u" rel="up">Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="precaution-1"><span>7.2.9 <code class="code">precaution</code><a class="copiable-link" href="#precaution-1"> &para;</a></span></h4>
+
+<h4 class="subheading" id="Syntax-8"><span>Syntax<a class="copiable-link" href="#Syntax-8"> &para;</a></span></h4>
+
+<p><code class="code">(precaution traversal [(beforehand condition)|(afterwards condition)])</code>
+</p>
+<p>or
+</p>
+<p><code class="code">(carefully traversal [(beforehand condition)|(afterwards condition)])</code>
+</p>
+<h4 class="subheading" id="Description-8"><span>Description<a class="copiable-link" href="#Description-8"> &para;</a></span></h4>
+
+<p>Execute a traversal, but ensure that certain conditions hold either before or after executing the traversal (or both). If a condition does not hold, then abort the traversal, considering it to have failed.
+</p>
+<p>Each of the conditions can be any predicate — either a built-in predicate form, or an arbitrary traversal, including a lambda. See <a class="xref" href="Predicates.html">Predicates</a> for details.
+</p>
+<p>Note that, as the predicates could be lambdas, you could also perform effects resembling <a class="ref" href="effect.html"><code class="code">effect</code></a> (say, setting an ELisp variable) using <a class="ref" href="#precaution"><code class="code">precaution</code></a>, either before or after the traversal. If you&rsquo;d like to do this, just remember that the effect function you use, as a predicate, must return a truthy value. And further, as a traversal, it must accept the two standard arguments to traversals (See <a class="xref" href="Lambdas.html">Lambdas</a>).
+</p>
+<h4 class="subheading" id="Examples-8"><span>Examples<a class="copiable-link" href="#Examples-8"> &para;</a></span></h4>
+
+<p>&quot;Go down but don&rsquo;t descend to the root node.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (carefully (move down)
+               (afterwards (not (at root))))))
+</pre></div>
+
+<p>&quot;Go backward as long as we aren&rsquo;t at the first node at this level.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (carefully (move backward)
+               (beforehand (not (at first))))))
+</pre></div>
+
+<p>Note that this executes a *single* traversal while taking precautions. It is not repeated unless wrapped in a circuit or employed as a detour.
+</p>
+</div>
+
+
+
+</body>
+</html>

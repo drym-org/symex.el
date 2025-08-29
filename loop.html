@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>loop (Symex)</title>
+
+<meta name="description" content="loop (Symex)">
+<meta name="keywords" content="loop (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Language.html" rel="up" title="Language">
+<link href="precaution.html" rel="next" title="precaution">
+<link href="circuit.html" rel="prev" title="circuit">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="loop">
+<div class="nav-panel">
+<p>
+Next: <a href="precaution.html" accesskey="n" rel="next"><code class="code">precaution</code></a>, Previous: <a href="circuit.html" accesskey="p" rel="prev"><code class="code">circuit</code></a>, Up: <a href="Language.html" accesskey="u" rel="up">Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="loop-1"><span>7.2.8 <code class="code">loop</code><a class="copiable-link" href="#loop-1"> &para;</a></span></h4>
+
+<h4 class="subheading" id="Syntax-7"><span>Syntax<a class="copiable-link" href="#Syntax-7"> &para;</a></span></h4>
+
+<p><code class="code">(loop traversal condition)</code>
+</p>
+<h4 class="subheading" id="Description-7"><span>Description<a class="copiable-link" href="#Description-7"> &para;</a></span></h4>
+
+<p>Repeat a traversal until a condition is met. If the traversal fails without the condition being met, the traversal is considered to have failed and no move is made.
+</p>
+<p>The condition can be any predicate — either a built-in predicate form, or an arbitrary traversal, including a lambda. See <a class="xref" href="Predicates.html">Predicates</a> for details.
+</p>
+<p>This is fairly similar to <code class="code">circuit</code>, but is more natural in some cases where using conditions via precautions may be awkward.
+</p>
+<h4 class="subheading" id="Examples-7"><span>Examples<a class="copiable-link" href="#Examples-7"> &para;</a></span></h4>
+
+<p>&quot;Move down until we reach the root.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (loop (move down) (at root))))
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

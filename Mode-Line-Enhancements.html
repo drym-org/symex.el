@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Mode Line Enhancements (Symex)</title>
+
+<meta name="description" content="Mode Line Enhancements (Symex)">
+<meta name="keywords" content="Mode Line Enhancements (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Squirrel-on-a-Speedrun-_002d-Tips-and-Tricks.html" rel="up" title="Squirrel on a Speedrun - Tips and Tricks">
+<link href="Easy-Entry-Into-Symex-Mode.html" rel="next" title="Easy Entry Into Symex Mode">
+<link href="Macros.html" rel="prev" title="Macros">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Mode-Line-Enhancements">
+<div class="nav-panel">
+<p>
+Next: <a href="Easy-Entry-Into-Symex-Mode.html" accesskey="n" rel="next">Easy Entry Into Symex Mode</a>, Previous: <a href="Macros.html" accesskey="p" rel="prev">Macros</a>, Up: <a href="Squirrel-on-a-Speedrun-_002d-Tips-and-Tricks.html" accesskey="u" rel="up">Squirrel on a Speedrun - Tips and Tricks</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Mode-Line-Enhancements-1"><span>6.3 Mode Line Enhancements<a class="copiable-link" href="#Mode-Line-Enhancements-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Mode-line_002c-tips-and-tricks"></a>
+
+<p>The vanilla mode line in Emacs does show some textual indication of your current evil state, e.g. <code class="code">&lt;N&gt;</code> for Normal state, and <code class="code">&lt;λ&gt;</code> for Symex state, and this kind of visual feedback is helpful, yet also subtle. If you&rsquo;d like more pronounced visual feedback, you might try extensions such as <a class="uref" href="https://github.com/milkypostman/powerline">powerline</a> or <a class="uref" href="https://github.com/dbordak/telephone-line">telephone-line</a>, which provide customizable color coded indicators for each evil state in the mode line. For example, for telephone-line, you could use the following config in the <code class="code">config</code> section of the <code class="code">use-package</code> declaration for telephone-line:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(defface telephone-line-evil-symex
+  '((t (:background &quot;SlateBlue3&quot; :inherit telephone-line-evil)))
+  &quot;Face used in evil color-coded segments when in Symex state.&quot;
+  :group 'telephone-line-evil)
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

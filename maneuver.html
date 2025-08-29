@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>maneuver (Symex)</title>
+
+<meta name="description" content="maneuver (Symex)">
+<meta name="keywords" content="maneuver (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Language.html" rel="up" title="Language">
+<link href="venture.html" rel="next" title="venture">
+<link href="move.html" rel="prev" title="move">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="maneuver">
+<div class="nav-panel">
+<p>
+Next: <a href="venture.html" accesskey="n" rel="next"><code class="code">venture</code></a>, Previous: <a href="move.html" accesskey="p" rel="prev"><code class="code">move</code></a>, Up: <a href="Language.html" accesskey="u" rel="up">Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="maneuver-1"><span>7.2.2 <code class="code">maneuver</code><a class="copiable-link" href="#maneuver-1"> &para;</a></span></h4>
+
+<h4 class="subheading" id="Syntax-1"><span>Syntax<a class="copiable-link" href="#Syntax-1"> &para;</a></span></h4>
+
+<p><code class="code">(maneuver traversal ...)</code>
+</p>
+<p>or
+</p>
+<p><code class="code">(do traversal ...)</code>
+</p>
+<h4 class="subheading" id="Description-1"><span>Description<a class="copiable-link" href="#Description-1"> &para;</a></span></h4>
+
+<p>Execute a sequence of traversals in order. The maneuver succeeds if <em class="emph">all</em> of the traversals succeed. If any of them fail, then the entire maneuver is aborted and nothing happens. In other words, the maneuver has &quot;all or nothing&quot; semantics. To accept partial completion, use <code class="code">venture</code> instead.
+</p>
+<h4 class="subheading" id="Examples-1"><span>Examples<a class="copiable-link" href="#Examples-1"> &para;</a></span></h4>
+
+<p>&quot;Go forward, then up, and then forward again.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (do (move forward)
+        (move up)
+        (move forward))))
+</pre></div>
+
+<p>&quot;Go up and then keep going forward, and then go up again.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (do (move up)
+        (repeat (move forward))
+        (move up))))
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

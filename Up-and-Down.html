@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Up and Down (Symex)</title>
+
+<meta name="description" content="Up and Down (Symex)">
+<meta name="keywords" content="Up and Down (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Customizing-Symex.html" rel="up" title="Customizing Symex">
+<link href="Branch-Memory.html" rel="next" title="Branch Memory">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Up-and-Down">
+<div class="nav-panel">
+<p>
+Next: <a href="Branch-Memory.html" accesskey="n" rel="next">Branch Memory</a>, Up: <a href="Customizing-Symex.html" accesskey="u" rel="up">Customizing Symex</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Up-and-Down-1"><span>4.1 Up and Down<a class="copiable-link" href="#Up-and-Down-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Up-and-down_002c-customizing"></a>
+
+<p>The default keybindings in Symex mode treat increasingly nested code as being &ldquo;lower,&rdquo; and elements closer to the root as &ldquo;higher.&rdquo; This may be familiar from the sense of &ldquo;tree&rdquo; in computer science, which is &ldquo;inverted&rdquo; from the orientation of actual trees growing outside. You can, if you like, flip this to correspond to the latter, which was formerly the default orientation of Symex. The latter orientation would mean thinking as a squirrel would — going &ldquo;up&rdquo; to the nest and &ldquo;down&rdquo; to the root. Choose whatever you may find most natural by putting the following in the <code class="code">:custom</code> section of your <code class="code">use-package</code> declaration:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-orientation 'squirrel)  ; either 'squirrel or 'inverted (the default)
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

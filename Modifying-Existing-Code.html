@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Modifying Existing Code (Symex)</title>
+
+<meta name="description" content="Modifying Existing Code (Symex)">
+<meta name="keywords" content="Modifying Existing Code (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Transforming-Code.html" rel="up" title="Transforming Code">
+<link href="Inserting-New-Code.html" rel="next" title="Inserting New Code">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Modifying-Existing-Code">
+<div class="nav-panel">
+<p>
+Next: <a href="Inserting-New-Code.html" accesskey="n" rel="next">Inserting New Code</a>, Up: <a href="Transforming-Code.html" accesskey="u" rel="up">Transforming Code</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Modifying-Existing-Code-1"><span>3.2.1 Modifying Existing Code<a class="copiable-link" href="#Modifying-Existing-Code-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Modifying-code-_0028basic_0029"></a>
+
+<p>Try these commands to modify code:
+</p>
+<table class="multitable">
+<thead><tr><th width="15%">Key</th><th width="45%">Command</th><th width="40%">Description</th></tr></thead>
+<tbody><tr><td width="15%"><code class="code">x</code></td><td width="45%"><code class="code">symex-delete</code></td><td width="40%">Delete an expression. This accepts counts, so <code class="code">3x</code> deletes three expressions.</td></tr>
+<tr><td width="15%"><code class="code">c</code></td><td width="45%"><code class="code">symex-change</code></td><td width="40%">Change an expression to whatever you enter. This leaves Symex mode so that you can enter the replacement in the buffer. This accepts counts, so <code class="code">3c</code> changes three expressions.</td></tr>
+<tr><td width="15%"><code class="code">y</code></td><td width="45%"><code class="code">symex-yank</code></td><td width="40%">Copy the expression to the kill ring. This accepts counts, so <code class="code">3y</code> copies three expressions.</td></tr>
+<tr><td width="15%"><code class="code">p</code></td><td width="45%"><code class="code">symex-paste-after</code></td><td width="40%">Paste from the kill ring, <em class="emph">after</em> the current expression. This accepts counts, so <code class="code">3p</code> pastes three times.</td></tr>
+<tr><td width="15%"><code class="code">P</code></td><td width="45%"><code class="code">symex-paste-before</code></td><td width="40%">Paste from the kill ring, <em class="emph">before</em> the current expression. This accepts counts, so <code class="code">3p</code> pastes three times.</td></tr>
+<tr><td width="15%"><code class="code">&lt;tab&gt;</code></td><td width="45%"><code class="code">symex-tidy</code></td><td width="40%">Tidies and indents the expression. This accepts counts, so <code class="code">3&lt;tab&gt;</code> indents three expressions.</td></tr>
+</tbody>
+</table>
+
+<p>Next, we&rsquo;ll see a few simple ways to enter new code into the buffer in a context-sensitive way.
+</p>
+</div>
+
+
+
+</body>
+</html>

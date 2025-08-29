@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Lisp (Symex)</title>
+
+<meta name="description" content="Lisp (Symex)">
+<meta name="keywords" content="Lisp (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Languages-Supported.html" rel="up" title="Languages Supported">
+<link href="Tree_002dSitter.html" rel="next" title="Tree-Sitter">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Lisp">
+<div class="nav-panel">
+<p>
+Next: <a href="Tree_002dSitter.html" accesskey="n" rel="next">Tree-Sitter</a>, Up: <a href="Languages-Supported.html" accesskey="u" rel="up">Languages Supported</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Lisp-1"><span>2.5.1 Lisp<a class="copiable-link" href="#Lisp-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Racket-Mode_002c-integration-with"></a>
+<a class="index-entry-id" id="index-CIDER_002c-integration-with"></a>
+<a class="index-entry-id" id="index-SLIME_002c-integration-with"></a>
+<a class="index-entry-id" id="index-Sly_002c-integration-with"></a>
+<a class="index-entry-id" id="index-IELM_002c-integration-with"></a>
+<a class="index-entry-id" id="index-Fennel-Mode_002c-integration-with"></a>
+<a class="index-entry-id" id="index-Arc-Mode_002c-integration-with"></a>
+<a class="index-entry-id" id="index-Geiser-Mode_002c-integration-with"></a>
+<a class="index-entry-id" id="index-Racket"></a>
+<a class="index-entry-id" id="index-Scheme"></a>
+<a class="index-entry-id" id="index-Emacs-Lisp"></a>
+<a class="index-entry-id" id="index-ELisp"></a>
+<a class="index-entry-id" id="index-Clojure"></a>
+<a class="index-entry-id" id="index-Arc"></a>
+<a class="index-entry-id" id="index-Common-Lisp"></a>
+<a class="index-entry-id" id="index-Fennel"></a>
+
+<p>Symex provides expressive structural editing for any flavor of Lisp. In addition to this core functionality, it also includes convenient integration with popular development environments for some Lisps, via the <code class="code">symex-ide</code> package (See <a class="xref" href="Installing-Symex.html">Installing Symex</a>):
+</p>
+<dl class="table">
+<dt><em class="emph">Flavor</em></dt>
+<dd><p><em class="emph">Runtime and docs</em>
+</p>
+</dd>
+<dt>Racket</dt>
+<dd><p>Racket Mode
+</p>
+</dd>
+<dt>Emacs Lisp</dt>
+<dd><p>Native/IELM
+</p>
+</dd>
+<dt>Clojure</dt>
+<dd><p>CIDER
+</p>
+</dd>
+<dt>Common Lisp</dt>
+<dd><p>Slime or Sly. This defaults to Slime, but you can use Sly by putting this in the <code class="code">:custom</code> (not <code class="code">:config</code>) section of your <code class="code">use-package</code> declaration: <code class="code">(symex-common-lisp-backend 'sly)</code>
+</p>
+</dd>
+<dt>Scheme</dt>
+<dd><p>Geiser
+</p>
+</dd>
+<dt>Arc</dt>
+<dd><p>Arc.el
+</p>
+</dd>
+<dt>Fennel</dt>
+<dd><p>fennel-mode.el
+</p></dd>
+</dl>
+
+</div>
+
+
+
+</body>
+</html>

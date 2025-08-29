@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Tree-Sitter (Symex)</title>
+
+<meta name="description" content="Tree-Sitter (Symex)">
+<meta name="keywords" content="Tree-Sitter (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Languages-Supported.html" rel="up" title="Languages Supported">
+<link href="Using-Symex-with-Clojure.html" rel="next" title="Using Symex with Clojure">
+<link href="Lisp.html" rel="prev" title="Lisp">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Tree_002dSitter">
+<div class="nav-panel">
+<p>
+Next: <a href="Using-Symex-with-Clojure.html" accesskey="n" rel="next">Using Symex with Clojure</a>, Previous: <a href="Lisp.html" accesskey="p" rel="prev">Lisp</a>, Up: <a href="Languages-Supported.html" accesskey="u" rel="up">Languages Supported</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Tree_002dSitter-1"><span>2.5.2 Tree-Sitter<a class="copiable-link" href="#Tree_002dSitter-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Tree_002dsitter_002c-using-with"></a>
+<a class="index-entry-id" id="index-Python"></a>
+
+<p>To use Symex with Tree-sitter, just ensure that you&rsquo;re using the Tree-sitter enabled major mode for your language. For example, for Python, you must use &lsquo;python-ts-mode&rsquo; rather than &lsquo;python-mode&lsquo;.
+</p>
+<p>Of course, this assumes that you already have Tree-sitter set up! If not, and if you&rsquo;d like to use Symex with a non-Lisp language, you will need to do three things:
+</p>
+<ol class="enumerate">
+<li> Use Emacs 29+
+</li><li> Install a grammar for your language
+</li><li> Install a Tree-sitter-aware major mode for your language
+
+</li></ol>
+
+<p>The first is self-explanatory. For the grammar, first find a Tree-sitter grammar for your language and then install it. You can find helpful instructions for this on <a class="url" href="https://www.masteringemacs.org/article/how-to-get-started-tree-sitter">Mastering Emacs</a>. Finally, for the major mode, Emacs already includes such modes for some popular languages such as Python, but if your favorite language isn&rsquo;t included, you may also find the Tree-sitter major mode for it on standard Emacs package archives like MELPA. These typically have the suffix <code class="code">-ts-mode</code> in their name, for instance, <code class="code">python-ts-mode</code>. Once installed, you will need to <em class="emph">enable</em> this major mode in your (e.g., Python) buffer, instead of the usual major mode (e.g., use <code class="code">python-ts-mode</code> instead of <code class="code">python-mode</code>).
+</p>
+<p>And if you&rsquo;ve done all that, you should now be able to use Symex with your language!
+</p>
+<p>If you feel that support for your favorite language could be improved, we want to hear from you! Please <a class="uref" href="https://github.com/drym-org/symex.el/issues">submit an issue</a> and let&rsquo;s discuss your ideas.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Using-Symex-with-Clojure.html">Using Symex with Clojure</a>, Previous: <a href="Lisp.html">Lisp</a>, Up: <a href="Languages-Supported.html">Languages Supported</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Tree-Edit (Symex)</title>
+
+<meta name="description" content="Tree-Edit (Symex)">
+<meta name="keywords" content="Tree-Edit (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Comparison-with-Similar-Packages.html" rel="up" title="Comparison with Similar Packages">
+<link href="Combobulate.html" rel="next" title="Combobulate">
+<link href="Paredit.html" rel="prev" title="Paredit">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Tree_002dEdit">
+<div class="nav-panel">
+<p>
+Next: <a href="Combobulate.html" accesskey="n" rel="next">Combobulate</a>, Previous: <a href="Paredit.html" accesskey="p" rel="prev">Paredit</a>, Up: <a href="Comparison-with-Similar-Packages.html" accesskey="u" rel="up">Comparison with Similar Packages</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Tree_002dEdit-1"><span>1.4.4 Tree-Edit<a class="copiable-link" href="#Tree_002dEdit-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-Tree_002dEdit_002c-comparison-with"></a>
+
+<p><a class="uref" href="https://github.com/ethan-leba/tree-edit">Tree-Edit</a> was one of the first packages to offer structural editing for non-Lisp languages via Tree-sitter. It is composed of two packages. First, a core library containing a reasoning engine built on top of tree-sitter, along with commands for structural and templated editing. And another package for an evil state that leverages these features in a user interface. The latter provides a &ldquo;point-free&rdquo; editing experience similar to Symex.
+</p>
+<p>While there is some overlap in functionality at the UI level, the core features offered by the packages are fairly distinct, and it&rsquo;s likely that they could be leveraged by either package, someday.
+</p>
+<p>For instance, Symex provides a very basic set of insertion commands. &ldquo;Inserting after&rdquo; an <code class="code">if</code> block in Symex would just put the cursor at the right spot and leave the rest to you, but Tree-Edit would wrap the insertion point with <code class="code">else</code>! On the other hand, Symex provides a rich array of traversals via the DSL, which Tree-Edit doesn&rsquo;t have today.
+</p>
+<p>For most other packages on this list, it&rsquo;s easy to use them together with Symex, but for Tree-Edit, as it, too, is modal, using them together may not be straightforward. It likely makes a lot more sense to integrate these packages at the library level, which we hope to explore.
+</p>
+</div>
+
+
+
+</body>
+</html>

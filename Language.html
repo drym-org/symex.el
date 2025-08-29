@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Language (Symex)</title>
+
+<meta name="description" content="Language (Symex)">
+<meta name="keywords" content="Language (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="The-Symex-DSL.html" rel="up" title="The Symex DSL">
+<link href="Evaluation-Model.html" rel="next" title="Evaluation Model">
+<link href="Usage.html" rel="prev" title="Usage">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Language">
+<div class="nav-panel">
+<p>
+Next: <a href="Evaluation-Model.html" accesskey="n" rel="next">Evaluation Model</a>, Previous: <a href="Usage.html" accesskey="p" rel="prev">Usage</a>, Up: <a href="The-Symex-DSL.html" accesskey="u" rel="up">The Symex DSL</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Language-1"><span>7.2 Language<a class="copiable-link" href="#Language-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Symex-DSL_002c-language-documentation"></a>
+
+<p>The Symex DSL allows you to specify <em class="emph">traversals</em>. A traversal may be a movement from one part of the tree to another, or it may be an action to take at a particular point in a tree such as &ldquo;taking&rdquo; (deleting) an expression or &ldquo;dropping&rdquo; (pasting) something, &ldquo;carefully&rdquo; checking conditions, or even performing an arbitrary &ldquo;effect.&rdquo;
+</p>
+<p>Symex gives you several linguistic forms with which to describe such traversals in precise ways.
+</p>
+<p>Each form of the language has its own syntax, and typically the clauses of these forms are expected to be traversals themselves. For instance, the <code class="code">maneuver</code> form specifies a traversal as a sequence of other traversals to be executed in order.
+</p>
+<p>Typically, if a traversal succeeds, it returns a list of executed moves which if replayed manually from the starting position would have the same effect as running the traversal did. If the traversal fails, it returns <code class="code">nil</code>.
+</p>
+<ul class="mini-toc">
+<li><a href="move.html" accesskey="1"><code class="code">move</code></a></li>
+<li><a href="maneuver.html" accesskey="2"><code class="code">maneuver</code></a></li>
+<li><a href="venture.html" accesskey="3"><code class="code">venture</code></a></li>
+<li><a href="protocol.html" accesskey="4"><code class="code">protocol</code></a></li>
+<li><a href="detour.html" accesskey="5"><code class="code">detour</code></a></li>
+<li><a href="decision.html" accesskey="6"><code class="code">decision</code></a></li>
+<li><a href="circuit.html" accesskey="7"><code class="code">circuit</code></a></li>
+<li><a href="loop.html" accesskey="8"><code class="code">loop</code></a></li>
+<li><a href="precaution.html" accesskey="9"><code class="code">precaution</code></a></li>
+<li><a href="delete.html"><code class="code">delete</code></a></li>
+<li><a href="paste.html"><code class="code">paste</code></a></li>
+<li><a href="effect.html"><code class="code">effect</code></a></li>
+<li><a href="Lambdas.html">Lambdas</a></li>
+<li><a href="Predicates.html">Predicates</a></li>
+</ul>
+</div>
+
+
+
+</body>
+</html>

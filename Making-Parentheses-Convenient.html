@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Making Parentheses Convenient (Symex)</title>
+
+<meta name="description" content="Making Parentheses Convenient (Symex)">
+<meta name="keywords" content="Making Parentheses Convenient (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Squirrel-on-a-Speedrun-_002d-Tips-and-Tricks.html" rel="up" title="Squirrel on a Speedrun - Tips and Tricks">
+<link href="Easy-Entry-Into-Symex-Mode.html" rel="prev" title="Easy Entry Into Symex Mode">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Making-Parentheses-Convenient">
+<div class="nav-panel">
+<p>
+Previous: <a href="Easy-Entry-Into-Symex-Mode.html" accesskey="p" rel="prev">Easy Entry Into Symex Mode</a>, Up: <a href="Squirrel-on-a-Speedrun-_002d-Tips-and-Tricks.html" accesskey="u" rel="up">Squirrel on a Speedrun - Tips and Tricks</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Making-Parentheses-Convenient-1"><span>6.5 Making Parentheses Convenient<a class="copiable-link" href="#Making-Parentheses-Convenient-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Parentheses_002c-convenient-entry"></a>
+
+<p>In writing Lisp code, parentheses are among the most commonly typed characters, and yet, these require us to leave home position dramatically to type! I recommend a keybinding resembling the following to make it more efficient. Of course this applies only in Insert state (for Evil users) or in vanilla Emacs state, as you can insert and modulate delimiters in other ways while in Symex state:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(define-key
+  symex-lisp-mode-map
+  (kbd &quot;C-w&quot;)
+  (lambda ()
+    (interactive)
+    (execute-kbd-macro (kbd &quot;(&quot;))))
+</pre></div>
+
+<p>You could think of &ldquo;w&rdquo; as &ldquo;wrap&rdquo; in this context, as in, &ldquo;to wrap with parentheses,&rdquo; and it matches a similar binding in symex state (i.e. <code class="code">w</code> to wrap an expression and enter insert state). For the closing parenthesis, you could just use Emacs&rsquo;s <code class="code">C-f</code> to move forward a character — since symex (via paredit) ensures that parentheses are balanced, you rarely need to actually type a closing delimiter. The binding <code class="code">C-w</code> would be fine for Evil users, but vanilla Emacs users may need to find something else here. Of course it goes without saying that the Control key should be conveniently accessible without having to leave home position. I have Control under my right thumb, and Escape in place of Caps Lock.
+</p>
+</div>
+
+
+
+</body>
+</html>

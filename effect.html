@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>effect (Symex)</title>
+
+<meta name="description" content="effect (Symex)">
+<meta name="keywords" content="effect (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Language.html" rel="up" title="Language">
+<link href="Lambdas.html" rel="next" title="Lambdas">
+<link href="paste.html" rel="prev" title="paste">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="effect">
+<div class="nav-panel">
+<p>
+Next: <a href="Lambdas.html" accesskey="n" rel="next">Lambdas</a>, Previous: <a href="paste.html" accesskey="p" rel="prev"><code class="code">paste</code></a>, Up: <a href="Language.html" accesskey="u" rel="up">Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="effect-1"><span>7.2.12 <code class="code">effect</code><a class="copiable-link" href="#effect-1"> &para;</a></span></h4>
+
+<h4 class="subheading" id="Syntax-11"><span>Syntax<a class="copiable-link" href="#Syntax-11"> &para;</a></span></h4>
+
+<p><code class="code">(effect effect-fn [main-traversal])</code>
+</p>
+<h4 class="subheading" id="Description-11"><span>Description<a class="copiable-link" href="#Description-11"> &para;</a></span></h4>
+
+<p>Execute the main traversal (if present) and then, if it succeeds, call the &ldquo;effect&rdquo; lambda, ignoring its output. The effect could be <em class="emph">anything</em>, allowing us to attach arbitrary semantics to traversals.
+</p>
+<p>Note that you could also perform such effects using <a class="ref" href="precaution.html"><code class="code">precaution</code></a>, either before or after the traversal, which makes that approach more flexible. Yet, that approach requires the lambdas used to fulfill the traversal interface in terms of arguments and return values (See <a class="xref" href="Lambdas.html">Lambdas</a>), so it&rsquo;s a little more to think about. Performing an effect along with a traversal without consideration for return values or input arguments is such a common case, and that&rsquo;s why <code class="code">effect</code> is provided as a convenience.
+</p>
+<p>Typically, we are interested in attaching such effects to a repeated traversal so that the effect is performed at each step of the traversal as long as it succeeds.
+</p>
+<h4 class="subheading" id="Examples-11"><span>Examples<a class="copiable-link" href="#Examples-11"> &para;</a></span></h4>
+
+<p>&quot;Print each expression until the end.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+ (symex-traversal
+   (repeat
+     (effect (lambda ()
+               (print (thing-at-point 'sexp)))
+             (move forward)))))
+</pre></div>
+
+<p>Note, again, that the lambda used in an <code class="code">effect</code> accepts no arguments, and its return value is disregarded.
+</p>
+</div>
+
+
+
+</body>
+</html>

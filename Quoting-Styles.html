@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Quoting Styles (Symex)</title>
+
+<meta name="description" content="Quoting Styles (Symex)">
+<meta name="keywords" content="Quoting Styles (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Customizing-Symex.html" rel="up" title="Customizing Symex">
+<link href="Look-and-Feel.html" rel="next" title="Look and Feel">
+<link href="Balancing-Parentheses.html" rel="prev" title="Balancing Parentheses">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Quoting-Styles">
+<div class="nav-panel">
+<p>
+Next: <a href="Look-and-Feel.html" accesskey="n" rel="next">Look and Feel</a>, Previous: <a href="Balancing-Parentheses.html" accesskey="p" rel="prev">Balancing Parentheses</a>, Up: <a href="Customizing-Symex.html" accesskey="u" rel="up">Customizing Symex</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Quoting-Styles-1"><span>4.7 Quoting Styles<a class="copiable-link" href="#Quoting-Styles-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Quoting-styles_002c-customizing"></a>
+<a class="index-entry-id" id="index-Common-prefixes_002c-customizing"></a>
+
+<p>Symex provides convenient ways to add common prefixes and also remove them from any expression. This is useful especially when editing Lisp code for managing syntax quoting, e.g., turning <code class="code">(a b c)</code> into <code class="code">'(a b c)</code> — a standard thing one might do in Lisp — without needing to exit Symex mode.
+</p>
+<p>You could configure any prefixes here that you may find yourself using often, and they don&rsquo;t have to have anything to do with quoting, or even with Lisp.
+</p>
+<p>By default, <code class="code">C-'</code> and <code class="code">C-,</code> cycle through standard quoting and unquoting prefixes (<code class="code">'</code>, <code class="code">`</code> and <code class="code">,</code>, <code class="code">,@</code>, respectively) recognizable to all Lisps. But some Lisps, such as Racket, provide additional quoting styles that you may want to add here. To add custom prefixes, add something like this to the <code class="code">:custom</code> section (not the <code class="code">:config</code> section) of your <code class="code">use-package</code> form:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-quote-prefix-list (list &quot;'&quot; &quot;`&quot; &quot;#'&quot; &quot;#`&quot;))
+(symex-unquote-prefix-list (list &quot;,&quot; &quot;,@&quot; &quot;#,@&quot;))
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

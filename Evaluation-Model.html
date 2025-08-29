@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Evaluation Model (Symex)</title>
+
+<meta name="description" content="Evaluation Model (Symex)">
+<meta name="keywords" content="Evaluation Model (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="The-Symex-DSL.html" rel="up" title="The Symex DSL">
+<link href="Expressive-Power.html" rel="next" title="Expressive Power">
+<link href="Language.html" rel="prev" title="Language">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Evaluation-Model">
+<div class="nav-panel">
+<p>
+Next: <a href="Expressive-Power.html" accesskey="n" rel="next">Expressive Power</a>, Previous: <a href="Language.html" accesskey="p" rel="prev">Language</a>, Up: <a href="The-Symex-DSL.html" accesskey="u" rel="up">The Symex DSL</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Evaluation-Model-1"><span>7.3 Evaluation Model<a class="copiable-link" href="#Evaluation-Model-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Symex-DSL_002c-evaluation-model-of"></a>
+<a class="index-entry-id" id="index-Symex-DSL_002c-performing-arbitrary-computations"></a>
+
+<p>Typically, when executing traversals, we only need to know whether a traversal succeeded or failed. For this purpose, it&rsquo;s sufficient to check whether the traversal evaluates to a non-<code class="code">nil</code> result in order to infer success.
+</p>
+<p>But there are cases when you may need to modulate the computation being performed as part of the traversal. For instance, the &ldquo;leap&rdquo; feature in Symex computes a delta of each position in relation to the initial position, as it traverses, and stops traversing when the delta reaches <code class="code">0</code> in both <code class="code">x</code> (horizontal position along branch) and <code class="code">y</code> (height from root) directions.
+</p>
+<p>The remainder of this section explains how computations work, so that you can write similar traversals that may need to perform custom computations.
+</p>
+<p>Symex executes traversals while evaluating an associated &ldquo;fold&rdquo;-like computation. By default, that computation simply assembles a sequence of the moves made during traversal evaluation, producing this full list as the result.
+</p>
+<p>The computation is specified in terms of a &ldquo;perceiving&rdquo; operation that represents the underlying move (every traversal is ultimately composed of elementary moves) in a way that is relevant for the computation, and a &ldquo;synthesizing&rdquo; operation that combines the accumulated result with the new perceived input.
+</p>
+<p>Traversals may be evaluated with arbitrary computations that are specified in this way. The in-progress result is always available to traversals as an argument, so that they may condition on this in-progress result (as &ldquo;leap&rdquo; does, stopping when a condition on the result is met).
+</p>
+<p>For example, the following computation simply counts the number of moves made during traversal evaluation:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(defvar my-symex-compute-moves
+        (symex-make-computation :perceive (lambda (_x) 1)
+                                :synthesize #'+)
+</pre></div>
+
+<p>It may be used as follows:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval (symex-traversal
+              (circuit (move forward)))
+            my-symex-compute-moves)
+</pre></div>
+
+<p>This counts the number of moves made in traversing forward to the end of the containing expression.
+</p>
+<p>Note that traversals sometimes return &ldquo;zero&rdquo; moves, that is, <code class="code">(move 0 0)</code>, to indicate an intentional absence of movement, as opposed to <code class="code">nil</code> which indicates a failed traversal, so this computed result may return more moves than the actual number of steps taken. It is just an example of a simple computation, though, perhaps, not a very useful one.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Expressive-Power.html">Expressive Power</a>, Previous: <a href="Language.html">Language</a>, Up: <a href="The-Symex-DSL.html">The Symex DSL</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Using a Debugger (EDebug) (Symex)</title>
+
+<meta name="description" content="Using a Debugger (EDebug) (Symex)">
+<meta name="keywords" content="Using a Debugger (EDebug) (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Debugging.html" rel="up" title="Debugging">
+<link href="Troubleshooting.html" rel="next" title="Troubleshooting">
+<link href="Using-a-REPL.html" rel="prev" title="Using a REPL">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Using-a-Debugger-_0028EDebug_0029">
+<div class="nav-panel">
+<p>
+Next: <a href="Troubleshooting.html" accesskey="n" rel="next">Troubleshooting</a>, Previous: <a href="Using-a-REPL.html" accesskey="p" rel="prev">Using a REPL</a>, Up: <a href="Debugging.html" accesskey="u" rel="up">Debugging</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Using-a-Debugger-_0028EDebug_0029-1"><span>7.6.3 Using a Debugger (EDebug)<a class="copiable-link" href="#Using-a-Debugger-_0028EDebug_0029-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-EDebug_002c-using"></a>
+
+<p>Another way is to use the ELisp Debugger, EDebug. This allows you to see the exact steps the DSL evaluator goes through in executing a traversal and the effects it has on the code, and can be helpful if you want to understand why a traversal isn&rsquo;t doing what you think it should be doing, or even if you just want to understand how the DSL works! A good debugger isn&rsquo;t just for debugging problems, it&rsquo;s also an exploratory tool for quick feedback at the creative stage when you&rsquo;re implementing new functionality. It can help you be more efficient at every stage of development.
+</p>
+<p>To use it, first evaluate the relevant traversal evaluator (for instance, the <code class="code">symex-eval</code> function) for debugging by placing point somewhere within it and then invoking <code class="code">M-x edebug-defun</code> (a convenient keybinding for this, e.g., via a Hydra, is recommended). Now, if you execute a traversal (e.g., via the REPL as in the recipe above, or with a test expression in the Scratch buffer, or even just by invoking the relevant feature on source code while in Symex mode), it will put you in the debugger and allow you to step through the code. Handy commands for EDebug:
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">s</code> — step forward
+
+</li><li><code class="code">i</code> — step in
+
+</li><li><code class="code">o</code> — step out
+
+</li><li><code class="code">g</code> — go until next breakpoint
+
+</li><li><code class="code">q</code> — quit
+
+</li></ul>
+
+<p>There are also lots of other features like setting and unsetting breakpoints (<code class="code">b</code> and <code class="code">u</code>), seeing a backtrace (<code class="code">d</code>), evaluating expressions in the evaluation context (<code class="code">e</code>), and lots more, making it an indispensible tool for ELisp debugging.
+</p>
+<p>When you&rsquo;re done debugging, you can remove the debugger hooks by just evaluating the debugged functions in the usual way (e.g. via <code class="code">M-x eval-defun</code> or <code class="code">M-x eval-buffer</code>).
+</p>
+<p>Also see <a class="uref" href="https://endlessparentheses.com/debugging-emacs-lisp-part-1-earn-your-independence.html">this series on ELisp debugging</a> for more tips.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Troubleshooting.html">Troubleshooting</a>, Previous: <a href="Using-a-REPL.html">Using a REPL</a>, Up: <a href="Debugging.html">Debugging</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

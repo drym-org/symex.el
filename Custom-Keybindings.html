@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Custom Keybindings (Symex)</title>
+
+<meta name="description" content="Custom Keybindings (Symex)">
+<meta name="keywords" content="Custom Keybindings (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Customizing-Symex.html" rel="up" title="Customizing Symex">
+<link href="Look-and-Feel.html" rel="prev" title="Look and Feel">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Custom-Keybindings">
+<div class="nav-panel">
+<p>
+Previous: <a href="Look-and-Feel.html" accesskey="p" rel="prev">Look and Feel</a>, Up: <a href="Customizing-Symex.html" accesskey="u" rel="up">Customizing Symex</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Custom-Keybindings-1"><span>4.9 Custom Keybindings<a class="copiable-link" href="#Custom-Keybindings-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-keybindings_002c-customizing"></a>
+
+<p>You can add any custom keybindings you like to the Symex modal UI by using the underlying Lithium facilities for this purpose, as described in the <a class="uref" href="https://github.com/countvajhula/lithium">Lithium</a> documentation.
+</p>
+<p><strong class="strong">PLEASE NOTE</strong>: if you use custom keybindings, it is essential to preserve the intended &ldquo;exiting&rdquo; behavior of the commands. For instance, all insertion commands in Symex are designated with <code class="code">:exit</code> in the keybinding specification, which ensures that it exits the Lithium mode to allow you to enter text. If you choose to override these, remember to retain the <code class="code">:exit</code> flag (described further in the Lithium documentation).
+</p>
+<p>Also See <a class="xref" href="Point_002dFree-Modal-Editing.html">Point-Free Modal Editing</a> for more on Lithium.
+</p>
+</div>
+
+
+
+</body>
+</html>

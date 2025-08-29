@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Predicates (Symex)</title>
+
+<meta name="description" content="Predicates (Symex)">
+<meta name="keywords" content="Predicates (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Language.html" rel="up" title="Language">
+<link href="Lambdas.html" rel="prev" title="Lambdas">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Predicates">
+<div class="nav-panel">
+<p>
+Previous: <a href="Lambdas.html" accesskey="p" rel="prev">Lambdas</a>, Up: <a href="Language.html" accesskey="u" rel="up">Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Predicates-1"><span>7.2.14 Predicates<a class="copiable-link" href="#Predicates-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-predicates-in-traversals"></a>
+
+<p>Symex offers a few standard predicates to use as conditions in traversals like <a class="ref" href="decision.html"><code class="code">decision</code></a>, <a class="ref" href="precaution.html"><code class="code">precaution</code></a>, and <a class="ref" href="loop.html"><code class="code">loop</code></a>, usable via a convenient syntax.
+</p>
+<ul class="itemize mark-bullet">
+<li><code class="code">(at root)</code> — Are we (i.e. is the cursor) at the root node? Any toplevel form in the source file is considered to be a root node.
+
+</li><li><code class="code">(at first)</code> — Are we at the first node at the present level / on the current branch of the tree?
+
+</li><li><code class="code">(at last)</code> — Are we at the last node at the present level / on the current branch of the tree?
+
+</li><li><code class="code">(at initial)</code> — Are we at the first root-level node in the entire file?
+
+</li><li><code class="code">(at final)</code> — Are we at the last root-level node in the entire file?
+
+</li></ul>
+
+<p>In addition to supporting the above syntax, the conditions in traversals like <a class="ref" href="decision.html"><code class="code">decision</code></a>, <a class="ref" href="precaution.html"><code class="code">precaution</code></a>, and <a class="ref" href="loop.html"><code class="code">loop</code></a>, are simply <em class="emph">traversals</em> themselves, so you may use any traversal as a predicate, including, in particular, any lambda (See <a class="xref" href="Lambdas.html">Lambdas</a>).
+</p>
+<h4 class="subheading" id="Composing-Predicates"><span>Composing Predicates<a class="copiable-link" href="#Composing-Predicates"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-predicates_002c-composing"></a>
+
+<p>The modifier <code class="code">not</code> can be used to negate any of the above predicates (or the result of arbitrary lambdas). E.g. <code class="code">(not (at root))</code> returns true if cursor is not at the root node of the tree.
+</p>
+<p><code class="code">and</code> and <code class="code">or</code> form the conjunction and disjunction of predicates (including lambdas), e.g., <code class="code">(and (not (at root)) (not (at first)))</code>.
+</p>
+</div>
+
+
+
+</body>
+</html>

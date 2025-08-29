@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Point Placement on Entry (Symex)</title>
+
+<meta name="description" content="Point Placement on Entry (Symex)">
+<meta name="keywords" content="Point Placement on Entry (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Customizing-Symex.html" rel="up" title="Customizing Symex">
+<link href="Auto_002dIndenting.html" rel="next" title="Auto-Indenting">
+<link href="Highlighting.html" rel="prev" title="Highlighting">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Point-Placement-on-Entry">
+<div class="nav-panel">
+<p>
+Next: <a href="Auto_002dIndenting.html" accesskey="n" rel="next">Auto-Indenting</a>, Previous: <a href="Highlighting.html" accesskey="p" rel="prev">Highlighting</a>, Up: <a href="Customizing-Symex.html" accesskey="u" rel="up">Customizing Symex</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Point-Placement-on-Entry-1"><span>4.4 Point Placement on Entry<a class="copiable-link" href="#Point-Placement-on-Entry-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Point-placement_002c-customizing"></a>
+<a class="index-entry-id" id="index-Idempotent-entry-to-Symex-Mode"></a>
+
+<p>Upon entry into Symex mode, point is positioned at the start of the currently selected symex. If you&rsquo;d like to preserve point at its original location, instead, so that entry into Symex mode is &ldquo;idempotent,&rdquo; then add this to the <code class="code">:custom</code> section (not the <code class="code">:config</code> section) of your <code class="code">use-package</code> form:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-preserve-point-on-entry-p t)
+</pre></div>
+
+</div>
+
+
+
+</body>
+</html>

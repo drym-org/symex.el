@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Full DSL Code Example (Symex)</title>
+
+<meta name="description" content="Full DSL Code Example (Symex)">
+<meta name="keywords" content="Full DSL Code Example (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="The-Symex-DSL.html" rel="up" title="The Symex DSL">
+<link href="Debugging.html" rel="next" title="Debugging">
+<link href="Expressive-Power.html" rel="prev" title="Expressive Power">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="Full-DSL-Code-Example">
+<div class="nav-panel">
+<p>
+Next: <a href="Debugging.html" accesskey="n" rel="next">Debugging</a>, Previous: <a href="Expressive-Power.html" accesskey="p" rel="prev">Expressive Power</a>, Up: <a href="The-Symex-DSL.html" accesskey="u" rel="up">The Symex DSL</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="Full-DSL-Code-Example-1"><span>7.5 Full DSL Code Example<a class="copiable-link" href="#Full-DSL-Code-Example-1"> &para;</a></span></h3>
+
+<a class="index-entry-id" id="index-Symex-DSL_002c-code-example"></a>
+<a class="index-entry-id" id="index-Symex-DSL_002c-implementing-a-new-feature-in"></a>
+
+<p>Because the DSL expresses traversals in a natural way in relation to the cursor, it often allows the implementation of tree algorithms to be simple enough that, even as a casual user, you might consider extending Symex to support features you might need. As an illustration, imagine that you are editing some Lisp code. You often find that you need to transform something like this:
+</p>
+<div class="example">
+<pre class="example-preformatted">(a (b (c (d e))))
+</pre></div>
+
+<p>… to this:
+</p>
+<div class="example">
+<pre class="example-preformatted">(a
+ (b
+  (c
+   (d
+    e))))
+</pre></div>
+
+<p>To perform the above transformation, intuitively, you might say, &ldquo;go up into the expression, then go forward, then add a newline there, and then keep repeating the same thing until we reach the end.&rdquo; Indeed, using the Symex modal UI, you can manually implement this, for this particular example, as <code class="code">kl&gt;kl&gt;kl&gt;kl&gt;</code>.
+</p>
+<p>But you&rsquo;d like a general command to do this that works in every case, no matter how deep or shallow the expression may be.
+</p>
+<p>You could write a Symex command to do that, using the linguistic forms we learned about.
+</p>
+<div class="example">
+<pre class="example-preformatted">(symex-define-command my-cascade ()
+  (interactive)
+  (symex-eval
+   (symex-traversal
+     (repeat
+      (try (move up)
+           (move forward)
+           (lambda (_computation _result)
+             (newline-and-indent 1)))))))
+</pre></div>
+
+<p>The important part is within <code class="code">symex-traversal</code>, and if you squint just a bit, you&rsquo;ll see that it&rsquo;s exactly the intuitive algorithm we came up with just now! <code class="code">repeat</code>, as the name implies, repeats the contained traversal until it fails. <code class="code">try</code> attempts a sequence of traversals in order, stopping when anything doesn&rsquo;t work. A move is a single step in any direction. And you can provide any ELisp code (in this case, to add a newline with proper indentation) by entering a <code class="code">lambda</code> (See <a class="xref" href="Lambdas.html">Lambdas</a> for more on the unused arguments here). Now just compare that with our intuitive algorithm, reproduced here:
+</p>
+<p>&ldquo;go up into the expression, then go forward, then add a newline there, and then keep repeating the same thing until we reach the end.&rdquo;
+</p>
+<p>For the logistical aspects of this implementation, recall that you define a Symex program using <code class="code">symex-traversal</code> and evaluate it using <code class="code">symex-eval</code>. Symex commands often need to do some standard things like fix indentation after execution, or set some metadata that may help Emacs treat your command as you expect. Using <code class="code">symex-define-command</code> instead of <code class="code">defun</code> takes care of these things for you, but it&rsquo;s not required. Finally, <code class="code">interactive</code> is Emacs&rsquo;s standard way of making the command executable by you via <code class="code">M-x</code>.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Debugging.html">Debugging</a>, Previous: <a href="Expressive-Power.html">Expressive Power</a>, Up: <a href="The-Symex-DSL.html">The Symex DSL</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

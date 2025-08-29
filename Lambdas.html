@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Lambdas (Symex)</title>
+
+<meta name="description" content="Lambdas (Symex)">
+<meta name="keywords" content="Lambdas (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Language.html" rel="up" title="Language">
+<link href="Predicates.html" rel="next" title="Predicates">
+<link href="effect.html" rel="prev" title="effect">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Lambdas">
+<div class="nav-panel">
+<p>
+Next: <a href="Predicates.html" accesskey="n" rel="next">Predicates</a>, Previous: <a href="effect.html" accesskey="p" rel="prev"><code class="code">effect</code></a>, Up: <a href="Language.html" accesskey="u" rel="up">Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Lambdas-1"><span>7.2.13 Lambdas<a class="copiable-link" href="#Lambdas-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-lambdas_002c-usage-in-traversals"></a>
+
+<p>Finally, a traversal can also be <em class="emph">any ELisp function</em>, including a lambda defined inline.
+</p>
+<p>Such a lambda would be called with two arguments — the same two used by any traversal — a specification of the computation to be performed, and the in-progress accumulated result. It is expected to synthesize its result with the accumulated result to return a valid traversal result in the context of the containing computation.
+</p>
+<p>In practice, using a lambda as a traversal will never be done, <em class="emph">except</em> when defining conditions for use in conditional traversals like <a class="ref" href="decision.html"><code class="code">decision</code></a> or <a class="ref" href="precaution.html"><code class="code">precaution</code></a>. In such cases, use of a lambda is <em class="emph">common</em>. Here, as the result of the traversal is only conditioned upon and isn&rsquo;t integrated into the containing traversal, the only thing relevant to the execution of the traversal is that the lambda return a truthy value on whatever it considers to be &ldquo;success,&rdquo; and <code class="code">nil</code>, otherwise. It must, however, still accept the two standard arguments, even if it doesn&rsquo;t use them.
+</p>
+<p>If you find yourself writing a lambda for <em class="emph">any other purpose</em> than as a condition, it would be advisable to discern whether your need for this lambda suggests the addition of a new form to the DSL that would make your lambda unnecessary, so please consider <a class="uref" href="https://github.com/drym-org/symex.el/issues">contributing an issue</a> describing your use case.
+</p>
+<h4 class="subheading" id="Examples-12"><span>Examples<a class="copiable-link" href="#Examples-12"> &para;</a></span></h4>
+
+<p>&quot;If we are somewhere before a previously stored position in the buffer, then go forward, otherwise don&rsquo;t move.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+ (symex-traversal
+   (if (lambda (_computation _result)
+         (&lt; (point) previously-stored-position))
+       (move forward)
+       symex--move-zero)))
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Predicates.html">Predicates</a>, Previous: <a href="effect.html"><code class="code">effect</code></a>, Up: <a href="Language.html">Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+
+
+
+</body>
+</html>

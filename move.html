@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>move (Symex)</title>
+
+<meta name="description" content="move (Symex)">
+<meta name="keywords" content="move (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Language.html" rel="up" title="Language">
+<link href="maneuver.html" rel="next" title="maneuver">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="move">
+<div class="nav-panel">
+<p>
+Next: <a href="maneuver.html" accesskey="n" rel="next"><code class="code">maneuver</code></a>, Up: <a href="Language.html" accesskey="u" rel="up">Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="move-1"><span>7.2.1 <code class="code">move</code><a class="copiable-link" href="#move-1"> &para;</a></span></h4>
+
+<a class="index-entry-id" id="index-zero-move_002c-use-of-in-traversals"></a>
+<a class="index-entry-id" id="index-traversals_002c-signaling-success-without-movement"></a>
+
+<h4 class="subheading" id="Syntax"><span>Syntax<a class="copiable-link" href="#Syntax"> &para;</a></span></h4>
+
+<p><code class="code">(move forward|backward|up|down)</code>
+</p>
+<h4 class="subheading" id="Description"><span>Description<a class="copiable-link" href="#Description"> &para;</a></span></h4>
+
+<p>The most basic movement, a move simply takes a single step in a particular direction, to a neighboring node in the tree.
+</p>
+<h4 class="subheading" id="Examples"><span>Examples<a class="copiable-link" href="#Examples"> &para;</a></span></h4>
+
+<p>&quot;Move forward.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (move forward)))
+</pre></div>
+
+<p>&quot;Move backward.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (move backward)))
+</pre></div>
+
+<p>&quot;Move up.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (move up)))
+</pre></div>
+
+<p>&quot;Move down.&quot;
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(symex-eval
+  (symex-traversal
+    (move down)))
+</pre></div>
+
+<p>Note that in the Symex language, &quot;up&quot; and &quot;down&quot; are defined in relation to the root node being considered the bottom of the tree and increasingly nested expressions as being higher. We &quot;go down towards the root and up towards the nest.&quot;
+</p>
+<p>The variable <code class="code">symex--move-zero</code> can be used in traversals to indicate an intentional absence of motion, and would be treated as a successful move.
+</p>
+</div>
+
+
+
+</body>
+</html>
