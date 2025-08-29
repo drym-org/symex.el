@@ -22,7 +22,7 @@ An expressive modal way to edit code in Emacs.
 Introduction
 ============
 
-Symex (pronounced @emph{sim-ex}) is an intuitive modal way to edit code, built on top of an expressive domain-specific language (DSL) for tree-oriented operations.
+Symex (pronounced *sim-ex*) is an intuitive modal way to edit code, built on top of an expressive domain-specific language (DSL) for tree-oriented operations.
 
 This unique design allows it to offer a large array of useful features with short and memorable (and of course, customizable) keybindings, allowing you to edit code fluently. It also gives you the ability to define your own structural operations using the same DSL that Symex implements many of its features in.
 
