@@ -2,6 +2,9 @@
 *~
 *.sw?
 
+# OS noise
+.DS_Store
+
 # Build
 .cask
 *.elc
@@ -17,3 +20,4 @@ ci-init
 *.log
 *.pdf
 *.toc
+symex_html
