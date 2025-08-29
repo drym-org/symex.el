@@ -27,4 +27,7 @@ lint:
 checkdoc:
 	cd ci && emacs --batch --quick --load ci-checkdoc.el
 
-.PHONY: help clean install build lint checkdoc
+build-docs:
+	cd symex/doc && texi2any --html --output symex_html symex.texi && mkdir -p symex_html/figures && cp figures/* symex_html/figures/
+
+.PHONY: help clean install build lint checkdoc build-docs

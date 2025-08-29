@@ -1,0 +1,31 @@
+name: docs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'doc/**'
+      - '.github/workflows/docs.yml'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+    name: Build and deploy Symex documentation
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Install Texinfo
+        run: sudo apt-get install texinfo
+      - name: Build docs for hosting
+        run: make build-docs
+      - name: Push to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        with:
+          folder: symex/doc/symex_html
+          branch: gh-pages
+          clean: true
