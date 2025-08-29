@@ -26,6 +26,8 @@
 ;;; Code:
 
 (require 'fennel-mode nil 'noerror)
+(require 'symex-interface)
+(require 'symex-core)
 
 (declare-function fennel-find-definition  "ext:fennel-mode")
 (declare-function fennel-repl "ext:fennel-mode")
