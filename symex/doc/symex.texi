@@ -1,0 +1,2134 @@
+\input texinfo
+@settitle Symex
+@setfilename symex.info
+@set symex-version 2.0
+
+@copying
+This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the @uref{https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md, Declaration of Non-Ownership}.
+@end copying
+
+@dircategory Emacs
+@direntry
+* Symex: (symex.info). An Expressive Modal Way to Edit Code.
+@end direntry
+
+
+@titlepage
+@title Symex
+
+@sp 3
+
+@center @image{figures/symex-logo, 8cm, , Symex Logo}
+
+@sp 3
+
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@contents
+
+@node Top
+@top Symex - An Expressive Modal Way to Edit Code
+
+@center @image{figures/symex-logo-small, 3cm, , Symex Logo}
+
+This manual is for Symex
+(version @value{symex-version}).
+
+A quick movement out of the corner of your eye, but it’s gone as you turn to look. A rustle in the trees, or did you imagine it? A shadow passing overhead, and a blinding flash as you look up. Was that the Sun, or the gleam in the eye of Symex the Squirrel, as it soared above the treetops?
+
+You’ll never know. The legendary Squirrel is said to possess startling agility and speed, capable of executing mind-bending maneuvers in the trees, traversing impossible distances in a single leap. So they say. Yet, no one has ever seen Symex. Some say that it is much too quick for our eyes to see. Others say that no one has seen Symex because, you fool (they say), Symex isn’t some squirrel out there — it’s the squirrel @emph{in you}.
+
+@node What is Symex?
+@chapter What is Symex?
+
+@cindex pronouncing Symex
+
+Symex (pronounced @emph{sim-ex}) is an intuitive modal way to edit code, built on top of an expressive domain-specific language (DSL) for tree-oriented operations.
+
+This design allows it to offer a large array of useful features with short and memorable (and of course, customizable) keybindings, allowing you to edit code fluently. It also gives you the ability to define your own structural operations using the same DSL that Symex implements many of its features in.
+
+In addition, ``symex'' is also just a more versatile term for talking about the ``S-expressions'' or ``symbolic expressions'' that form the syntax of Lisp code. Symex was originally designed to be a Lisp editor, but you can now use it with any language via @url{https://tree-sitter.github.io/tree-sitter/, Treesitter}, included in Emacs 29+.
+
+@node A Note on the Name
+@section A Note on the Name
+
+Symex was originally a tool for editing Lisp code, although it can be used with many languages, now.
+
+Lisp has inherited a few oddball names from its deep prehistory, including the infamous @code{car} and @code{cdr} for the first and the rest of the @uref{https://www.blogbyben.com/2011/04/best-bumper-sticker-ever.html, elements in a list}. But S-expression / sex-puh / symbolic expression — referring to the makeup of Lisp syntax — are all somewhat of a mouthful, too. Here are a few reasons why we might consider using "sym-ex" instead:
+
+@itemize
+@item
+"Symbolic expression": 6 syllables, long in written form too.
+
+@item
+"S-expression": 4 syllables, and confusing at least partially because it is a single-letter acronym, which is unusual. In addition, it is long in written form.
+
+@item
+"Sexpuh" / "sex-p" / "sexpr": 2 syllables, short in written form. But I mean, these are terrible.
+
+@item
+"s-ex": Speaks for itself.
+
+@item
+"Symex": 2 syllables, short in written form, has normal linguistic analogues like "complex/complexes," and it's fun to say! Symex also sounds like Ibex, and that's obviously a plus.
+@end itemize
+
+@node Point-Free Modal Editing
+@section Point-Free Modal Editing
+
+@cindex modal interface, understanding
+@cindex Lithium modal interface library
+@cindex Vim
+
+Symex exhibits a ``point-free'' modal experience allowing the expression of a rich array of commands with few keystrokes.
+
+The archetypical modal editing tool is, of course, Vim. As Vim addresses the general task of editing text, its interface is necessarily complex and subtle, requiring years to master. Although Symex draws inspiration from Vim, it exhibits a different, simpler, modal style that is specialized to the comparatively narrow task of editing code.
+
+More specifically, Vim's (and Evil's) interface exhibits a @emph{compositional} style, where verbs (operators like ``delete'') are combined with nouns (motions or text objects, e.g., relating to words or paragraphs) to form commands. In Symex, all motions and operators are implicitly in relation to the currently selected expression, so that we only ever need to express a verb (like delete), and no composition is needed. The interface does still support narrower forms of composition, for instance in accepting counts for most commands via a numeric prefix argument.
+
+The modal interface is implemented using a dedicated, lightweight, modal interface library called @uref{https://github.com/countvajhula/lithium, Lithium}.
+
+You may customize any Symex keybinding in the standard way described in Lithium documentation, for instance, using @code{lithium-define-keys}.
+
+@node Symex is a Friend to All
+@section Symex is a Friend to All
+
+@cindex non-ownership, declaration of
+@cindex Attribution Based Economics
+
+Symex follows Attribution Based Economics and is owned by no one.
+
+Please see the @uref{https://github.com/drym-org/foundation/blob/main/Declaration_of_Non_Ownership.md, Declaration of Non-Ownership}.
+
+@node Comparison with Similar Packages
+@section Comparison with Similar Packages
+
+@cindex compatibility with other packages
+
+This section compares Symex with related editing tools available for Emacs.
+
+An important thing to remember about Symex is that using it requires you to enter a specific mode on-demand. Due to this modal nature, you can generally use any other editing tool you may be familiar with alongside Symex — including most of the options discussed below — and there shouldn't be any conflict. Symex is a friend to all!
+
+At the same time, Symex is designed in a standalone way and doesn't assume you are using other tools. Consequently, in some cases, you may need to disable some default customizations to avoid conflicts with these other packages that you may like to use for particular purposes, as the sections below explain. Some pairings definitely make more sense than others!
+
+@node Evil
+@subsection Evil
+
+@cindex Evil, comparison with
+
+The essential idea of Vim/Evil is that there are motions (nouns) that may be combined with operators (verbs), so that many complex operations on text can be expressed in this compositional manner. Although precise and expressive, this Vim-style interface has a steep learning curve and, out of the box, it isn't appropriate for structural code editing as there is no @emph{symex} noun for dealing with expressions of code. Extending Evil by adding such a noun (or ``text object,'' in Vim parlance) would be one way to allow precise operation on symexes, but there are a few reasons why Symex did not choose to go this route: (1) it leaves out vanilla Emacs users who may not be familiar with Evil at all, and (2) it inflates Evil — an already substantial interface — with yet another noun that would compete for keybinding real estate with other nouns such as words and paragraphs.
+
+Yet, augmenting Evil with a symex text object would be a valuable alternative way to achieve a Symex-like experience, and that's what Evil-Cleverparens (another package discussed below) does.
+
+Symex and Evil go very well together. Please @xref{Symex and Evil} for instructions on using them together.
+
+@node Lispy
+@subsection Lispy
+
+@cindex Lispy, comparison with
+
+Lispy addresses the problem of leveraging known context (i.e., that you are engaged in editing symexes) by having keybindings take on special meaning depending on the cursor's position in relation to the expression as a whole. This approach is as efficient as it gets, and many find it intuitive and fun.
+
+As it requires placing the cursor at special points in order to achieve the desired transformations, the paradigm is difficult to scale for complex or batch tasks. Symex's pointfree modal style allows it to emulate this desirable property of Vim/Evil while still exhibiting simplicity and efficiency like Lispy.
+
+The choice to use Lispy or Symex is mostly a matter of personal preference. Lispy offers a compromise between modal and modeless editing that may be favored by those used to the modeless style, gaining some benefits of the former while still exhibiting the latter. Symex is minimally, yet formally, modal, with all that comes along with that.
+
+You can still use these two packages together, but as their functionality overlaps to a great extent, this is perhaps inadvisable.
+
+@node Paredit
+@subsection Paredit
+
+@cindex Paredit, comparison with
+
+Paredit is perhaps the original structural editing tool. Its basic functionality of balancing parentheses is still essential to preserve the structure of the code, and Symex uses this functionality from Paredit even today.
+
+Symex's modal nature is its primary difference from Paredit. In addition, Symex's core approach of employing a DSL on top of primitives allows you to describe specialized and custom tree-structured operations using a high-level DSL, so that you can implement your own paredit-like features without needing to know Emacs Lisp (for example, @ref{paste} for a basic implementation of ``emit forward'' (aka ``barf'').). The Symex DSL is easy to learn, and expresses computations in a very intuitive way.
+
+Symex uses Paredit to balance parentheses in Lisp languages. If you're prefer to use a different tool for this purpose, please @xref{Balancing Parentheses}.
+
+@node Tree-Edit
+@subsection Tree-Edit
+
+@cindex Tree-Edit, comparison with
+
+@uref{https://github.com/ethan-leba/tree-edit, Tree-Edit} was one of the first packages to offer structural editing for non-Lisp languages via Tree-sitter. It is composed of two packages. First, a core library containing a reasoning engine built on top of tree-sitter, along with commands for structural and templated editing. And another package for an evil state that leverages these features in a user interface. The latter provides a ``point-free'' editing experience similar to Symex.
+
+While there is some overlap in functionality at the UI level, the core features offered by the packages are fairly distinct, and it's likely that they could be leveraged by either package, someday.
+
+For instance, Symex provides a very basic set of insertion commands. ``Inserting after'' an @code{if} block in Symex would just put the cursor at the right spot and leave the rest to you, but Tree-Edit would wrap the insertion point with @code{else}! On the other hand, Symex provides a rich array of traversals via the DSL, which Tree-Edit doesn't have today.
+
+For most other packages on this list, it's easy to use them together with Symex, but for Tree-Edit, as it, too, is modal, using them together may not be straightforward. It likely makes a lot more sense to integrate these packages at the library level, which we hope to explore.
+
+@node Combobulate
+@subsection Combobulate
+
+@cindex Combobulate, comparison with
+
+Combobulate is similar to Symex in its aims to be precise and intuitive. It differs in the style of interface and the feature set, providing a lot more grammar-aware and IDE-like features than Symex does. Symex has a minimal interface and offers more diverse features for elementary structural manipulation.
+
+Ultimately, while there is some overlap in features, there's also a lot offered by each that's not present in the other, so that it might make sense to use one and cherry-pick features from the other. For instance, to employ specific Combobulate features from Symex, you could use a similar recipe as @ref{Symex and Evil}. It may also be feasible to integrate them more at a library level. As part of the 2.0 release, Symex --- a formerly monolithic package --- was decomposed into small and modular packages in order to facilitate such goals.
+
+Combobulate is thoughtfully designed and sophisticated, and may be a good fit for you. Try both and see which one (or both!) fits your style better!
+
+@node Smartparens
+@subsection Smartparens
+
+@cindex Smartparens, comparison with
+
+Smartparens is like Paredit but for any language, and supports all types of ``pairs'' (e.g., including HTML tags) and not only parentheses and brackets.
+
+For non-Lisp languages, using Smartparens together with Symex is recommended! @xref{Balancing Parentheses} for more.
+
+For Lisp, Symex already includes parenthesis balancing via Paredit, so using Smartparens in addition likely would not be useful. But if you still would prefer to, then you can disable Symex's parenthesis balancing so that you can use whatever package you may already have configured for this purpose (e.g., either Smartparens or Paredit).
+
+@emph{Please note}: Symex relies on code being structurally valid, so if you choose to disable this, you must provide an alternative, either via Paredit or Smartparens or another similar package, so that the structural integrity of the code is always maintained.
+
+@node Evil Cleverparens
+@subsection Evil Cleverparens
+
+@cindex Evil Cleverparens, comparison with
+
+This package provides a text object for Evil for working with symexes. It also prevents normal Evil commands like @code{dd} (delete line) from breaking parenthesis structure. If you are an Evil user, this would be a good way to edit Lisp code that augments the familiar Evil compositional style.
+
+Symex is harmonious with Evil but totally separate from it, as it is a distinct mode. While Evil-Cleverparens makes Normal state behave better with respect to structure, Symex is oriented directly around structure, offering a large array of structural features. Due to this different emphasis, if you are an Evil user, you may prefer to use Evil Cleverparens together with Symex, to simultaneously gain advanced tree-structured editing while also enhancing Normal state to be structure-aware.
+
+@node Parinfer
+@subsection Parinfer
+
+@cindex Parinfer, comparison with
+
+Parinfer exploits a duality between indentation and parenthesis nesting to handle either for you when you change the other.
+
+You should be able to use this together with Symex. If you do, you will likely want to set @code{symex-tidy-after-transforming-p} to @code{nil}, and possibly also @code{symex-ensure-structure-p} to @code{nil}. @xref{Customizing Symex} for more information.
+
+@node Installation and Setup
+@chapter Installation and Setup
+
+This section covers installing Symex and setting it up, and information about supported languages.
+
+@node Installing Symex
+@section Installing Symex
+
+@cindex Installing Symex
+@cindex Packages, Symex
+@cindex Symex packages
+
+Symex is distributed as a collection of small, composable packages, hosted directly at the source repository. This allows you maximum flexibility to install just the functionality you actually need, without getting anything extra. But it also means that you must explicitly list the Symex packages you are interested in. Each of the Symex packages is described below, along with sample installation config using Straight.el (if you are using another package manager, @xref{Instructions for Other Package Managers}).
+
+@enumerate
+
+@item @code{symex-core}. This includes a DSL for structural operations, which is the core functionality of Symex, and is required for all users of Symex.
+
+@lisp
+(use-package symex-core
+  :straight
+  (symex-core
+   :host github
+   :repo "drym-org/symex.el"
+   :files ("symex-core/symex*.el")))
+@end lisp
+
+This core package provides the structural editing engine, supporting both Lisp (via @code{paredit}) and other languages (via Treesitter). This is a lean package with few dependencies, so that, in addition to use by end users, it's also appropriate as a library dependency for third party packages to gain Symex features.
+
+@item @code{symex}. The main user-facing package, required for all end users. It provides the modal UI that makes Symex features easy to use.
+
+@lisp
+(use-package symex
+  :after (symex-core)
+  :straight
+  (symex
+   :host github
+   :repo "drym-org/symex.el"
+   :files ("symex/symex*.el" "symex/doc/*.texi" "symex/doc/figures"))
+  :config
+  (symex-mode 1)
+  (global-set-key (kbd "s-;") #'symex-mode-interface))  ; or whatever keybinding you like
+  ;; and any other customizations you like
+@end lisp
+
+Note the keybinding ``s-;`` which enters the Symex modal UI. Feel free to set it to whatever you find convenient. There are many ways to enter Symex mode in different contexts, and we'll cover these in detail as we go along.
+
+All of the remaining packages in this list depend on, and extend, this modal UI package.
+
+@item @code{symex-ide}. A recommended, optional, extension integrating Symex with major modes for IDE-like features, such as easy evaluation and documentation lookup, and entering a REPL.
+
+@lisp
+(use-package symex-ide
+  :after (symex)
+  :straight
+  (symex-ide
+   :host github
+   :repo "drym-org/symex.el"
+   :files ("symex-ide/symex*.el"))
+  :config
+  (symex-ide-mode 1))
+@end lisp
+
+@item @code{symex-evil}. An extension for integration with Evil mode, including familiar keybindings, advising Evil functions to play well with Symex mode, and other functionality to make using Symex with Evil seamless. This is only required for Evil users.
+
+@lisp
+(use-package symex-evil
+  :after (symex evil)
+  :straight
+  (symex-evil
+   :host github
+   :repo "drym-org/symex.el"
+   :files ("symex-evil/symex*.el"))
+  :config
+  (symex-evil-mode 1))
+@end lisp
+
+@item @code{symex-rigpa}. This integrates Symex with Rigpa, allowing you to conveniently manage Symex as a mode within the broader Rigpa modal framework, including defining convenient entry and exit via familiar key sequences such as @code{Enter} and @code{Escape}. This is only required for Rigpa users.
+
+@lisp
+(use-package symex-rigpa
+  :after (symex rigpa symex-evil)
+  :straight
+  (symex-rigpa
+   :host github
+   :repo "drym-org/symex.el"
+   :files ("symex-rigpa/symex*.el"))
+  :config
+  (symex-rigpa-mode 1))
+@end lisp
+
+@end enumerate
+
+@node Instructions for Other Package Managers
+@section Instructions for Other Package Managers
+
+The sample installation instructions in the previous section use Straight.el and use-package, but if you are using another package manager, the present section provides some guidance on translating the configuration for your needs.
+
+@node Package.el
+@subsection Package.el
+
+Symex is hosted directly at its source repository, so you'll likely need to use the @code{:vc} flag in your @code{use-package} config (requires Emacs 30+), either by pointing it straight at the upstream repository, or potentially cloning the repo locally first.
+
+The following instructions use the latter approach (warning: untested):
+
+@lisp
+;; First, clone the repo to /path/to/symex
+;; Then:
+
+(use-package symex
+  :vc t
+  :load-path ("/path/to/symex/symex-core"
+              "/path/to/symex/symex"
+              "/path/to/symex/symex-ide"      ; if desired
+              "/path/to/symex/symex-evil"     ; if desired
+              "/path/to/symex/symex-rigpa")   ; if desired
+  :config
+  (symex-mode 1)
+  (global-set-key (kbd "s-;") #'symex-mode-interface)
+  ;; allow emacs to find the Info manual
+  (add-to-list 'Info-directory-list
+               (expand-file-name "/path/to/symex/symex/doc/")))
+@end lisp
+
+If you try this and it doesn't work, or if you get it to work and have alternative instructions, please consider contributing them or at least notifying Symex contributors about it so that we can update these instructions for the next person.
+
+If these instructions don't work, and if you're keen on using Package.el (and perhaps you are on an older version of Emacs that doesn't support installing directly from source repositories), then fear not, as you can still install Symex using Quelpa (@xref{Quelpa}).
+
+@node Straight.el
+@subsection Straight.el
+
+Please @xref{Installing Symex} which uses Straight.el.
+
+@node Elpaca
+@subsection Elpaca
+
+Elpaca instructions for installing each of the packages described in the previous section are below (please only install the ones you want, as described in @xref{Installing Symex}):
+
+@lisp
+(use-package symex-core
+  :ensure (:recipe
+           (:host github
+            :repo "drym-org/symex.el"
+            :files ("symex-core/symex*.el"))))
+
+(use-package symex
+  :ensure (:recipe
+           (:host github
+            :repo "drym-org/symex.el"
+            :files ("symex/symex*.el" "symex/doc/*.texi" "symex/doc/figures")))
+  :after (symex-core)
+  :config
+  (symex-mode 1)
+  (global-set-key (kbd "s-;") #'symex-mode-interface))  ; or whatever keybinding you like
+  ;; and any other customizations you like
+
+(use-package symex-ide
+  :ensure (:recipe
+           (:host github
+            :repo "drym-org/symex.el"
+            :files ("symex-ide/symex*.el")))
+  :after (symex)
+  :config
+  (symex-ide-mode 1))
+
+(use-package symex-evil
+  :ensure (:recipe
+           (:host github
+            :repo "drym-org/symex.el"
+            :files ("symex-evil/symex*.el")))
+  :after (symex evil)
+  :config
+  (symex-evil-mode 1))
+
+(use-package symex-rigpa
+  :ensure (:recipe
+           (:host github
+            :repo "drym-org/symex.el"
+            :files ("symex-rigpa/symex*.el")))
+  :after (symex rigpa symex-evil)
+  :config
+  (symex-rigpa-mode 1))
+@end lisp
+
+@node Quelpa
+@subsection Quelpa
+
+Quelpa allows you to maintain a local recipe repository in an ordinary folder on disk that is treated no differently from standard online recipe repositories such as MELPA. Consult the Quelpa docs on how to set this up. The following instructions are not tested (please send feedback if you try them!).
+
+Likely, you could create a local folder on disk to hold recipes, say, @code{/path/to/my/recipes}. Add this folder to Quelpa's known recipe stores:
+
+@lisp
+(add-to-list 'quelpa-melpa-recipe-stores "/path/to/my/recipes")
+@end lisp
+
+Then, create files there named @code{symex-core}, @code{symex}, @code{symex-ide}, @code{symex-evil}, and @code{symex-rigpa}, with no extension, and depending on which packages you want to install. These files should contain something like:
+
+@code{symex-core}:
+
+@lisp
+(symex-core
+ :fetcher github
+ :repo "drym-org/symex.el"
+ :files ("symex-core/symex*.el"))
+@end lisp
+
+@code{symex}:
+
+@lisp
+(symex
+ :fetcher github
+ :repo "drym-org/symex.el"
+ :files ("symex/symex*.el" "symex/doc/*.texi" "symex/doc/figures"))
+@end lisp
+
+@code{symex-ide}:
+
+@lisp
+(symex-ide
+ :fetcher github
+ :repo "drym-org/symex.el"
+ :files ("symex-ide/symex*.el"))
+@end lisp
+
+@code{symex-evil}:
+
+@lisp
+(symex-evil
+ :fetcher github
+ :repo "drym-org/symex.el"
+ :files ("symex-evil/symex*.el"))
+@end lisp
+
+@code{symex-rigpa}:
+
+@lisp
+(symex-rigpa
+ :fetcher github
+ :repo "drym-org/symex.el"
+ :files ("symex-rigpa/symex*.el"))
+@end lisp
+
+With the package recipes added, you should now be able to install the packages using @uref{https://github.com/quelpa/quelpa-use-package, @code{quelpa-use-package}}:
+
+@lisp
+(use-package symex-core
+  :quelpa t)
+
+(use-package symex
+  :quelpa t
+  :after (symex-core)
+  :config
+  (symex-mode 1)
+  (global-set-key (kbd "s-;") #'symex-mode-interface))  ; or whatever keybinding you like
+  ;; and any other customizations you like
+
+(use-package symex-ide
+  :quelpa t
+  :after (symex)
+  :config
+  (symex-ide-mode 1))
+
+(use-package symex-evil
+  :quelpa t
+  :after (symex evil)
+  :config
+  (symex-evil-mode 1))
+
+(use-package symex-rigpa
+  :quelpa t
+  :after (symex rigpa symex-evil)
+  :config
+  (symex-rigpa-mode 1))
+@end lisp
+
+@node Symex and Evil
+@section Symex and Evil
+
+@cindex Evil, using together with
+@cindex Normal state, keybindings
+
+If you happen to be an Evil user, using Symex should feel familiar (although as we saw in @ref{Point-Free Modal Editing}, Symex exhibits a simpler modal style, making it accessible to those who aren't familiar with Vim/Evil).
+
+For a seamless integration with Evil, it is essential to install the @code{symex-evil} package. @xref{Installing Symex} for instructions on that.
+
+This ensures that insertion commands that exit Symex enter Insert state to put you in a position to enter text, as intended, as opposed to leaving you in Normal state. It also supports generic keybindings from Normal state that are useful to retain in Symex mode, such as undo and redo, scrolling, searching, and various other navigations. In addition, it also ensures that such Evil operations performed while in Symex mode preserve a sensible symex selection.
+
+For other useful options on using Symex with Evil, @xref{Escaping to Symex Instead of Normal State} and @xref{Easy Entry Into Symex Mode}.
+
+@node Symex and Rigpa
+@section Symex and Rigpa
+
+@cindex Rigpa, using together with
+
+@uref{https://github.com/countvajhula/rigpa, Rigpa} is a structured and flexible way to manage modal user interfaces like Symex and Evil. It allows you to visually define transitions between different modes via keybindings like Enter and Escape, making it convenient to use modal UIs (such as Symex and Evil) together. Note that the package, although fairly mature, is not yet available on Emacs package archives, and must be installed directly from the source repository using Straight or Elpaca. In addition to installing Rigpa, you'll also need the @code{symex-evil} package mentioned in the previous section (currently, Rigpa does assume that you are an Evil user) as well as @uref{https://github.com/countvajhula/symex-rigpa, @code{symex-rigpa}} which integrates Symex with Rigpa for smooth operation.
+
+Please see the Rigpa documentation for instructions on installing Rigpa, and @xref{Installing Symex} for instructions on installing @code{symex-evil} and @code{symex-rigpa}.
+
+@node Languages Supported
+@section Languages Supported
+
+@cindex Languages supported
+
+Symex natively supports all flavors of Lisp, as well as many other languages via Emacs's built-in Treesitter facility (included in Emacs 29+).
+
+@node Lisp
+@subsection Lisp
+
+@cindex Racket Mode, integration with
+@cindex CIDER, integration with
+@cindex SLIME, integration with
+@cindex Sly, integration with
+@cindex IELM, integration with
+@cindex Fennel Mode, integration with
+@cindex Arc Mode, integration with
+@cindex Geiser Mode, integration with
+@cindex Racket
+@cindex Scheme
+@cindex Emacs Lisp
+@cindex ELisp
+@cindex Clojure
+@cindex Arc
+@cindex Common Lisp
+@cindex Fennel
+
+Symex provides expressive structural editing for any flavor of Lisp. In addition to this core functionality, it also includes convenient integration with popular development environments for some Lisps, via the @code{symex-ide} package (@xref{Installing Symex}):
+
+@table @asis
+@item @emph{Flavor}
+@emph{Runtime and docs}
+
+@item Racket
+Racket Mode
+
+@item Emacs Lisp
+Native/IELM
+
+@item Clojure
+CIDER
+
+@item Common Lisp
+Slime or Sly. This defaults to Slime, but you can use Sly by putting this in the @code{:custom} (not @code{:config}) section of your @code{use-package} declaration: @code{(symex-common-lisp-backend 'sly)}
+
+@item Scheme
+Geiser
+
+@item Arc
+Arc.el
+
+@item Fennel
+fennel-mode.el
+@end table
+
+@node Tree-Sitter
+@subsection Tree-Sitter
+
+@cindex Tree-sitter, using with
+@cindex Python
+
+To use Symex with Tree-sitter, just ensure that you're using the Tree-sitter enabled major mode for your language. For example, for Python, you must use `python-ts-mode' rather than `python-mode`.
+
+Of course, this assumes that you already have Tree-sitter set up! If not, and if you'd like to use Symex with a non-Lisp language, you will need to do three things:
+
+@enumerate
+@item Use Emacs 29+
+@item Install a grammar for your language
+@item Install a Tree-sitter-aware major mode for your language
+
+@end enumerate
+
+The first is self-explanatory. For the grammar, first find a Tree-sitter grammar for your language and then install it. You can find helpful instructions for this on @url{https://www.masteringemacs.org/article/how-to-get-started-tree-sitter, Mastering Emacs}. Finally, for the major mode, Emacs already includes such modes for some popular languages such as Python, but if your favorite language isn't included, you may also find the Tree-sitter major mode for it on standard Emacs package archives like MELPA. These typically have the suffix @code{-ts-mode} in their name, for instance, @code{python-ts-mode}. Once installed, you will need to @emph{enable} this major mode in your (e.g., Python) buffer, instead of the usual major mode (e.g., use @code{python-ts-mode} instead of @code{python-mode}).
+
+And if you've done all that, you should now be able to use Symex with your language!
+
+If you feel that support for your favorite language could be improved, we want to hear from you! Please @uref{https://github.com/drym-org/symex.el/issues, submit an issue} and let's discuss your ideas.
+
+@node Using Symex with Clojure
+@subsection Using Symex with Clojure
+
+@cindex Clojure, using with
+
+Clojure is a language that is both a Lisp and has a Tree-sitter enabled major mode. In this case, you could use either Symex's Lisp parser or Tree-Sitter parser. But, as the Lisp parser is more mature and provides a tailored experience for Lisp, it's recommended when using Symex with Clojure, at least for the moment, that you use @code{clojure-mode} rather than @code{clojure-ts-mode}.
+
+@node Getting Started
+@chapter Getting Started
+
+@cindex Getting started
+@cindex Tutorial
+
+Let's jump right in and get a feel for Symex. Open a buffer in your favorite language (ideally, a Lisp!), and, if you prefer, make a copy of it first so that you can make changes without worry. If you are viewing this documentation within Emacs, then keep this window open in a split pane (e.g., via @code{C-x 3}) alongside your source buffer so that you can follow along while trying things out.
+
+If your source buffer is @emph{not} a Lisp, ensure that you are in the Tree-sitter enabled major mode for that language, for instance, @code{python-ts-mode}.
+
+@node Moving Around
+@section Moving Around
+
+@cindex Movement, basic
+
+In your source buffer, enter Symex mode using the keybinding that you configured for @code{symex-mode-interface} (@xref{Installing Symex}).
+
+Now, try moving around using these commands:
+
+@multitable @columnfractions .15 .45 .4
+@headitem Key @tab Command @tab Description
+
+@item @code{h}
+@tab @code{symex-move-backward}
+@tab Move to the previous expression.
+
+@item @code{j}
+@tab @code{symex-move-down}
+@tab Move down the tree to the ``parent'' node. Note that this is oriented with the root being the ``lowest,'' and the most nested expression being the ``highest.'' This orientation is customizable (@xref{Up and Down}).
+
+@item @code{k}
+@tab @code{symex-move-up}
+@tab Move up the tree to a ``child'' node. Note that this is oriented with the root being the ``lowest,'' and the most nested expression being the ``highest.'' This orientation is customizable (@xref{Up and Down}).
+
+@item @code{l}
+@tab @code{symex-move-forward}
+@tab Move to the next expression.
+
+@end multitable
+
+The first thing you'll notice is Symex's @emph{modal} nature. If you've used Evil or Vim, then it should feel familiar. But if not, don't worry, as Symex isn't anything as complex as Vim. As you can already see, it uses a simple modal style — a style that we call ``point-free'' editing@footnote{The term is borrowed from functional programming, where it refers to being able to code in a very succinct way in cases where the data can be implicit. With Symex, the ``implicit data'' is the expression indicated by the cursor.}. This style of interface is designed to be precise and efficient while also being easy to learn and use.
+
+You may notice, as you wander the source tree, that Symex remembers branch positions, so that you can go up and down without losing context.
+
+But you may not always want to navigate using such explicit movements. Sometimes, you just want to traverse trees forwards and backwards to find the right spot.
+
+@multitable @columnfractions .15 .45 .4
+@headitem Key @tab Command @tab Description
+
+@item @code{f}
+@tab @code{symex-traverse-forward}
+@tab Traverse forward in the tree.
+
+@item @code{b}
+@tab @code{symex-traverse-backward}
+@tab Traverse backwards in the tree.
+
+@end multitable
+
+Symex offers many such ways to get around. Next, we'll see some ways to @emph{transform} the source code.
+
+@node Transforming Code
+@section Transforming Code
+
+@cindex Code transformations, basic
+
+So far, we've seen a few basic ways to get around in source trees. But once we're where we want to be, we usually want to make @emph{changes} to the source buffer, whether that's to modify existing code or to insert new code. Let's see how to do that.
+
+@node Modifying Existing Code
+@subsection Modifying Existing Code
+
+@cindex Modifying code (basic)
+
+Try these commands to modify code:
+
+@multitable @columnfractions .15 .45 .4
+@headitem Key @tab Command @tab Description
+
+@item @code{x}
+@tab @code{symex-delete}
+@tab Delete an expression. This accepts counts, so @code{3x} deletes three expressions.
+
+@item @code{c}
+@tab @code{symex-change}
+@tab Change an expression to whatever you enter. This leaves Symex mode so that you can enter the replacement in the buffer. This accepts counts, so @code{3c} changes three expressions.
+
+@item @code{y}
+@tab @code{symex-yank}
+@tab Copy the expression to the kill ring. This accepts counts, so @code{3y} copies three expressions.
+
+@item @code{p}
+@tab @code{symex-paste-after}
+@tab Paste from the kill ring, @emph{after} the current expression. This accepts counts, so @code{3p} pastes three times.
+
+@item @code{P}
+@tab @code{symex-paste-before}
+@tab Paste from the kill ring, @emph{before} the current expression. This accepts counts, so @code{3p} pastes three times.
+
+@item @code{<tab>}
+@tab @code{symex-tidy}
+@tab Tidies and indents the expression. This accepts counts, so @code{3<tab>} indents three expressions.
+
+@end multitable
+
+Next, we'll see a few simple ways to enter new code into the buffer in a context-sensitive way.
+
+@node Inserting New Code
+@subsection Inserting New Code
+
+@cindex Inserting new code (basic)
+
+There are a few different ways to insert new code, and they are all expressed in relation to the current expression.
+
+@multitable @columnfractions .15 .45 .4
+@headitem Key @tab Command @tab Description
+
+@item @code{i}
+@tab @code{symex-insert-at-beginning}
+@tab Insert at the @emph{start} of the expression. If it is a form, then insert @emph{inside} the form.
+
+@item @code{a}
+@tab @code{symex-append-at-end}
+@tab Insert at the @emph{end} of the expression. If it is a form, then insert @emph{inside} the form.
+
+@item @code{I}
+@tab @code{symex-insert-before}
+@tab Insert @emph{before} the expression. If it is a form, then insert @emph{outside} the form.
+
+@item @code{A}
+@tab @code{symex-insert-after}
+@tab Insert @emph{after} the expression. If it is a form, then insert @emph{outside} the form.
+
+@end multitable
+
+@node Learning More
+@section Learning More
+
+The commands we've seen so far are only a small sampling of the available operations.
+
+As you become more familiar with Symex, it will be useful to refer to the @ref{Keybinding Cheat Sheet} to discover more capabilities, and also the @ref{Resources} for further study. For tips and tricks, see @ref{Squirrel on a Speedrun - Tips and Tricks}.
+
+When you're using Symex, because these operations are so convenient and intuitive, you'll find that you use a @emph{lot} of them, all the time. It's just like speaking a language. We don't typically count the distinct words we use in speech, but if we did, we'd find that we routinely use a lot of them, without breaking a sweat! It's the same with Symex.
+
+@node Customizing Symex
+@chapter Customizing Symex
+
+@cindex Customizing Symex
+
+You can customize most any aspect of Symex to tailor it to your preferences and to operate harmoniously with other packages that you might be using.
+
+Most of the customizations below go in the @code{:custom} section of your @code{use-package} declaration, unless otherwise specified.
+
+@node Up and Down
+@section Up and Down
+
+@cindex Up and down, customizing
+
+The default keybindings in Symex mode treat increasingly nested code as being ``lower,'' and elements closer to the root as ``higher.'' This may be familiar from the sense of ``tree'' in computer science, which is ``inverted'' from the orientation of actual trees growing outside. You can, if you like, flip this to correspond to the latter, which was formerly the default orientation of Symex. The latter orientation would mean thinking as a squirrel would — going ``up'' to the nest and ``down'' to the root. Choose whatever you may find most natural by putting the following in the @code{:custom} section of your @code{use-package} declaration:
+
+@lisp
+(symex-orientation 'squirrel)  ; either 'squirrel or 'inverted (the default)
+@end lisp
+
+@node Branch Memory
+@section Branch Memory
+
+@cindex Branch memory, customizing
+
+When going up and down, the choice of initial position on the branch is arbitrary. By default, the first position is picked initially, and then Symex the squirrel remembers where it was on each branch after that, so that you return to your last position when going up and down the tree. If you'd like to move to the first or last position at any point, you could use (for instance) @code{M-h} or @code{M-l} at each level, as usual, or traverse the tree using @code{f} and @code{b}, instead.
+
+If, on the other hand, you'd like to start always at the first position when going up (as it was in older versions of Symex), disable the branch memory feature by adding this to the @code{:custom} section (not the @code{:config} section) of your@code{use-package} form:
+
+@lisp
+(symex-remember-branch-position-p nil)
+@end lisp
+
+@node Highlighting
+@section Highlighting
+
+@cindex Highlight, customizing
+
+The current expression is highlighted by default using an overlay. If you'd like to disable highlighting, add this to the @code{:custom} section (not the @code{:config} section) of your @code{use-package} form:
+
+@lisp
+(symex-highlight-p nil)
+@end lisp
+
+@node Point Placement on Entry
+@section Point Placement on Entry
+
+@cindex Point placement, customizing
+@cindex Idempotent entry to Symex Mode
+
+Upon entry into Symex mode, point is positioned at the start of the currently selected symex. If you'd like to preserve point at its original location, instead, so that entry into Symex mode is ``idempotent,'' then add this to the @code{:custom} section (not the @code{:config} section) of your @code{use-package} form:
+
+@lisp
+(symex-preserve-point-on-entry-p t)
+@end lisp
+
+@node Auto-Indenting
+@section Auto-Indenting
+
+@cindex Auto-indent, customizing
+
+Symex reindents expressions after each transformation (i.e., which mutates the buffer), for which purpose it uses standard Emacs utilities such as @code{indent-region}, which ultimately derive their sense of proper indentation from the major mode. If you'd like to customize indentation, you should explore the facilities the major mode offers for this purpose (as Symex does not itself define this). On the other hand, if you'd like to use your own indenting framework or another package such as Parinfer for this purpose, you could disable Symex's automatic indentation.
+
+@lisp
+(symex-tidy-after-transforming-p nil)
+@end lisp
+
+@node Balancing Parentheses
+@section Balancing Parentheses
+
+@cindex Parenthesis balancing, customizing
+
+@subheading Lisp
+
+While editing Lisp, Symex relies on the code having valid structure. If that structure is ever broken, i.e., if parentheses become unbalanced, things may behave unexpectedly as Symex can no longer reliably reason about the code.
+
+In order to ensure this structural integrity, Symex implicitly balances parentheses during any edits you make, using the well-known Paredit library for this purpose. But if you prefer to use another strategy for keeping parentheses balanced, such as Smartparens or Parinfer or even Paredit itself, you may prefer to disable this built-in parenthesis balancing behavior. Use this to do that:
+
+@lisp
+(symex-ensure-structure-p nil)
+@end lisp
+
+@subheading Non-Lisp (Tree-sitter) Languages
+
+For non-Lisp (Tree-sitter) languages like Python, Symex does not do any parenthesis balancing. If you'd like to have this feature, we recommend using a package like Smartparens for this purpose alongside Symex, and there would be no conflict with Symex.
+
+@node Quoting Styles
+@section Quoting Styles
+
+@cindex Quoting styles, customizing
+@cindex Common prefixes, customizing
+
+Symex provides convenient ways to add common prefixes and also remove them from any expression. This is useful especially when editing Lisp code for managing syntax quoting, e.g., turning @code{(a b c)} into @code{'(a b c)} — a standard thing one might do in Lisp — without needing to exit Symex mode.
+
+You could configure any prefixes here that you may find yourself using often, and they don't have to have anything to do with quoting, or even with Lisp.
+
+By default, @code{C-'} and @code{C-,} cycle through standard quoting and unquoting prefixes (@code{'}, @code{`} and @code{,}, @code{,@@}, respectively) recognizable to all Lisps. But some Lisps, such as Racket, provide additional quoting styles that you may want to add here. To add custom prefixes, add something like this to the @code{:custom} section (not the @code{:config} section) of your @code{use-package} form:
+
+@lisp
+(symex-quote-prefix-list (list "'" "`" "#'" "#`"))
+(symex-unquote-prefix-list (list "," ",@@" "#,@@"))
+@end lisp
+
+@node Look and Feel
+@section Look and Feel
+
+@cindex Look and Feel, customizing
+@cindex Hooks, customizing using
+@cindex Lifecycle Hooks
+
+There may be many other things you'd like to customize about Symex which aren't included as customizations, such as how the cursor looks or how the mode line looks. These may be specific to your own Emacs configuration or just to your unique preferences. Symex provides lifecycle hooks that allow you to customize it any way you like:
+
+@itemize @bullet{}
+
+@item
+@code{symex-editing-mode-pre-entry-hook} — Called right before @emph{entering} Symex mode.
+
+@item
+@code{symex-editing-mode-post-entry-hook} — Called right @emph{after} entering Symex mode.
+
+@item
+@code{symex-editing-mode-pre-exit-hook} — Called right before @emph{exiting} Symex mode.
+
+@item
+@code{symex-editing-mode-post-exit-hook} — Called right @emph{after} exiting Symex mode.
+
+@end itemize
+
+For example, since Symex already includes a customizable overlay to highlight selected expressions, you may prefer to disable the regular Emacs cursor upon entry to Symex mode, and re-enable it upon exit. To do this, add this somewhere in your Emacs config for Symex:
+
+@lisp
+(defun my-enable-cursor ()
+  "Enable the cursor."
+  (internal-show-cursor nil t))
+
+(defun my-disable-cursor ()
+  "Disable the cursor."
+  (internal-show-cursor nil nil))
+
+(add-hook 'symex-editing-mode-post-entry-hook
+          #'my-disable-cursor)
+(add-hook 'symex-editing-mode-post-exit-hook
+          #'my-enable-cursor)
+@end lisp
+
+@node Custom Keybindings
+@section Custom Keybindings
+
+@cindex keybindings, customizing
+
+You can add any custom keybindings you like to the Symex modal UI by using the underlying Lithium facilities for this purpose, as described in the @uref{https://github.com/countvajhula/lithium, Lithium} documentation.
+
+@strong{PLEASE NOTE}: if you use custom keybindings, it is essential to preserve the intended ``exiting'' behavior of the commands. For instance, all insertion commands in Symex are designated with @code{:exit} in the keybinding specification, which ensures that it exits the Lithium mode to allow you to enter text. If you choose to override these, remember to retain the @code{:exit} flag (described further in the Lithium documentation).
+
+Also @xref{Point-Free Modal Editing} for more on Lithium.
+
+@node Features
+@chapter Features
+
+Symex allows you to edit and interact with code structurally using a modal UI. The @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/, Animated Guide} is a good way to see many of these features in operation, but this chapter provides an overview and an idea of the kinds of features, and why they exist.
+
+@node Getting Around
+@section Getting Around
+
+Typical cursor movements in Emacs navigate the two-dimensional plane of buffer rows and columns, so that left, right, up and down mean moving by column and by row, respectively. This is a very general way of moving around that you can use for any kind of text, including code.
+
+Symex motions are more specialized and navigate the two-dimensional tree structure of your code, so that left and right move to adjacent expressions, and up and down move across nesting depth. When you're working with code, this is more precise, and often, therefore, more efficient and more scalable.
+
+In addition to these basic motions, Symex also provides many other ways to get around that are intuitive for trees but which don't have analogues for unstructured, coordinate-based buffer navigation. For instance, ``traversing'' forwards and backwards visits every expression at every depth, precisely and in a predictable order, while ``skipping,'' ``climbing,'' and ``descending'' offer ways to get around faster in specific directions when you know where you're trying to go. Finally, you can also ``leap'' to nearby branches at the same height as your current position without explicitly navigating to them. This is very common as code frequently has repeating shapes and patterns --- patterns which you may wish to exploit to get around quickly or even for automating repetitive tasks via macros.
+
+@xref{Movement} for the full list of movement commands and keybindings.
+
+@node Editing Features
+@section Editing Features
+
+Symex provides structural features for manipulating code, metacommands to reflect on and repeat actions from your own command history, as well as rich macros for automating repetitive tasks. The following sections describe these features.
+
+For the full list of editing commands and keybindings, @xref{Editing}.
+
+@node Structural features
+@subsection Structural features
+
+Symex allows you to delete expressions, change them to something else, move them around, translate them lower or higher in the tree, detach them from one branch and attach them to another, and so on.
+
+These operations are all @emph{strict} about structure, so, for instance, you cannot accidentally shift an expression out to a lower or higher level if you are using a lateral shift operator like @code{symex-shift-backward} (@code{H}) or @code{symex-shift-forward} (@code{L}).
+
+The strictness of these operations allows you to be precise about code transformations. This is useful not just at the time of performing the action, but pays compounding dividends when you consider that macros and repetition can formally repeat these actions in new contexts, as the next section elaborates.
+
+@node Macros and Repetition
+@subsection Macros and Repetition
+
+Symex includes an advanced command repetition feature, accessible via @code{.}. This simply replays your most recent command. This command could even include insertion of text into the buffer, and even the use of completion frameworks during such insertion. @code{.} will repeat the command, in all cases.
+
+This feature is similar to Vim's well-known ``dot'' command, but in addition, it also maintains a history of recent commands on a ``repeat ring,'' so after pressing @code{.}, you can cycle through recent repetitions using @code{C-.}. This ability to repeat recent commands is similar to Evil's implementation of ``dot'' which includes the analogous ``repeat-pop'' feature.
+
+Symex's repeat feature uses the standalone @uref{https://github.com/countvajhula/repeat-ring, @code{repeat-ring}} package and the @uref{https://github.com/countvajhula/mantra, @code{mantra}} parsing library. These packages were developed to support Symex, but they enable any package to develop and provide very general and highly customizable repeat functionality.
+
+@xref{Macros} for ways to record and repeat longer sequences of commands.
+
+@node IDE Features
+@section IDE Features
+
+Symex provides, via the optional @code{symex-ide} extension (@xref{Installing Symex}), a handful of ways to conveniently leverage major mode features for languages, via short keybindings.
+
+For instance, for some languages (especially Lisp languages), @code{e} evaluates the selected expression in a REPL, @code{?} looks up documentation on the selected expression (identifier), and @code{r} enters a REPL.
+
+These easy integrations with important coding facilities can help you get quick feedback during development. As generations of Lisp users attest, such tight feedback loops are often the engines of quick progress on any task.
+
+@xref{IDE} for the full list of IDE commands and keybindings.
+
+@node Squirrel on a Speedrun - Tips and Tricks
+@chapter Squirrel on a Speedrun - Tips and Tricks
+
+@cindex Tips and tricks
+
+Now that we've learned the basics, let's learn some ways to be even more precise and efficient.
+
+@node Escaping to Symex Instead of Normal State
+@section Escaping to Symex Instead of Normal State
+
+@cindex Normal state, interoperation with
+@cindex Rigpa, managing modes with
+
+For Evil users, when you ``escape'' from Insert state, you may prefer to enter Symex state rather than Normal state while in Lisp buffers.
+
+Please @xref{Symex and Rigpa} for the recommended way of achieving this.
+
+If you're not using Rigpa, you could still write one-off keybindings to achieve this, for instance, see @url{https://github.com/drym-org/symex.el/issues/24#issuecomment-815110143, this recipe} by @@tommy-mor.
+
+Also @xref{Easy Entry Into Symex Mode} for another option.
+
+@node Macros
+@section Macros
+
+@cindex Macros, tips and tricks
+
+Ordinary keyboard macros are already very useful, allowing you to carefully construct repeatable actions to automate batch tasks. But with Symex, they become much more powerful, since the keystrokes recorded by the macros represent not elementary cursor movements and manual edits, but complex traversals and rich structural operations.
+
+When you define macros in symex mode (e.g., via @code{C-x (}, or via @code{q} for Evil users), make sure that the commands you use are those that have the same effect in every situation. For instance, the ``up'' and ``down'' motions (default: @code{k} and @code{j}) could vary based on ``branch memory'' — up may sometimes move you to the first position on the higher level, but at other times it may move you to the third position, if that happens to be your most recent position. Using up and down in your macro would mean that it could have different results in each tree depending on your activities in the tree, unless you remember to reset the frame of reference by using something like @code{0} or @code{$}. Instead, it may be more natural to use the ``flow'' traversal commands (default: @code{f} and @code{b}), repeating them or prefixing them with count arguments if necessary, to move around in a fully deterministic way. This will ensure that your macros behave the same way in every case.
+
+@c example of unit tests?
+
+@node Mode Line Enhancements
+@section Mode Line Enhancements
+
+@cindex Mode line, tips and tricks
+
+The vanilla mode line in Emacs does show some textual indication of your current evil state, e.g. @code{<N>} for Normal state, and @code{<λ>} for Symex state, and this kind of visual feedback is helpful, yet also subtle. If you'd like more pronounced visual feedback, you might try extensions such as @uref{https://github.com/milkypostman/powerline, powerline} or @uref{https://github.com/dbordak/telephone-line, telephone-line}, which provide customizable color coded indicators for each evil state in the mode line. For example, for telephone-line, you could use the following config in the @code{config} section of the @code{use-package} declaration for telephone-line:
+
+@lisp
+(defface telephone-line-evil-symex
+  '((t (:background "SlateBlue3" :inherit telephone-line-evil)))
+  "Face used in evil color-coded segments when in Symex state."
+  :group 'telephone-line-evil)
+@end lisp
+
+@node Easy Entry Into Symex Mode
+@section Easy Entry Into Symex Mode
+
+@cindex Easy Entry Into Symex Mode
+
+For Evil users, user @@doyougnu suggests binding your local leader to @code{,} (instead of the default, @code{\}), which frees up @code{\} to be used as entry into Symex Mode. This is convenient as @code{\} feels like another @code{Esc} but dedicated to Symex mode instead of Normal state. The drawback is that @code{,} is an otherwise useful key in Normal state (for in-line repeat search backwards). Although, using it for the local leader is a widely used pattern by Vim and Evil users, and if you are one of them, then this might be a good option for you.
+
+With this option, entering Symex from Normal state is convenient, but you'd still need to visit Normal state on your way to Symex mode from Insert state. If you'd like to avoid this, @xref{Escaping to Symex Instead of Normal State}.
+
+@node Making Parentheses Convenient
+@section Making Parentheses Convenient
+
+@cindex Parentheses, convenient entry
+
+In writing Lisp code, parentheses are among the most commonly typed characters, and yet, these require us to leave home position dramatically to type! I recommend a keybinding resembling the following to make it more efficient. Of course this applies only in Insert state (for Evil users) or in vanilla Emacs state, as you can insert and modulate delimiters in other ways while in Symex state:
+
+@lisp
+(define-key
+  symex-lisp-mode-map
+  (kbd "C-w")
+  (lambda ()
+    (interactive)
+    (execute-kbd-macro (kbd "("))))
+@end lisp
+
+You could think of ``w'' as ``wrap'' in this context, as in, ``to wrap with parentheses,'' and it matches a similar binding in symex state (i.e. @code{w} to wrap an expression and enter insert state). For the closing parenthesis, you could just use Emacs's @code{C-f} to move forward a character — since symex (via paredit) ensures that parentheses are balanced, you rarely need to actually type a closing delimiter. The binding @code{C-w} would be fine for Evil users, but vanilla Emacs users may need to find something else here. Of course it goes without saying that the Control key should be conveniently accessible without having to leave home position. I have Control under my right thumb, and Escape in place of Caps Lock.
+
+@node The Symex DSL
+@chapter The Symex DSL
+
+@cindex Symex DSL, the
+
+The Symex DSL powers many of Symex's features, and you can use it, too.
+
+The DSL allows you to specify any tree traversal in a cursor-oriented manner. That is, instead of describing traversals from an absolute reference point such as a root node, it allows you to describe traversals from the first-person vantage point of the cursor — what would you do if you were where this cursor is right now? It allows you to describe what you'd like to do in intuitive terms that make sense for movement in a tree. Symex is the language a squirrel might use to describe their exploits to another squirrel.
+
+Let's now take a journey inside the mind of the squirrel.
+
+@node Usage
+@section Usage
+
+@cindex Symex DSL, using
+
+The main entry point to Symex from ELisp is the @code{symex-traversal} form, which can also be used via the definition form, @code{symex-deftraversal}. These forms allow you to define traversals (e.g., movements or transformations of code) using the Symex language, and they are analogous to @code{lambda} and @code{defun} (for defining functions in ELisp), respectively. Traversals defined this way may be evaluated using @code{symex-eval} and would execute in relation to the selected expression. Symex considers point (i.e., the cursor) to indicate the @emph{start} of the selected expression.
+
+Here is what performing a very basic traversal looks like. We'll soon learn more about what it means:
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (do (move up)
+        (move forward))))
+@end lisp
+
+@node Language
+@section Language
+
+@cindex Symex DSL, language documentation
+
+The Symex DSL allows you to specify @emph{traversals}. A traversal may be a movement from one part of the tree to another, or it may be an action to take at a particular point in a tree such as ``taking'' (deleting) an expression or ``dropping'' (pasting) something, ``carefully'' checking conditions, or even performing an arbitrary ``effect.''
+
+Symex gives you several linguistic forms with which to describe such traversals in precise ways.
+
+Each form of the language has its own syntax, and typically the clauses of these forms are expected to be traversals themselves. For instance, the @code{maneuver} form specifies a traversal as a sequence of other traversals to be executed in order.
+
+Typically, if a traversal succeeds, it returns a list of executed moves which if replayed manually from the starting position would have the same effect as running the traversal did. If the traversal fails, it returns @code{nil}.
+
+@node move
+@subsection @code{move}
+
+@cindex zero move, use of in traversals
+@cindex traversals, signaling success without movement
+
+@subheading Syntax
+
+@code{(move forward|backward|up|down)}
+
+@subheading Description
+
+The most basic movement, a move simply takes a single step in a particular direction, to a neighboring node in the tree.
+
+@subheading Examples
+
+"Move forward."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (move forward)))
+@end lisp
+
+"Move backward."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (move backward)))
+@end lisp
+
+"Move up."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (move up)))
+@end lisp
+
+"Move down."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (move down)))
+@end lisp
+
+Note that in the Symex language, "up" and "down" are defined in relation to the root node being considered the bottom of the tree and increasingly nested expressions as being higher. We "go down towards the root and up towards the nest."
+
+The variable @code{symex--move-zero} can be used in traversals to indicate an intentional absence of motion, and would be treated as a successful move.
+
+@node maneuver
+@subsection @code{maneuver}
+
+@subheading Syntax
+
+@code{(maneuver traversal ...)}
+
+or
+
+@code{(do traversal ...)}
+
+@subheading Description
+
+Execute a sequence of traversals in order. The maneuver succeeds if @emph{all} of the traversals succeed. If any of them fail, then the entire maneuver is aborted and nothing happens. In other words, the maneuver has "all or nothing" semantics. To accept partial completion, use @code{venture} instead.
+
+@subheading Examples
+
+"Go forward, then up, and then forward again."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (do (move forward)
+        (move up)
+        (move forward))))
+@end lisp
+
+"Go up and then keep going forward, and then go up again."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (do (move up)
+        (repeat (move forward))
+        (move up))))
+@end lisp
+
+@node venture
+@subsection @code{venture}
+
+@subheading Syntax
+
+@code{(venture traversal ...)}
+
+or
+
+@code{(try traversal ...)}
+
+@subheading Description
+
+Execute a sequence of traversals in order. If the venture is partially completed, i.e. if at least one traversal was executed, then the venture is treated as successful. Otherwise it is considered to have failed.
+
+@subheading Examples
+
+"Venture to go forward, then up, and then forward again."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (try (move forward)
+         (move up)
+         (move forward))))
+@end lisp
+
+"Go up and then all the way forward, and then try going up again."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (try (do (move up)
+             (repeat (move forward)))
+         (move up))))
+@end lisp
+
+@node protocol
+@subsection @code{protocol}
+
+@subheading Syntax
+
+@code{(protocol traversal ...)}
+
+or
+
+@code{(any traversal ...)}
+
+@subheading Description
+
+Try executing traversals, in order, until one succeeds (and then stop).
+
+@subheading Examples
+
+"Try going forward, if that doesn't work try going backward."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (any (move forward)
+         (move backward))))
+@end lisp
+
+"Try going forward and up, if that doesn't work try going backward and down."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (any (do (move forward)
+             (move up))
+         (do (move backward)
+             (move down)))))
+@end lisp
+
+@node detour
+@subsection @code{detour}
+
+@subheading Syntax
+
+@code{(detour reorientation-traversal main-traversal)}
+
+@subheading Description
+
+Try executing a traversal by first reorienting yourself. If the main traversal fails, reorient yourself ("take a detour") and then try again. Keep repeating this until either the main traversal succeeds, or the reorientation fails. Both the main traversal as well as the reorientation can be any traversal.
+
+Note that the reorientation is always executed prior to trying the main traversal, even the first time.
+
+@subheading Examples
+
+"Attempt to go forward by first going down, and keep going down to try again."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (detour (move down)
+            (move forward))))
+@end lisp
+
+"Attempt to go forward by first going down, and keep going down to try again as long as we don't descend to the root of the tree."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (detour (carefully (move down)
+                       (afterwards (not (at root))))
+            (move forward))))
+@end lisp
+
+@node decision
+@subsection @code{decision}
+
+@subheading Syntax
+
+@code{(decision condition traversal-A traversal-B)}
+
+or
+
+@code{(if condition traversal-A traversal-B)}
+
+@subheading Description
+
+Do either traversal A or traversal B, depending on whether a condition holds.
+
+The condition can be any predicate — either a built-in predicate form, or an arbitrary traversal, including a lambda. @xref{Predicates} for details.
+
+@subheading Examples
+
+"If we're at the root of the tree, then go forward, otherwise go down."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (if (at root)
+        (move forward)
+        (move down))))
+@end lisp
+
+"If we are somewhere before a previously stored position in the buffer, then go forward, otherwise don't move."
+
+@lisp
+(symex-eval
+ (symex-traversal
+   (if (lambda (_computation _result)
+         (< (point) previously-stored-position))
+       (move forward)
+       symex--move-zero)))
+@end lisp
+
+We'll ignore the arguments of the lambda here, for now, and will soon see what they're for. @code{symex--move-zero} is just a convenient traversal for cases where you need to indicate a traversal but would like to not move at all. It is defined as @code{(symex-make-move 0 0)}.
+
+@node circuit
+@subsection @code{circuit}
+
+@subheading Syntax
+
+@code{(circuit traversal [times])}
+
+or
+
+@code{(repeat traversal [times])}
+
+@subheading Description
+
+Repeat a traversal a given number of times or as long as it succeeds. When it fails, stop.
+
+@subheading Examples
+
+"Move forward three times."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (repeat (move forward) 3)))
+@end lisp
+
+"Keep moving forward."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (repeat (move forward))))
+@end lisp
+
+"Keep moving down and forward, as long as we don't descend to the root node."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (repeat
+      (carefully
+        (try (move down)
+             (move forward))
+        (afterwards (not (at root)))))))
+@end lisp
+
+@node loop
+@subsection @code{loop}
+
+@subheading Syntax
+
+@code{(loop traversal condition)}
+
+@subheading Description
+
+Repeat a traversal until a condition is met. If the traversal fails without the condition being met, the traversal is considered to have failed and no move is made.
+
+The condition can be any predicate — either a built-in predicate form, or an arbitrary traversal, including a lambda. @xref{Predicates} for details.
+
+This is fairly similar to @code{circuit}, but is more natural in some cases where using conditions via precautions may be awkward.
+
+@subheading Examples
+
+"Move down until we reach the root."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (loop (move down) (at root))))
+@end lisp
+
+@node precaution
+@subsection @code{precaution}
+
+@subheading Syntax
+
+@code{(precaution traversal [(beforehand condition)|(afterwards condition)])}
+
+or
+
+@code{(carefully traversal [(beforehand condition)|(afterwards condition)])}
+
+@subheading Description
+
+Execute a traversal, but ensure that certain conditions hold either before or after executing the traversal (or both). If a condition does not hold, then abort the traversal, considering it to have failed.
+
+Each of the conditions can be any predicate — either a built-in predicate form, or an arbitrary traversal, including a lambda. @xref{Predicates} for details.
+
+Note that, as the predicates could be lambdas, you could also perform effects resembling @ref{effect} (say, setting an ELisp variable) using @ref{precaution}, either before or after the traversal. If you'd like to do this, just remember that the effect function you use, as a predicate, must return a truthy value. And further, as a traversal, it must accept the two standard arguments to traversals (@xref{Lambdas}).
+
+@subheading Examples
+
+"Go down but don't descend to the root node."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (carefully (move down)
+               (afterwards (not (at root))))))
+@end lisp
+
+"Go backward as long as we aren't at the first node at this level."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (carefully (move backward)
+               (beforehand (not (at first))))))
+@end lisp
+
+Note that this executes a *single* traversal while taking precautions. It is not repeated unless wrapped in a circuit or employed as a detour.
+
+@node delete
+@subsection @code{delete}
+
+@subheading Syntax
+
+@code{(delete [this|previous|next])}
+
+or
+
+@code{(take [this|previous|next])}
+
+@subheading Description
+
+Delete the indicated expression. Prefer @code{previous} and @code{next} as those are deterministic in the placement of point after the transformation, i.e., they don't need to move point.
+
+@subheading Examples
+
+"Swap current and previous expression."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (do (take previous)
+        (drop after))))
+@end lisp
+
+@node paste
+@subsection @code{paste}
+
+@subheading Syntax
+
+@code{(paste [before|after])}
+
+or
+
+@code{(drop [before|after])}
+
+@subheading Description
+
+Paste the ``current kill'' either before or after the current expression.
+
+@subheading Examples
+
+"Emit forward."
+
+@lisp
+(symex-eval
+  (symex-traversal
+    (do (move up)
+        (repeat (move forward))
+        (take this)
+        (move down)
+        (drop after))))
+@end lisp
+
+@node effect
+@subsection @code{effect}
+
+@subheading Syntax
+
+@code{(effect effect-fn [main-traversal])}
+
+@subheading Description
+
+Execute the main traversal (if present) and then, if it succeeds, call the ``effect'' lambda, ignoring its output. The effect could be @emph{anything}, allowing us to attach arbitrary semantics to traversals.
+
+Note that you could also perform such effects using @ref{precaution}, either before or after the traversal, which makes that approach more flexible. Yet, that approach requires the lambdas used to fulfill the traversal interface in terms of arguments and return values (@xref{Lambdas}), so it's a little more to think about. Performing an effect along with a traversal without consideration for return values or input arguments is such a common case, and that's why @code{effect} is provided as a convenience.
+
+Typically, we are interested in attaching such effects to a repeated traversal so that the effect is performed at each step of the traversal as long as it succeeds.
+
+@subheading Examples
+
+"Print each expression until the end."
+
+@lisp
+(symex-eval
+ (symex-traversal
+   (repeat
+     (effect (lambda ()
+               (print (thing-at-point 'sexp)))
+             (move forward)))))
+@end lisp
+
+Note, again, that the lambda used in an @code{effect} accepts no arguments, and its return value is disregarded.
+
+@node Lambdas
+@subsection Lambdas
+
+@cindex lambdas, usage in traversals
+
+Finally, a traversal can also be @emph{any ELisp function}, including a lambda defined inline.
+
+Such a lambda would be called with two arguments — the same two used by any traversal — a specification of the computation to be performed, and the in-progress accumulated result. It is expected to synthesize its result with the accumulated result to return a valid traversal result in the context of the containing computation.
+
+In practice, using a lambda as a traversal will never be done, @emph{except} when defining conditions for use in conditional traversals like @ref{decision} or @ref{precaution}. In such cases, use of a lambda is @emph{common}. Here, as the result of the traversal is only conditioned upon and isn't integrated into the containing traversal, the only thing relevant to the execution of the traversal is that the lambda return a truthy value on whatever it considers to be ``success,'' and @code{nil}, otherwise. It must, however, still accept the two standard arguments, even if it doesn't use them.
+
+If you find yourself writing a lambda for @emph{any other purpose} than as a condition, it would be advisable to discern whether your need for this lambda suggests the addition of a new form to the DSL that would make your lambda unnecessary, so please consider @uref{https://github.com/drym-org/symex.el/issues, contributing an issue} describing your use case.
+
+@subheading Examples
+
+"If we are somewhere before a previously stored position in the buffer, then go forward, otherwise don't move."
+
+@lisp
+(symex-eval
+ (symex-traversal
+   (if (lambda (_computation _result)
+         (< (point) previously-stored-position))
+       (move forward)
+       symex--move-zero)))
+@end lisp
+
+@node Predicates
+@subsection Predicates
+
+@cindex predicates in traversals
+
+Symex offers a few standard predicates to use as conditions in traversals like @ref{decision}, @ref{precaution}, and @ref{loop}, usable via a convenient syntax.
+
+@itemize @bullet{}
+
+@item
+@code{(at root)} — Are we (i.e. is the cursor) at the root node? Any toplevel form in the source file is considered to be a root node.
+
+@item
+@code{(at first)} — Are we at the first node at the present level / on the current branch of the tree?
+
+@item
+@code{(at last)} — Are we at the last node at the present level / on the current branch of the tree?
+
+@item
+@code{(at initial)} — Are we at the first root-level node in the entire file?
+
+@item
+@code{(at final)} — Are we at the last root-level node in the entire file?
+
+@end itemize
+
+In addition to supporting the above syntax, the conditions in traversals like @ref{decision}, @ref{precaution}, and @ref{loop}, are simply @emph{traversals} themselves, so you may use any traversal as a predicate, including, in particular, any lambda (@xref{Lambdas}).
+
+@subheading Composing Predicates
+
+@cindex predicates, composing
+
+The modifier @code{not} can be used to negate any of the above predicates (or the result of arbitrary lambdas). E.g. @code{(not (at root))} returns true if cursor is not at the root node of the tree.
+
+@code{and} and @code{or} form the conjunction and disjunction of predicates (including lambdas), e.g., @code{(and (not (at root)) (not (at first)))}.
+
+@node Evaluation Model
+@section Evaluation Model
+
+@cindex Symex DSL, evaluation model of
+@cindex Symex DSL, performing arbitrary computations
+
+Typically, when executing traversals, we only need to know whether a traversal succeeded or failed. For this purpose, it's sufficient to check whether the traversal evaluates to a non-@code{nil} result in order to infer success.
+
+But there are cases when you may need to modulate the computation being performed as part of the traversal. For instance, the ``leap'' feature in Symex computes a delta of each position in relation to the initial position, as it traverses, and stops traversing when the delta reaches @code{0} in both @code{x} (horizontal position along branch) and @code{y} (height from root) directions.
+
+The remainder of this section explains how computations work, so that you can write similar traversals that may need to perform custom computations.
+
+Symex executes traversals while evaluating an associated ``fold''-like computation. By default, that computation simply assembles a sequence of the moves made during traversal evaluation, producing this full list as the result.
+
+The computation is specified in terms of a ``perceiving'' operation that represents the underlying move (every traversal is ultimately composed of elementary moves) in a way that is relevant for the computation, and a ``synthesizing'' operation that combines the accumulated result with the new perceived input.
+
+Traversals may be evaluated with arbitrary computations that are specified in this way. The in-progress result is always available to traversals as an argument, so that they may condition on this in-progress result (as ``leap'' does, stopping when a condition on the result is met).
+
+For example, the following computation simply counts the number of moves made during traversal evaluation:
+
+@lisp
+(defvar my-symex-compute-moves
+        (symex-make-computation :perceive (lambda (_x) 1)
+                                :synthesize #'+)
+@end lisp
+
+It may be used as follows:
+
+@lisp
+(symex-eval (symex-traversal
+              (circuit (move forward)))
+            my-symex-compute-moves)
+@end lisp
+
+This counts the number of moves made in traversing forward to the end of the containing expression.
+
+Note that traversals sometimes return ``zero'' moves, that is, @code{(move 0 0)}, to indicate an intentional absence of movement, as opposed to @code{nil} which indicates a failed traversal, so this computed result may return more moves than the actual number of steps taken. It is just an example of a simple computation, though, perhaps, not a very useful one.
+
+@node Expressive Power
+@section Expressive Power
+
+As the Symex DSL includes loops, conditionals, and more, theoretically, it is more expressive than regular expressions, and at least as expressive as a "pushdown" automaton (i.e., state machine with stack-based memory). With its ability to interpolate ELisp in traversals, it could perhaps be considered Turing Complete, or could be made so if there is a need for a feature that cannot easily be implemented in the DSL in its current form (please submit an issue describing your desired feature!).
+
+@node Full DSL Code Example
+@section Full DSL Code Example
+
+@cindex Symex DSL, code example
+@cindex Symex DSL, implementing a new feature in
+
+Because the DSL expresses traversals in a natural way in relation to the cursor, it often allows the implementation of tree algorithms to be simple enough that, even as a casual user, you might consider extending Symex to support features you might need. As an illustration, imagine that you are editing some Lisp code. You often find that you need to transform something like this:
+
+@example
+(a (b (c (d e))))
+@end example
+
+… to this:
+
+@example
+(a
+ (b
+  (c
+   (d
+    e))))
+@end example
+
+To perform the above transformation, intuitively, you might say, ``go up into the expression, then go forward, then add a newline there, and then keep repeating the same thing until we reach the end.'' Indeed, using the Symex modal UI, you can manually implement this, for this particular example, as @code{kl>kl>kl>kl>}.
+
+But you'd like a general command to do this that works in every case, no matter how deep or shallow the expression may be.
+
+You could write a Symex command to do that, using the linguistic forms we learned about.
+
+@example
+(symex-define-command my-cascade ()
+  (interactive)
+  (symex-eval
+   (symex-traversal
+     (repeat
+      (try (move up)
+           (move forward)
+           (lambda (_computation _result)
+             (newline-and-indent 1)))))))
+@end example
+
+The important part is within @code{symex-traversal}, and if you squint just a bit, you'll see that it's exactly the intuitive algorithm we came up with just now! @code{repeat}, as the name implies, repeats the contained traversal until it fails. @code{try} attempts a sequence of traversals in order, stopping when anything doesn't work. A move is a single step in any direction. And you can provide any ELisp code (in this case, to add a newline with proper indentation) by entering a @code{lambda} (@xref{Lambdas} for more on the unused arguments here). Now just compare that with our intuitive algorithm, reproduced here:
+
+``go up into the expression, then go forward, then add a newline there, and then keep repeating the same thing until we reach the end.''
+
+For the logistical aspects of this implementation, recall that you define a Symex program using @code{symex-traversal} and evaluate it using @code{symex-eval}. Symex commands often need to do some standard things like fix indentation after execution, or set some metadata that may help Emacs treat your command as you expect. Using @code{symex-define-command} instead of @code{defun} takes care of these things for you, but it's not required. Finally, @code{interactive} is Emacs's standard way of making the command executable by you via @code{M-x}.
+
+@node Debugging
+@section Debugging
+
+@cindex debugging strategies
+
+There are many strategies for gaining visibility into, and debugging, Symex traversals. Some of these strategies are standard and applicable to ELisp as well, while others are specific to Symex.
+
+@node Directly Evaluating Expressions
+@subsection Directly Evaluating Expressions
+
+You can always run traversals in a source buffer by using @code{M-:} to evaluate an ELisp expression. This can be a cumbersome way to try things out, however.
+
+@node Using a REPL
+@subsection Using a REPL
+
+Another strategy is to open a REPL in an adjacent window and run code in the REPL while having it take effect in the source buffer alongside.
+
+To do this, open an IELM buffer in a window next to a source buffer, and use this snippet in the REPL:
+
+@lisp
+(with-current-buffer (window-buffer (other-window 1))
+  (symex-eval
+   (symex-traversal
+    (maneuver (move forward)
+              (move up))))
+  (other-window 1))
+@end lisp
+
+Here, you can substitute the contents of @code{(symex-traversal ...)} with whatever traversal you like.
+
+@node Using a Debugger (EDebug)
+@subsection Using a Debugger (EDebug)
+
+@cindex EDebug, using
+
+Another way is to use the ELisp Debugger, EDebug. This allows you to see the exact steps the DSL evaluator goes through in executing a traversal and the effects it has on the code, and can be helpful if you want to understand why a traversal isn't doing what you think it should be doing, or even if you just want to understand how the DSL works! A good debugger isn't just for debugging problems, it's also an exploratory tool for quick feedback at the creative stage when you're implementing new functionality. It can help you be more efficient at every stage of development.
+
+To use it, first evaluate the relevant traversal evaluator (for instance, the @code{symex-eval} function) for debugging by placing point somewhere within it and then invoking @code{M-x edebug-defun} (a convenient keybinding for this, e.g., via a Hydra, is recommended). Now, if you execute a traversal (e.g., via the REPL as in the recipe above, or with a test expression in the Scratch buffer, or even just by invoking the relevant feature on source code while in Symex mode), it will put you in the debugger and allow you to step through the code. Handy commands for EDebug:
+
+@itemize @bullet{}
+
+@item
+@code{s} — step forward
+
+@item
+@code{i} — step in
+
+@item
+@code{o} — step out
+
+@item
+@code{g} — go until next breakpoint
+
+@item
+@code{q} — quit
+
+@end itemize
+
+There are also lots of other features like setting and unsetting breakpoints (@code{b} and @code{u}), seeing a backtrace (@code{d}), evaluating expressions in the evaluation context (@code{e}), and lots more, making it an indispensible tool for ELisp debugging.
+
+When you're done debugging, you can remove the debugger hooks by just evaluating the debugged functions in the usual way (e.g. via @code{M-x eval-defun} or @code{M-x eval-buffer}).
+
+Also see @uref{https://endlessparentheses.com/debugging-emacs-lisp-part-1-earn-your-independence.html, this series on ELisp debugging} for more tips.
+
+@node Troubleshooting
+@subsection Troubleshooting
+
+@cindex Troubleshooting
+@cindex Debugging macros
+@cindex stack traces, improving
+
+@subheading Debugging Macros vs Functions
+
+If you are attempting to debug a feature implemented as a macro like @code{symex-define-command}, you would need to evaluate the primitive functions for debugging, rather than the macro, or if necessary, copy the contents of the command to a new function and call that function from the macro, in order to be able to debug it. To be clear, you would need to evaluate the @emph{function} for debugging rather than the macro. Naively, if you attempt to debug the macro, the debugger is triggered at compile time (i.e., as soon as you attempt to evaluate it for debugging!) and not at runtime when you're actually interested in using it. For the same reason, if you attempt to ``step into'' a macro invocation while the debugger is active, it won't do anything. You can only debug functions. If what you are interested in debugging is not a function, then put it in a function and debug that.
+
+@subheading ``Buffer is read-only''
+
+If you're an Evil user, sometimes, the debugger appears to get overridden by Evil keybindings, complaining that the ``Buffer is read-only'' when you attempt to @code{s} to step forward. Saving the buffer (as opposed to debugging an unsaved buffer) seems to solve these issues, and if not, killing and reopening the buffer does.
+
+@subheading Better Stack Traces
+
+The Symex modal UI is written in Lithium which wraps the underlying Symex commands with error handling, and this wrapping code may be byte-compiled. This could make the stack traces hard to read in the event of an error, so if you are encountering an issue with an interactive feature that you are using through the modal UI, then debug it by invoking that function directly, using @code{M-x <symex-command-name>} or via programmatic invocation in IELM or via @code{M-:}. That will show you a clean stack trace.
+
+For instance, instead of @code{x} in Symex mode, use @code{M-x symex-delete}.
+
+@node Print Statements and Asserts
+@subsection Print Statements and Asserts
+
+Don't hesitate to add print statements (e.g., @code{print} or @code{message}) to trace the execution path. Such trace logs can also serve as evidence from which to form hypotheses about bugs. You could also use @code{cl-assert} to assert assumptions at specific points.
+
+@node Minimizing Complexity
+@subsection Minimizing Complexity
+
+@subheading Disable Advice
+
+Symex uses @uref{https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html, advice} to implement some features such as adding a selection overlay. To minimize complexity while debugging, it may be advisable (so to speak) in certain cases to disable such advice. To do this, find the place in the code where the advice is added, and execute the corresponding function to remove it. Something like, @code{(advice-remove #'symex-user-select-nearest #'symex-mode-highlight-selected)}. Of course, if disabling the advice causes the error to go away, then you can focus your efforts on debugging the advice itself in isolation!
+
+@subheading Comment Out Macros
+
+It may also be advisable to comment out macros like @code{symex-save-excursion} to see if the problem persists. Commenting out macros like @code{symex--with-undo-collapse} will also help you use the debugger in code wrapped by such macros.
+
+Also @xref{Troubleshooting}.
+
+@node Gotchas
+@subsection Gotchas
+
+@cindex Gotchas, during debugging
+
+The @code{symex-traversal} form accepts a @emph{single} traversal argument. If you'd like to do more than one thing, then wrap the steps in a @ref{maneuver} or a @ref{venture}.
+
+@code{symex-deftraversal} is equivalent to @code{(defvar name (symex-traversal traversal))}. As it uses @code{defvar}, once defined, you cannot use the same form to redefine the traversal (e.g., if you are debugging it). You will need to use @code{setq} directly — e.g., replace @code{defvar} with @code{setq} in the expanded version of this form.
+
+@node Keybinding Cheat Sheet
+@chapter Keybinding Cheat Sheet
+
+@cindex Keybindings
+
+The table below lists the key bindings in Symex mode. You can always use Emacs's @code{C-h k} to learn what a key does, of course, as another way to learn these bindings. But as the underlying commands are wrapped by @ref{Point-Free Modal Editing, Lithium}, you would need to visually parse through the Lithium logic to spot the wrapped command in the result.
+
+Finally, the @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/, Animated Guide to Symex} shows each of these commands in action and includes tips on their usage.
+
+@node Movement
+@section Movement
+
+@cindex Movement, keybindings for
+
+@multitable @columnfractions .15 .45 .4
+@headitem Key @tab Action @tab Remarks
+
+@item @code{h}, @code{j}, @code{k}, @code{l}
+@tab Backwards, down, up, forwards
+@tab
+
+@item @code{gj}, @code{gk}
+@tab Linewise down, up
+@tab Don't rely too heavily on these — e.g. "leap branch" is often better
+
+@item @code{f}, @code{b}
+@tab Traverse forwards, backwards
+@tab
+
+@item @code{C-f}, @code{C-b}
+@tab Traverse forwards, backwards more
+@tab Quicker ways to get around
+
+@item @code{F}, @code{B}
+@tab Skip forwards, backwards
+@tab Quick ways to move forwards and backwards — traverse without entering nested expressions
+
+@item @code{@{}, @code{@}}
+@tab Leap backwards, forwards
+@tab "Leap" to adjacent branches in the current tree, preserving position on branch
+
+@item @code{M-@{}, @code{M-@}}
+@tab Soar backwards, forwards
+@tab Leap, but crossing trees if necessary
+
+@item @code{C-k}, @code{C-j}
+@tab Climb, descend
+@tab A quick way to go up and down a tree
+
+@item @code{0} / @code{M-h}
+@tab Go to first symex at this level
+@tab
+
+@item @code{$}, @code{M-l}
+@tab Go to last symex at this level
+@tab
+
+@item @code{M-j}, @code{M-k}
+@tab Go to lowest, highest symex in the tree
+@tab
+
+@end multitable
+
+@node Editing
+@section Editing
+
+@cindex Editing, keybindings for
+
+@multitable @columnfractions .15 .45 .4
+@headitem Key @tab Action @tab Remarks
+
+@item @code{w}, @code{W}
+@tab Wrap with parens and insert, wrap and append
+@tab
+
+@item @code{x}, @code{X}, @code{D}
+@tab Delete, delete backwards, delete remaining
+@tab
+
+@item @code{c}, @code{C}
+@tab Change, change remaining
+@tab
+
+@item @code{y}, @code{Y}, @code{p}, @code{P}
+@tab Yank (copy), yank remaining, paste after, paste before
+@tab
+
+@item @code{C--}, @code{s}
+@tab Clear, replace/substitute
+@tab
+
+@item @code{S}
+@tab Change "surrounding" delimiter
+@tab
+
+@item @code{H}, @code{L}
+@tab Move/shift symex backwards, forwards
+@tab
+
+@item @code{M-H}, @code{M-L}
+@tab Move/shift symex backwards, forwards as far as possible on line or column
+@tab Remember that usually the Meta prefix @code{M-} means "the most" and the Shift prefix @code{S-} means an action or "to shift" in a direction
+
+@item @code{K}
+@tab Raise
+@tab
+
+@item @code{C-S-j} / @code{C-@{}, @code{C-S-k} / @code{C-@}}
+@tab Emit backwards, forwards
+@tab
+
+@item @code{C-S-h} / @code{C-(}, @code{C-S-l} / @code{C-)}
+@tab Capture backwards, forwards
+@tab
+
+@item @code{z}, @code{Z}
+@tab Swallow head, swallow tail
+@tab
+
+@item @code{|}, @code{&}
+@tab Split, join/merge
+@tab
+
+@item @code{-}
+@tab Splice
+@tab Clip the delimiters, joining the symex to the containing expression
+
+@item @code{>}, @code{C->} / @code{C-S-o}
+@tab Insert newline before, append newline after
+@tab
+
+@item @code{<},  @code{J} / @code{C-<}
+@tab Join with preceding line, join with next line
+@tab
+
+@item @code{M-J} / @code{M-<}
+@tab Collapse to a single line
+@tab
+
+@item @code{M->}
+@tab Unfurl across multiple lines
+@tab
+
+@item @code{C-M-<}, @code{C-M->}
+@tab Collapse remaining, unfurl remaining
+@tab
+
+@item @code{=}, @code{<tab>}
+@tab Tidy
+@tab Indent and remove extraneous whitespace
+
+@item @code{C-=}, @code{C-<tab>}
+@tab Tidy remaining
+@tab Tidy remaining symexes at this level
+
+@item @code{M-=} / @code{M-<tab>}
+@tab Tidy recursively
+@tab Tidies while traversing the symex from the highest branch to the root, for cases where a simple tidy isn't adequate
+
+@item @code{;}, @code{M-;}
+@tab Comment out, comment out remaining
+@tab
+
+@item @code{i}, @code{a}
+@tab Insert at beginning, append at end
+@tab
+
+@item @code{I}, @code{A}
+@tab Insert before, append after
+@tab
+
+@item @code{o}, @code{O}
+@tab Open line below, above
+@tab
+
+@item @code{(}, @code{[}
+@tab Create symex with indicated delimiter
+@tab
+
+@item @code{)}, @code{]}
+@tab Wrap symex with indicated delimiter
+@tab
+
+@item @code{C-'}, @code{C-,}, @code{`}, @code{C-`}
+@tab Cycle quoting, cycle unquoting, add quoting level, remove quoting level
+@tab
+
+@item @code{.}, @code{C-.}
+@tab Repeat last command, cycle through recent commands
+@tab Similar to Evil's ``dot'' operator and ``repeat-pop'' command
+
+@item @code{<return>}
+@tab Enter insertion state
+@tab
+
+@item @code{<escape>}
+@tab Exit
+@tab
+
+@end multitable
+
+@node IDE
+@section IDE
+
+@cindex Other keybindings
+
+These are included in the @code{symex-ide} package (@xref{Installing Symex}).
+
+@multitable @columnfractions .15 .45 .4
+@headitem Key @tab Action @tab Remarks
+
+@item @code{e}, @code{E}, @code{d}, @code{M-e}, @code{C-M-e}, @code{T}
+@tab Evaluate, evaluate remaining, evaluate definition, evaluate recursively, pretty evaluate, evaluate as "thunk"
+@tab @code{T} evaluates the indicated symex as if it were wrapped with parentheses, i.e. invoking it as a function, passing no arguments
+
+@item @code{r}
+@tab Go to REPL
+@tab
+
+@item @code{R} / @code{X}
+@tab Run/eval the buffer
+@tab
+
+@item @code{C-;}
+@tab Evaluate, and insert result
+@tab
+
+@item @code{H-h}
+@tab Toggle highlight
+@tab
+
+@item @code{?}
+@tab Describe / lookup documentation
+@tab
+
+@end multitable
+
+@node Contributing to Symex
+@chapter Contributing to Symex
+
+@cindex Contributing to Symex
+
+There are many ways to contribute to Symex, and all contributions are welcome.
+
+@node Bugs or Features
+@section Bugs or Features
+
+@cindex Reporting bugs
+@cindex Suggesting features
+
+Please create an issue to report bugs or request features. We want to hear from you!
+
+If you'd like to take matters into your own hands and submit a PR, that's fantastic! You're still welcome to start the process with an issue to solicit input from other Symex contributors and users, so that your PR can be informed by these perspectives. But if you feel you already have a good idea of what you're going for, then by all means, jump straight to the PR, and feel free to reach out for help.
+
+@node Contributing Money
+@section Contributing Money
+
+@cindex Contributing money
+
+If you'd like to contribute money to support Symex development, thank you. Please make the contribution either:
+
+@itemize @bullet{}
+@item
+by Venmo to @code{@@Sid-K}
+
+@item
+by Paypal to skasivaj at gmail dot com
+
+@item
+if there is another way you'd prefer or recommend, please let us know! We are looking for ways to allow people to contribute securely with low fees.
+@end itemize
+
+Please remember to mention "Symex" in your message.
+
+The money you contribute will be distributed amongst contributors and the broader ecosystem in accordance with the principles of @emph{Attribution Based Economics}, as the next section elaborates.
+
+@node Symex Follows Attribution Based Economics
+@section Symex Follows Attribution Based Economics
+
+@cindex ABE, handling of financial contributions
+@cindex ABE, transparent attribution of contributions
+
+This project follows @uref{https://github.com/drym-org/foundation, Attribution-Based Economics}. Any financial contributions will be distributed to contributors and antecedents as agreed-upon in @uref{https://drym-org.github.io/dia/, a collective process that anyone may participate in}. To see the current distributions, take a look at @uref{https://github.com/drym-org/symex.el/blob/main/abe/attributions.txt, @code{abe/attributions.txt}}. To see payments made into and out of the project, see the @uref{https://github.com/drym-org/symex.el/blob/main/abe/, @code{abe}} folder. If your payment is not reflected there within 3 days, or if you would prefer to, you are welcome to submit an issue or pull request to report the payment yourself — all payments into and out of the repository are publicly reported (but may be anonymized if desired).
+
+Additionally, if your voluntary payments exceed the agreed-upon ``market price'' of the project (see @uref{https://github.com/drym-org/symex.el/blob/main/abe/price.txt, @code{price.txt}}), that additional amount will be treated as an investment, entitling you to a share in future revenues, including payments made to the project in the future or attributive revenue from other projects.
+
+This project will distribute payments according to the ABE guidelines specified in the constitution. In particular, it may take up to 90 days to distribute the initial payments if DIA has not already been conducted for this project. After that, payments will be distributed to contributors (including investors) at each meeting of the @uref{https://github.com/drym-org/dia-symex, DIA congress} (e.g. approximately quarterly).
+
+@node Non-Ownership
+@section Non-Ownership
+
+@cindex non-ownership
+
+This work is not owned by anyone. Please see the @uref{https://github.com/drym-org/foundation/blob/main/Declaration_of_Non_Ownership.md, Declaration of Non-Ownership}.
+
+@node Community
+@chapter Community
+
+@cindex Symex community, where to find
+@cindex Emacs community, connecting with
+@cindex meetups, IRL
+@cindex EmacsSF
+
+Where to find and connect with the Symex and broader Emacs community.
+
+@itemize @bullet{}
+
+@item
+@url{https://github.com/drym-org/symex.el, Symex.el} — the Symex project repository. Report bugs, request features, discuss issues, follow updates.
+
+@item
+@url{https://www.emacswiki.org/emacs/EmacsChannel, #emacs} — Symex contributors sometimes hang out on IRC in #emacs. It could be a good place to ask for help.
+
+@item
+Look for Emacs meetups in your town! Like @url{https://www.meetup.com/Emacs-SF/, EmacsSF} in the San Francisco Bay Area.
+
+@item
+@url{https://calendar.google.com/calendar/u/0/embed?src=4a464a65d09d47948cfb879659b77f56c293b588990ae718302530412265589b@@group.calendar.google.com, ABE Calendar} — Symex is part of the ABE community, which meets regularly to work on open source and broader economic and accounting issues.
+
+@item
+Any other ideas for connecting with fellow Symex users? Let us know!
+
+@end itemize
+
+@node Resources
+@chapter Resources
+
+@cindex resources for study
+@cindex Animated Guide to Symex, the
+@cindex Symex Mode: Editing Lisp Code in a Vim-like Way
+@cindex video deep dive (EmacsSF)
+
+Here are some helpful resources for further study.
+
+@itemize @bullet{}
+
+@item
+@url{https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/, The Animated Guide to Symex} — contains animations as well as tips for leveling up!
+
+@item
+@url{https://www.youtube.com/watch?v=a5s1ScTx8Zk, Symex Mode: Editing Lisp Code in a Vim-like Way} — a ``deep dive'' video presentation at EmacsSF
+
+@item
+@url{https://drym.org, Drym.org} — portal for Attribution Based Economics (ABE) and related efforts.
+
+@end itemize
+
+@node Symex Origins
+@chapter Symex Origins
+
+@cindex acknowledgements
+
+We would like to thank:
+
+@itemize @bullet{}
+
+@item
+Ariana, for naming Symex and giving us the term ``symex.''
+@item
+Soumya, for gentle encouragement to release this package when it was just sitting in Sid's Emacs config.
+@item
+Jeff, for organizing a meetup in San Francisco where Symex was presented for the first time.
+@item
+Oleh, for the Hydra package which made it easy to prototype Symex.
+@item
+Alan, for making the best logo ever.
+@item
+Squirrels in gardens everywhere, for inspiration.
+@item
+And @uref{https://github.com/drym-org/symex.el/blob/main/abe/attributions.txt, many@asis{,} many others} who contribute in ways small and large.
+
+@end itemize
+
+@node Concept Index
+@unnumbered Concept Index
+
+@printindex cp
+
+@bye

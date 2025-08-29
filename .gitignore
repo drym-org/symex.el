@@ -7,3 +7,13 @@
 *.elc
 dist
 *.html
+ci-init
+
+# rendered info manual artifacts
+*.info
+*.aux
+*.cp
+*.cps
+*.log
+*.pdf
+*.toc

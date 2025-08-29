@@ -1,19 +1,6 @@
 
 ;;; Utilities for development and testing
 
-;; test different evil keybindings - nil to pass through
-(setq symex--user-evil-keyspec
-      '(("C-," . symex-leap-backward)
-        ("C-/" . symex-leap-forward)
-        ("C-M-," . symex-soar-backward)
-        ("C-M-/" . symex-soar-forward)))
-
-(let ((keyspec (symex--combine-alists symex--user-evil-keyspec
-                                      symex--evil-keyspec)))
-  (symex--define-evil-keys-from-spec keyspec
-                                     symex-editing-mode-map))
-
-
 ;; Symex-TS hydra: useful for debugging Tree Sitter movements outside
 ;; of the rest of Symex.
 
@@ -33,17 +20,31 @@
   "Update the highlight overlay to match the start/end position of NODE."
   (when symex-ts--current-overlay
     (delete-overlay symex-ts--current-overlay))
-  (setq-local symex-ts--current-overlay (make-overlay (tsc-node-start-position node) (tsc-node-end-position node)))
+  (setq-local symex-ts--current-overlay
+              (make-overlay (symex-ts--node-start-position node)
+                            (symex-ts--node-end-position node)))
   (overlay-put symex-ts--current-overlay 'face 'symex-ts-current-node-face))
 
 (defun symex-ts--hydra-exit ()
   "Handle Hydra exit."
   (symex-ts--delete-overlay))
 
+(defun symex-ts--move-next-named ()
+  "Move to next named sibling."
+  (interactive)
+  (symex-ts-move-next-named-sibling)
+  (symex-ts--update-overlay symex-ts--current-node))
+
 (defun symex-ts--move-next ()
   "Move to next sibling."
   (interactive)
   (symex-ts-move-next-sibling)
+  (symex-ts--update-overlay symex-ts--current-node))
+
+(defun symex-ts--move-previous-named ()
+  "Move to previous named sibling."
+  (interactive)
+  (symex-ts-move-prev-named-sibling)
   (symex-ts--update-overlay symex-ts--current-node))
 
 (defun symex-ts--move-previous ()
@@ -64,12 +65,16 @@
   (symex-ts-move-child)
   (symex-ts--update-overlay symex-ts--current-node))
 
-(defhydra hydra-symex-ts (:post (symex-ts--hydra-exit))
+(defhydra hydra-symex-ts (:body-pre (symex-ts-set-current-node-from-point)
+                          :post (symex-ts--hydra-exit))
   "Symex-TS."
   ("d" symex-ts-current-node-sexp "DEBUG NODE")
+  ("i" symex-ts-current-node-type "NODE TYPE")
 
-  ("h" symex-ts--move-previous "prev")
-  ("l" symex-ts--move-next "next")
+  ("h" symex-ts--move-previous-named "prev named")
+  ("l" symex-ts--move-next-named "next named")
+  ("H" symex-ts--move-previous "prev")
+  ("L" symex-ts--move-next "next")
   ("j" symex-ts--move-parent "parent")
   ("k" symex-ts--move-child "child"))
 

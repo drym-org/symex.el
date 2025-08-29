@@ -1,65 +1,142 @@
-.. image:: https://github.com/drym-org/symex.el/actions/workflows/test.yml/badge.svg
-    :target: https://github.com/drym-org/symex.el/actions
+.. raw:: html
 
-.. image:: https://melpa.org/packages/symex-badge.svg
-    :alt: MELPA
-    :target: https://melpa.org/#/symex
+  <p align="center">
+    <img src="https://github.com/user-attachments/assets/5c1896bd-f3e6-49b9-b2fe-539e0b741e1a" alt="Symex logo" title="Symex logo" style="cursor:default;"/>
+  </p>
 
-.. image:: https://stable.melpa.org/packages/symex-badge.svg
-    :alt: MELPA Stable
-    :target: https://stable.melpa.org/#/symex
-
-*Symex (pron. "sym-ex", pl. symexes): A Lisp symbolic expression, which describes a computation to be performed.*
+*Symex (pron. "sim-ex", pl. symexes): A Lisp symbolic expression, which describes a computation to be performed.*
 
 symex.el
 ========
 
+.. image:: https://github.com/drym-org/symex.el/actions/workflows/test.yml/badge.svg
+    :target: https://github.com/drym-org/symex.el/actions
+
 An intuitive way to edit Lisp symbolic expressions ("symexes") structurally in Emacs.
-
-.. raw:: html
-
-  <p align="center">
-    <img src="https://user-images.githubusercontent.com/401668/98453162-e3ca2f00-210a-11eb-8669-c1048ff4547c.jpg" width="618" height="410" alt="Symex the Squirrel" title="Symex the Squirrel" style="cursor:default;"/>
-  </p>
 
 .. contents:: :depth: 2
 
 Introduction
 ============
 
-Symex (pronounced sym-ex, as in symbolic expression) is a modal (like Vim but simpler) way of editing Lisp code as trees. Entering symex mode allows you to reason about your code in terms of its structure, similar to other tools like `paredit <https://www.emacswiki.org/emacs/ParEdit>`_ and `lispy <https://github.com/abo-abo/lispy>`_. But while those packages provide a curated number of useful tree operations, Symex treats the tree structure explicitly so that arbitrary tree navigations and operations can be described using an expressive DSL, and invoked conveniently via a simple ("point-free") modal interface. As a consequence of this:
+Symex (pronounced @emph{sim-ex}) is an intuitive modal way to edit code, built on top of an expressive domain-specific language (DSL) for tree-oriented operations.
 
-- Symex provides many novel features, such as "leap branch," "climb/descend branch," "goto highest/lowest," "skip forward/backward", recursive indent, recursive evaluate, among many others
-- Implementing new structure-related features in general is easy [1]_.
-- Keybindings are short and memorable
+This design allows it to offer a large array of useful features with short and memorable (and of course, customizable) keybindings, allowing you to edit code fluently. It also gives you the ability to define your own structural operations using the same DSL that Symex implements many of its features in.
 
-At the moment, symex mode uses ``paredit``, ``lispy``, and `evil-cleverparens <https://github.com/luxbock/evil-cleverparens>`_ to provide much of its low level functionality. In the future, this layer of primitives may be replaced with a layer that explicitly uses the abstract syntax tree, for still greater precision.
+Some features of Symex include:
 
-As of Jan 2023, there is "alpha" support for non-Lisp languages via ``tree-sitter``. While motions and a couple of basic transformations should work across languages (i.e. not only Lisp), it should be considered an early preview rather than production-worthy. Full support is planned for completion as part of the `2.0 release coming in Spring '23 <https://github.com/drym-org/symex.el/pull/71>`__.
+- Expressive ways to get around in your code, including "leap branch," "climb/descend branch," "goto highest/lowest," "skip forward/backward"
+- On-demand, structural evaluation of code (e.g., ``e`` to evaluate the selected expression)
+- Easily repeat recent commands (like Vim's "dot" operator) and record rich macros
+- UI highlighting of selected expressions for intuitive feedback
+- Short and memorable keybindings that engender fluency
 
-.. raw:: html
-
-  <p align="center">
-    <img src="https://user-images.githubusercontent.com/401668/59328521-6db96280-8ca1-11e9-8b32-24574a0af676.png" alt="Screenshot" title="Screenshot" style="cursor:default;"/>
-  </p>
-
-.. [1] As long as, from a theoretical perspective, the intended traversal can be accomplished using a `finite automaton <https://en.wikipedia.org/wiki/Deterministic_finite_automaton>`_. More complex traversals can be implemented (such as "leap branch"), but not as easily. Symex may be made Turing-complete at some point in the future, if there is interest in a feature that cannot be implemented in the DSL in its current form.
+Under the hood, Symex mode uses ``paredit`` and Tree-Sitter for parsing the code syntax tree.
 
 Installation
 ============
 
-1. Install the package the usual way via MELPA (e.g. :code:`M-x package-install`).
+Symex is distributed as a collection of small, composable packages, directly maintained at this source repository. This allows you maximum flexibility to install just the functionality you actually need, without getting anything extra. But it also means that you must explicitly list the Symex packages you are interested in. Each of the Symex packages is described below, along with sample config using Straight.el.
 
-2. Then, assuming you're using `use-package <https://github.com/jwiegley/use-package>`__ to manage your configuration, add the following config to your ``init.d`` (note these instructions have changed as of `version 0.9 <https://github.com/drym-org/symex.el/releases/tag/0.9>`__):
+``symex-core``
+--------------
 
-::
+This includes a DSL for structural operations, which is the core functionality of Symex, and is required for all users of Symex.
+
+.. code-block:: elisp
+
+  (use-package symex-core
+    :straight
+    (symex-core
+     :host github
+     :repo "drym-org/symex.el"
+     :files ("symex-core/symex*.el")))
+
+This core package provides the structural editing engine, supporting both Lisp (via `paredit`) and other languages (via Treesitter). This is a lean package with few dependencies, so that, in addition to use by end users, it's also appropriate as a library dependency for third party packages to gain Symex features.
+
+``symex``
+---------
+
+The main user-facing package, required for all end users. It provides a modal UI for advanced structural editing, analogous to Vim but simpler and more specialized.
+
+.. code-block:: elisp
 
   (use-package symex
+    :after (symex-core)
+    :straight
+    (symex
+     :host github
+     :repo "drym-org/symex.el"
+     :files ("symex/symex*.el" "symex/doc/*.texi" "symex/doc/figures"))
     :config
-    (symex-initialize)
-    (global-set-key (kbd "s-;") 'symex-mode-interface))  ; or whatever keybinding you like
+    (symex-mode 1)
+    (global-set-key (kbd "s-;") #'symex-mode-interface))  ; or whatever keybinding you like
 
-This provides a keybinding to load the symex editing interface, and also enables the symex minor mode in all recognized lisp modes (the minor mode ensures that manual edits respect the tree structure, e.g. keeps parens balanced like paredit).
+    ;; and any other customizations you like
+
+In addition to making the core structural editing features conveniently available to you, this package also contains many UX features, such as highlighting the selected expression, the ability to easily repeat recent commands, record rich macros, and more.
+
+Note the keybinding ``s-;`` which enters the Symex modal UI. Feel free to set it to whatever you find convenient. There are many ways to enter Symex mode in different contexts, and these are covered in detail in the manual, along with ways to customize Symex.
+
+``symex-ide``
+-------------
+
+A recommended, optional, extension integrating Symex with major modes for IDE-like features, such as easy evaluation and documentation lookup, and entering a REPL.
+
+.. code-block:: elisp
+
+  (use-package symex-ide
+    :after (symex)
+    :straight
+    (symex-ide
+     :host github
+     :repo "drym-org/symex.el"
+     :files ("symex-ide/symex*.el"))
+    :config
+    (symex-ide-mode 1))
+
+``symex-evil``
+--------------
+
+An extension for seamless integration with Evil mode. This is only required for Evil users.
+
+.. code-block:: elisp
+
+  (use-package symex-evil
+    :after (symex evil)
+    :straight
+    (symex-evil
+     :host github
+     :repo "drym-org/symex.el"
+     :files ("symex-evil/symex*.el"))
+    :config
+    (symex-evil-mode 1))
+
+``symex-rigpa``
+---------------
+
+An extension for seamless integration with the `Rigpa <https://github.com/countvajhula/rigpa>`_ modal interface framework. This is only required for Rigpa users.
+
+.. code-block:: elisp
+
+  (use-package symex-rigpa
+    :after (symex rigpa symex-evil)
+    :straight
+    (symex-rigpa
+     :host github
+     :repo "drym-org/symex.el"
+     :files ("symex-rigpa/symex*.el"))
+    :config
+    (symex-rigpa-mode 1))
+
+Documentation
+=============
+
+The best way to learn about Symex is to read the included Info manual, which you can view and navigate efficiently within Emacs.
+
+To view the manual within Emacs, ``C-h R`` and select ``symex`` (or ``C-h i`` and navigate to the Symex manual). You'll need to know some basics of how to navigate Info manuals. If you don't already know how, then try ``C-h R`` and select ``info``. This will take you to a helpful and short (~30 minutes) manual that will tell you all you need to know to navigate Info manuals.
+
+For now, some documentation is also included below in this README, but it will eventually be removed in favor of the Info manual (either directly or perhaps as rendered and hosted HTML), to have a single source of truth and avoid errors in documentation.
 
 Usage and Customization
 =======================
@@ -67,35 +144,12 @@ Usage and Customization
 The Animated Guide
 ------------------
 
-The best way to learn how to use Symex is to read the `Animated Guide <https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/>`_. Besides animations, it also contains lots of helpful field notes. Go check it out!
-
-Evil or Hydra?
---------------
-
-Symex provides both an evil state as well as a hydra-based modal interface. Which one should you use?
-
-**TL;DR**: Use the evil option -- this is the default, and it is available to both evil and vanilla emacs users. If you're learning and would like some hand-holding as you familiarize yourself with the keybindings, use the hydra option, but it is likely that hydra will eventually be deprecated here.
-
-The evil option is less obtrusive and allows you to, for instance, execute ``M-x`` commands without leaving symex mode. It should feel very similar to using Normal state, and doesn't interfere with normal Emacs usage including any custom keybindings you may be using.
-
-The hydra operates almost identically to the evil state, but it provides a comprehensive menu that can be toggled on and off, and can therefore help you learn the keybindings as you go along. On the other hand, the drawback is that the hydra will exit if you do something not specifically connected to symex mode -- for instance, if you run an ``M-x`` command, or do a text search, or save the buffer, or run a custom command of some kind. You could customize the hydra so that it is more persistent (e.g. "pink" or "amaranth" hydra) but doing so could cause it to interfere with normal Emacs functions, as hydra keybindings take precedence over everything else.
-
-In short, evil provides a more seamless experience, but hydra may be a good option while you are learning to use symex.
-
-Depending on your choice, put one of these in the ``:custom`` `section <https://github.com/jwiegley/use-package#customizing-variables>`__ (not the ``:config`` section) of your ``use-package`` form:
-
-::
-
-  (symex-modal-backend 'evil)
-
-::
-
-  (symex-modal-backend 'hydra)
+The `Animated Guide to Symex <https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/>`_ is a great way to learn about what you can do with Symex. Besides animations, it also contains lots of helpful field notes. Go check it out!
 
 Key Bindings
 ------------
 
-The table below lists the key bindings in Symex mode for Evil Symex users. You don't need this with the hydra frontend since you can lookup the keybindings at any time by pulling up the hydra menu (default binding: ``H-m``). Also for the evil frontend, while you don't have the menu, you can always use Emacs's ``C-h k`` to learn what a key does, as another way of learning the bindings.
+The table below lists the key bindings in Symex mode. You can also always use Emacs's ``C-h k`` to learn what a key does, as another way of learning the bindings.
 
 Movement
 ~~~~~~~~
@@ -321,164 +375,19 @@ Control
      - exit
      -
 
-The Menu (Hydra-only)
----------------------
-
-Entering the symex modal interface (via e.g. :code:`s-;`) using the hydra option shows you a comprehensive menu of all possible actions, by default. This is helpful initially, but over time you may prefer to dismiss the menu and bring it up only on demand, in order to conserve screen real estate. To do this, either run ``symex-toggle-menu`` via the menu entry point (``H-m``) while in symex mode, or add this to your ``init.d`` (e.g. in the ``:config`` section of the ``use-package`` form):
-
-::
-
-  (symex-hide-menu)
-
-Up and Down
------------
-
-The default keybindings in symex mode treat increasingly nested code as being "higher" and elements closer to the root as "lower." Think going "up" to the nest and "down" to the root. But symex allows you to modify these or any other keybindings to whatever you may find most natural.
-
-If you're using evil, put something resembling this in your configuration *before* the call to ``(symex-initialize)``:
-
-::
-
-  (setq symex--user-evil-keyspec
-        '(("j" . symex-go-up)
-          ("k" . symex-go-down)
-          ("C-j" . symex-climb-branch)
-          ("C-k" . symex-descend-branch)
-          ("M-j" . symex-goto-highest)
-          ("M-k" . symex-goto-lowest)))
-
-If you're using hydra, put something resembling this in your configuration *after* the call to ``(symex-initialize)``:
-
-::
-
-  (defhydra+ hydra-symex (:columns 4
-                          :post (symex-exit-mode)
-                          :after-exit (symex--signal-exit))
-      "Symex mode"
-      ("j" symex-go-up "up")
-      ("k" symex-go-down "down")
-      ("C-j" symex-climb-branch "climb branch")
-      ("C-k" symex-descend-branch "descend branch")
-      ("M-j" symex-goto-highest "go to highest")
-      ("M-k" symex-goto-lowest "go to lowest"))
-
-Branch Memory
+Customization
 -------------
 
-When going up and down, the choice of initial position on the branch is arbitrary. By default, symex the squirrel remembers where it was on each branch as it goes up and down the tree, so you return to your last position when going up and down. If you'd like to move to the first or last position, you can use (for instance) ``0`` or ``$`` at each level, as usual, or traverse the tree using ``f`` and ``b`` instead. If, on the other hand, you'd like to start always at the first position when going up (as it was in older versions of Symex), disable the branch memory feature by adding this to the ``:custom`` `section <https://github.com/jwiegley/use-package#customizing-variables>`__ (not the ``:config`` section) of your ``use-package`` form:
-
-::
-
-   (symex-remember-branch-position-p nil)
-
-Highlighting
-------------
-
-The current expression is highlighted by default (as of Jan 2023). If you'd like to disable highlighting, add this to the ``:custom`` `section <https://github.com/jwiegley/use-package#customizing-variables>`__ (not the ``:config`` section) of your ``use-package`` form:
-
-::
-
-   (symex-highlight-p nil)
-
-Quoting Styles
---------------
-
-By default, ``C-'`` and ``C-,`` cycle through standard quoting and unquoting prefixes (``'``, ````` and ``,``, ``,@``, respectively) recognizable to all Lisps. But some Lisps, such as Racket, provide additional quoting styles that you may want to add here. You could also technically add any prefixes here that you may find yourself using often, and they don't have to have anything to do with quoting. To add custom prefixes, add something like this to the ``:custom`` `section <https://github.com/jwiegley/use-package#customizing-variables>`__ (not the ``:config`` section) of your ``use-package`` form:
-
-::
-
-   (symex-quote-prefix-list (list "'" "`" "#'" "#`"))
-   (symex-unquote-prefix-list (list "," ",@" "#,@"))
-
-Lisp Flavors
-------------
-Symex supports the following lisps:
-
-.. list-table::
-   :header-rows: 1
-
-   * - Flavor
-     - Runtime and docs
-   * - Racket
-     - Racket Mode
-   * - Emacs Lisp
-     - Native/IELM
-   * - Clojure
-     - CIDER
-   * - Common Lisp
-     - Slime or Sly. This defaults to Slime, but you can use Sly by putting this in the ``:custom`` (not ``:config``) section of your ``use-package`` declaration: ``(symex-common-lisp-backend 'sly)``
-   * - Scheme
-     - Geiser
-   * - Arc
-     - Arc.el
-   * - Fennel
-     - fennel-mode.el
-   * - Other
-     - Structural editing only (no runtime). Please create an issue if you need additional support for your Lisp.
-
-Tips
-====
-
-Escaping to Symex Instead of Normal State
------------------------------------------
-
-For evil users, when you "escape" from Insert state, you may prefer to enter Symex state rather than Normal state while in Lisp buffers. You could write one-off keybindings to do this (e.g. `this recipe <https://github.com/drym-org/symex.el/issues/24#issuecomment-815110143>`__ by user @tommy-mor), but if you'd like a more structured and flexible alternative, use `Rigpa <https://github.com/countvajhula/rigpa>`_.
-
-Also see `Easy Entry Into Symex State`_, below, for another option.
-
-Macros
-------
-
-When you define macros in symex mode (e.g. via ``q`` for evil users), make sure that the commands you use are those that have the same effect in every situation. For instance, the "up" and "down" motions (default: ``k`` and ``j``) could vary based on "branch memory" - up may sometimes move you to the first position on the higher level, but at other times it may move you to the third position, if that happens to be your most recent position. Using up and down in your macro would mean that it could have different results in each tree depending on your activities in the tree, unless you remember to reset the frame of reference by using something like ``0`` or ``$``. Instead, it may be more natural to use the "flow" traversal commands (default: ``f`` and ``b``), repeating them or prefixing them with count arguments if necessary, to move around in a fully deterministic way. This will ensure that your macros behave the same way in every case.
-
-Mode Line Enhancements
-----------------------
-
-The vanilla mode line in Emacs does show some textual indication of your current evil state, e.g. ``<N>`` for Normal state, and ``<λ>`` for Symex state, and this kind of visual feedback is helpful, yet also subtle. If you'd like more pronounced visual feedback, you might try extensions such as `powerline <https://github.com/milkypostman/powerline>`_ or `telephone-line <https://github.com/dbordak/telephone-line>`_, which provide customizable color coded indicators for each evil state in the mode line. For example, for telephone-line, you could use the following config in the ``config`` section of the ``use-package`` declaration for telephone-line:
-
-::
-
-   (defface telephone-line-evil-symex
-       '((t (:background "SlateBlue3" :inherit telephone-line-evil)))
-       "Face used in evil color-coded segments when in Symex state."
-       :group 'telephone-line-evil)
-
-
-Keybindings
------------
-
-Easy Entry Into Symex State
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-User @doyougnu suggests binding your local leader to ``,`` (instead of the default, ``\``), which frees up ``\`` to be used as entry into Symex Mode. This is convenient as ``\`` feels like another ``Esc`` but dedicated to Symex state instead of Normal state. The drawback is that ``,`` is an otherwise useful key in Normal mode (for in-line repeat search backwards). Although, using it for the local leader is a widely used pattern by Vim and Evil users, and if you are one of them, then this might be a good option for you.
-
-With this option, entering Symex from Normal state is convenient, but you'd still need to visit Normal state on your way to Symex state from Insert state. If you'd like to avoid this, see `Escaping to Symex Instead of Normal State`_, above.
-
-Making Parentheses Convenient
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-In writing Lisp code, parentheses are among the most commonly typed characters, and yet, these require us to leave home position dramatically to type! I recommend a keybinding resembling the following to make it more efficient. Of course this applies only in Insert state (for Evil users) or in vanilla Emacs state, as you can insert and modulate delimiters in other ways while in Symex state:
-
-::
-
-   (define-key
-     symex-mode-map
-     (kbd "C-w")
-     (lambda ()
-       (interactive)
-       (execute-kbd-macro (kbd "("))))
-
-You could think of "w" as "wrap" in this context, as in, "to wrap with parentheses," and it matches a similar binding in symex state (i.e. ``w`` to wrap an expression and enter insert state). For the closing parenthesis, you could just use Emacs's ``C-f`` to move forward a character -- since symex (via paredit) ensures that parentheses are balanced, you rarely need to actually type a closing delimiter. The binding ``C-w`` would be fine for Evil users, but vanilla Emacs users may need to find something else here. Of course it goes without saying that the Control key should be conveniently accessible without having to leave home position. I have Control under my right thumb, and Escape in place of Caps Lock.
-
-Splicing and Doom Emacs
-~~~~~~~~~~~~~~~~~~~~~~~
-
-If you're on Doom Emacs (or more generally if you're using ``evil-surround`` and ``evil-embrace`` together), you may run into an issue with splicing expressions (``-`` and ``C--``). See `this issue <https://github.com/drym-org/symex.el/issues/132>`__ for more details and a workaround.
+Please read the manual to learn how to customize Symex.
 
 Learn More
 ==========
 
-Read the documentation for the `Symex DSL <https://github.com/drym-org/symex.el/blob/master/DSL-Docs.rst>`_.
+.. raw:: html
+
+  <p align="center">
+    <img src="https://user-images.githubusercontent.com/401668/98453162-e3ca2f00-210a-11eb-8669-c1048ff4547c.jpg" width="618" height="410" alt="Symex the Squirrel" title="Symex the Squirrel" style="cursor:default;"/>
+  </p>
 
 Learn more about the implementation and see some usage examples in the video overview (given at an `Emacs SF <https://www.meetup.com/Emacs-SF/>`_ meetup in 2019):
 

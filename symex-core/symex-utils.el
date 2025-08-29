@@ -1,0 +1,386 @@
+;;; symex-utils.el --- An evil way to edit Lisp symbolic expressions as trees -*- lexical-binding: t -*-
+
+;; URL: https://github.com/drym-org/symex.el
+
+;; This program is "part of the world," in the sense described at
+;; https://drym.org.  From your perspective, this is no different than
+;; MIT or BSD or other such "liberal" licenses that you may be
+;; familiar with, that is to say, you are free to do whatever you like
+;; with this program.  It is much more than BSD or MIT, however, in
+;; that it isn't a license at all but an idea about the world and how
+;; economic systems could be set up so that everyone wins.  Learn more
+;; at drym.org.
+;;
+;; This work transcends traditional legal and economic systems, but
+;; for the purposes of any such systems within which you may need to
+;; operate:
+;;
+;; This is free and unencumbered software released into the public domain.
+;; The authors relinquish any copyright claims on this work.
+;;
+
+;;; Commentary:
+
+;; Generic utilities used by symex mode
+
+;;; Code:
+
+(require 'cl-lib)
+
+;; From Lispy
+(defvar symex--re-left "[([{]"
+  "Opening delimiter.")
+
+;; From Lispy
+(defvar symex--re-right "[])}]"
+  "Closing delimiter.")
+
+(defvar symex--re-comment-line "^[[:space:]]*;"
+  "A comment line.")
+
+(defvar symex--re-empty-line "^$"
+  "An empty line.")
+
+(defvar symex--re-blank-line "^[[:space:]]*$"
+  "A blank line, either empty or containing only whitespace.")
+
+(defvar symex--re-whitespace "[[:space:]|\n]+"
+  "Whitespace that may extend over many lines.")
+
+(defvar symex--re-optional-whitespace "[[:space:]|\n]*"
+  "Optional whitespace that may extend over many lines.")
+
+(defvar symex--re-symex-line "^[[:space:]]*[^;[:space:]\n]"
+  "A line that isn't blank and isn't a comment line.")
+
+(defvar symex--re-racket-syntax-object
+  (concat "#['`]" symex--re-left))
+
+(defvar symex--re-splicing-unquote
+  (concat ",@" symex--re-left))
+
+(defvar symex--re-racket-unquote-syntax
+  (concat "#," symex--re-left))
+
+(defvar symex--re-racket-splicing-unsyntax
+  (concat "#,@" symex--re-left))
+
+(defvar symex--re-quoted-list
+  (concat "['`]" symex--re-left))
+
+(defvar symex--re-unquoted-list
+  (concat "," symex--re-left))
+
+(defvar symex--re-clojure-deref-reader-macro
+  (concat "@" symex--re-left))
+
+(defvar symex--re-clojure-literal-lambda
+  (concat "#" symex--re-left))
+
+;; based on lispy-left-p
+(defun symex-left-p ()
+  "Check if we're at (i.e. after) an opening delimiter."
+  (looking-at symex--re-left))
+
+;; based on lispy-right-p
+(defun symex-right-p ()
+  "Check if we're at (i.e. after) a closing delimiter."
+  (looking-at symex--re-right))
+
+(defun symex-whitespace-p ()
+  "Check if we're looking at whitespace."
+  (looking-at-p symex--re-whitespace))
+
+(defun symex-opening-round-p ()
+  "Check if point is at an opening parenthesis."
+  (looking-at-p "("))
+
+(defun symex-opening-square-p ()
+  "Check if point is at an opening square bracket."
+  (looking-at-p "\\["))
+
+(defun symex-opening-curly-p ()
+  "Check if point is at an opening curly bracket."
+  (looking-at-p "{"))
+
+(defun symex--current-line-empty-p ()
+  "Check if the current line is empty.
+
+From: https://emacs.stackexchange.com/a/16793"
+  (save-excursion
+    (beginning-of-line)
+    (looking-at "[[:space:]]*$")))
+
+(defun symex--next-line-empty-p ()
+  "Check if the next line is empty."
+  (save-excursion (forward-line)
+                  (symex--current-line-empty-p)))
+
+(defun symex--previous-line-empty-p ()
+  "Check if the previous line is empty."
+  (save-excursion (forward-line -1)
+                  (symex--current-line-empty-p)))
+
+(defun symex--point-at-indentation-p ()
+  "Check if point is at the point of indentation.
+
+Point of indentation is the first non-whitespace character.
+From: https://stackoverflow.com/a/13313091"
+  (= (save-excursion (back-to-indentation)
+                     (point))
+     (point)))
+
+(defun symex--point-on-last-line-p ()
+  "Check if point is on the last line of the buffer."
+  (= (line-number-at-pos)
+     (save-excursion (goto-char (point-max))
+                     (line-number-at-pos))))
+
+(defun symex--goto-line (line-no)
+  "Go to line number LINE-NO.
+
+Emacs docs recommend against using `goto-line`, suggesting
+the following recipe instead."
+  (goto-char (point-min))
+  (forward-line (1- line-no)))
+
+(defun symex--line-end-for-position (pos)
+  "Line end point for position POS in the buffer."
+  (save-excursion
+    (goto-char pos)
+    (line-end-position)))
+
+(defun symex-last-non-blank ()
+  "Go to last non-blank character on line."
+  (end-of-line)
+  (skip-chars-backward " \t")
+  (unless (bolp) (backward-char)))
+
+(defvar symex--re-non-whitespace "[^[:space:]\n]"
+  "A non-whitespace character.")
+
+(defvar symex--re-non-whitespace-or-newline "[^[:space:]]"
+  "A non-whitespace character.")
+
+(defun symex--go-to-next-non-whitespace-char ()
+  "Move point to the next non-whitespace character.
+
+If the current character is non-whitespace, point is not moved."
+  (if (looking-at-p symex--re-non-whitespace)
+      (point)
+    (condition-case nil
+        (progn (re-search-forward symex--re-non-whitespace)
+               ;; since the re search goes to the end of the match
+               (backward-char)
+               (point))
+      (error nil))))
+
+(defun symex--go-to-previous-non-whitespace-char ()
+  "Move point to the previous non-whitespace character.
+
+If the current character is non-whitespace, point is not moved."
+  (if (looking-at-p symex--re-non-whitespace)
+      (point)
+    (condition-case nil
+        (re-search-backward symex--re-non-whitespace)
+      (error nil))))
+
+(defun symex--join-to-match (pattern)
+  "Join current position to the next position matching PATTERN.
+
+This eliminates whitespace between the original position and the found
+match."
+  (condition-case nil
+      (let* ((start (point))
+             (end (save-excursion (re-search-forward pattern)
+                                  (match-beginning 0))))
+        (delete-region start end))
+    (error nil)))
+
+(defun symex--join-to-non-whitespace ()
+  "Join current position to the next non-whitespace character.
+
+This eliminates whitespace between the original position and the found
+match."
+  (symex--join-to-match symex--re-non-whitespace))
+
+(defun symex--join-to-non-whitespace-or-newline ()
+  "Join current position to the next non-whitespace character.
+
+This eliminates whitespace between the original position and the found
+match."
+  (symex--join-to-match symex--re-non-whitespace-or-newline))
+
+;; `with-undo-collapse` macro, to treat a sequence of operations
+;; as a single entry in the undo list.
+;; From: https://emacs.stackexchange.com/questions/7558/collapsing-undo-history/7560#7560
+(defun symex--undo-collapse-begin (marker)
+  "Mark the beginning of a collapsible undo block.
+
+This must be followed with a call to ‘symex--undo-collapse-end’ with a marker
+eq to this one.
+
+MARKER is some kind of delimiter for the undo block, TODO."
+  (push marker buffer-undo-list))
+
+(defun symex--undo-collapse-end (marker)
+  "Collapse undo history until a matching marker.
+
+MARKER is some kind of delimiter for the undo block, TODO."
+  (cond
+   ((eq (car buffer-undo-list) marker)
+    (setq buffer-undo-list (cdr buffer-undo-list)))
+   (t
+    (let ((l buffer-undo-list))
+      (while (not (eq (cadr l) marker))
+        (cond
+         ((null (cdr l))
+          (error "Encountered undo-collapse-end with no matching marker"))
+         ((eq (cadr l) nil)
+          (setf (cdr l) (cddr l)))
+         (t (setq l (cdr l)))))
+      ;; remove the marker
+      (setf (cdr l) (cddr l))))))
+
+(defmacro symex--with-undo-collapse (&rest body)
+  "Execute BODY, then collapse any resulting undo boundaries."
+  (declare (indent 0))
+  (let ((marker (list 'apply 'identity nil)) ; build a fresh list
+        (buffer-var (make-symbol "buffer")))
+    `(let ((,buffer-var (current-buffer)))
+       (unwind-protect
+           (progn
+             (symex--undo-collapse-begin ',marker)
+             ,@body)
+         (with-current-buffer ,buffer-var
+           (symex--undo-collapse-end ',marker))))))
+
+(defmacro symex--save-point-excursion (&rest forms)
+  "A more reliable `save-excursion' for when the buffer is mutated.
+
+Evaluate FORMS, returning point to the original location at the end.
+
+In cases where we mutate the buffer within a `save-excursion' (e.g., by
+using `symex--tidy'), it seems that `save-excursion' does not return to
+the original point even if the mutation did not actually result in any
+changes.  Instead, it seems to return to the beginning of the changed
+region, which for our purposes is sometimes one character before the
+original position.  We use this simple macro to restore point to its
+exact original location.
+
+Modified from: https://stackoverflow.com/a/24283996"
+  (declare (indent 0))
+  (let ((old-point (gensym "old-point")))
+    `(let ((,old-point (point)))
+       (prog1
+           (progn ,@forms)
+         (goto-char ,old-point)))))
+
+(defvar symex--mode-mapping
+  '((inferior-emacs-lisp-mode . emacs-lisp-mode))
+  "Mapping of special modes to ordinary modes for symex transformations.")
+
+(defun symex--map-major-mode (mode)
+  "Map a major MODE to a more suitable one for symex transformations.
+
+This maps special modes like Elisp REPLs to their ordinary
+counterparts used in a source buffer, as using a REPL major mode for a
+transformation would produce unexpected results due to the presence of
+mode entry side effects, read-only regions, and other special regions
+like prompts."
+  (or (cdr (assoc mode symex--mode-mapping))
+      mode))
+
+(defmacro symex--with-temp-buffer (&rest body)
+  "Evaluate BODY in a temporary buffer.
+
+Evaluate BODY in a temporary buffer whose major mode is set to that of
+the source buffer, and return the contents of the buffer as the
+result."
+  (declare (indent 0))
+  (let ((original-major-mode (gensym))
+        (mapped-major-mode (gensym)))
+    `(let (,original-major-mode)
+       ;; In using a temp buffer to do the transformation here, we need to
+       ;; ensure that it uses the syntax table of the original buffer, since
+       ;; otherwise it doesn't necessarily treat characters the same way
+       ;; as the original buffer does, separating, for example, characters like
+       ;; `?` and `#` from the rest of the symbol during recursive indentation.
+       ;;
+       ;; The with-temp-buffer macro doesn't see the original syntax table
+       ;; when it is lexically defined here, not sure why. Defining a
+       ;; lexical scope here and then setting it dynamically via `setq`
+       ;; seems to work
+       (setq ,original-major-mode major-mode)
+       (let ((,mapped-major-mode (symex--map-major-mode ,original-major-mode)))
+         (with-temp-buffer
+           (funcall ,mapped-major-mode)
+           ,@body
+           (buffer-string))))))
+
+(defmacro symex--transform-in-isolation (start end &rest body)
+  "Transform a region in a temporary buffer and replace the original with it.
+
+Copies the region from START to END into a temporary buffer, evaluates
+BODY, and pastes the result back into the source buffer, replacing the
+original."
+  (declare (indent 2))
+  (let ((text-to-transform (gensym))
+        (result (gensym)))
+    `(let ((,text-to-transform (buffer-substring ,start ,end)))
+       ;; TODO: consider using `replace-region-contents'
+       (delete-region ,start ,end)
+       (let ((,result (symex--with-temp-buffer
+                        (insert ,text-to-transform)
+                        (goto-char 0)
+                        ,@body)))
+         (save-excursion (insert ,result))
+         (indent-region (point)
+                        (+ (point) (length ,result)))))))
+
+(defun symex--combine-alists (al1 al2)
+  "Combine two association lists, prioritizing one of them.
+
+The result includes all values present in either AL1 or AL2.  If a key
+exists in both AL1 as well as AL2, the value in AL1 is retained in the
+result."
+  (let ((result al1))
+    (dolist (p al2)
+      (cl-pushnew p result :key #'car :test #'equal))
+    result))
+
+(defun symex--delete-whole-line ()
+  "Delete entire current line.
+
+Similar to `kill-whole-line` but doesn't add an entry to the kill
+ring."
+  (delete-region (line-beginning-position)
+                 (line-end-position))
+  (unless (eobp)
+    (delete-char 1)))
+
+(defun symex--current-kill ()
+  "Get current kill ring entry without rotating the kill ring."
+  (current-kill 0 t))
+
+(defun symex--kill-ring-push (entry)
+  "Push an ENTRY onto the kill ring."
+  (kill-new entry))
+
+(defun symex--kill-ring-pop ()
+  "Pop the latest entry off the kill ring."
+  (let ((result (pop kill-ring)))
+    (setq kill-ring-yank-pointer kill-ring)
+    result))
+
+(defun symex--kill-ring-compose ()
+  "Compose kill ring entries.
+
+This concatenates the latest kill with the preceding one, treating the
+preceding one as the accumulator."
+  (let ((latest (symex--kill-ring-pop)))
+    (kill-append latest nil)))
+
+
+(provide 'symex-utils)
+;;; symex-utils.el ends here
