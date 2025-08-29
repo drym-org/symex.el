@@ -12,7 +12,10 @@ symex.el
 .. image:: https://github.com/drym-org/symex.el/actions/workflows/test.yml/badge.svg
     :target: https://github.com/drym-org/symex.el/actions
 
-An intuitive way to edit Lisp symbolic expressions ("symexes") structurally in Emacs.
+.. image:: https://img.shields.io/badge/user%20manual-HTML-blue
+    :target: https://drym-org.github.io/symex.el/
+
+An expressive modal way to edit code in Emacs.
 
 .. contents:: :depth: 2
 
@@ -21,7 +24,9 @@ Introduction
 
 Symex (pronounced @emph{sim-ex}) is an intuitive modal way to edit code, built on top of an expressive domain-specific language (DSL) for tree-oriented operations.
 
-This design allows it to offer a large array of useful features with short and memorable (and of course, customizable) keybindings, allowing you to edit code fluently. It also gives you the ability to define your own structural operations using the same DSL that Symex implements many of its features in.
+This unique design allows it to offer a large array of useful features with short and memorable (and of course, customizable) keybindings, allowing you to edit code fluently. It also gives you the ability to define your own structural operations using the same DSL that Symex implements many of its features in.
+
+Symex supports all flavors of Lisp, and most other languages, too (e.g., Python, JavaScript), via Emacs's built-in tree-sitter facilities. Please see the manual for `how best to set up Symex for your favorite language <https://drym-org.github.io/symex.el/Languages-Supported.html>`_.
 
 Some features of Symex include:
 
@@ -36,7 +41,7 @@ Under the hood, Symex mode uses ``paredit`` and Tree-Sitter for parsing the code
 Installation
 ============
 
-Symex is distributed as a collection of small, composable packages, directly maintained at this source repository. This allows you maximum flexibility to install just the functionality you actually need, without getting anything extra. But it also means that you must explicitly list the Symex packages you are interested in. Each of the Symex packages is described below, along with sample config using Straight.el.
+Symex is distributed as a collection of small, composable packages, directly maintained at this source repository. This allows you maximum flexibility to install just the functionality you actually need, without getting anything extra. But it also means that you must explicitly list the Symex packages you are interested in. Each of the Symex packages is described below, along with sample config using Straight.el. For installation instructions using other package managers, please consult the `user manual <https://drym-org.github.io/symex.el/>`_.
 
 ``symex-core``
 --------------
@@ -132,264 +137,24 @@ An extension for seamless integration with the `Rigpa <https://github.com/countv
 Documentation
 =============
 
-The best way to learn about Symex is to read the included Info manual, which you can view and navigate efficiently within Emacs.
+User Manual
+-----------
+
+The best way to learn about Symex is to read the included Info manual, which you can view and navigate efficiently within Emacs or even `view online <https://drym-org.github.io/symex.el/>`__.
 
 To view the manual within Emacs, ``C-h R`` and select ``symex`` (or ``C-h i`` and navigate to the Symex manual). You'll need to know some basics of how to navigate Info manuals. If you don't already know how, then try ``C-h R`` and select ``info``. This will take you to a helpful and short (~30 minutes) manual that will tell you all you need to know to navigate Info manuals.
-
-For now, some documentation is also included below in this README, but it will eventually be removed in favor of the Info manual (either directly or perhaps as rendered and hosted HTML), to have a single source of truth and avoid errors in documentation.
-
-Usage and Customization
-=======================
 
 The Animated Guide
 ------------------
 
 The `Animated Guide to Symex <https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/>`_ is a great way to learn about what you can do with Symex. Besides animations, it also contains lots of helpful field notes. Go check it out!
 
-Key Bindings
-------------
+Introductory Video
+------------------
 
-The table below lists the key bindings in Symex mode. You can also always use Emacs's ``C-h k`` to learn what a key does, as another way of learning the bindings.
+Watch the talk introducing Symex at an `Emacs SF <https://www.meetup.com/Emacs-SF/>`_ meetup in 2019 to learn more about the implementation and see some usage examples.
 
-Movement
-~~~~~~~~
-
-.. list-table::
-   :header-rows: 1
-
-   * - Key
-     - Action
-     - Remarks
-
-   * - ``h``, ``j``, ``k``, ``l``
-     - backwards, down, up, forwards
-     -
-
-   * - ``gj``, ``gk``
-     - linewise down, up
-     - don't rely too heavily on these -- e.g. "leap branch" is often better
-
-   * - ``f``, ``b``
-     - traverse forwards, backwards
-     -
-
-   * - ``C-f``, ``C-b``
-     - traverse forwards, backwards more
-     - quicker ways to get around
-
-   * - ``F``, ``B``
-     - skip forwards, backwards
-     - quick ways to move forwards and backwards -- traverse without entering nested expressions
-
-   * - ``{``, ``}``
-     - leap backwards, forwards
-     - "leap" to adjacent branches in the current tree, preserving position on branch
-
-   * - ``M-{``, ``M-}``
-     - soar backwards, forwards
-     - leap, but crossing trees if necessary
-
-   * - ``C-k``, ``C-j``
-     - climb, descend
-     - a quick way to go up and down a tree
-
-   * - ``0`` / ``M-h``
-     - go to first symex at this level
-     -
-
-   * - ``$``, ``M-l``
-     - go to last symex at this level
-     -
-
-   * - ``M-j``, ``M-k``
-     - go to lowest, highest symex in the tree
-     -
-
-Editing
-~~~~~~~
-
-.. list-table::
-
-   * - ``i``, ``a``
-     - insert at beginning, append at end
-     -
-
-   * - ``I``, ``A``
-     - insert before, append after
-     -
-
-   * - ``o``, ``O``
-     - open line below, above
-     -
-
-   * - ``(``, ``[``
-     - create symex with indicated delimiter
-     -
-
-   * - ``)``, ``]``
-     - wrap symex with indicated delimiter
-     -
-
-   * - ``C-'``, ``C-,``, `````, ``C-```
-     - cycle quoting, cycle unquoting, add quoting level, remove quoting level
-     -
-
-   * - ``w``, ``W``
-     - wrap with parens and insert, wrap and append
-     -
-
-   * - ``x``, ``X``, ``D``
-     - delete, delete backwards, delete remaining
-     -
-
-   * - ``c``, ``C``
-     - change, change remaining
-     -
-
-   * - ``y``, ``Y``, ``p``, ``P``
-     - yank (copy), yank remaining, paste after, paste before
-     -
-
-   * - ``C--``, ``s``
-     - clear, replace/substitute
-     -
-
-   * - ``S``
-     - change "surrounding" delimiter
-     -
-
-   * - ``H``, ``L``
-     - move/shift symex backwards, forwards
-     -
-
-   * - ``M-H``, ``M-L``
-     - move/shift symex backwards, forwards as far as possible on line or column
-     - Remember that usually the Meta prefix ``M-`` means "the most" and the Shift prefix ``S-`` means an action or "to shift" in a direction
-
-   * - ``K``
-     - raise
-     -
-
-   * - ``C-S-j`` / ``C-{``, ``C-S-k`` / ``C-}``
-     - emit backwards, forwards
-     -
-
-   * - ``C-S-h`` / ``C-(``, ``C-S-l`` / ``C-)``
-     - capture backwards, forwards
-     -
-
-   * - ``z``, ``Z``
-     - swallow head, swallow tail
-     -
-
-   * - ``|``, ``&``
-     - split, join/merge
-     -
-
-   * - ``-``
-     - splice
-     - clip the delimiters, joining the symex to the containing expression
-
-   * - ``>``, ``C->`` / ``C-S-o``
-     - insert newline before, append newline after
-     -
-
-   * - ``<``,  ``J`` / ``C-<``
-     - join with preceding line, join with next line
-     -
-
-   * - ``M-J`` / ``M-<``
-     - collapse to a single line
-     -
-
-   * - ``M->``
-     - unfurl across multiple lines
-     -
-
-   * - ``C-M-<``, ``C-M->``
-     - collapse remaining, unfurl remaining
-     -
-
-   * - ``=``, ``<tab>``
-     - tidy
-     - indent and remove extraneous whitespace
-
-   * - ``C-=``, ``C-<tab>``
-     - tidy remaining
-     - tidy remaining symexes at this level
-
-   * - ``M-=`` / ``M-<tab>``
-     - tidy recursively
-     - tidies while traversing the symex from the highest branch to the root, for cases where a simple tidy isn't adequate
-
-   * - ``;``, ``M-;``
-     - comment out, comment out remaining
-     -
-
-Control
-~~~~~~~
-
-.. list-table::
-
-   * - ``e``, ``E``, ``d``, ``M-e``, ``C-M-e``, ``T``
-     - evaluate, evaluate remaining, evaluate definition, evaluate recursively, pretty evaluate, evaluate as "thunk"
-     - ``T`` evaluates the indicated symex as if it were wrapped with parentheses, i.e. invoking it as a function, passing no arguments
-
-   * - ``:``
-     - eval-expression
-     - evaluate an arbitrary expression in the minibuffer
-
-   * - ``t``
-     - switch to a scratch buffer
-     -
-
-   * - ``M``
-     - display the messages buffer alongside
-     -
-
-   * - ``r``
-     - go to REPL
-     -
-
-   * - ``R`` / ``X``
-     - run/eval the buffer
-     -
-
-   * - ``C-;``
-     - evaluate, and insert result
-     -
-
-   * - ``H-h``
-     - toggle highlight
-     -
-
-   * - ``?``
-     - describe / lookup documentation
-     -
-
-   * - ``<return>``
-     - enter insertion state
-     -
-
-   * - ``<escape>``
-     - exit
-     -
-
-Customization
--------------
-
-Please read the manual to learn how to customize Symex.
-
-Learn More
-==========
-
-.. raw:: html
-
-  <p align="center">
-    <img src="https://user-images.githubusercontent.com/401668/98453162-e3ca2f00-210a-11eb-8669-c1048ff4547c.jpg" width="618" height="410" alt="Symex the Squirrel" title="Symex the Squirrel" style="cursor:default;"/>
-  </p>
-
-Learn more about the implementation and see some usage examples in the video overview (given at an `Emacs SF <https://www.meetup.com/Emacs-SF/>`_ meetup in 2019):
+There have been many improvements since then, but the essential ideas and motivation remain the same.
 
 .. raw:: html
 
@@ -447,3 +212,9 @@ Non-Ownership
 =============
 
 This work is not owned by anyone. Please see the `Declaration of Non-Ownership <https://github.com/drym-org/foundation/blob/main/Declaration_of_Non_Ownership.md>`_.
+
+.. raw:: html
+
+  <p align="center">
+    <img src="https://user-images.githubusercontent.com/401668/98453162-e3ca2f00-210a-11eb-8669-c1048ff4547c.jpg" width="618" height="410" alt="Symex the Squirrel" title="Symex the Squirrel" style="cursor:default;"/>
+  </p>
