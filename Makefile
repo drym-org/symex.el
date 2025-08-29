@@ -4,9 +4,6 @@
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 
 EMACS=emacs
-CASK ?= cask
-
-PROJECT_FILES=`${CASK} files`
 
 help:
 	@echo "clean - remove all build artifacts"
