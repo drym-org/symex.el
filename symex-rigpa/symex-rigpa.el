@@ -50,7 +50,7 @@
   (interactive)
   (rigpa-enter-lowest-level))
 
-(defvar chimera-symex-mode
+(defvar symex-chimera-mode
   (make-chimera-mode :name "symex"
                      :enter #'symex-mode-interface
                      :exit #'symex-editing-mode-exit
@@ -71,16 +71,16 @@
   "Rigpa interconnects for Symex."
   ;; TODO: return to tower instead. See
   ;; comment on line mode post exit
-  (rigpa-register-mode chimera-symex-mode
+  (rigpa-register-mode symex-chimera-mode
                        :post-exit #'rigpa--enter-local-evil-state)
   (ht-set rigpa-lithium-modes
           'symex-editing-mode "symex")
-  (setq symex-rigpa-lisp-tower
-        (make-editing-ensemble :name "lisp"
-                               :default "symex"
-                               :members (list chimera-insert-mode
-                                              chimera-symex-mode
-                                              chimera-normal-mode)))
+  (defvar symex-rigpa-lisp-tower
+    (make-editing-ensemble :name "lisp"
+                           :default "symex"
+                           :members (list chimera-insert-mode
+                                          symex-chimera-mode
+                                          chimera-normal-mode)))
   (setf (editing-ensemble-members rigpa-general-complex)
         (append (editing-ensemble-members rigpa-general-complex)
                 (list symex-rigpa-lisp-tower)))
