@@ -32,6 +32,9 @@
 
 
 ;; --- The Linter Tool ---
+;; TODO: use the straight build path consistently across all of these scripts,
+;; excluding files that shouldn't be checked (like autoloads), as needed.
+;; And share the logic to obtain files amongst these scripts, if possible.
 (defun ci-lint-package (pkg-name)
   "Run package-lint on PKG-NAME, print all output,
 and return a shell-friendly exit code."
@@ -56,8 +59,8 @@ and return a shell-friendly exit code."
                              ;; Set all necessary linter variables.
                              (list "--eval"
                                    (format "(setq package-lint-prefix \"symex\"
-                                                 package-lint-main-file %S
-                                                 package-lint-check-installable nil)"
+                                                  package-lint-main-file %S
+                                                  package-lint-check-installable nil)"
                                            main-file))
                              '("-l" "package-lint")
                              '("-f" "package-lint-batch-and-exit")
