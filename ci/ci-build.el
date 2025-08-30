@@ -54,8 +54,8 @@ and return a shell-friendly exit code."
 (let ((packages-to-check '("symex-core"
                            "symex"
                            "symex-ide"
-                           "symex-evil"))
-                           ;; "symex-rigpa"
+                           "symex-evil"
+                           "symex-rigpa"))
       (exit-code 0))
   (dolist (pkg packages-to-check)
     (let ((status (ci-compile-package pkg)))

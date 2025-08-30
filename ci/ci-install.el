@@ -44,12 +44,12 @@
    `(symex-ide :local-repo ,repo-root :files ("symex-ide/*.el")))
 
   (straight-use-package
-   `(symex-evil :local-repo ,repo-root :files ("symex-evil/*.el"))))
+   `(symex-evil :local-repo ,repo-root :files ("symex-evil/*.el")))
 
-;; (straight-use-package
-;;  `(rigpa :repo "countvajhula/rigpa" :host github :type git))
+  (straight-use-package
+   `(rigpa :repo "countvajhula/rigpa" :host github :type git))
 
-;; (straight-use-package
-;;  `(symex-rigpa :local-repo ,repo-root :files ("symex-rigpa/*.el")))
+  (straight-use-package
+   `(symex-rigpa :local-repo ,repo-root :files ("symex-rigpa/*.el")))
 
-(message "--- Package installation complete ---")
+  (message "--- Package installation complete ---"))
