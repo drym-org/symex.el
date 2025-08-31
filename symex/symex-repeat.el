@@ -324,7 +324,7 @@ This function assumes:
   ;; aborting if it gets too long.
   (setq symex-repeat--recorded-length
         (1+ symex-repeat--recorded-length))
-  (if (and (boundp 'symex-editing-mode) symex-editing-mode)
+  (if symex-editing-mode
       key-seq
     (cond ((symex-repeat--noop) mantra--null)
           ((null symex--change-series) key-seq)
