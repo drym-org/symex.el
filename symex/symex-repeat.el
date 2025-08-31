@@ -194,7 +194,10 @@ repeatable command.")
 Store the changes in the order they occur, oldest first.
 
 See `after-change-functions' for more on START, END, and LENGTH."
-  (when (and (mantra-parsing-in-progress-p symex-repeat-parser)
+  (when (and (or (mantra-parsing-in-progress-p symex-repeat-parser)
+                 ;; either parsing is already in progress, or the current
+                 ;; key sequence is about to start parsing
+                 (member symex--current-keys symex-repeatable-keys))
              (eq symex--initial-buffer
                  (current-buffer)))
     (symex--push-change
