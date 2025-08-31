@@ -415,19 +415,28 @@ KEY-SEQ is the currently entered key sequence."
 
 This simply subscribes to and maintains pre-command key sequences in
 order to determine if symex exits need to suspend the repeat parser or
-\(if we are exiting as part of a repeatable command) keep it going."
+\(if we are exiting as part of a repeatable command) keep it going.
+
+This should be called just once, to set up using Symex mode. It isn't
+relevant for routine entry and exit from the Symex modal UI."
   (mantra-connect)
   (pubsub-subscribe mantra-key-sequences-pre-command-topic
                     "symex-set-pre-command-state"
                     #'symex-set-pre-command-state))
 
 (defun symex-repeat-teardown ()
-  "Do any necessary teardown for repeat functionality."
+  "Do any necessary teardown for repeat functionality.
+
+This reverts any one-time configuration changes that were made in
+setting up Symex mode. It should be called, if at all, at most once,
+and isn't part of routine entry into and exit from the modal UI."
   (pubsub-unsubscribe mantra-key-sequences-pre-command-topic
                       "symex-set-pre-command-state"))
 
 (defun symex-repeat-enable ()
-  "Enable parsing for repeat."
+  "Enable parsing for repeat.
+
+This should be called each time the Symex modal UI is entered."
   ;; Subscribe to symex key sequences entered
   ;; on the main Emacs command loop
   (mantra-subscribe mantra-key-sequences-post-command-topic
@@ -442,7 +451,11 @@ order to determine if symex exits need to suspend the repeat parser or
             #'symex-changes-listener))
 
 (defun symex-repeat-disable ()
-  "Disable parsing for repeat."
+  "Disable parsing for repeat.
+
+This should be called each time the Symex modal UI is exited, unless
+it is exited via an insertion command that needs to continue parsing
+while outside Symex mode."
   (mantra-unsubscribe mantra-key-sequences-post-command-topic
                       symex-repeat-parser)
   (repeat-ring-unsubscribe symex-repeat-ring
