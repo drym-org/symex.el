@@ -197,7 +197,8 @@ See `after-change-functions' for more on START, END, and LENGTH."
   (when (and (or (mantra-parsing-in-progress-p symex-repeat-parser)
                  ;; either parsing is already in progress, or the current
                  ;; key sequence is about to start parsing
-                 (member symex--current-keys symex-repeatable-keys))
+                 (and symex-editing-mode
+                      (member symex--current-keys symex-repeatable-keys)))
              (eq symex--initial-buffer
                  (current-buffer)))
     (symex--push-change
