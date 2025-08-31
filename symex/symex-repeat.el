@@ -422,20 +422,20 @@ This simply subscribes to and maintains pre-command key sequences in
 order to determine if symex exits need to suspend the repeat parser or
 \(if we are exiting as part of a repeatable command) keep it going."
   (mantra-connect)
-  (pubsub-subscribe "mantra-key-sequences-pre-command"
+  (pubsub-subscribe mantra-key-sequences-pre-command-topic
                     "symex-set-pre-command-state"
                     #'symex-set-pre-command-state))
 
 (defun symex-repeat-teardown ()
   "Do any necessary teardown for repeat functionality."
-  (pubsub-unsubscribe "mantra-key-sequences-pre-command"
+  (pubsub-unsubscribe mantra-key-sequences-pre-command-topic
                       "symex-set-pre-command-state"))
 
 (defun symex-repeat-enable ()
   "Enable parsing for repeat."
   ;; Subscribe to symex key sequences entered
   ;; on the main Emacs command loop
-  (mantra-subscribe "mantra-key-sequences"
+  (mantra-subscribe mantra-key-sequences-post-command-topic
                     symex-repeat-parser)
   ;; Subscribe the symex repeat ring to the parsed sequence of Symex
   ;; activity
@@ -448,7 +448,7 @@ order to determine if symex exits need to suspend the repeat parser or
 
 (defun symex-repeat-disable ()
   "Disable parsing for repeat."
-  (mantra-unsubscribe "mantra-key-sequences"
+  (mantra-unsubscribe mantra-key-sequences-post-command-topic
                       symex-repeat-parser)
   (repeat-ring-unsubscribe symex-repeat-ring
                            (mantra-parser-name symex-repeat-parser))
