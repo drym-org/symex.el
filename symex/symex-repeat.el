@@ -297,15 +297,7 @@ KEY-SEQ is the currently entered key sequence."
 
 (defun symex-repeat--noop ()
   "Did the current key sequence have no effect in the source buffer?"
-  ;; Note that the key that *starts* repeat parsing also starts
-  ;; tracking the change series, so it will have a null change series
-  ;; even if it entails changes in the buffer. Since we always want to
-  ;; record this starting key as a key sequence, it's OK for our
-  ;; purposes that this predicate returns false for this case, since
-  ;; it will be correctly handled by a subsequent conditional clause
-  ;; in `symex-repeat-parser-map'
-  (and (mantra-parsing-in-progress-p symex-repeat-parser)
-       (= (point)
+  (and (= (point)
           symex--initial-point)
        (null symex--change-series)))
 
@@ -334,8 +326,7 @@ This function assumes:
         (1+ symex-repeat--recorded-length))
   (if (and (boundp 'symex-editing-mode) symex-editing-mode)
       key-seq
-    (cond ((symex-repeat--noop)
-           mantra--null)
+    (cond ((symex-repeat--noop) mantra--null)
           ((null symex--change-series) key-seq)
           ((null (cdr symex--change-series))
            (let ((result (symex-parse-change (car symex--change-series))))
