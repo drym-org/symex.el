@@ -236,13 +236,20 @@ See `after-change-functions' for more on START, END, and LENGTH."
          (symex-parse-deletion change))
         (t nil)))
 
-;; TODO: rename to avoid confusion with the parsed state
-;; in the parser itself, which is accepted/aborted.
-(defun symex-clear-parsing-state ()
-  "Clear parsing state."
+(defun symex-clear-pre-command-context ()
+  "Clear pre-command state variables that form the context of parsing."
   (setq symex--initial-buffer nil)
   (setq symex--initial-point nil)
   (setq symex-repeat--recorded-length 0))
+
+(defun symex-set-pre-command-context (key-seq)
+  "Set some state variables that form the context of parsing.
+
+This sets the pre-command buffer and point position as well as the
+currently entered key sequence, KEY-SEQ, that is initiating parsing."
+  (setq symex--initial-buffer (current-buffer))
+  (setq symex--initial-point (point))
+  (setq symex--current-keys key-seq))
 
 (defun symex-repeat-parser-start (key-seq)
   "Whether to start parsing.
@@ -278,7 +285,7 @@ metadata used in parsing, but isn't what's actually parsed."
     (let ((accept (and symex-editing-mode
                        (symex--seq-number-p last-entry))))
       (when accept
-        (symex-clear-parsing-state))
+        (symex-clear-pre-command-context))
       accept)))
 
 (defun symex-repeat-parser-abort (_key-seq _state)
@@ -292,7 +299,7 @@ KEY-SEQ is the currently entered key sequence."
     (when abort
       (unless symex-editing-mode
         (symex-repeat-disable))
-      (symex-clear-parsing-state))
+      (symex-clear-pre-command-context))
     abort))
 
 (defun symex-repeat--noop ()
@@ -402,36 +409,9 @@ And do it COUNT times."
   (mantra-parser-clear-state symex-repeat-parser)
   (repeat-ring-repeat-recent symex-repeat-ring))
 
-(defun symex-set-pre-command-state (key-seq)
-  "Set the pre-command buffer and point position.
-
-KEY-SEQ is the currently entered key sequence."
-  (setq symex--initial-buffer (current-buffer))
-  (setq symex--initial-point (point))
-  (setq symex--current-keys key-seq))
-
-(defun symex-repeat-initialize ()
-  "Do any necessary setup for repeat functionality.
-
-This simply subscribes to and maintains pre-command key sequences in
-order to determine if symex exits need to suspend the repeat parser or
-\(if we are exiting as part of a repeatable command) keep it going.
-
-This should be called just once, to set up using Symex mode. It isn't
-relevant for routine entry and exit from the Symex modal UI."
-  (mantra-connect)
-  (pubsub-subscribe mantra-key-sequences-pre-command-topic
-                    "symex-set-pre-command-state"
-                    #'symex-set-pre-command-state))
-
-(defun symex-repeat-teardown ()
-  "Do any necessary teardown for repeat functionality.
-
-This reverts any one-time configuration changes that were made in
-setting up Symex mode. It should be called, if at all, at most once,
-and isn't part of routine entry into and exit from the modal UI."
-  (pubsub-unsubscribe mantra-key-sequences-pre-command-topic
-                      "symex-set-pre-command-state"))
+;;;
+;;; Enable/disable repeat in connection with the modal UI
+;;;
 
 (defun symex-repeat-enable ()
   "Enable parsing for repeat.
@@ -462,6 +442,33 @@ while outside Symex mode."
                            (mantra-parser-name symex-repeat-parser))
   (remove-hook 'after-change-functions
                #'symex-changes-listener))
+
+;;;
+;;; One-time configuration
+;;;
+
+(defun symex-repeat-initialize ()
+  "Do any necessary setup for repeat functionality.
+
+This simply subscribes to and maintains pre-command key sequences in
+order to determine if symex exits need to suspend the repeat parser or
+\(if we are exiting as part of a repeatable command) keep it going.
+
+This should be called just once, to set up using Symex mode. It isn't
+relevant for routine entry and exit from the Symex modal UI."
+  (mantra-connect)
+  (pubsub-subscribe mantra-key-sequences-pre-command-topic
+                    "symex-set-pre-command-context"
+                    #'symex-set-pre-command-context))
+
+(defun symex-repeat-teardown ()
+  "Do any necessary teardown for repeat functionality.
+
+This reverts any one-time configuration changes that were made in
+setting up Symex mode. It should be called, if at all, at most once,
+and isn't part of routine entry into and exit from the modal UI."
+  (pubsub-unsubscribe mantra-key-sequences-pre-command-topic
+                      "symex-set-pre-command-context"))
 
 (provide 'symex-repeat)
 ;;; symex-repeat.el ends here
