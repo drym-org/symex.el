@@ -121,22 +121,9 @@
     "W")
   "Key sequences in Symex (Lithium) mode that are repeatable.")
 
-(defconst symex--ascii-numeral-0 48
-  "The ASCII code for 0.")
-
-(defconst symex--ascii-numeral-9 57
-  "The ASCII code for 9.")
-
-(defun symex--key-number-p (code)
-  "Whether CODE encodes a number."
-  (and (numberp code)
-       (<= symex--ascii-numeral-0
-           code
-           symex--ascii-numeral-9)))
-
-(defvar symex--change-series
-  nil
-  "Changes associated with current command.")
+;;;
+;;; Parsing context
+;;;
 
 (defvar symex-repeat--recorded-length
   0
@@ -158,21 +145,6 @@ intended for repetition, anyway, and at the same time, is a failsafe
 against any pathological bugs where we end up parsing indefinitely for
 some reason.")
 
-(defun symex--push-change (elt)
-  "Push ELT into `symex--change-series' at the end, modifying it in place."
-  ;; appending rather than consing is inefficient in general, but as
-  ;; the change series is cleared after each key sequence is entered,
-  ;; and as each may result in either no buffer changes, an insertion,
-  ;; a deletion, or both, we expect the length of the change series to
-  ;; be small enough (0-2) to be treated as constant.
-  (setq symex--change-series
-        (append symex--change-series
-                (list elt))))
-
-(defun symex--clear-change-series ()
-  "Clear the change series buffer."
-  (setq symex--change-series nil))
-
 (defvar symex--initial-buffer nil
   "Initial buffer when recording changes.")
 
@@ -188,21 +160,32 @@ whether repeat parsing should be disabled upon exiting Symex mode, or
 not.  We want to continue parsing if we happen to exit as part of a
 repeatable command.")
 
-(defun symex-changes-listener (start end length)
-  "Listen for buffer content changes and store them in the change buffer.
+(defun symex-clear-pre-command-context ()
+  "Clear pre-command state variables that form the context of parsing."
+  (setq symex--initial-buffer nil)
+  (setq symex--initial-point nil)
+  (setq symex-repeat--recorded-length 0))
 
-Store the changes in the order they occur, oldest first.
+(defun symex-set-pre-command-context (key-seq)
+  "Set some state variables that form the context of parsing.
 
-See `after-change-functions' for more on START, END, and LENGTH."
-  (when (and (or (mantra-parsing-in-progress-p symex-repeat-parser)
-                 ;; either parsing is already in progress, or the current
-                 ;; key sequence is about to start parsing
-                 (and symex-editing-mode
-                      (member symex--current-keys symex-repeatable-keys)))
-             (eq symex--initial-buffer
-                 (current-buffer)))
-    (symex--push-change
-     (list start end length))))
+This sets the pre-command buffer and point position as well as the
+currently entered key sequence, KEY-SEQ, that is initiating parsing."
+  (setq symex--initial-buffer (current-buffer))
+  (setq symex--initial-point (point))
+  (setq symex--current-keys key-seq))
+
+;;;
+;;; Recording and parsing the series of buffer changes
+;;;
+
+(defvar symex--change-series
+  nil
+  "Changes associated with current command.")
+
+(defun symex--clear-change-series ()
+  "Clear the change series buffer."
+  (setq symex--change-series nil))
 
 (defun symex-insertion-p (change)
   "Is CHANGE an insertion?"
@@ -218,7 +201,7 @@ See `after-change-functions' for more on START, END, and LENGTH."
 (defun symex-parse-insertion (change)
   "Parse CHANGE as an insertion."
   (pcase-let ((`(,start ,end ,_len) change))
-    (list 'insertion (buffer-substring start end))))
+    (mantra-make-insertion (buffer-substring start end))))
 
 (defun symex-parse-deletion (change)
   "Parse CHANGE as a deletion."
@@ -236,20 +219,9 @@ See `after-change-functions' for more on START, END, and LENGTH."
          (symex-parse-deletion change))
         (t nil)))
 
-(defun symex-clear-pre-command-context ()
-  "Clear pre-command state variables that form the context of parsing."
-  (setq symex--initial-buffer nil)
-  (setq symex--initial-point nil)
-  (setq symex-repeat--recorded-length 0))
-
-(defun symex-set-pre-command-context (key-seq)
-  "Set some state variables that form the context of parsing.
-
-This sets the pre-command buffer and point position as well as the
-currently entered key sequence, KEY-SEQ, that is initiating parsing."
-  (setq symex--initial-buffer (current-buffer))
-  (setq symex--initial-point (point))
-  (setq symex--current-keys key-seq))
+;;;
+;;; Specification of the (mantra) repeat parser for Symex
+;;;
 
 (defun symex-repeat-parser-start (key-seq)
   "Whether to start parsing.
@@ -266,6 +238,19 @@ loop."
        ;; before initiating the repetition (see `symex-repeat' for
        ;; where that's done).
        (not (repeat-ring-repeating symex-repeat-ring))))
+
+(defconst symex--ascii-numeral-0 48
+  "The ASCII code for 0.")
+
+(defconst symex--ascii-numeral-9 57
+  "The ASCII code for 9.")
+
+(defun symex--key-number-p (code)
+  "Whether CODE encodes a number."
+  (and (numberp code)
+       (<= symex--ascii-numeral-0
+           code
+           symex--ascii-numeral-9)))
 
 (defun symex--seq-number-p (entry)
   "Is ENTRY a number?
@@ -373,6 +358,10 @@ Parse the list of mantras as a seq."
    #'symex-repeat-parser-finish)
   "Parser for symex key sequences.")
 
+;;;
+;;; User-facing repeat features, powered by repeat-ring
+;;;
+
 (defvar symex-repeat-ring
   ;; use unique names across all clients of the pub/sub
   ;; system since that is a single namespace. In particular,
@@ -412,6 +401,33 @@ And do it COUNT times."
 ;;;
 ;;; Enable/disable repeat in connection with the modal UI
 ;;;
+
+(defun symex--push-change (elt)
+  "Push ELT into `symex--change-series' at the end, modifying it in place."
+  ;; appending rather than consing is inefficient in general, but as
+  ;; the change series is cleared after each key sequence is entered,
+  ;; and as each may result in either no buffer changes, an insertion,
+  ;; a deletion, or both, we expect the length of the change series to
+  ;; be small enough (0-2) to be treated as constant.
+  (setq symex--change-series
+        (append symex--change-series
+                (list elt))))
+
+(defun symex-changes-listener (start end length)
+  "Listen for buffer content changes and store them in the change buffer.
+
+Store the changes in the order they occur, oldest first.
+
+See `after-change-functions' for more on START, END, and LENGTH."
+  (when (and (or (mantra-parsing-in-progress-p symex-repeat-parser)
+                 ;; either parsing is already in progress, or the current
+                 ;; key sequence is about to start parsing
+                 (and symex-editing-mode
+                      (member symex--current-keys symex-repeatable-keys)))
+             (eq symex--initial-buffer
+                 (current-buffer)))
+    (symex--push-change
+     (list start end length))))
 
 (defun symex-repeat-enable ()
   "Enable parsing for repeat.
