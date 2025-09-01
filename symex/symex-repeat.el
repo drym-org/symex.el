@@ -121,9 +121,9 @@
     "W")
   "Key sequences in Symex (Lithium) mode that are repeatable.")
 
-;;;
-;;; Parsing context
-;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  Parsing context  ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar symex-repeat--recorded-length
   0
@@ -178,9 +178,9 @@ the command taking effect."
   (setq symex--initial-point (point))
   (setq symex--current-keys key-seq))
 
-;;;
-;;; Recording and parsing the series of buffer changes
-;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  Recording and parsing the series of buffer changes  ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar symex--change-series
   nil
@@ -222,9 +222,9 @@ the command taking effect."
          (symex-parse-deletion change))
         (t nil)))
 
-;;;
-;;; Specification of the (mantra) repeat parser for Symex
-;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  Specification of the (mantra) repeat parser for Symex  ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun symex-repeat-parser-start (key-seq)
   "Whether to start parsing.
@@ -361,9 +361,9 @@ Parse the list of mantras as a seq."
    #'symex-repeat-parser-finish)
   "Parser for symex key sequences.")
 
-;;;
-;;; User-facing repeat features, powered by repeat-ring
-;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  User-facing repeat features, powered by repeat-ring  ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar symex-repeat-ring
   ;; use unique names across all clients of the pub/sub
@@ -401,9 +401,9 @@ And do it COUNT times."
   (mantra-parser-clear-state symex-repeat-parser)
   (repeat-ring-repeat-recent symex-repeat-ring))
 
-;;;
-;;; Enable/disable repeat in connection with the modal UI
-;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  Enable/disable repeat in connection with the modal UI  ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun symex--push-change (elt)
   "Push ELT into `symex--change-series' at the end, modifying it in place."
@@ -462,9 +462,9 @@ while outside Symex mode."
   (remove-hook 'after-change-functions
                #'symex-changes-listener))
 
-;;;
-;;; One-time configuration
-;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  One-time configuration  ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun symex-repeat-initialize ()
   "Do any necessary setup for repeat functionality.
