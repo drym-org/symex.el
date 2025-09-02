@@ -212,7 +212,7 @@ the command taking effect."
     ;; relative to point
     (let* ((original-position symex--initial-point)
            (change-start (- start original-position)))
-      (list 'deletion change-start len))))
+      (mantra-make-deletion change-start len))))
 
 (defun symex-parse-change (change)
   "Parse a CHANGE."
@@ -329,9 +329,9 @@ This function assumes:
                      (mantra-deletion-p result))
                  key-seq
                result)))
-          (t (list 'seq
-                   (seq-map #'symex-parse-change
-                            symex--change-series))))))
+          (t (apply #'mantra-make-seq
+                    (seq-map #'symex-parse-change
+                             symex--change-series))))))
 
 (defun symex-repeat-parser-compose (state input)
   "Incorporate INPUT into STATE.
