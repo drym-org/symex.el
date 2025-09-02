@@ -202,9 +202,34 @@ the command taking effect."
          (= start end))))
 
 (defun symex-parse-insertion (change)
-  "Parse CHANGE as an insertion."
+  "Parse CHANGE as an insertion.
+
+To do this, two pieces of information need to be extracted from the
+CHANGE within the context of parsing:
+
+1. The offset of the inserted text from the original point position.
+2. The motion of point in relation to the original point position.
+
+In the most common case, point moves precisely to the end of the
+inserted text, but sometimes, point may not move at all (e.g., for
+Symex's \"I\" which inserts a space but preserves point), or may move
+to a different location (e.g., paredit's implicit insertion of a
+closing delimiter, while moving point to the end of the opening
+delimiter).
+
+In repeating such an insertion, we want to repeat both the text
+insertion in relation to point as well as any point motion."
   (pcase-let ((`(,start ,end ,_len) change))
-    (mantra-make-insertion (buffer-substring start end))))
+    (let ((offset (- start symex--initial-point))
+          (point-offset (- (point) symex--initial-point)))
+      (let ((insertion  (mantra-make-insertion (buffer-substring start end)
+                                               offset
+                                               ;; we handle the insertion separately
+                                               ;; from the point motion, so we preserve
+                                               ;; point as part of insertion
+                                               nil))
+            (motion (mantra-make-move point-offset)))
+        (mantra-make-seq insertion motion)))))
 
 (defun symex-parse-deletion (change)
   "Parse CHANGE as a deletion."
@@ -325,9 +350,10 @@ This function assumes:
           ((null symex--change-series) key-seq)
           ((null (cdr symex--change-series))
            (let ((result (symex-parse-change (car symex--change-series))))
-             (if (or (null result)
+             (if (or (null result)  ; perhaps a motion, e.g., C-f
                      (mantra-deletion-p result))
                  key-seq
+               ;; otherwise it's an insertion
                result)))
           (t (apply #'mantra-make-seq
                     (seq-map #'symex-parse-change
