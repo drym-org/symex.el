@@ -151,6 +151,14 @@ some reason.")
 (defvar symex--initial-point nil
   "Initial point position when recording changes.")
 
+(defvar symex--replaying-point nil
+  "Dynamic point position simulating replay of changes.
+
+This is necessary as the point position sets the context of insertion.
+As captured insertions may move point, we need to keep track of the
+simulated position of point to properly situate capture of subsequent
+insertions.")
+
 (defvar symex--current-keys nil
   "The current key sequence.
 
@@ -164,6 +172,7 @@ repeatable command.")
   "Clear state variables that form the context of parsing."
   (setq symex--initial-buffer nil)
   (setq symex--initial-point nil)
+  (setq symex--replaying-point nil)
   (setq symex-repeat--recorded-length 0))
 
 (defun symex-set-parsing-context (key-seq)
@@ -176,6 +185,7 @@ It is expected to be called at the pre-command stage, i.e., prior to
 the command taking effect."
   (setq symex--initial-buffer (current-buffer))
   (setq symex--initial-point (point))
+  (setq symex--replaying-point (point))
   (setq symex--current-keys key-seq))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -220,8 +230,8 @@ delimiter).
 In repeating such an insertion, we want to repeat both the text
 insertion in relation to point as well as any point motion."
   (pcase-let ((`(,start ,end ,_len) change))
-    (let ((offset (- start symex--initial-point))
-          (point-offset (- (point) symex--initial-point)))
+    (let ((offset (- start symex--replaying-point))
+          (point-offset (- (point) symex--replaying-point)))
       (let ((insertion  (mantra-make-insertion (buffer-substring start end)
                                                offset
                                                ;; we handle the insertion separately
@@ -229,6 +239,7 @@ insertion in relation to point as well as any point motion."
                                                ;; point as part of insertion
                                                nil))
             (motion (mantra-make-move point-offset)))
+        (setq symex--replaying-point (+ point-offset symex--replaying-point))
         (mantra-make-seq insertion motion)))))
 
 (defun symex-parse-deletion (change)
