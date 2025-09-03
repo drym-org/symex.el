@@ -453,7 +453,7 @@ And do it COUNT times."
         (append symex--change-series
                 (list elt))))
 
-(defun symex-changes-listener (start end length)
+(defun symex-record-buffer-change (start end length)
   "Listen for buffer content changes and store them in the change buffer.
 
 Store the changes in the order they occur, oldest first.
@@ -484,7 +484,7 @@ This should be called each time the Symex modal UI is entered."
   ;; Listen for buffer changes performed as part
   ;; of command execution.
   (add-hook 'after-change-functions
-            #'symex-changes-listener))
+            #'symex-record-buffer-change))
 
 (defun symex-repeat-disable ()
   "Disable parsing for repeat.
@@ -497,7 +497,7 @@ while outside Symex mode."
   (repeat-ring-unsubscribe symex-repeat-ring
                            (mantra-parser-name symex-repeat-parser))
   (remove-hook 'after-change-functions
-               #'symex-changes-listener))
+               #'symex-record-buffer-change))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  One-time configuration  ;;;
