@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>What if I'm Directly Using Symex Mode Hooks? (Symex)</title>
+
+<meta name="description" content="What if I'm Directly Using Symex Mode Hooks? (Symex)">
+<meta name="keywords" content="What if I'm Directly Using Symex Mode Hooks? (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Upgrading-from-Symex-v1-to-v2.html" rel="up" title="Upgrading from Symex v1 to v2">
+<link href="About-Symex-Minor-Modes.html" rel="next" title="About Symex Minor Modes">
+<link href="Where-Should-I-Put-My-Customizations_003f.html" rel="prev" title="Where Should I Put My Customizations?">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="What-if-I_0027m-Directly-Using-Symex-Mode-Hooks_003f">
+<div class="nav-panel">
+<p>
+Next: <a href="About-Symex-Minor-Modes.html" accesskey="n" rel="next">About Symex Minor Modes</a>, Previous: <a href="Where-Should-I-Put-My-Customizations_003f.html" accesskey="p" rel="prev">Where Should I Put My Customizations?</a>, Up: <a href="Upgrading-from-Symex-v1-to-v2.html" accesskey="u" rel="up">Upgrading from Symex v1 to v2</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="What-if-I_0027m-Directly-Using-Symex-Mode-Hooks_003f-1"><span>2.6.3 What if I&rsquo;m Directly Using Symex Mode Hooks?<a class="copiable-link" href="#What-if-I_0027m-Directly-Using-Symex-Mode-Hooks_003f-1"> &para;</a></span></h4>
+
+<p>The former <code class="code">symex-mode</code> minor mode had a narrow focus on balancing parentheses in Lisp modes. As Symex now works with any language, this general name for such a specific mode was no longer appropriate, and so it was renamed to <code class="code">symex-lisp-mode</code>. Formerly, setting up the ability to use Symex in any buffer required directly calling <code class="code">symex-initialize</code> in user config. A new, global mode named <code class="code">symex-mode</code> (replacing the former mode of the same name) was introduced in 2.0 to handle this in a standard way simply as <code class="code">(symex-mode 1)</code>.
+</p>
+<p>For any buffer-specific configuration for which you might have used <code class="code">symex-mode</code> hooks formerly, you should use <code class="code">symex-editing-mode</code> instead. This is the <em class="emph">local</em> mode that is active in a buffer when you actually enter the modal UI. The next section summarizes the purpose of each Symex minor mode.
+</p>
+</div>
+
+
+
+</body>
+</html>

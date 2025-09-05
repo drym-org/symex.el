@@ -39,6 +39,10 @@ Previous: <a href="Structural-features.html" accesskey="p" rel="prev">Structural
 <hr>
 <h4 class="subsection" id="Macros-and-Repetition-1"><span>5.2.2 Macros and Repetition<a class="copiable-link" href="#Macros-and-Repetition-1"> &para;</a></span></h4>
 
+<a class="index-entry-id" id="index-repeat-last-action_002c-command-to"></a>
+<a class="index-entry-id" id="index-automating-actions-using-macros"></a>
+<a class="index-entry-id" id="index-macros_002c-complex-repetition-using"></a>
+
 <p>Symex includes an advanced command repetition feature, accessible via <code class="code">.</code>. This simply replays your most recent command. This command could even include insertion of text into the buffer, and even the use of completion frameworks during such insertion. <code class="code">.</code> will repeat the command, in all cases.
 </p>
 <p>This feature is similar to Vim&rsquo;s well-known &ldquo;dot&rdquo; command, but in addition, it also maintains a history of recent commands on a &ldquo;repeat ring,&rdquo; so after pressing <code class="code">.</code>, you can cycle through recent repetitions using <code class="code">C-.</code>. This ability to repeat recent commands is similar to Evil&rsquo;s implementation of &ldquo;dot&rdquo; which includes the analogous &ldquo;repeat-pop&rdquo; feature.
