@@ -631,9 +631,13 @@ Here's a short summary of the minor modes used by Symex, in case you need to att
 
 @enumerate
 
-@item @code{symex-editing-mode} --- the local minor mode enabled and disabled upon entry and exit from the modal UI. @emph{This is probably the one you need for your customizations}.
-@item @code{symex-mode} --- a global mode for one-time initial setup to use Symex.
-@item @code{symex-lisp-mode} --- a local minor mode for balancing parentheses in Lisp modes.
+@item @code{symex-editing-mode} --- the local minor mode enabled and disabled upon entry and exit from the modal UI. @strong{This is probably the one you need for your customizations}.
+@item @code{symex-mode} --- a global mode for one-time initial setup to use the Symex modal UI. Most users will need to enable this in their init config.
+@item @code{symex-ide-mode} --- a global mode for one-time initial setup to use the IDE features provided by the @code{symex-ide} package. If you are using this package, you will need to enable this mode in your init config.
+@item @code{symex-evil-mode} --- a global mode for one-time initial setup to use Symex together with Evil via the @code{symex-evil} package. If you are using this package, you will need to enable this mode in your init config.
+@item @code{symex-rigpa-mode} --- a global mode for one-time initial setup to use Symex together with Rigpa via the @code{symex-rigpa} package. If you are using this package, you will need to enable this mode in your init config.
+@item @code{symex-lisp-mode} --- a local minor mode for balancing parentheses in Lisp modes. @emph{You typically don't need to interact with this as it is done behind the scenes.}
+@item @code{symex-core-mode} --- a global mode for one-time initialization of core Lisp and Tree-Sitter parsers. @emph{You typically don't need to interact with this as it is done behind the scenes.}
 
 @end enumerate
 
