@@ -3,7 +3,7 @@
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/drym-org/symex.el
 ;; Version: 2.0
-;; Package-Requires: ((emacs "25.1") (seq "2.22") (symex-core "2.0") (lithium "0.1.1") (mantra "0.0") (repeat-ring "0.0") (pubsub "0.0"))
+;; Package-Requires: ((emacs "25.1") (seq "2.22") (symex-core "2.0") (lithium "0.1.1") (mantra "0.1") (repeat-ring "0.1") (pubsub "0.1"))
 ;; Keywords: lisp, convenience, languages
 
 ;; This program is "part of the world," in the sense described at
