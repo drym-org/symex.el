@@ -44,12 +44,21 @@ Previous: <a href="What-if-I_0027m-Directly-Using-Symex-Mode-Hooks_003f.html" ac
 <p>Here&rsquo;s a short summary of the minor modes used by Symex, in case you need to attach any custom behavior to them.
 </p>
 <ol class="enumerate">
-<li> <code class="code">symex-editing-mode</code> &mdash; the local minor mode enabled and disabled upon entry and exit from the modal UI. <em class="emph">This is probably the one you need for your customizations</em>.
-</li><li> <code class="code">symex-mode</code> &mdash; a global mode for one-time initial setup to use Symex.
-</li><li> <code class="code">symex-lisp-mode</code> &mdash; a local minor mode for balancing parentheses in Lisp modes.
+<li> <code class="code">symex-editing-mode</code> &mdash; the local minor mode enabled and disabled upon entry and exit from the modal UI. <strong class="strong">This is probably the one you need for your customizations</strong>.
+</li><li> <code class="code">symex-mode</code> &mdash; a global mode for one-time initial setup to use the Symex modal UI. Most users will need to enable this in their init config.
+</li><li> <code class="code">symex-ide-mode</code> &mdash; a global mode for one-time initial setup to use the IDE features provided by the <code class="code">symex-ide</code> package. If you are using this package, you will need to enable this mode in your init config.
+</li><li> <code class="code">symex-evil-mode</code> &mdash; a global mode for one-time initial setup to use Symex together with Evil via the <code class="code">symex-evil</code> package. If you are using this package, you will need to enable this mode in your init config.
+</li><li> <code class="code">symex-rigpa-mode</code> &mdash; a global mode for one-time initial setup to use Symex together with Rigpa via the <code class="code">symex-rigpa</code> package. If you are using this package, you will need to enable this mode in your init config.
+</li><li> <code class="code">symex-lisp-mode</code> &mdash; a local minor mode for balancing parentheses in Lisp modes. <em class="emph">You typically don&rsquo;t need to interact with this as it is done behind the scenes.</em>
+</li><li> <code class="code">symex-core-mode</code> &mdash; a global mode for one-time initialization of core Lisp and Tree-Sitter parsers. <em class="emph">You typically don&rsquo;t need to interact with this as it is done behind the scenes.</em>
 
 </li></ol>
 
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Previous: <a href="What-if-I_0027m-Directly-Using-Symex-Mode-Hooks_003f.html">What if I&rsquo;m Directly Using Symex Mode Hooks?</a>, Up: <a href="Upgrading-from-Symex-v1-to-v2.html">Upgrading from Symex v1 to v2</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 
 
