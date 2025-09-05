@@ -151,6 +151,9 @@ some reason.")
 (defvar symex--initial-point nil
   "Initial point position when recording changes.")
 
+(defvar symex--initial-mode-was-symex nil
+  "True if the initial mode was Symex editing mode.")
+
 (defvar symex--replaying-point nil
   "Dynamic point position simulating replay of changes.
 
@@ -172,6 +175,7 @@ repeatable command.")
   "Clear state variables that form the context of parsing."
   (setq symex--initial-buffer nil)
   (setq symex--initial-point nil)
+  (setq symex--initial-mode-was-symex nil)
   (setq symex--replaying-point nil)
   (setq symex-repeat--recorded-length 0))
 
@@ -185,6 +189,7 @@ It is expected to be called at the pre-command stage, i.e., prior to
 the command taking effect."
   (setq symex--initial-buffer (current-buffer))
   (setq symex--initial-point (point))
+  (setq symex--initial-mode-was-symex symex-editing-mode)
   (setq symex--replaying-point (point))
   (setq symex--current-keys key-seq))
 
@@ -332,6 +337,11 @@ KEY-SEQ is the currently entered key sequence."
           symex--initial-point)
        (null symex--change-series)))
 
+(defun symex--initiating-key-p (key-seq)
+  "Did the current key sequence initiate repeat parsing?"
+  (and (member key-seq symex-repeatable-keys)
+       symex--initial-mode-was-symex))
+
 (defun symex-repeat-parser-map (key-seq)
   "Parse each KEY-SEQ for repeat.
 
@@ -358,6 +368,7 @@ This function assumes:
   (if symex-editing-mode
       key-seq
     (cond ((symex-repeat--noop) mantra--null)
+          ((symex--initiating-key-p key-seq) key-seq)
           ((null symex--change-series) key-seq)
           ((null (cdr symex--change-series))
            (let ((result (symex-parse-change (car symex--change-series))))
