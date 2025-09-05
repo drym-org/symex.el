@@ -631,9 +631,9 @@ Here's a short summary of the minor modes used by Symex, in case you need to att
 
 @enumerate
 
-@item symex-editing-mode --- the local minor mode enabled and disabled upon entry and exit from the modal UI. @emph{This is probably the one you need for your customizations}.
-@item symex-mode --- a global mode for one-time initial setup to use Symex.
-@item symex-lisp-mode --- a local minor mode for balancing parentheses in Lisp modes.
+@item @code{symex-editing-mode} --- the local minor mode enabled and disabled upon entry and exit from the modal UI. @emph{This is probably the one you need for your customizations}.
+@item @code{symex-mode} --- a global mode for one-time initial setup to use Symex.
+@item @code{symex-lisp-mode} --- a local minor mode for balancing parentheses in Lisp modes.
 
 @end enumerate
 
