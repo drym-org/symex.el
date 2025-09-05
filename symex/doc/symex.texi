@@ -589,6 +589,41 @@ If you feel that support for your favorite language could be improved, we want t
 
 Clojure is a language that is both a Lisp and has a Tree-sitter enabled major mode. In this case, you could use either Symex's Lisp parser or Tree-Sitter parser. But, as the Lisp parser is more mature and provides a tailored experience for Lisp, it's recommended when using Symex with Clojure, at least for the moment, that you use @code{clojure-mode} rather than @code{clojure-ts-mode}.
 
+@node Migrating from Symex v1 to v2
+@section Migrating from Symex v1 to v2
+
+Formerly, Symex could be installed and used with a single @code{use-package} form. Now, the original functionality has been decomposed into smaller, tailored packages. You need one @code{use-package} form for each of these packages that you are interested in (@xref{Installing Symex}). Some typical cases are covered below.
+
+@node Which Packages Should I Install?
+@subsection Which Packages Should I Install?
+
+If you aren't an Evil user, using @code{symex-core}, @code{symex}, and @code{symex-ide} together provide the same (but improved) experience as before. If you @emph{are} an Evil user, you would additionally install @code{symex-evil} to get the same experience as before. If you are a Rigpa user, install @code{symex-rigpa} in addition, for the same experience as before.
+
+@node Where Should I Put My Customizations?
+@subsection Where Should I Put My Customizations?
+
+For any customizations you had in the @code{:config} or @code{:custom} sections of the former @code{use-package} declaration, you would now typically put those in the corresponding section of the @code{symex} package, unless it is specific to an optional package like @code{symex-ide} or @code{symex-evil}, in which case you should include the config with these packages.
+
+@node What if I'm Directly Using Symex Mode Hooks?
+@subsection What if I'm Directly Using Symex Mode Hooks?
+
+The former @code{symex-mode} minor mode had a narrow focus on balancing parentheses in Lisp modes. As Symex now works with any language, this general name for such a specific mode was no longer appropriate, and so it was renamed to @code{symex-lisp-mode}. Formerly, setting up the ability to use Symex in any buffer required directly calling @code{symex-initialize} in user config. A new, global mode named @code{symex-mode} (replacing the former mode of the same name) was introduced in 2.0 to handle this in a standard way simply as @code{(symex-mode 1)}.
+
+For any buffer-specific configuration for which you might have used @code{symex-mode} hooks formerly, you should use @code{symex-editing-mode} instead. This is the @emph{local} mode that is active in a buffer when you actually enter the modal UI. The next section summarizes the purpose of each Symex minor mode.
+
+@node About Symex Minor Modes
+@subsection About Symex Minor Modes
+
+Here's a short summary of the minor modes used by Symex, in case you need to attach any custom behavior to them.
+
+@enumerate
+
+@item symex-editing-mode --- the local minor mode enabled and disabled upon entry and exit from the modal UI. @emph{This is probably the one you need for your customizations}.
+@item symex-mode --- a global mode for one-time initial setup to use Symex.
+@item symex-lisp-mode --- a local minor mode for balancing parentheses in Lisp modes.
+
+@end enumerate
+
 @node Getting Started
 @chapter Getting Started
 
