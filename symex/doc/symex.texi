@@ -598,8 +598,10 @@ If you feel that support for your favorite language could be improved, we want t
 
 Clojure is a language that is both a Lisp and has a Tree-sitter enabled major mode. In this case, you could use either Symex's Lisp parser or Tree-Sitter parser. But, as the Lisp parser is more mature and provides a tailored experience for Lisp, it's recommended when using Symex with Clojure, at least for the moment, that you use @code{clojure-mode} rather than @code{clojure-ts-mode}.
 
-@node Migrating from Symex v1 to v2
-@section Migrating from Symex v1 to v2
+@node Upgrading from Symex v1 to v2
+@section Upgrading from Symex v1 to v2
+
+@cindex upgrading from Symex v1 to v2
 
 Formerly, Symex could be installed and used with a single @code{use-package} form. Now, the original functionality has been decomposed into smaller, tailored packages. You need one @code{use-package} form for each of these packages that you are interested in (@xref{Installing Symex}). Some typical cases are covered below.
 
