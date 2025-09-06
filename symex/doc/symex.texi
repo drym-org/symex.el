@@ -784,7 +784,7 @@ Alternatively you can use Elisp to set the face programmatically. Using @code{se
 (set-face-attribute 'symex-highlight-face nil :extend t :inherit '(italic region))
 @end lisp
 
-WARNING: @code{set-face-attribute} will only set the attributes you tell it to. It does not clear attributes that are already set. This means that if you play around with it, you can end up with something that looks different from what you would get running the latest thing from a clean slate. This won't be a problem once your configuration is ready and Emacs is just running it when it starts up, but keep it in mind as you try things out.
+@strong{Warning:} @code{set-face-attribute} will only set the attributes you tell it to. It does not clear attributes that are already set. This means that if you play around with it, you can end up with something that looks different from what you would get running the latest thing from a clean slate. This won't be a problem once your configuration is ready and Emacs is just running it when it starts up, but keep it in mind as you try things out.
 
 You can also eval a @code{defface} form to set the entire face specification, though that can interfere with documentation or groups is anything has changed.
 
@@ -799,19 +799,19 @@ Some quick tips: You can use the @code{describe-face} command to see lots of dif
 
 Here are some basic options that you could try:
 
-Underline: It is very compatible across different themes. If you want something that is guaranteed to be readable and not interfere with highlighting this is a good choice.
+@strong{Underline}: It is very compatible across different themes. If you want something that is guaranteed to be readable and not interfere with highlighting this is a good choice.
 
 @lisp
 (set-face-attribute 'symex-highlight-face nil :extend nil :underline t :inherit '(underline))
 @end lisp
 
-Italic + Region: Uses the normal region face (the one used when you mark/select a region of text) but with italics to visually set it apart from the former use. It is readable and works with syntax highlighting in many themes and is the default.
+@strong{Italic + Region}: Uses the normal region face (the one used when you mark/select a region of text) but with italics to visually set it apart from the former use. It is readable and works with syntax highlighting in many themes and is the default.
 
 @lisp
 (set-face-attribute 'symex-highlight-face nil :extend nil :inherit '(italic region))
 @end lisp
 
-Highlight: The legacy default. In many themes it is a bolder color (sometimes to the extent that it becomes hard to read). It also sets the foreground in some themes; thus, breaking syntax highlighting.
+@strong{Highlight}: The legacy default. In many themes it is a bolder color (sometimes to the extent that it becomes hard to read). It also sets the foreground in some themes; thus, breaking syntax highlighting.
 
 @lisp
 (set-face-attribute 'symex-highlight-face nil :extend nil :inherit '(highlight))
