@@ -37,12 +37,12 @@
   :group 'symex-mode)
 
 (defface symex-highlight-face
-  '((t :extend nil :inherit (italic region)))
+  '((nil :extend nil :inherit (italic region)))
   "Face used to highlight symexes."
   :group 'symex-faces)
 
 (defcustom symex-highlight-face
-  '((t :extend nil :inherit (italic region)))
+  '((nil :extend nil :inherit (italic region)))
   "Face used to highlight symexes."
   :type 'face
   :group 'symex-faces)
