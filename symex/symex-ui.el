@@ -36,9 +36,15 @@
   :type 'boolean
   :group 'symex-mode)
 
-(defface symex--current-node-face
-  '((t :inherit highlight :extend nil))
-  "Face used to highlight the current tree node."
+(defface symex-highlight-face
+  '((t :extend nil :inherit (italic region)))
+  "Face used to highlight symexes."
+  :group 'symex-faces)
+
+(defcustom symex-highlight-face
+  '((t :extend nil :inherit (italic region)))
+  "Face used to highlight symexes."
+  :type 'face
   :group 'symex-faces)
 
 (defvar symex--current-overlay nil "The current overlay which highlights the current node.")
@@ -58,7 +64,7 @@
                 (error start))))
     (setq-local symex--current-overlay
                 (make-overlay start end)))
-  (overlay-put symex--current-overlay 'face 'symex--current-node-face))
+  (overlay-put symex--current-overlay 'face 'symex-highlight-face))
 
 (defun symex--overlay-active-p ()
   "Is the overlay active?"
