@@ -2,68 +2,51 @@
 ;; This script runs checkdoc on the packages.
 ;; It must be run *after* ci-install.el has successfully completed.
 ;; -*- lexical-binding: t -*-
-;;
-;; Note: some flags passed to checkdoc and lint from a calling script
-;; (e.g., this one) typically presuppose dynamic binding, but in the
-;; present case we're running those tools as subprocesses, so they
-;; should use the default dynamic binding, even though this script
-;; uses lexical binding.
 
-(defvar straight-base-dir (expand-file-name "ci-init"))
-
-;; --- Load the existing straight.el installation ---
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        straight-base-dir)))
-  (unless (file-exists-p bootstrap-file)
-    (error "straight.el not found. Run ci-install.el first."))
-  (load bootstrap-file nil 'nomessage))
+;; Load the shared CI helper functions and constants.
+(require 'ci-helpers (expand-file-name "ci-helpers.el"))
+(ci-load-straight)
 
 
 ;; --- The Checkdoc Tool (Multi-Process Version) ---
 (defun ci-checkdoc-package (pkg-name)
-  "Run checkdoc on PKG-NAME in a separate process, print all output,
-and return a shell-friendly exit code based on whether output was generated."
-  (let* ((repo-root (expand-file-name ".."))
-         (source-dir (expand-file-name pkg-name repo-root))
-         (deps-dirs (mapcar #'straight--build-dir
-                            (straight--flatten (straight-dependencies pkg-name))))
-         (load-path-args (mapcan (lambda (dir) (list "-L" dir))
-                                 (append deps-dirs (list source-dir))))
-         ;; Get only the top-level .el files from the source directory.
-         (files-to-check (directory-files source-dir t "\\.el$"))
+  "Run checkdoc on PKG-NAME and return its output and status.
+This function is silent. The return value is a cons cell of the
+form (STATUS . FILTERED-OUTPUT), where STATUS is 0 for
+success and 1 for failure."
+  (let* ((load-path-args (ci-get-load-path-args pkg-name))
+         ;; Use the helper to get a clean list of source files to check.
+         (files-to-check (ci-get-package-source-files pkg-name))
          (output-buffer (generate-new-buffer " *checkdoc-output*"))
-         ;; This simple program just runs checkdoc on all files. We will
-         ;; inspect the output in the parent process.
          (program `(progn
                      (require 'checkdoc)
-                     ;; Disable the noisy, experimental verb check.
                      (setq checkdoc-verb-check-experimental-flag nil)
                      (dolist (file ',files-to-check)
                        (checkdoc-file file)))))
 
-    (message (format "--- Running checkdoc on %s ---" pkg-name))
     (unwind-protect
         (let* ((args (append '("-Q" "--batch")
                              load-path-args
                              (list "--eval" (format "%S" program))))
-               ;; Run the process, capturing all output into a single buffer.
+               ;; Capture all output (stdout and stderr) into a single buffer.
                (exit-code (apply #'call-process
                                  (executable-find "emacs") nil
-                                 output-buffer ; Capture stdout and stderr here.
+                                 output-buffer ; Destination for all output.
                                  nil args))
-               (output-text (with-current-buffer output-buffer (buffer-string))))
+               (output-text (with-current-buffer output-buffer (buffer-string)))
+               ;; Filter the full output to remove harmless "Followed link..." messages.
+               (filtered-output
+                (string-join
+                 (cl-remove-if (lambda (line) (string-prefix-p "Followed link to" line))
+                               (split-string output-text "\n" t))
+                 "\n")))
 
-          ;; Print whatever the subprocess produced.
-          (princ output-text)
-
-          ;; Determine failure based on EITHER a non-zero exit code (Lisp error)
-          ;; OR the presence of any output (checkdoc warnings).
-          (if (or (not (zerop exit-code))
-                  (string-match-p "\\S-" output-text))
-              1 ; Failure
-            0)) ; Success
+          ;; Return a cons cell of (STATUS . FILTERED-OUTPUT)
+          (cons (if (or (not (zerop exit-code))
+                        (string-match-p "\\S-" filtered-output))
+                    1 ; Failure
+                  0)  ; Success
+                filtered-output))
 
       ;; Cleanup: Kill the temporary buffer.
       (when (buffer-live-p output-buffer)
@@ -71,17 +54,23 @@ and return a shell-friendly exit code based on whether output was generated."
 
 
 ;; --- Main Execution ---
-(let ((packages-to-check '("symex-core"
-                           "symex"
-                           "symex-ide"
-                           "symex-evil"
-                           "symex-rigpa"))
-      (exit-code 0))
-  (dolist (pkg packages-to-check)
-    (let ((status (ci-checkdoc-package pkg)))
+(let ((exit-code 0))
+  (dolist (pkg ci-packages)
+    (message (format "\n--- Running checkdoc on %s ---" pkg))
+    (let* ((result (ci-checkdoc-package pkg))
+           (status (car result))
+           ;; The output is now the pre-filtered combined output.
+           (output (cdr result)))
+
+      ;; Print the captured (and filtered) output.
+      (when (string-match-p "\\S-" output)
+        (princ output)
+        (princ "\n"))
+
       (unless (zerop status)
-        (message (format "\n!!! Checkdoc failed for %s with status %d" pkg status))
+        (message (format "!!! Checkdoc failed for %s with status %d" pkg status))
         (setq exit-code status))))
+
   (if (zerop exit-code)
       (message "\nAll packages passed checkdoc.")
     (progn

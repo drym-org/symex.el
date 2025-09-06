@@ -5,6 +5,9 @@ THIS_FILE := $(lastword $(MAKEFILE_LIST))
 
 EMACS=emacs
 
+export CI_PROJECT=symex
+export CI_PACKAGES=symex-core symex symex-ide symex-evil symex-rigpa
+
 help:
 	@echo "clean - remove all build artifacts"
 	@echo "install - install package dependencies in .cask/"

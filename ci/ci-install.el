@@ -1,12 +1,6 @@
 ;; ci-install.el
 ;; This script bootstraps straight.el and installs all package dependencies.
 ;; -*- lexical-binding: t -*-
-;;
-;; Note: some flags passed to checkdoc and lint from a calling script
-;; (e.g., this one) typically presuppose dynamic binding, but in the
-;; present case we're running those tools as subprocesses, so they
-;; should use the default dynamic binding, even though this script
-;; uses lexical binding.
 
 (defvar straight-base-dir (expand-file-name "ci-init"))
 
@@ -28,28 +22,28 @@
 
 (setq straight-allow-recipe-inheritance nil)
 
+;; Load the shared CI helper functions and constants.
+(require 'ci-helpers (expand-file-name "ci-helpers.el"))
+
+;; --- Install external dependencies ---
+(message "--- Installing external dependencies ---")
+
+;; First, install any external dependencies that are not part of the present repo.
+;; This section can be customized for each project.
+
+;; This is only needed for building/testing symex-rigpa
+(straight-use-package
+ '(rigpa :host github :repo "countvajhula/rigpa"))
+
 ;; --- Install all packages ---
 (message "--- Installing packages ---")
 
-;; The repository root is the parent directory of the `ci/` directory
-;; where this script is located.
+;; Next, install all packages from the local repo by looping
+;; over the `ci-packages` variable.
 (let ((repo-root (expand-file-name "..")))
-  (straight-use-package
-   `(symex-core :local-repo ,repo-root :files ("symex-core/*.el")))
+  (dolist (pkg ci-packages)
+    ;; Construct the recipe dynamically for each package in the repo.
+    (straight-use-package
+     `(,(intern pkg) :local-repo ,repo-root :files (,(format "%s/*.el" pkg))))))
 
-  (straight-use-package
-   `(symex :local-repo ,repo-root :files ("symex/*.el")))
-
-  (straight-use-package
-   `(symex-ide :local-repo ,repo-root :files ("symex-ide/*.el")))
-
-  (straight-use-package
-   `(symex-evil :local-repo ,repo-root :files ("symex-evil/*.el")))
-
-  (straight-use-package
-   `(rigpa :repo "countvajhula/rigpa" :host github :type git))
-
-  (straight-use-package
-   `(symex-rigpa :local-repo ,repo-root :files ("symex-rigpa/*.el")))
-
-  (message "--- Package installation complete ---"))
+(message "--- Package installation complete ---")

@@ -2,25 +2,12 @@
 ;; This script runs package-lint on the packages.
 ;; It must be run *after* ci-install.el has successfully completed.
 ;; -*- lexical-binding: t -*-
-;;
-;; Note: some flags passed to checkdoc and lint from a calling script
-;; (e.g., this one) typically presuppose dynamic binding, but in the
-;; present case we're running those tools as subprocesses, so they
-;; should use the default dynamic binding, even though this script
-;; uses lexical binding.
 
-(defvar straight-base-dir (expand-file-name "ci-init"))
+;; Load the shared CI helper functions and constants.
+(require 'ci-helpers (expand-file-name "ci-helpers.el"))
+(ci-load-straight)
 
-;; --- Load the existing straight.el installation ---
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        straight-base-dir)))
-  (unless (file-exists-p bootstrap-file)
-    (error "straight.el not found. Run ci-install.el first."))
-  (load bootstrap-file nil 'nomessage))
-
-;; --- Install the forked linter ---
+;; Install the forked linter.
 ;; This uses a customized version of package-lint that:
 ;;  1. recognizes the package suite pattern
 ;;  2. doesn't check availability of dependencies on package archives
@@ -32,24 +19,13 @@
 
 
 ;; --- The Linter Tool ---
-;; TODO: use the straight build path consistently across all of these scripts,
-;; excluding files that shouldn't be checked (like autoloads), as needed.
-;; And share the logic to obtain files amongst these scripts, if possible.
 (defun ci-lint-package (pkg-name)
   "Run package-lint on PKG-NAME, print all output,
 and return a shell-friendly exit code."
-  (let* ((repo-root (expand-file-name ".."))
-         (source-dir (expand-file-name pkg-name repo-root))
-         ;; Set the main file in the package so that package-lint
-         ;; can parse dependencies, etc.
-         (main-file (expand-file-name (concat pkg-name ".el") source-dir))
-         (deps-dirs (mapcar #'straight--build-dir
-                            (straight--flatten (straight-dependencies pkg-name))))
-         ;; The linter needs its own build dir on the load-path too.
-         (linter-dir (straight--build-dir "package-lint"))
-         (load-path-args (mapcan (lambda (dir) (list "-L" dir))
-                                 (append deps-dirs (list source-dir linter-dir))))
-         (files-to-lint (directory-files source-dir t "\\.el$"))
+  (let* ((linter-dir (straight--build-dir "package-lint"))
+         (load-path-args (ci-get-load-path-args pkg-name (list linter-dir)))
+         (main-file (ci-get-package-main-file pkg-name))
+         (files-to-lint (ci-get-package-source-files pkg-name))
          (output-buffer (generate-new-buffer " *lint-output*")))
 
     (message (format "--- Linting %s ---" pkg-name))
@@ -58,9 +34,10 @@ and return a shell-friendly exit code."
                              load-path-args
                              ;; Set all necessary linter variables.
                              (list "--eval"
-                                   (format "(setq package-lint-prefix \"symex\"
+                                   (format "(setq package-lint-prefix %S
                                                   package-lint-main-file %S
                                                   package-lint-check-installable nil)"
+                                           ci-project-name
                                            main-file))
                              '("-l" "package-lint")
                              '("-f" "package-lint-batch-and-exit")
@@ -75,13 +52,8 @@ and return a shell-friendly exit code."
 
 
 ;; --- Main Execution ---
-(let ((packages-to-check '("symex-core"
-                           "symex"
-                           "symex-ide"
-                           "symex-evil"
-                           "symex-rigpa"))
-      (exit-code 0))
-  (dolist (pkg packages-to-check)
+(let ((exit-code 0))
+  (dolist (pkg ci-packages)
     (let ((status (ci-lint-package pkg)))
       (unless (zerop status)
         (message (format "\n!!! Linting failed for %s with status %d" pkg status))
@@ -89,3 +61,4 @@ and return a shell-friendly exit code."
   (if (zerop exit-code)
       (message "\nAll packages passed linting.")
     (kill-emacs exit-code)))
+
