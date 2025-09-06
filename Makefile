@@ -16,19 +16,22 @@ help:
 	@echo "checkdoc - check docstrings"
 
 clean:
-	cd ci && rm -rf ci-init
+	cd emacs-ci && rm -rf ci-init
+
+bootstrap:
+	cd emacs-ci && emacs --batch --quick --load bootstrap.el
 
 install:
-	cd ci && emacs --batch --quick --load ci-install.el
+	cd emacs-ci && emacs --batch --quick --load install.el
 
 build:
-	cd ci && emacs --batch --quick --load ci-build.el
+	cd emacs-ci && emacs --batch --quick --load build.el
 
 lint:
-	cd ci && emacs --batch --quick --load ci-lint.el
+	cd emacs-ci && emacs --batch --quick --load lint.el
 
 checkdoc:
-	cd ci && emacs --batch --quick --load ci-checkdoc.el
+	cd emacs-ci && emacs --batch --quick --load checkdoc.el
 
 build-docs:
 	cd symex/doc && texi2any --html --output symex_html symex.texi && mkdir -p symex_html/figures && cp figures/* symex_html/figures/

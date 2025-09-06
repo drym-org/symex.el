@@ -11,6 +11,7 @@
 dist
 *.html
 ci-init
+emacs-ci
 
 # rendered info manual artifacts
 *.info
