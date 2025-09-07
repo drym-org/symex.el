@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
       - name: Install Emacs-CI
-        run: git clone git@github.com:countvajhula/emacs-ci.git
+        run: git clone https://github.com/countvajhula/emacs-ci.git
       - name: Install Package and its Dependencies
         run: make install
       - name: Lint
