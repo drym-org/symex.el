@@ -352,37 +352,35 @@ Elpaca instructions for installing each of the packages described in the previou
 
 @lisp
 (use-package symex-core
-  :ensure (:recipe
-           (:host github
+  :ensure (:host github
             :repo "drym-org/symex.el"
-            :files ("symex-core/symex*.el"))))
+            :files ("symex-core/symex*.el")))
 
 (use-package symex
-  :ensure (:recipe
-           (:host github
+  :after symex-core
+  :ensure (:host github
             :repo "drym-org/symex.el"
-            :files ("symex/symex*.el" "symex/doc/*.texi" "symex/doc/figures")))
-  :after (symex-core)
+            :files ("symex/symex*.el"
+                    "symex/doc/*.texi"
+                    "symex/doc/figures"))
   :config
   (symex-mode 1)
   (global-set-key (kbd "s-;") #'symex-mode-interface))  ; or whatever keybinding you like
   ;; and any other customizations you like
 
 (use-package symex-ide
-  :ensure (:recipe
-           (:host github
+  :after symex
+  :ensure (:host github
             :repo "drym-org/symex.el"
-            :files ("symex-ide/symex*.el")))
-  :after (symex)
+            :files ("symex-ide/symex*.el"))
   :config
   (symex-ide-mode 1))
 
 (use-package symex-evil
-  :ensure (:recipe
-           (:host github
-            :repo "drym-org/symex.el"
-            :files ("symex-evil/symex*.el")))
   :after (symex evil)
+  :ensure (:host github
+            :repo "drym-org/symex.el"
+            :files ("symex-evil/symex*.el"))
   :config
   (symex-evil-mode 1))
 
