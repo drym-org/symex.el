@@ -47,37 +47,35 @@ Next: <a href="Quelpa.html" accesskey="n" rel="next">Quelpa</a>, Previous: <a hr
 </p>
 <div class="example lisp">
 <pre class="lisp-preformatted">(use-package symex-core
-  :ensure (:recipe
-           (:host github
+  :ensure (:host github
             :repo &quot;drym-org/symex.el&quot;
-            :files (&quot;symex-core/symex*.el&quot;))))
+            :files (&quot;symex-core/symex*.el&quot;)))
 
 (use-package symex
-  :ensure (:recipe
-           (:host github
+  :after symex-core
+  :ensure (:host github
             :repo &quot;drym-org/symex.el&quot;
-            :files (&quot;symex/symex*.el&quot; &quot;symex/doc/*.texi&quot; &quot;symex/doc/figures&quot;)))
-  :after (symex-core)
+            :files (&quot;symex/symex*.el&quot;
+                    &quot;symex/doc/*.texi&quot;
+                    &quot;symex/doc/figures&quot;))
   :config
   (symex-mode 1)
   (global-set-key (kbd &quot;s-;&quot;) #'symex-mode-interface))  ; or whatever keybinding you like
   ;; and any other customizations you like
 
 (use-package symex-ide
-  :ensure (:recipe
-           (:host github
+  :after symex
+  :ensure (:host github
             :repo &quot;drym-org/symex.el&quot;
-            :files (&quot;symex-ide/symex*.el&quot;)))
-  :after (symex)
+            :files (&quot;symex-ide/symex*.el&quot;))
   :config
   (symex-ide-mode 1))
 
 (use-package symex-evil
-  :ensure (:recipe
-           (:host github
-            :repo &quot;drym-org/symex.el&quot;
-            :files (&quot;symex-evil/symex*.el&quot;)))
   :after (symex evil)
+  :ensure (:host github
+            :repo &quot;drym-org/symex.el&quot;
+            :files (&quot;symex-evil/symex*.el&quot;))
   :config
   (symex-evil-mode 1))
 

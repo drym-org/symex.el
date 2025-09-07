@@ -40,7 +40,9 @@ Next: <a href="What-if-I_0027m-Directly-Using-Symex-Mode-Hooks_003f.html" access
 <hr>
 <h4 class="subsection" id="Where-Should-I-Put-My-Customizations_003f-1"><span>2.6.2 Where Should I Put My Customizations?<a class="copiable-link" href="#Where-Should-I-Put-My-Customizations_003f-1"> &para;</a></span></h4>
 
-<p>For any customizations you had in the <code class="code">:config</code> or <code class="code">:custom</code> sections of the former <code class="code">use-package</code> declaration, you would now typically put those in the corresponding section of the <code class="code">symex</code> package, unless it is specific to an optional package like <code class="code">symex-ide</code> or <code class="code">symex-evil</code>, in which case you should include the config with these packages. You should avoid placing customizations with <code class="code">symex-core</code> (put them with <code class="code">symex</code>, instead) as, if Symex were to be hosted on a package archive, <code class="code">symex-core</code> would not need to be explicitly declared in your config at all, and would be installed behind-the-scenes as a dependency.
+<p>You would typically put customizations in either the <code class="code">:config</code> or <code class="code">:custom</code> sections of the <code class="code">use-package</code> declaration for the <code class="code">symex</code> package, unless it is specific to an optional package like <code class="code">symex-ide</code> or <code class="code">symex-evil</code>, in which case you should include the config with these packages.
+</p>
+<p>You should avoid placing customizations with <code class="code">symex-core</code> (put them with <code class="code">symex</code>, instead) as, if Symex were to be hosted on a package archive, <code class="code">symex-core</code> would not need to be explicitly declared in your config at all, and would be installed behind-the-scenes as a dependency.
 </p>
 </div>
 
