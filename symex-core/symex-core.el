@@ -95,9 +95,13 @@
 (defun symex-initialize ()
   "Initialize symex mode.
 
-This registers symex mode for use in all recognized Lisp modes, and also
-advises functions to enable or disable features based on user configuration."
-  ;; enable the symex minor mode in all recognized lisp modes
+This registers `symex-lisp-mode' in all recognized Lisp modes to
+ensure that parentheses remain balanced in these modes. It also
+initializes the tree-sitter provider by aliasing Symex functions to
+the tree-sitter functions provided by Emacs. This extra step to
+defining these functions is necessary (instead of just using the
+functions directly) as tree-sitter isn't available on < Emacs 29, but
+Symex's Lisp support should still be usable on these older versions."
   (when symex-ensure-structure-p
     (dolist (mode-name (symex-get-lisp-modes))
       (let ((mode-hook (intern (concat (symbol-name mode-name)
