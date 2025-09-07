@@ -24,6 +24,8 @@ jobs:
         uses: actions/checkout@master
       - name: Install Emacs-CI
         run: git clone https://github.com/countvajhula/emacs-ci.git
+      - name: Bootstrap Straight.el
+        run: make bootstrap
       - name: Install Package and its Dependencies
         run: make install
       - name: Lint
