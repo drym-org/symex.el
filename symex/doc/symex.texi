@@ -830,6 +830,47 @@ The current expression is highlighted by default using an overlay. If you'd like
 (symex-highlight-p nil)
 @end lisp
 
+You can also customize the face used for this by configuring the @code{symex-highlight-face}. This can be done using the Customize interface (accessible by @code{M-x customize}; @xref{Easy Customization,,,emacs, the GNU Emacs manual} also @xref{Face Customization,,,emacs, the GNU Emacs manual}).
+
+Alternatively you can use Elisp to set the face programmatically. Using @code{set-face-attribute} will allow you to change any attribute of the face. For example, this sets Symex's highlight face to inherit from the italic and region faces and to extend the face all the way to the edge of the window when selecting over multiple lines.
+
+@lisp
+(set-face-attribute 'symex-highlight-face nil :extend t :inherit '(italic region))
+@end lisp
+
+@strong{Warning:} @code{set-face-attribute} will only set the attributes you tell it to. It does not clear attributes that are already set. This means that if you play around with it, you can end up with something that looks different from what you would get running the latest thing from a clean slate. This won't be a problem once your configuration is ready and Emacs is just running it when it starts up, but keep it in mind as you try things out.
+
+You can also eval a @code{defface} form to set the entire face specification, though that can interfere with documentation or groups is anything has changed.
+
+@lisp
+(defface symex-highlight-face
+  '((nil :extend nil :inherit (italic region)))
+  "Face used to highlight the current ."
+  :group 'symex-faces)
+@end lisp
+
+Some quick tips: You can use the @code{describe-face} command to see lots of different faces and then @code{:inherit} from one(s) you like. If you choose a standard face like @code{region}, @code{highlight}, or @code{underline} it will use the face definition from your theme. Finally, if you want to still see code highlighting, make sure that your face does not set the foreground color as that will cause the overlay override the foreground property set by the highlighter.
+
+Here are some basic options that you could try:
+
+@strong{Underline}: It is very compatible across different themes. If you want something that is guaranteed to be readable and not interfere with highlighting this is a good choice.
+
+@lisp
+(set-face-attribute 'symex-highlight-face nil :extend nil :underline t :inherit '(underline))
+@end lisp
+
+@strong{Italic + Region}: Uses the normal region face (the one used when you mark/select a region of text) but with italics to visually set it apart from the former use. It is readable and works with syntax highlighting in many themes and is the default.
+
+@lisp
+(set-face-attribute 'symex-highlight-face nil :extend nil :inherit '(italic region))
+@end lisp
+
+@strong{Highlight}: The legacy default. In many themes it is a bolder color (sometimes to the extent that it becomes hard to read). It also sets the foreground in some themes; thus, breaking syntax highlighting.
+
+@lisp
+(set-face-attribute 'symex-highlight-face nil :extend nil :inherit '(highlight))
+@end lisp
+
 @node Point Placement on Entry
 @section Point Placement on Entry
 
