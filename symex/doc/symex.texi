@@ -871,6 +871,8 @@ Here are some basic options that you could try:
 (set-face-attribute 'symex-highlight-face nil :extend nil :inherit '(highlight))
 @end lisp
 
+Also @xref{Look and Feel} for other ways to customize the UI.
+
 @node Point Placement on Entry
 @section Point Placement on Entry
 
@@ -937,7 +939,7 @@ By default, @code{C-'} and @code{C-,} cycle through standard quoting and unquoti
 @cindex Hooks, customizing using
 @cindex Lifecycle Hooks
 
-There may be many other things you'd like to customize about Symex which aren't included as customizations, such as how the cursor looks or how the mode line looks. These may be specific to your own Emacs configuration or just to your unique preferences. Symex provides lifecycle hooks that allow you to customize it any way you like:
+The section on @ref{Highlighting} covers customizing the face used in highlighting the current expression. There may be many other things you'd like to customize about Symex which aren't included as customizations, such as how the cursor looks or how the mode line looks. These may be specific to your own Emacs configuration or just to your unique preferences. Symex provides lifecycle hooks that allow you to customize it any way you like:
 
 @itemize @bullet{}
 
