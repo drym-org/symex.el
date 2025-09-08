@@ -49,6 +49,52 @@ Next: <a href="Point-Placement-on-Entry.html" accesskey="n" rel="next">Point Pla
 <pre class="lisp-preformatted">(symex-highlight-p nil)
 </pre></div>
 
+<p>You can also customize the face used for this by configuring the <code class="code">symex-highlight-face</code>. This can be done using the Customize interface (accessible by <code class="code">M-x customize</code>; See <a data-manual="emacs" href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization">Easy Customization</a> in <cite class="cite">the GNU Emacs manual</cite> also See <a data-manual="emacs" href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Face-Customization.html#Face-Customization">Face Customization</a> in <cite class="cite">the GNU Emacs manual</cite>).
+</p>
+<p>Alternatively you can use Elisp to set the face programmatically. Using <code class="code">set-face-attribute</code> will allow you to change any attribute of the face. For example, this sets Symex&rsquo;s highlight face to inherit from the italic and region faces and to extend the face all the way to the edge of the window when selecting over multiple lines.
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(set-face-attribute 'symex-highlight-face nil :extend t :inherit '(italic region))
+</pre></div>
+
+<p><strong class="strong">Warning:</strong> <code class="code">set-face-attribute</code> will only set the attributes you tell it to. It does not clear attributes that are already set. This means that if you play around with it, you can end up with something that looks different from what you would get running the latest thing from a clean slate. This won&rsquo;t be a problem once your configuration is ready and Emacs is just running it when it starts up, but keep it in mind as you try things out.
+</p>
+<p>You can also eval a <code class="code">defface</code> form to set the entire face specification, though that can interfere with documentation or groups is anything has changed.
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(defface symex-highlight-face
+  '((nil :extend nil :inherit (italic region)))
+  &quot;Face used to highlight the current .&quot;
+  :group 'symex-faces)
+</pre></div>
+
+<p>Some quick tips: You can use the <code class="code">describe-face</code> command to see lots of different faces and then <code class="code">:inherit</code> from one(s) you like. If you choose a standard face like <code class="code">region</code>, <code class="code">highlight</code>, or <code class="code">underline</code> it will use the face definition from your theme. Finally, if you want to still see code highlighting, make sure that your face does not set the foreground color as that will cause the overlay override the foreground property set by the highlighter.
+</p>
+<p>Here are some basic options that you could try:
+</p>
+<p><strong class="strong">Underline</strong>: It is very compatible across different themes. If you want something that is guaranteed to be readable and not interfere with highlighting this is a good choice.
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(set-face-attribute 'symex-highlight-face nil :extend nil :underline t :inherit '(underline))
+</pre></div>
+
+<p><strong class="strong">Italic + Region</strong>: Uses the normal region face (the one used when you mark/select a region of text) but with italics to visually set it apart from the former use. It is readable and works with syntax highlighting in many themes and is the default.
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(set-face-attribute 'symex-highlight-face nil :extend nil :inherit '(italic region))
+</pre></div>
+
+<p><strong class="strong">Highlight</strong>: The legacy default. In many themes it is a bolder color (sometimes to the extent that it becomes hard to read). It also sets the foreground in some themes; thus, breaking syntax highlighting.
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">(set-face-attribute 'symex-highlight-face nil :extend nil :inherit '(highlight))
+</pre></div>
+
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Point-Placement-on-Entry.html">Point Placement on Entry</a>, Previous: <a href="Branch-Memory.html">Branch Memory</a>, Up: <a href="Customizing-Symex.html">Customizing Symex</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 
 
