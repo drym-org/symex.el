@@ -151,7 +151,14 @@
    ("<return>" symex-enter-lower :exit)
    ("<escape>" symex-escape-higher :exit))
   :lighter " symex"
-  :group 'symex)
+  :group 'symex
+
+  ;; Enable mode
+  (when symex-editing-mode
+    (add-hook 'post-command-hook #'symex-user-select-nearest-idempotent nil :local))
+  ;; Disable mode
+  (when (not symex-editing-mode)
+    (remove-hook 'post-command-hook #'symex-user-select-nearest-idempotent t)))
 
 
 (provide 'symex-lithium)
