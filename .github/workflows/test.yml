@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
       - name: Install Emacs-CI
-        run: git clone https://github.com/countvajhula/emacs-ci.git
+        run: make setup-ci
       - name: Bootstrap Straight.el
         run: make bootstrap
       - name: Install Package and its Dependencies

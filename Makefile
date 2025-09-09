@@ -15,6 +15,9 @@ help:
 	@echo "lint - check style with package-lint"
 	@echo "checkdoc - check docstrings"
 
+setup-ci:
+	git clone https://github.com/countvajhula/emacs-ci.git
+
 clean:
 	cd emacs-ci && rm -rf ci-init
 
