@@ -9,11 +9,22 @@ export CI_PROJECT=symex
 export CI_PACKAGES=symex-core symex symex-ide symex-evil symex-rigpa
 
 help:
+	@echo "Run common development actions."
+	@echo
+	@echo "    Usage: make <target>"
+	@echo "    where <target> is one of:"
+	@echo
+	@echo "help - show this menu"
 	@echo "clean - remove all build artifacts"
-	@echo "install - install package dependencies in .cask/"
+	@echo "setup-ci - clone emacs-ci to run project CI actions such as linting"
+	@echo "bootstrap - install Straight.el"
+	@echo "install - install package dependencies"
 	@echo "build - byte compile the package"
 	@echo "lint - check style with package-lint"
 	@echo "checkdoc - check docstrings"
+	@echo "build-docs - build HTML docs at symex/doc/symex_html/"
+	@echo
+	@echo "**All of these actions (aside from docs) take effect and are contained inside the emacs-ci/ folder --- they do not affect the system Emacs configuration.**"
 
 setup-ci:
 	git clone https://github.com/countvajhula/emacs-ci.git
@@ -39,4 +50,4 @@ checkdoc:
 build-docs:
 	cd symex/doc && texi2any --html --output symex_html symex.texi && mkdir -p symex_html/figures && cp figures/* symex_html/figures/
 
-.PHONY: help clean install build lint checkdoc build-docs
+.PHONY: help setup-ci clean bootstrap install build lint checkdoc build-docs
