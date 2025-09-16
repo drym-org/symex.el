@@ -24,7 +24,13 @@ help:
 	@echo "**All of these actions (aside from docs) take effect and are contained inside the emacs-ci/ folder --- they do not affect the system Emacs configuration.**"
 
 setup-ci:
-	git clone https://github.com/countvajhula/emacs-ci.git .emacs-ci
+	@if [ -d ".emacs-ci" ]; then \
+		echo "--> Updating existing emacs-ci repository..."; \
+		cd .emacs-ci && git pull; \
+	else \
+		echo "--> Cloning emacs-ci repository..."; \
+		git clone https://github.com/countvajhula/emacs-ci.git .emacs-ci; \
+	fi
 
 clean:
 	cd .emacs-ci && rm -rf ci-init
