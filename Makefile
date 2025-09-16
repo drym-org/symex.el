@@ -1,8 +1,3 @@
-# Determine this makefile's path.
-# Be sure to place this BEFORE `include` directives, if any.
-# Source: https://stackoverflow.com/a/27132934/323874
-THIS_FILE := $(lastword $(MAKEFILE_LIST))
-
 EMACS=emacs
 
 export CI_PROJECT=symex
