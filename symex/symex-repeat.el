@@ -281,6 +281,7 @@ loop."
        ;; So it is also necessary, in addition, to abort parsing
        ;; before initiating the repetition (see `symex-repeat' for
        ;; where that's done).
+       ;; TODO: reference to `symex-repeat-ring' before definition
        (not (repeat-ring-repeating symex-repeat-ring))))
 
 (defconst symex--ascii-numeral-0 48
