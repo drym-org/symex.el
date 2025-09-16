@@ -8,10 +8,9 @@
 # Build
 .cask
 *.elc
-dist
 *.html
-ci-init
-emacs-ci
+dist
+.emacs-ci.clone
 
 # rendered info manual artifacts
 *.info
