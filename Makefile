@@ -24,25 +24,25 @@ help:
 	@echo "**All of these actions (aside from docs) take effect and are contained inside the emacs-ci/ folder --- they do not affect the system Emacs configuration.**"
 
 setup-ci:
-	git clone https://github.com/countvajhula/emacs-ci.git .emacs-ci.clone
+	git clone https://github.com/countvajhula/emacs-ci.git .emacs-ci
 
 clean:
-	cd .emacs-ci.clone && rm -rf ci-init
+	cd .emacs-ci && rm -rf ci-init
 
 bootstrap:
-	cd .emacs-ci.clone && emacs --batch --quick --load bootstrap.el
+	cd .emacs-ci && emacs --batch --quick --load bootstrap.el
 
 install:
-	cd .emacs-ci.clone && emacs --batch --quick --load install.el
+	cd .emacs-ci && emacs --batch --quick --load install.el
 
 build:
-	cd .emacs-ci.clone && emacs --batch --quick --load build.el
+	cd .emacs-ci && emacs --batch --quick --load build.el
 
 lint:
-	cd .emacs-ci.clone && emacs --batch --quick --load lint.el
+	cd .emacs-ci && emacs --batch --quick --load lint.el
 
 checkdoc:
-	cd .emacs-ci.clone && emacs --batch --quick --load checkdoc.el
+	cd .emacs-ci && emacs --batch --quick --load checkdoc.el
 
 build-docs:
 	cd symex/doc && texi2any --html --output symex_html symex.texi && mkdir -p symex_html/figures && cp figures/* symex_html/figures/

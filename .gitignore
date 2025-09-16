@@ -10,7 +10,7 @@
 *.elc
 *.html
 dist
-.emacs-ci.clone
+.emacs-ci
 
 # rendered info manual artifacts
 *.info
