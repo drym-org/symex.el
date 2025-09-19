@@ -16,7 +16,8 @@ help:
 	@echo "setup-ci - clone emacs-ci to run project CI actions such as linting"
 	@echo "bootstrap - install Straight.el"
 	@echo "install - install package dependencies"
-	@echo "build - byte compile the package"
+	@echo "byte-compile - byte compile the package"
+	@echo "native-compile - native compile the package"
 	@echo "lint - check style with package-lint"
 	@echo "checkdoc - check docstrings"
 	@echo "build-docs - build HTML docs at symex/doc/symex_html/"
@@ -41,8 +42,11 @@ bootstrap:
 install:
 	cd .emacs-ci && emacs --batch --quick --load install.el
 
-build:
-	cd .emacs-ci && emacs --batch --quick --load build.el
+byte-compile:
+	cd .emacs-ci && emacs --batch --quick --load byte-compile.el
+
+native-compile:
+	cd .emacs-ci && emacs --batch --quick --load native-compile.el
 
 lint:
 	cd .emacs-ci && emacs --batch --quick --load lint.el
@@ -53,4 +57,4 @@ checkdoc:
 build-docs:
 	cd symex/doc && texi2any --html --output symex_html symex.texi && mkdir -p symex_html/figures && cp figures/* symex_html/figures/
 
-.PHONY: help setup-ci clean bootstrap install build lint checkdoc build-docs
+.PHONY: help setup-ci clean bootstrap install byte-compile native-compile lint checkdoc build-docs

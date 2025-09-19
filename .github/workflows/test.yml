@@ -35,4 +35,6 @@ jobs:
         continue-on-error: true
         run: make checkdoc
       - name: Byte Compile
-        run: make build
+        run: make byte-compile
+      - name: Native Compile
+        run: make native-compile
