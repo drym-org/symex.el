@@ -152,7 +152,7 @@ some reason.")
   "Initial point position when recording changes.")
 
 (defvar symex--initial-mode-was-symex nil
-  "True if the initial mode was Symex editing mode.")
+  "Was the initial mode Symex editing mode?")
 
 (defvar symex--replaying-point nil
   "Dynamic point position simulating replay of changes.
@@ -339,7 +339,7 @@ KEY-SEQ is the currently entered key sequence."
        (null symex--change-series)))
 
 (defun symex--initiating-key-p (key-seq)
-  "Did the current key sequence initiate repeat parsing?"
+  "Did the current key sequence KEY-SEQ initiate repeat parsing?"
   (and (member key-seq symex-repeatable-keys)
        symex--initial-mode-was-symex))
 
@@ -351,10 +351,10 @@ KEY-SEQ is the currently entered key sequence."
   "Key sequences used during insertion that should be parsed as key sequences.
 
 Typically, all changes made when in an insertion state are parsed as
-buffer changes, i.e., as insertions and deletions. But in some cases
-(such as \"(\" and \"[\"), the keys result in structural changes
-(often managed by tools like paredit), whose precise effect is
-context-dependent. Capturing the exact insertions and deletions in
+buffer changes, i.e., as insertions and deletions.  But in some cases
+\(such as \"(\" and \"[\"), the keys result in structural changes
+\(often managed by tools like paredit), whose precise effect is
+context-dependent.  Capturing the exact insertions and deletions in
 such cases would not produce the right effect when the same command is
 repeated in a different context, such as in an expression with lower
 or higher indentation. We could parse such keys either as the commands
@@ -362,7 +362,7 @@ themselves, or as key sequences, rather than as buffer changes. We opt
 for the latter for simplicity.")
 
 (defun symex--insertion-key-sequence-p (key-seq)
-  "Should the current key sequence be parsed as a key sequence?
+  "Should the current key sequence KEY-SEQ be parsed as a key sequence?
 
 This includes keys that introduce structure, such as parentheses,
 brackets, etc., which may have context-sensitive side effects such as
@@ -550,7 +550,7 @@ This simply subscribes to and maintains pre-command key sequences in
 order to determine if symex exits need to suspend the repeat parser or
 \(if we are exiting as part of a repeatable command) keep it going.
 
-This should be called just once, to set up using Symex mode. It isn't
+This should be called just once, to set up using Symex mode.  It isn't
 relevant for routine entry and exit from the Symex modal UI."
   (mantra-connect)
   (pubsub-subscribe mantra-key-sequences-pre-command-topic
@@ -561,7 +561,7 @@ relevant for routine entry and exit from the Symex modal UI."
   "Do any necessary teardown for repeat functionality.
 
 This reverts any one-time configuration changes that were made in
-setting up Symex mode. It should be called, if at all, at most once,
+setting up Symex mode.  It should be called, if at all, at most once,
 and isn't part of routine entry into and exit from the modal UI."
   (pubsub-unsubscribe mantra-key-sequences-pre-command-topic
                       "symex-set-parsing-context"))
