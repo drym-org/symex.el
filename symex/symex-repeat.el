@@ -343,6 +343,29 @@ KEY-SEQ is the currently entered key sequence."
   (and (member key-seq symex-repeatable-keys)
        symex--initial-mode-was-symex))
 
+(defvar symex-structural-insertion-keys
+  (symex--kbd-macro-list
+    "("
+    "[")
+  "Key sequences used during insertion that introduce structure.
+
+Typically, all changes made when in an insertion state are parsed as
+buffer changes, i.e., as insertions and deletions. But in some cases
+(such as \"(\" and \"[\"), the keys result in structural changes
+(often managed by tools like paredit), whose precise effect is
+context-dependent. Capturing the exact insertions and deletions in
+such cases would not produce the right effect when the same command is
+repeated in a different context, such as in an expression with lower
+or higher indentation. So we parse such keys as the commands
+themselves rather than as buffer changes. It would also work to parse
+them as key sequences.")
+
+(defun symex--structural-insertion-key-p (key-seq)
+  "Does the current key sequence insert structure?
+
+This includes parentheses, brackets, etc."
+  (member key-seq symex-structural-insertion-keys))
+
 (defun symex-repeat-parser-map (key-seq)
   "Parse each KEY-SEQ for repeat.
 
@@ -371,6 +394,10 @@ This function assumes:
     (cond ((symex-repeat--noop) mantra--null)
           ((symex--initiating-key-p key-seq) key-seq)
           ((null symex--change-series) key-seq)
+          ((symex--structural-insertion-key-p key-seq)
+           ;; note: could also just parse them as key sequences
+           ;; rather than as commands
+           (mantra-make-command this-command))
           ((null (cdr symex--change-series))
            (let ((result (symex-parse-change (car symex--change-series))))
              (if (or (null result)  ; perhaps a motion, e.g., C-f
