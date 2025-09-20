@@ -346,7 +346,8 @@ KEY-SEQ is the currently entered key sequence."
 (defvar symex-insertion-key-sequences
   (symex--kbd-macro-list
     "("
-    "[")
+    "["
+    "\"")
   "Key sequences used during insertion that should be parsed as key sequences.
 
 Typically, all changes made when in an insertion state are parsed as
