@@ -1,0 +1,2 @@
+headless/nonheadless emacs coding agent
+symex structural navigation over mcp, like clojure-mcp, but with structural navigation and symex magic
