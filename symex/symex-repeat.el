@@ -154,14 +154,6 @@ some reason.")
 (defvar symex--initial-mode-was-symex nil
   "Was the initial mode Symex editing mode?")
 
-(defvar symex--replaying-point nil
-  "Dynamic point position simulating replay of changes.
-
-This is necessary as the point position sets the context of insertion.
-As captured insertions may move point, we need to keep track of the
-simulated position of point to properly situate capture of subsequent
-insertions.")
-
 (defvar symex--current-keys nil
   "The current key sequence.
 
@@ -176,7 +168,6 @@ repeatable command.")
   (setq symex--initial-buffer nil)
   (setq symex--initial-point nil)
   (setq symex--initial-mode-was-symex nil)
-  (setq symex--replaying-point nil)
   (setq symex-repeat--recorded-length 0))
 
 (defun symex-set-parsing-context (key-seq)
@@ -190,7 +181,6 @@ the command taking effect."
   (setq symex--initial-buffer (current-buffer))
   (setq symex--initial-point (point))
   (setq symex--initial-mode-was-symex symex-editing-mode)
-  (setq symex--replaying-point (point))
   (setq symex--current-keys key-seq))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -217,43 +207,18 @@ the command taking effect."
          (= start end))))
 
 (defun symex-parse-insertion (change)
-  "Parse CHANGE as an insertion.
-
-To do this, two pieces of information need to be extracted from the
-CHANGE within the context of parsing:
-
-1. The offset of the inserted text from the original point position.
-2. The motion of point in relation to the original point position.
-
-In the most common case, point moves precisely to the end of the
-inserted text, but sometimes, point may not move at all (e.g., for
-Symex's \"I\" which inserts a space but preserves point), or may move
-to a different location (e.g., paredit's implicit insertion of a
-closing delimiter, while moving point to the end of the opening
-delimiter).
-
-In repeating such an insertion, we want to repeat both the text
-insertion in relation to point as well as any point motion."
+  "Parse CHANGE as an insertion."
   (pcase-let ((`(,start ,end ,_len) change))
-    (let ((offset (- start symex--replaying-point))
-          (point-offset (- (point) symex--replaying-point)))
-      (let ((insertion  (mantra-make-insertion (buffer-substring start end)
-                                               offset
-                                               ;; we handle the insertion separately
-                                               ;; from the point motion, so we preserve
-                                               ;; point as part of insertion
-                                               nil))
-            (motion (mantra-make-move point-offset)))
-        (setq symex--replaying-point (+ point-offset symex--replaying-point))
-        (mantra-make-seq insertion motion)))))
+    (mantra-make-insertion (buffer-substring start end)
+                           0
+                           t)))
 
 (defun symex-parse-deletion (change)
   "Parse CHANGE as a deletion."
   (pcase-let ((`(,start ,_end ,len) change))
     ;; relative to point
-    (let* ((original-position symex--initial-point)
-           (change-start (- start original-position)))
-      (mantra-make-deletion change-start len))))
+    (let ((relative-start (- start symex--initial-point)))
+      (mantra-make-deletion relative-start len))))
 
 (defun symex-parse-change (change)
   "Parse a CHANGE."
