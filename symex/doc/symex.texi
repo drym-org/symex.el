@@ -78,23 +78,6 @@ Lisp has inherited a few oddball names from its deep prehistory, including the i
 "Symex": 2 syllables, short in written form, has normal linguistic analogues like "complex/complexes," and it's fun to say! Symex also sounds like Ibex, and that's obviously a plus.
 @end itemize
 
-@node Point-Free Modal Editing
-@section Point-Free Modal Editing
-
-@cindex modal interface, understanding
-@cindex Lithium modal interface library
-@cindex Vim
-
-Symex exhibits a ``point-free'' modal experience allowing the expression of a rich array of commands with few keystrokes.
-
-The archetypical modal editing tool is, of course, Vim. As Vim addresses the general task of editing text, its interface is necessarily complex and subtle, requiring years to master. Although Symex draws inspiration from Vim, it exhibits a different, simpler, modal style that is specialized to the comparatively narrow task of editing code.
-
-More specifically, Vim's (and Evil's) interface exhibits a @emph{compositional} style, where verbs (operators like ``delete'') are combined with nouns (motions or text objects, e.g., relating to words or paragraphs) to form commands. In Symex, all motions and operators are implicitly in relation to the currently selected expression, so that we only ever need to express a verb (like delete), and no composition is needed. The interface does still support narrower forms of composition, for instance in accepting counts for most commands via a numeric prefix argument.
-
-The modal interface is implemented using a dedicated, lightweight, modal interface library called @uref{https://github.com/countvajhula/lithium, Lithium}.
-
-You may customize any Symex keybinding in the standard way described in Lithium documentation, for instance, using @code{lithium-define-keys}.
-
 @node Symex is a Friend to All
 @section Symex is a Friend to All
 
@@ -683,7 +666,7 @@ Now, try moving around using these commands:
 
 @end multitable
 
-The first thing you'll notice is Symex's @emph{modal} nature. If you've used Evil or Vim, then it should feel familiar. But if not, don't worry, as Symex isn't anything as complex as Vim. As you can already see, it uses a simple modal style — a style that we call ``point-free'' editing@footnote{The term is borrowed from functional programming, where it refers to being able to code in a very succinct way in cases where the data can be implicit. With Symex, the ``implicit data'' is the expression indicated by the cursor.}. This style of interface is designed to be precise and efficient while also being easy to learn and use.
+The first thing you'll notice is Symex's @emph{modal} nature. If you've used Evil or Vim, then it should feel familiar. But if not, don't worry, as Symex isn't anything as complex as Vim. As you can already see, it uses a simple modal style — a style that we call @ref{Point-Free Modal Editing, ``point-free'' editing}. This style of interface is designed to be precise and efficient while also being easy to learn and use.
 
 You may notice, as you wander the source tree, that Symex remembers branch positions, so that you can go up and down without losing context.
 
@@ -780,11 +763,9 @@ There are a few different ways to insert new code, and they are all expressed in
 @node Learning More
 @section Learning More
 
-The commands we've seen so far are only a small sampling of the available operations.
+The commands we've seen so far are only a small sampling of the available operations. @xref{Features} for a high level idea of the kinds of things you can do.
 
 As you become more familiar with Symex, it will be useful to refer to the @ref{Keybinding Cheat Sheet} to discover more capabilities, and also the @ref{Resources} for further study. For tips and tricks, see @ref{Squirrel on a Speedrun - Tips and Tricks}.
-
-When you're using Symex, because these operations are so convenient and intuitive, you'll find that you use a @emph{lot} of them, all the time. It's just like speaking a language. We don't typically count the distinct words we use in speech, but if we did, we'd find that we routinely use a lot of them, without breaking a sweat! It's the same with Symex.
 
 @node Customizing Symex
 @chapter Customizing Symex
@@ -979,16 +960,40 @@ For example, since Symex already includes a customizable overlay to highlight se
 
 @cindex keybindings, customizing
 
-You can add any custom keybindings you like to the Symex modal UI by using the underlying Lithium facilities for this purpose, as described in the @uref{https://github.com/countvajhula/lithium, Lithium} documentation.
+Symex uses @uref{https://github.com/countvajhula/lithium, Lithium} to implement its modal UI. You may add any custom keybindings, or customize any existing keybinding, by using the underlying Lithium facilities for this purpose (please see the Lithium documentation). For instance, to bind a key to visit an anonymous ``scratch'' buffer for the current major mode using the @uref{https://github.com/countvajhula/mindstream, Mindstream} package, you could do the following:
+
+@lisp
+  (lithium-define-keys symex-editing-mode
+    (("t" mindstream-enter-anonymous-session)))
+@end lisp
 
 @strong{PLEASE NOTE}: if you use custom keybindings, it is essential to preserve the intended ``exiting'' behavior of the commands. For instance, all insertion commands in Symex are designated with @code{:exit} in the keybinding specification, which ensures that it exits the Lithium mode to allow you to enter text. If you choose to override these, remember to retain the @code{:exit} flag (described further in the Lithium documentation).
 
-Also @xref{Point-Free Modal Editing} for more on Lithium.
+Also @xref{Point-Free Modal Editing} for more on the modal UI and Lithium.
 
 @node Features
 @chapter Features
 
 Symex allows you to edit and interact with code structurally using a modal UI. The @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/, Animated Guide} is a good way to see many of these features in operation, but this chapter provides an overview and an idea of the kinds of features, and why they exist.
+
+When you're using Symex, because these operations are so convenient and intuitive, you'll find that you use a @emph{lot} of them, all the time. It's just like speaking a language. We don't typically count the distinct words we use in speech, but if we did, we'd find that we routinely use a lot of them, without breaking a sweat! Symex is a language, too.
+
+@node Point-Free Modal Editing
+@section Point-Free Modal Editing
+
+@cindex modal interface, understanding
+@cindex Lithium modal interface library
+@cindex Vim
+
+Symex exhibits a ``point-free'' modal experience@footnote{The term is borrowed from functional programming, where it refers to being able to code in a very succinct way in cases where the data can be implicit. With Symex, the ``implicit data'' is the expression indicated by the cursor.} allowing the expression of a rich array of commands with few keystrokes.
+
+The archetypical modal editing tool is, of course, Vim. As Vim addresses the general task of editing text, its interface is necessarily complex and subtle, requiring years to master. Although Symex draws inspiration from Vim, it exhibits a different, simpler, modal style that is specialized to the comparatively narrow task of editing code.
+
+Specifically, Vim's (and Evil's) interface exhibits a @emph{compositional} style, where verbs (operators like ``delete'') are combined with nouns (motions or text objects, e.g., relating to words or paragraphs) to form commands. In Symex, all motions and operators are implicitly in relation to the currently selected expression, so that we only ever need to express a verb (like delete), and no composition is needed. The interface does still support narrower forms of composition, for instance in accepting counts for most commands via a numeric prefix argument.
+
+The modal interface is implemented using a dedicated, lightweight, modal interface library called @uref{https://github.com/countvajhula/lithium, Lithium}.
+
+The next few sections describe the specific faculties made accessible via this modal UI.
 
 @node Getting Around
 @section Getting Around
@@ -997,11 +1002,13 @@ Symex allows you to edit and interact with code structurally using a modal UI. T
 
 Typical cursor movements in Emacs navigate the two-dimensional plane of buffer rows and columns, so that left, right, up and down mean moving by column and by row, respectively. This is a very general way of moving around that you can use for any kind of text, including code.
 
-Symex motions are more specialized and navigate the two-dimensional tree structure of your code, so that left and right move to adjacent expressions, and up and down move across nesting depth. When you're working with code, this is more precise, and often, therefore, more efficient and more scalable.
+Symex motions are more specialized and navigate the two-dimensional tree structure of your code, so that left and right (@code{h} and @code{l}) move to adjacent expressions, and up and down (@code{k} and @code{j}) move across nesting depth. When you're working with code, this is more precise, and often, therefore, more efficient and more scalable.
 
-In addition to these basic motions, Symex also provides many other ways to get around that are intuitive for trees but which don't have analogues for unstructured, coordinate-based buffer navigation. For instance, ``traversing'' forwards and backwards visits every expression at every depth, precisely and in a predictable order, while ``skipping,'' ``climbing,'' and ``descending'' offer ways to get around faster in specific directions when you know where you're trying to go. Finally, you can also ``leap'' to nearby branches at the same height as your current position without explicitly navigating to them. This is very common as code frequently has repeating shapes and patterns --- patterns which you may wish to exploit to get around quickly or even for automating repetitive tasks via macros.
+In addition to these basic motions, Symex also provides many other ways to get around that are intuitive for trees but which don't have analogues for unstructured, coordinate-based buffer navigation. For instance, ``traversing'' forwards and backwards (@code{f} and @code{b}) visits every expression at every depth, precisely and in a predictable order, while ``skipping,'' ``climbing,'' and ``descending'' offer ways to get around faster in specific directions when you know where you're trying to go. Finally, you can also ``leap'' to nearby branches at the same height as your current position without explicitly navigating to them. This is very common as code frequently has repeating shapes and patterns --- patterns which you may wish to exploit to get around quickly or even for automating repetitive tasks via macros.
 
 @xref{Movement} for the full list of movement commands and keybindings.
+
+Having rich faculties for getting around is just one aspect of Symex. Another is that it enables convenient and expressive structural @emph{editing}, as the next section describes.
 
 @node Editing Features
 @section Editing Features
@@ -1017,7 +1024,7 @@ For the full list of editing commands and keybindings, @xref{Editing}.
 
 @cindex features, structural
 
-Symex allows you to delete expressions, change them to something else, move them around, translate them lower or higher in the tree, detach them from one branch and attach them to another, and so on.
+Symex allows you to delete expressions (e.g., @code{x}), change them to something else (e.g., @code{c}), move them around (e.g., @code{H} and @code{L}), translate them lower or higher in the tree, detach them from one branch and attach them to another, and so on.
 
 These operations are all @emph{strict} about structure, so, for instance, you cannot accidentally shift an expression out to a lower or higher level if you are using a lateral shift operator like @code{symex-shift-backward} (@code{H}) or @code{symex-shift-forward} (@code{L}).
 
@@ -1047,7 +1054,7 @@ Symex provides, via the optional @code{symex-ide} extension (@xref{Installing Sy
 
 For instance, for some languages (especially Lisp languages), @code{e} evaluates the selected expression in a REPL, @code{?} looks up documentation on the selected expression (identifier), and @code{r} enters a REPL.
 
-These easy integrations with important coding facilities can help you get quick feedback during development. As generations of Lisp users attest, such tight feedback loops are often the engines of quick progress on any task.
+These easy integrations with important coding facilities can help you get quick feedback during development. As generations of Lisp users attest, such tight feedback loops are the engines of quick progress on any task.
 
 @xref{IDE} for the full list of IDE commands and keybindings.
 
