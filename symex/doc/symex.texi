@@ -763,9 +763,98 @@ There are a few different ways to insert new code, and they are all expressed in
 @node Learning More
 @section Learning More
 
-The commands we've seen so far are only a small sampling of the available operations. @xref{Features} for a high level idea of the kinds of things you can do.
+The commands we've seen so far are only a small sampling of the available operations.
 
 As you become more familiar with Symex, it will be useful to refer to the @ref{Keybinding Cheat Sheet} to discover more capabilities, and also the @ref{Resources} for further study. For tips and tricks, see @ref{Squirrel on a Speedrun - Tips and Tricks}.
+
+Feel free to dive into any of those, but if you'd like to understand things at a high level first, the next section gives an idea of the kinds of features and what they enable you to do.
+
+@node Features
+@chapter Features
+
+Symex allows you to edit and interact with code structurally using a modal UI. The @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/, Animated Guide} is a good way to see many of these features in operation, but this chapter provides an overview and an idea of the kinds of features, and why they exist.
+
+When you're using Symex, because these operations are so convenient and intuitive, you'll find that you use a @emph{lot} of them, all the time. It's just like speaking a language. We don't typically count the distinct words we use in speech, but if we did, we'd find that we routinely use a lot of them, without breaking a sweat! Symex is a language, too.
+
+@node Point-Free Modal Editing
+@section Point-Free Modal Editing
+
+@cindex modal interface, understanding
+@cindex Lithium modal interface library
+@cindex Vim
+
+Symex exhibits a ``point-free'' modal experience@footnote{The term is borrowed from functional programming, where it refers to being able to code in a very succinct way in cases where the data can be implicit. With Symex, the ``implicit data'' is the expression indicated by the cursor.} allowing the expression of a rich array of commands with few keystrokes.
+
+The archetypical modal editing tool is, of course, Vim. As Vim addresses the general task of editing text, its interface is necessarily complex and subtle, requiring years to master. Although Symex draws inspiration from Vim, it exhibits a different, simpler, modal style that is specialized to the comparatively narrow task of editing code.
+
+Specifically, Vim's (and Evil's) interface exhibits a @emph{compositional} style, where verbs (operators like ``delete'') are combined with nouns (motions or text objects, e.g., relating to words or paragraphs) to form commands. In Symex, all motions and operators are implicitly in relation to the currently selected expression, so that we only ever need to express a verb (like delete), and no composition is needed. The interface does still support narrower forms of composition, for instance in accepting counts for most commands via a numeric prefix argument.
+
+The modal interface is implemented using a dedicated, lightweight, modal interface library called @uref{https://github.com/countvajhula/lithium, Lithium}.
+
+The next few sections describe the specific faculties made accessible via this modal UI.
+
+@node Getting Around
+@section Getting Around
+
+@cindex features, movement
+
+Typical cursor movements in Emacs navigate the two-dimensional plane of buffer rows and columns, so that left, right, up and down mean moving by column and by row, respectively. This is a very general way of moving around that you can use for any kind of text, including code.
+
+Symex motions are more specialized and navigate the two-dimensional tree structure of your code, so that left and right (@code{h} and @code{l}) move to adjacent expressions, and up and down (@code{k} and @code{j}) move across nesting depth. When you're working with code, this is more precise, and often, therefore, more efficient and more scalable.
+
+In addition to these basic motions, Symex also provides many other ways to get around that are intuitive for trees but which don't have analogues for unstructured, coordinate-based buffer navigation. For instance, ``traversing'' forwards and backwards (@code{f} and @code{b}) visits every expression at every depth, precisely and in a predictable order, while ``skipping,'' ``climbing,'' and ``descending'' offer ways to get around faster in specific directions when you know where you're trying to go. Finally, you can also ``leap'' to nearby branches at the same height as your current position without explicitly navigating to them. This is very common as code frequently has repeating shapes and patterns --- patterns which you may wish to exploit to get around quickly or even for automating repetitive tasks via macros.
+
+@xref{Movement} for the full list of movement commands and keybindings.
+
+Having rich faculties for getting around is just one aspect of Symex. Another is that it enables convenient and expressive structural @emph{editing}, as the next section describes.
+
+@node Editing Features
+@section Editing Features
+
+@cindex features, editing
+
+Symex provides structural features for manipulating code, metacommands to reflect on and repeat actions from your own command history, as well as rich macros for automating repetitive tasks. The following sections describe these features.
+
+For the full list of editing commands and keybindings, @xref{Editing}.
+
+@node Structural features
+@subsection Structural features
+
+@cindex features, structural
+
+Symex allows you to delete expressions (e.g., @code{x}), change them to something else (e.g., @code{c}), move them around (e.g., @code{H} and @code{L}), translate them lower or higher in the tree, detach them from one branch and attach them to another, and so on.
+
+These operations are all @emph{strict} about structure, so, for instance, you cannot accidentally shift an expression out to a lower or higher level if you are using a lateral shift operator like @code{symex-shift-backward} (@code{H}) or @code{symex-shift-forward} (@code{L}).
+
+The strictness of these operations allows you to be precise about code transformations. This is useful not just at the time of performing the action, but pays compounding dividends when you consider that macros and repetition can formally repeat these actions in new contexts, as the next section elaborates.
+
+@node Macros and Repetition
+@subsection Macros and Repetition
+
+@cindex repeat last action, command to
+@cindex automating actions using macros
+@cindex macros, complex repetition using
+
+Symex includes an advanced command repetition feature, accessible via @code{.}. This simply replays your most recent command. This command could even include insertion of text into the buffer, and even the use of completion frameworks during such insertion. @code{.} will repeat the command, in all cases.
+
+This feature is similar to Vim's well-known ``dot'' command, but in addition, it also maintains a history of recent commands on a ``repeat ring,'' so after pressing @code{.}, you can cycle through recent repetitions using @code{C-.}. This ability to repeat recent commands is similar to Evil's implementation of ``dot'' which includes the analogous ``repeat-pop'' feature.
+
+Symex's repeat feature uses the standalone @uref{https://github.com/countvajhula/repeat-ring, @code{repeat-ring}} package and the @uref{https://github.com/countvajhula/mantra, @code{mantra}} parsing library. These packages were developed to support Symex, but they enable any package to develop and provide very general and highly customizable repeat functionality.
+
+@xref{Macros} for ways to record and repeat longer sequences of commands.
+
+@node IDE Features
+@section IDE Features
+
+@cindex features, IDE
+
+Symex provides, via the optional @code{symex-ide} extension (@xref{Installing Symex}), a handful of ways to conveniently leverage major mode features for languages, via short keybindings.
+
+For instance, for some languages (especially Lisp languages), @code{e} evaluates the selected expression in a REPL, @code{?} looks up documentation on the selected expression (identifier), and @code{r} enters a REPL.
+
+These easy integrations with important coding facilities can help you get quick feedback during development. As generations of Lisp users attest, such tight feedback loops are the engines of quick progress on any task.
+
+@xref{IDE} for the full list of IDE commands and keybindings.
 
 @node Customizing Symex
 @chapter Customizing Symex
@@ -970,93 +1059,6 @@ Symex uses @uref{https://github.com/countvajhula/lithium, Lithium} to implement 
 @strong{PLEASE NOTE}: if you use custom keybindings, it is essential to preserve the intended ``exiting'' behavior of the commands. For instance, all insertion commands in Symex are designated with @code{:exit} in the keybinding specification, which ensures that it exits the Lithium mode to allow you to enter text. If you choose to override these, remember to retain the @code{:exit} flag (described further in the Lithium documentation).
 
 Also @xref{Point-Free Modal Editing} for more on the modal UI and Lithium.
-
-@node Features
-@chapter Features
-
-Symex allows you to edit and interact with code structurally using a modal UI. The @uref{https://countvajhula.com/2021/09/25/the-animated-guide-to-symex/, Animated Guide} is a good way to see many of these features in operation, but this chapter provides an overview and an idea of the kinds of features, and why they exist.
-
-When you're using Symex, because these operations are so convenient and intuitive, you'll find that you use a @emph{lot} of them, all the time. It's just like speaking a language. We don't typically count the distinct words we use in speech, but if we did, we'd find that we routinely use a lot of them, without breaking a sweat! Symex is a language, too.
-
-@node Point-Free Modal Editing
-@section Point-Free Modal Editing
-
-@cindex modal interface, understanding
-@cindex Lithium modal interface library
-@cindex Vim
-
-Symex exhibits a ``point-free'' modal experience@footnote{The term is borrowed from functional programming, where it refers to being able to code in a very succinct way in cases where the data can be implicit. With Symex, the ``implicit data'' is the expression indicated by the cursor.} allowing the expression of a rich array of commands with few keystrokes.
-
-The archetypical modal editing tool is, of course, Vim. As Vim addresses the general task of editing text, its interface is necessarily complex and subtle, requiring years to master. Although Symex draws inspiration from Vim, it exhibits a different, simpler, modal style that is specialized to the comparatively narrow task of editing code.
-
-Specifically, Vim's (and Evil's) interface exhibits a @emph{compositional} style, where verbs (operators like ``delete'') are combined with nouns (motions or text objects, e.g., relating to words or paragraphs) to form commands. In Symex, all motions and operators are implicitly in relation to the currently selected expression, so that we only ever need to express a verb (like delete), and no composition is needed. The interface does still support narrower forms of composition, for instance in accepting counts for most commands via a numeric prefix argument.
-
-The modal interface is implemented using a dedicated, lightweight, modal interface library called @uref{https://github.com/countvajhula/lithium, Lithium}.
-
-The next few sections describe the specific faculties made accessible via this modal UI.
-
-@node Getting Around
-@section Getting Around
-
-@cindex features, movement
-
-Typical cursor movements in Emacs navigate the two-dimensional plane of buffer rows and columns, so that left, right, up and down mean moving by column and by row, respectively. This is a very general way of moving around that you can use for any kind of text, including code.
-
-Symex motions are more specialized and navigate the two-dimensional tree structure of your code, so that left and right (@code{h} and @code{l}) move to adjacent expressions, and up and down (@code{k} and @code{j}) move across nesting depth. When you're working with code, this is more precise, and often, therefore, more efficient and more scalable.
-
-In addition to these basic motions, Symex also provides many other ways to get around that are intuitive for trees but which don't have analogues for unstructured, coordinate-based buffer navigation. For instance, ``traversing'' forwards and backwards (@code{f} and @code{b}) visits every expression at every depth, precisely and in a predictable order, while ``skipping,'' ``climbing,'' and ``descending'' offer ways to get around faster in specific directions when you know where you're trying to go. Finally, you can also ``leap'' to nearby branches at the same height as your current position without explicitly navigating to them. This is very common as code frequently has repeating shapes and patterns --- patterns which you may wish to exploit to get around quickly or even for automating repetitive tasks via macros.
-
-@xref{Movement} for the full list of movement commands and keybindings.
-
-Having rich faculties for getting around is just one aspect of Symex. Another is that it enables convenient and expressive structural @emph{editing}, as the next section describes.
-
-@node Editing Features
-@section Editing Features
-
-@cindex features, editing
-
-Symex provides structural features for manipulating code, metacommands to reflect on and repeat actions from your own command history, as well as rich macros for automating repetitive tasks. The following sections describe these features.
-
-For the full list of editing commands and keybindings, @xref{Editing}.
-
-@node Structural features
-@subsection Structural features
-
-@cindex features, structural
-
-Symex allows you to delete expressions (e.g., @code{x}), change them to something else (e.g., @code{c}), move them around (e.g., @code{H} and @code{L}), translate them lower or higher in the tree, detach them from one branch and attach them to another, and so on.
-
-These operations are all @emph{strict} about structure, so, for instance, you cannot accidentally shift an expression out to a lower or higher level if you are using a lateral shift operator like @code{symex-shift-backward} (@code{H}) or @code{symex-shift-forward} (@code{L}).
-
-The strictness of these operations allows you to be precise about code transformations. This is useful not just at the time of performing the action, but pays compounding dividends when you consider that macros and repetition can formally repeat these actions in new contexts, as the next section elaborates.
-
-@node Macros and Repetition
-@subsection Macros and Repetition
-
-@cindex repeat last action, command to
-@cindex automating actions using macros
-@cindex macros, complex repetition using
-
-Symex includes an advanced command repetition feature, accessible via @code{.}. This simply replays your most recent command. This command could even include insertion of text into the buffer, and even the use of completion frameworks during such insertion. @code{.} will repeat the command, in all cases.
-
-This feature is similar to Vim's well-known ``dot'' command, but in addition, it also maintains a history of recent commands on a ``repeat ring,'' so after pressing @code{.}, you can cycle through recent repetitions using @code{C-.}. This ability to repeat recent commands is similar to Evil's implementation of ``dot'' which includes the analogous ``repeat-pop'' feature.
-
-Symex's repeat feature uses the standalone @uref{https://github.com/countvajhula/repeat-ring, @code{repeat-ring}} package and the @uref{https://github.com/countvajhula/mantra, @code{mantra}} parsing library. These packages were developed to support Symex, but they enable any package to develop and provide very general and highly customizable repeat functionality.
-
-@xref{Macros} for ways to record and repeat longer sequences of commands.
-
-@node IDE Features
-@section IDE Features
-
-@cindex features, IDE
-
-Symex provides, via the optional @code{symex-ide} extension (@xref{Installing Symex}), a handful of ways to conveniently leverage major mode features for languages, via short keybindings.
-
-For instance, for some languages (especially Lisp languages), @code{e} evaluates the selected expression in a REPL, @code{?} looks up documentation on the selected expression (identifier), and @code{r} enters a REPL.
-
-These easy integrations with important coding facilities can help you get quick feedback during development. As generations of Lisp users attest, such tight feedback loops are the engines of quick progress on any task.
-
-@xref{IDE} for the full list of IDE commands and keybindings.
 
 @node Squirrel on a Speedrun - Tips and Tricks
 @chapter Squirrel on a Speedrun - Tips and Tricks
