@@ -23,6 +23,7 @@ This work is not owned by anyone. Please see the https://github.com/drym-org/fou
 <style type="text/css">
 <!--
 a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
 span:hover a.copiable-link {visibility: visible}
 -->
 </style>
@@ -41,11 +42,16 @@ Previous: <a href="Look-and-Feel.html" accesskey="p" rel="prev">Look and Feel</a
 
 <a class="index-entry-id" id="index-keybindings_002c-customizing"></a>
 
-<p>You can add any custom keybindings you like to the Symex modal UI by using the underlying Lithium facilities for this purpose, as described in the <a class="uref" href="https://github.com/countvajhula/lithium">Lithium</a> documentation.
+<p>Symex uses <a class="uref" href="https://github.com/countvajhula/lithium">Lithium</a> to implement its modal UI. You may add any custom keybindings, or customize any existing keybinding, by using the underlying Lithium facilities for this purpose (please see the Lithium documentation). For instance, to bind a key to visit an anonymous &ldquo;scratch&rdquo; buffer for the current major mode using the <a class="uref" href="https://github.com/countvajhula/mindstream">Mindstream</a> package, you could do the following:
 </p>
+<div class="example lisp">
+<pre class="lisp-preformatted">  (lithium-define-keys symex-editing-mode
+    ((&quot;t&quot; mindstream-enter-anonymous-session)))
+</pre></div>
+
 <p><strong class="strong">PLEASE NOTE</strong>: if you use custom keybindings, it is essential to preserve the intended &ldquo;exiting&rdquo; behavior of the commands. For instance, all insertion commands in Symex are designated with <code class="code">:exit</code> in the keybinding specification, which ensures that it exits the Lithium mode to allow you to enter text. If you choose to override these, remember to retain the <code class="code">:exit</code> flag (described further in the Lithium documentation).
 </p>
-<p>Also See <a class="xref" href="Point_002dFree-Modal-Editing.html">Point-Free Modal Editing</a> for more on Lithium.
+<p>Also See <a class="xref" href="Point_002dFree-Modal-Editing.html">Point-Free Modal Editing</a> for more on the modal UI and Lithium.
 </p>
 </div>
 

@@ -20,6 +20,7 @@ This work is not owned by anyone. Please see the https://github.com/drym-org/fou
 <link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
 <link href="Features.html" rel="up" title="Features">
 <link href="Editing-Features.html" rel="next" title="Editing Features">
+<link href="Point_002dFree-Modal-Editing.html" rel="prev" title="Point-Free Modal Editing">
 <style type="text/css">
 <!--
 a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
@@ -34,21 +35,28 @@ span:hover a.copiable-link {visibility: visible}
 <div class="section-level-extent" id="Getting-Around">
 <div class="nav-panel">
 <p>
-Next: <a href="Editing-Features.html" accesskey="n" rel="next">Editing Features</a>, Up: <a href="Features.html" accesskey="u" rel="up">Features</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="Editing-Features.html" accesskey="n" rel="next">Editing Features</a>, Previous: <a href="Point_002dFree-Modal-Editing.html" accesskey="p" rel="prev">Point-Free Modal Editing</a>, Up: <a href="Features.html" accesskey="u" rel="up">Features</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 <hr>
-<h3 class="section" id="Getting-Around-1"><span>5.1 Getting Around<a class="copiable-link" href="#Getting-Around-1"> &para;</a></span></h3>
+<h3 class="section" id="Getting-Around-1"><span>5.2 Getting Around<a class="copiable-link" href="#Getting-Around-1"> &para;</a></span></h3>
 
 <a class="index-entry-id" id="index-features_002c-movement"></a>
 
 <p>Typical cursor movements in Emacs navigate the two-dimensional plane of buffer rows and columns, so that left, right, up and down mean moving by column and by row, respectively. This is a very general way of moving around that you can use for any kind of text, including code.
 </p>
-<p>Symex motions are more specialized and navigate the two-dimensional tree structure of your code, so that left and right move to adjacent expressions, and up and down move across nesting depth. When you&rsquo;re working with code, this is more precise, and often, therefore, more efficient and more scalable.
+<p>Symex motions are more specialized and navigate the two-dimensional tree structure of your code, so that left and right (<code class="code">h</code> and <code class="code">l</code>) move to adjacent expressions, and up and down (<code class="code">k</code> and <code class="code">j</code>) move across nesting depth. When you&rsquo;re working with code, this is more precise, and often, therefore, more efficient and more scalable.
 </p>
-<p>In addition to these basic motions, Symex also provides many other ways to get around that are intuitive for trees but which don&rsquo;t have analogues for unstructured, coordinate-based buffer navigation. For instance, &ldquo;traversing&rdquo; forwards and backwards visits every expression at every depth, precisely and in a predictable order, while &ldquo;skipping,&rdquo; &ldquo;climbing,&rdquo; and &ldquo;descending&rdquo; offer ways to get around faster in specific directions when you know where you&rsquo;re trying to go. Finally, you can also &ldquo;leap&rdquo; to nearby branches at the same height as your current position without explicitly navigating to them. This is very common as code frequently has repeating shapes and patterns &mdash; patterns which you may wish to exploit to get around quickly or even for automating repetitive tasks via macros.
+<p>In addition to these basic motions, Symex also provides many other ways to get around that are intuitive for trees but which don&rsquo;t have analogues for unstructured, coordinate-based buffer navigation. For instance, &ldquo;traversing&rdquo; forwards and backwards (<code class="code">f</code> and <code class="code">b</code>) visits every expression at every depth, precisely and in a predictable order, while &ldquo;skipping,&rdquo; &ldquo;climbing,&rdquo; and &ldquo;descending&rdquo; offer ways to get around faster in specific directions when you know where you&rsquo;re trying to go. Finally, you can also &ldquo;leap&rdquo; to nearby branches at the same height as your current position without explicitly navigating to them. This is very common as code frequently has repeating shapes and patterns &mdash; patterns which you may wish to exploit to get around quickly or even for automating repetitive tasks via macros.
 </p>
 <p>See <a class="xref" href="Movement.html">Movement</a> for the full list of movement commands and keybindings.
 </p>
+<p>Having rich faculties for getting around is just one aspect of Symex. Another is that it enables convenient and expressive structural <em class="emph">editing</em>, as the next section describes.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Editing-Features.html">Editing Features</a>, Previous: <a href="Point_002dFree-Modal-Editing.html">Point-Free Modal Editing</a>, Up: <a href="Features.html">Features</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 
 

@@ -18,9 +18,8 @@ This work is not owned by anyone. Please see the https://github.com/drym-org/fou
 <link href="index.html" rel="start" title="Top">
 <link href="Concept-Index.html" rel="index" title="Concept Index">
 <link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
-<link href="What-is-Symex_003f.html" rel="up" title="What is Symex?">
-<link href="Symex-is-a-Friend-to-All.html" rel="next" title="Symex is a Friend to All">
-<link href="A-Note-on-the-Name.html" rel="prev" title="A Note on the Name">
+<link href="Features.html" rel="up" title="Features">
+<link href="Getting-Around.html" rel="next" title="Getting Around">
 <style type="text/css">
 <!--
 a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
@@ -35,25 +34,32 @@ span:hover a.copiable-link {visibility: visible}
 <div class="section-level-extent" id="Point_002dFree-Modal-Editing">
 <div class="nav-panel">
 <p>
-Next: <a href="Symex-is-a-Friend-to-All.html" accesskey="n" rel="next">Symex is a Friend to All</a>, Previous: <a href="A-Note-on-the-Name.html" accesskey="p" rel="prev">A Note on the Name</a>, Up: <a href="What-is-Symex_003f.html" accesskey="u" rel="up">What is Symex?</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+Next: <a href="Getting-Around.html" accesskey="n" rel="next">Getting Around</a>, Up: <a href="Features.html" accesskey="u" rel="up">Features</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 <hr>
-<h3 class="section" id="Point_002dFree-Modal-Editing-1"><span>1.2 Point-Free Modal Editing<a class="copiable-link" href="#Point_002dFree-Modal-Editing-1"> &para;</a></span></h3>
+<h3 class="section" id="Point_002dFree-Modal-Editing-1"><span>5.1 Point-Free Modal Editing<a class="copiable-link" href="#Point_002dFree-Modal-Editing-1"> &para;</a></span></h3>
 
 <a class="index-entry-id" id="index-modal-interface_002c-understanding"></a>
 <a class="index-entry-id" id="index-Lithium-modal-interface-library"></a>
 <a class="index-entry-id" id="index-Vim"></a>
 
-<p>Symex exhibits a &ldquo;point-free&rdquo; modal experience allowing the expression of a rich array of commands with few keystrokes.
+<p>Symex exhibits a &ldquo;point-free&rdquo; modal experience<a class="footnote" id="DOCF1" href="#FOOT1"><sup>1</sup></a> allowing the expression of a rich array of commands with few keystrokes.
 </p>
 <p>The archetypical modal editing tool is, of course, Vim. As Vim addresses the general task of editing text, its interface is necessarily complex and subtle, requiring years to master. Although Symex draws inspiration from Vim, it exhibits a different, simpler, modal style that is specialized to the comparatively narrow task of editing code.
 </p>
-<p>More specifically, Vim&rsquo;s (and Evil&rsquo;s) interface exhibits a <em class="emph">compositional</em> style, where verbs (operators like &ldquo;delete&rdquo;) are combined with nouns (motions or text objects, e.g., relating to words or paragraphs) to form commands. In Symex, all motions and operators are implicitly in relation to the currently selected expression, so that we only ever need to express a verb (like delete), and no composition is needed. The interface does still support narrower forms of composition, for instance in accepting counts for most commands via a numeric prefix argument.
+<p>Specifically, Vim&rsquo;s (and Evil&rsquo;s) interface exhibits a <em class="emph">compositional</em> style, where verbs (operators like &ldquo;delete&rdquo;) are combined with nouns (motions or text objects, e.g., relating to words or paragraphs) to form commands. In Symex, all motions and operators are implicitly in relation to the currently selected expression, so that we only ever need to express a verb (like delete), and no composition is needed. The interface does still support narrower forms of composition, for instance in accepting counts for most commands via a numeric prefix argument.
 </p>
 <p>The modal interface is implemented using a dedicated, lightweight, modal interface library called <a class="uref" href="https://github.com/countvajhula/lithium">Lithium</a>.
 </p>
-<p>You may customize any Symex keybinding in the standard way described in Lithium documentation, for instance, using <code class="code">lithium-define-keys</code>.
+<p>The next few sections describe the specific faculties made accessible via this modal UI.
 </p>
+</div>
+<div class="footnotes-segment">
+<hr>
+<h4 class="footnotes-heading">Footnotes</h4>
+
+<h5 class="footnote-body-heading"><a id="FOOT1" href="#DOCF1">(1)</a></h5>
+<p>The term is borrowed from functional programming, where it refers to being able to code in a very succinct way in cases where the data can be implicit. With Symex, the &ldquo;implicit data&rdquo; is the expression indicated by the cursor.</p>
 </div>
 
 
