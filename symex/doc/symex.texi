@@ -130,7 +130,9 @@ You can still use these two packages together, but as their functionality overla
 
 Paredit is perhaps the original structural editing tool. Its basic functionality of balancing parentheses is still essential to preserve the structure of the code, and Symex uses this functionality from Paredit even today.
 
-Symex's modal nature is its primary difference from Paredit. In addition, Symex's core approach of employing a DSL on top of primitives allows you to describe specialized and custom tree-structured operations using a high-level DSL, so that you can implement your own paredit-like features without needing to know Emacs Lisp (for example, @ref{paste} for a basic implementation of ``emit forward'' (aka ``barf'').). The Symex DSL is easy to learn, and expresses computations in a very intuitive way.
+Fundamentally, Paredit is a @emph{low level} Lisp parser. Symex builds on top of it (in addition to native Emacs facilities including tree-sitter) to provide a @emph{high level} DSL for structural editing. This DSL allows us to easily implement paredit-like features without needing to write Emacs Lisp (for example, @ref{paste} for a basic implementation of ``emit forward'' (aka ``barf'')). Many features included in Symex out of the box --- including the many ways to get around: leaping, traversing, climbing and descending --- are written in this DSL. @ref{The Symex DSL} is easy to learn, and expresses computations in a very intuitive way.
+
+From a UI standpoint, Symex's modal nature is its primary difference from Paredit.
 
 Symex uses Paredit to balance parentheses in Lisp languages. If you're prefer to use a different tool for this purpose, please @xref{Balancing Parentheses}.
 
@@ -1151,7 +1153,7 @@ Let's now take a journey inside the mind of the squirrel.
 
 The main entry point to Symex from ELisp is the @code{symex-traversal} form, which can also be used via the definition form, @code{symex-deftraversal}. These forms allow you to define traversals (e.g., movements or transformations of code) using the Symex language, and they are analogous to @code{lambda} and @code{defun} (for defining functions in ELisp), respectively. Traversals defined this way may be evaluated using @code{symex-eval} and would execute in relation to the selected expression. Symex considers point (i.e., the cursor) to indicate the @emph{start} of the selected expression.
 
-Here is what performing a very basic traversal looks like. We'll soon learn more about what it means:
+Here is what performing a very basic traversal looks like. You could try it, if you like, by placing point at the start of any symex, and then evaluating this code using @code{M-:}.
 
 @lisp
 (symex-eval
@@ -1159,6 +1161,8 @@ Here is what performing a very basic traversal looks like. We'll soon learn more
     (do (move up)
         (move forward))))
 @end lisp
+
+We'll soon learn more about what this code means.
 
 @node Language
 @section Language
