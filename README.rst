@@ -15,7 +15,7 @@ symex.el
 .. image:: https://img.shields.io/badge/user%20manual-HTML-blue
     :target: https://drym-org.github.io/symex.el/
 
-An expressive modal way to edit code in Emacs.
+An expressive modal way to write code in Emacs.
 
 .. contents:: :depth: 2
 

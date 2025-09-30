@@ -11,7 +11,7 @@ This work is not owned by anyone. Please see the @uref{https://github.com/drym-o
 
 @dircategory Emacs
 @direntry
-* Symex: (symex.info). An Expressive Modal Way to Edit Code.
+* Symex: (symex.info). An Expressive Modal Way to Write Code.
 @end direntry
 
 
@@ -32,7 +32,7 @@ This work is not owned by anyone. Please see the @uref{https://github.com/drym-o
 @contents
 
 @node Top
-@top Symex - An Expressive Modal Way to Edit Code
+@top Symex - An Expressive Modal Way to Write Code
 
 @center @image{figures/symex-logo-small, 3cm, , Symex Logo}
 

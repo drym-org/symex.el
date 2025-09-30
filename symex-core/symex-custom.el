@@ -27,7 +27,7 @@
 
 
 (defgroup symex nil
-  "An expressive modal way to edit code."
+  "An expressive modal way to write code."
   :group 'lisp)
 
 (defcustom symex-ensure-structure-p t
