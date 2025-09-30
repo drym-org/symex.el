@@ -44,7 +44,9 @@ Next: <a href="Tree_002dEdit.html" accesskey="n" rel="next">Tree-Edit</a>, Previ
 
 <p>Paredit is perhaps the original structural editing tool. Its basic functionality of balancing parentheses is still essential to preserve the structure of the code, and Symex uses this functionality from Paredit even today.
 </p>
-<p>Symex&rsquo;s modal nature is its primary difference from Paredit. In addition, Symex&rsquo;s core approach of employing a DSL on top of primitives allows you to describe specialized and custom tree-structured operations using a high-level DSL, so that you can implement your own paredit-like features without needing to know Emacs Lisp (for example, <a class="ref" href="paste.html"><code class="code">paste</code></a> for a basic implementation of &ldquo;emit forward&rdquo; (aka &ldquo;barf&rdquo;).). The Symex DSL is easy to learn, and expresses computations in a very intuitive way.
+<p>Fundamentally, Paredit is a <em class="emph">low level</em> Lisp parser. Symex builds on top of it (in addition to native Emacs facilities including tree-sitter) to provide a <em class="emph">high level</em> DSL for structural editing. This DSL allows us to easily implement paredit-like features without needing to write Emacs Lisp (for example, <a class="ref" href="paste.html"><code class="code">paste</code></a> for a basic implementation of &ldquo;emit forward&rdquo; (aka &ldquo;barf&rdquo;)). Many features included in Symex out of the box &mdash; including the many ways to get around: leaping, traversing, climbing and descending &mdash; are written in this DSL. <a class="ref" href="The-Symex-DSL.html">The Symex DSL</a> is easy to learn, and expresses computations in a very intuitive way.
+</p>
+<p>From a UI standpoint, Symex&rsquo;s modal nature is its primary difference from Paredit.
 </p>
 <p>Symex uses Paredit to balance parentheses in Lisp languages. If you&rsquo;re prefer to use a different tool for this purpose, please See <a class="xref" href="Balancing-Parentheses.html">Balancing Parentheses</a>.
 </p>

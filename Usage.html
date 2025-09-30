@@ -44,7 +44,7 @@ Next: <a href="Language.html" accesskey="n" rel="next">Language</a>, Up: <a href
 
 <p>The main entry point to Symex from ELisp is the <code class="code">symex-traversal</code> form, which can also be used via the definition form, <code class="code">symex-deftraversal</code>. These forms allow you to define traversals (e.g., movements or transformations of code) using the Symex language, and they are analogous to <code class="code">lambda</code> and <code class="code">defun</code> (for defining functions in ELisp), respectively. Traversals defined this way may be evaluated using <code class="code">symex-eval</code> and would execute in relation to the selected expression. Symex considers point (i.e., the cursor) to indicate the <em class="emph">start</em> of the selected expression.
 </p>
-<p>Here is what performing a very basic traversal looks like. We&rsquo;ll soon learn more about what it means:
+<p>Here is what performing a very basic traversal looks like. You could try it, if you like, by placing point at the start of any symex, and then evaluating this code using <code class="code">M-:</code>.
 </p>
 <div class="example lisp">
 <pre class="lisp-preformatted">(symex-eval
@@ -53,6 +53,8 @@ Next: <a href="Language.html" accesskey="n" rel="next">Language</a>, Up: <a href
         (move forward))))
 </pre></div>
 
+<p>We&rsquo;ll soon learn more about what this code means.
+</p>
 </div>
 
 
