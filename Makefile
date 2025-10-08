@@ -2,8 +2,6 @@ EMACS=emacs
 
 export CI_PROJECT=symex
 export CI_PACKAGES=symex-core symex symex-ide symex-evil symex-rigpa
-export CI_REPO_HOST=github
-export CI_REPO_PATH=drym-org/symex.el
 
 help:
 	@echo "Run common development actions."
