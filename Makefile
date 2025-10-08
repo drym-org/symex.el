@@ -34,7 +34,7 @@ setup-ci:
 	fi
 
 clean:
-	cd .emacs-ci && rm -rf ci-init
+	cd .emacs-ci && rm -rf init
 
 bootstrap:
 	cd .emacs-ci && emacs --batch --quick --load bootstrap.el
