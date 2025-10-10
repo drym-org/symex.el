@@ -22,7 +22,7 @@ jobs:
           version: ${{ matrix.emacs_version }}
       - name: Checkout
         uses: actions/checkout@master
-      - name: Install Emacs-CI
+      - name: Install Elci
         run: make setup-ci
       - name: Bootstrap Straight.el
         run: make bootstrap
