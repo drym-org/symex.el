@@ -32,18 +32,21 @@
 (defun symex-escape-higher ()
   "Exit symex mode via an \"escape\"."
   (interactive)
+  (symex-editing-mode-exit)
   (cond ((fboundp 'symex-user-defined-higher-mode)
          (symex-user-defined-higher-mode))))
 
 (defun symex-enter-lower ()
   "Exit symex mode via an \"enter\"."
   (interactive)
+  (symex-editing-mode-exit)
   (cond ((fboundp 'symex-user-defined-lower-mode)
          (symex-user-defined-lower-mode))))
 
 (defun symex-enter-lowest ()
   "Enter the lowest (manual) editing level."
   (interactive)
+  (symex-editing-mode-exit)
   (cond ((fboundp 'symex-user-defined-lowest-mode)
          (symex-user-defined-lowest-mode))))
 

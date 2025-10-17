@@ -87,16 +87,19 @@ right symex when we enter Symex mode."
 (defun symex-escape-higher ()
   "Exit symex mode via an \"escape\"."
   (interactive)
+  (symex-editing-mode-exit)
   (cond (evil-mode (evil-normal-state))))
 
 (defun symex-enter-lower ()
   "Exit symex mode via an \"enter\"."
   (interactive)
+  (symex-editing-mode-exit)
   (cond (evil-mode (evil-insert-state))))
 
 (defun symex-enter-lowest ()
   "Enter the lowest (manual) editing level."
   (interactive)
+  (symex-editing-mode-exit)
   (cond (evil-mode (evil-insert-state))))
 
 (evil-define-state symex

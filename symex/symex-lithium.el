@@ -148,8 +148,8 @@
    ("C-." symex-repeat-pop)
    ("C-c ." symex-repeat-recent)
    ;; escapes
-   ("<return>" symex-enter-lower :exit)
-   ("<escape>" symex-escape-higher :exit))
+   ("<return>" symex-enter-lower)
+   ("<escape>" symex-escape-higher))
   :lighter " symex"
   :group 'symex
 
