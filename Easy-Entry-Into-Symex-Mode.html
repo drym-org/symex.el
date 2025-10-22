@@ -42,10 +42,26 @@ Next: <a href="Making-Parentheses-Convenient.html" accesskey="n" rel="next">Maki
 
 <a class="index-entry-id" id="index-Easy-Entry-Into-Symex-Mode"></a>
 
-<p>For Evil users, user @doyougnu suggests binding your local leader to <code class="code">,</code> (instead of the default, <code class="code">\</code>), which frees up <code class="code">\</code> to be used as entry into Symex Mode. This is convenient as <code class="code">\</code> feels like another <code class="code">Esc</code> but dedicated to Symex mode instead of Normal state. The drawback is that <code class="code">,</code> is an otherwise useful key in Normal state (for in-line repeat search backwards). Although, using it for the local leader is a widely used pattern by Vim and Evil users, and if you are one of them, then this might be a good option for you.
+<p>Here are a few user-contributed recipes for easy entry into Symex mode. Currently, these recipes are relevant specifically for Evil users, but they may suggest approaches for users of other modal systems or vanilla Emacs. If you have a recipe to contribute for another such UI, please get in touch.
 </p>
-<p>With this option, entering Symex from Normal state is convenient, but you&rsquo;d still need to visit Normal state on your way to Symex mode from Insert state. If you&rsquo;d like to avoid this, See <a class="xref" href="Escaping-to-Symex-Instead-of-Normal-State.html">Escaping to Symex Instead of Normal State</a>.
+<ol class="enumerate">
+<li> For Evil users, user @doyougnu suggests binding your local leader to <code class="code">,</code> (instead of the default, <code class="code">\</code>), which frees up <code class="code">\</code> to be used as entry into Symex Mode. This is convenient as <code class="code">\</code> feels like another <code class="code">Esc</code> but dedicated to Symex mode instead of Normal state. The drawback is that <code class="code">,</code> is an otherwise useful key in Normal state (for in-line repeat search backwards). Although, using it for the local leader is a widely used pattern by Vim and Evil users, and if you are one of them, then this might be a good option for you.
+
+<p>With this option, entering Symex from Normal state is convenient, but you&rsquo;d still need to visit Normal state on your way to Symex mode from Insert state.
 </p>
+</li><li> This recipe to <a class="url" href="https://github.com/drym-org/symex.el/issues/24#issuecomment-815110143">alternate Symex and Normal</a> by @tommy-mor provides another option, making it convenient to alternate between Symex and Normal modes, starting in Symex mode when leaving Insert state.
+
+</li><li> This recipe to <a class="url" href="https://github.com/drym-org/symex.el/issues/164#issuecomment-3431456812">additionally remember the most recent editing mode</a> by @jmckernon builds upon the previous recipe to also keep track of the most recent mode from which Insert state is entered.
+
+</li></ol>
+
+<p>See <a class="xref" href="Escaping-to-Symex-Instead-of-Normal-State.html">Escaping to Symex Instead of Normal State</a> for a formal way to structure modes.
+</p>
+</div>
+<hr>
+<div class="nav-panel">
+<p>
+Next: <a href="Making-Parentheses-Convenient.html">Making Parentheses Convenient</a>, Previous: <a href="Mode-Line-Enhancements.html">Mode Line Enhancements</a>, Up: <a href="Squirrel-on-a-Speedrun-_002d-Tips-and-Tricks.html">Squirrel on a Speedrun - Tips and Tricks</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 
 
