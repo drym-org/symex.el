@@ -27,6 +27,8 @@
 
 ;;; Code:
 
+(declare-function symex-editing-mode-exit "symex-lithium.el")
+
 ;; Note that these three functions are overridden
 ;; in packages like symex-evil and symex-rigpa
 (defun symex-escape-higher ()
