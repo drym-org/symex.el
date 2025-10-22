@@ -1079,9 +1079,7 @@ For Evil users, when you ``escape'' from Insert state, you may prefer to enter S
 
 Please @xref{Symex and Rigpa} for the recommended way of achieving this.
 
-If you're not using Rigpa, you could still write one-off keybindings to achieve this, for instance, see @url{https://github.com/drym-org/symex.el/issues/24#issuecomment-815110143, this recipe} by @@tommy-mor.
-
-Also @xref{Easy Entry Into Symex Mode} for another option.
+If you're not using Rigpa, you could still write one-off keybindings to achieve this, as described in @xref{Easy Entry Into Symex Mode}.
 
 @node Macros
 @section Macros
@@ -1113,9 +1111,24 @@ The vanilla mode line in Emacs does show some textual indication of your current
 
 @cindex Easy Entry Into Symex Mode
 
+Here are a few user-contributed recipes for easy entry into Symex mode. Currently, these recipes are relevant specifically for Evil users, but they may suggest approaches for users of other modal systems or vanilla Emacs. If you have a recipe to contribute for another such UI, please get in touch.
+
+@enumerate
+
+@item
 For Evil users, user @@doyougnu suggests binding your local leader to @code{,} (instead of the default, @code{\}), which frees up @code{\} to be used as entry into Symex Mode. This is convenient as @code{\} feels like another @code{Esc} but dedicated to Symex mode instead of Normal state. The drawback is that @code{,} is an otherwise useful key in Normal state (for in-line repeat search backwards). Although, using it for the local leader is a widely used pattern by Vim and Evil users, and if you are one of them, then this might be a good option for you.
 
-With this option, entering Symex from Normal state is convenient, but you'd still need to visit Normal state on your way to Symex mode from Insert state. If you'd like to avoid this, @xref{Escaping to Symex Instead of Normal State}.
+With this option, entering Symex from Normal state is convenient, but you'd still need to visit Normal state on your way to Symex mode from Insert state.
+
+@item
+This recipe to @url{https://github.com/drym-org/symex.el/issues/24#issuecomment-815110143, alternate Symex and Normal} by @@tommy-mor provides another option, making it convenient to alternate between Symex and Normal modes, starting in Symex mode when leaving Insert state.
+
+@item
+This recipe to @url{https://github.com/drym-org/symex.el/issues/164#issuecomment-3431456812, additionally remember the most recent editing mode} by @@jmckernon builds upon the previous recipe to also keep track of the most recent mode from which Insert state is entered.
+
+@end enumerate
+
+@xref{Escaping to Symex Instead of Normal State} for a formal way to structure modes.
 
 @node Making Parentheses Convenient
 @section Making Parentheses Convenient
