@@ -41,6 +41,5 @@
  (package-lint
   :host github
   :repo "countvajhula/package-lint"
-  :branch "control-which-checks-to-run"
   ;; Ensure the necessary data files are included in the build.
   :files ("*.el" "data")))
