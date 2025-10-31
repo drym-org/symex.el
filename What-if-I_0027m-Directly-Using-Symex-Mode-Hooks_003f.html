@@ -38,7 +38,7 @@ span:hover a.copiable-link {visibility: visible}
 Next: <a href="About-Symex-Minor-Modes.html" accesskey="n" rel="next">About Symex Minor Modes</a>, Previous: <a href="Where-Should-I-Put-My-Customizations_003f.html" accesskey="p" rel="prev">Where Should I Put My Customizations?</a>, Up: <a href="Upgrading-from-Symex-v1-to-v2.html" accesskey="u" rel="up">Upgrading from Symex v1 to v2</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
 </div>
 <hr>
-<h4 class="subsection" id="What-if-I_0027m-Directly-Using-Symex-Mode-Hooks_003f-1"><span>2.6.3 What if I&rsquo;m Directly Using Symex Mode Hooks?<a class="copiable-link" href="#What-if-I_0027m-Directly-Using-Symex-Mode-Hooks_003f-1"> &para;</a></span></h4>
+<h4 class="subsection" id="What-if-I_0027m-Directly-Using-Symex-Mode-Hooks_003f-1"><span>2.6.4 What if I&rsquo;m Directly Using Symex Mode Hooks?<a class="copiable-link" href="#What-if-I_0027m-Directly-Using-Symex-Mode-Hooks_003f-1"> &para;</a></span></h4>
 
 <p>The former <code class="code">symex-mode</code> minor mode had a narrow focus on balancing parentheses in Lisp modes. As Symex now works with any language, this general name for such a specific mode was no longer appropriate, and so it was renamed to <code class="code">symex-lisp-mode</code>. Formerly, setting up the ability to use Symex in any buffer required directly calling <code class="code">symex-initialize</code> in user config. A new, global mode named <code class="code">symex-mode</code> (replacing the former mode of the same name) was introduced in 2.0 to handle this in a standard way simply as <code class="code">(symex-mode 1)</code>.
 </p>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Which Parts of My Configuration are Still Valid? (Symex)</title>
+
+<meta name="description" content="Which Parts of My Configuration are Still Valid? (Symex)">
+<meta name="keywords" content="Which Parts of My Configuration are Still Valid? (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Upgrading-from-Symex-v1-to-v2.html" rel="up" title="Upgrading from Symex v1 to v2">
+<link href="Where-Should-I-Put-My-Customizations_003f.html" rel="next" title="Where Should I Put My Customizations?">
+<link href="Which-Packages-Should-I-Install_003f.html" rel="prev" title="Which Packages Should I Install?">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+span:hover a.copiable-link {visibility: visible}
+ul.mark-bullet {list-style-type: disc}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Which-Parts-of-My-Configuration-are-Still-Valid_003f">
+<div class="nav-panel">
+<p>
+Next: <a href="Where-Should-I-Put-My-Customizations_003f.html" accesskey="n" rel="next">Where Should I Put My Customizations?</a>, Previous: <a href="Which-Packages-Should-I-Install_003f.html" accesskey="p" rel="prev">Which Packages Should I Install?</a>, Up: <a href="Upgrading-from-Symex-v1-to-v2.html" accesskey="u" rel="up">Upgrading from Symex v1 to v2</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Which-Parts-of-My-Configuration-are-Still-Valid_003f-1"><span>2.6.2 Which Parts of My Configuration are Still Valid?<a class="copiable-link" href="#Which-Parts-of-My-Configuration-are-Still-Valid_003f-1"> &para;</a></span></h4>
+
+<ul class="itemize mark-bullet">
+<li>Use <code class="code">(symex-mode 1)</code> now, instead of <code class="code">(symex-initialize)</code>.
+
+</li><li>You no longer need <code class="code">symex-modal-backend</code> (as <a class="ref" href="Point_002dFree-Modal-Editing.html">Symex uses Lithium now</a>).
+
+</li><li>You don&rsquo;t need any workarounds for Evil interoperation such as for <code class="code">evil-surround</code> (Symex doesn&rsquo;t use Evil in its implementation anymore).
+
+</li><li>For any custom keybindings, you may formerly have used <code class="code">symex--user-evil-keyspec</code> or <code class="code">Hydra+</code>. These should now use <code class="code">lithium-define-keys</code> instead, as described in See <a class="xref" href="Custom-Keybindings.html">Custom Keybindings</a>.
+
+</li></ul>
+
+<p>See <a class="xref" href="Installing-Symex.html">Installing Symex</a> for example config for v2.0+, including the new package recipes you&rsquo;ll need in your config.
+</p>
+</div>
+
+
+
+</body>
+</html>
