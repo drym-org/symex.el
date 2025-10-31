@@ -48,6 +48,8 @@ Next: <a href="Where-Should-I-Put-My-Customizations_003f.html" accesskey="n" rel
 
 </li><li>You don&rsquo;t need any workarounds for Evil interoperation such as for <code class="code">evil-surround</code> (Symex doesn&rsquo;t use Evil in its implementation anymore).
 
+</li><li>If you have any configuration associated with <code class="code">evil-symex-state</code> (e.g., configuring a leader key, or setting the cursor type with <code class="code">(setq evil-symex-state-cursor 'box)</code>), those are still valid, as the <code class="code">symex-evil</code> package does still define a Symex evil state.
+
 </li><li>For any custom keybindings, you may formerly have used <code class="code">symex--user-evil-keyspec</code> or <code class="code">Hydra+</code>. These should now use <code class="code">lithium-define-keys</code> instead, as described in See <a class="xref" href="Custom-Keybindings.html">Custom Keybindings</a>.
 
 </li></ul>
