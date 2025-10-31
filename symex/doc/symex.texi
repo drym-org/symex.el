@@ -610,6 +610,9 @@ You no longer need @code{symex-modal-backend} (as @ref{Point-Free Modal Editing,
 You don't need any workarounds for Evil interoperation such as for @code{evil-surround} (Symex doesn't use Evil in its implementation anymore).
 
 @item
+If you have any configuration associated with @code{evil-symex-state} (e.g., configuring a leader key, or setting the cursor type with @code{(setq evil-symex-state-cursor 'box)}), those are still valid, as the @code{symex-evil} package does still define a Symex evil state.
+
+@item
 For any custom keybindings, you may formerly have used @code{symex--user-evil-keyspec} or @code{Hydra+}. These should now use @code{lithium-define-keys} instead, as described in @xref{Custom Keybindings}.
 
 @end itemize
