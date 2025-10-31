@@ -595,6 +595,27 @@ Formerly, Symex could be installed and used with a single @code{use-package} for
 
 If you aren't an Evil user, using @code{symex-core}, @code{symex}, and @code{symex-ide} together provide the same (but improved) experience as before. If you @emph{are} an Evil user, you would additionally install @code{symex-evil} to get the same experience as before. If you are a Rigpa user, install @code{symex-rigpa} in addition, for the same experience as before.
 
+@node Which Parts of My Configuration are Still Valid?
+@subsection Which Parts of My Configuration are Still Valid?
+
+@itemize @bullet{}
+
+@item
+Use @code{(symex-mode 1)} now, instead of @code{(symex-initialize)}.
+
+@item
+You no longer need @code{symex-modal-backend} (as @ref{Point-Free Modal Editing, Symex uses Lithium now}).
+
+@item
+You don't need any workarounds for Evil interoperation such as for @code{evil-surround} (Symex doesn't use Evil in its implementation anymore).
+
+@item
+For any custom keybindings, you may formerly have used @code{symex--user-evil-keyspec} or @code{Hydra+}. These should now use @code{lithium-define-keys} instead, as described in @xref{Custom Keybindings}.
+
+@end itemize
+
+@xref{Installing Symex} for example config for v2.0+, including the new package recipes you'll need in your config.
+
 @node Where Should I Put My Customizations?
 @subsection Where Should I Put My Customizations?
 
