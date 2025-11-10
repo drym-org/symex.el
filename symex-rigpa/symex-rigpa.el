@@ -2,7 +2,7 @@
 
 ;; Author: Siddhartha Kasivajhula <sid@countvajhula.com>
 ;; URL: https://github.com/drym-org/symex.el
-;; Version: 0.0
+;; Version: 2.0
 ;; Package-Requires: ((emacs "25.1") (symex "2.0") (rigpa "0.0"))
 ;; Keywords: lisp, convenience, languages
 
