@@ -139,7 +139,8 @@ right symex when we enter Symex mode."
      ("C-i" evil-jump-forward)
      ("C-o" evil-jump-backward)
      ("C-p" evil-paste-pop)
-     ("C-n" evil-paste-pop-next)))
+     ("C-n" evil-paste-pop-next)
+     (":" evil-ex)))
   ;; TODO: handle other undo systems?
   (when (and (eq 'undo-tree evil-undo-system)
              (fboundp #'undo-tree-undo))
