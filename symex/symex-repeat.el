@@ -360,8 +360,8 @@ This function assumes:
         (1+ symex-repeat--recorded-length))
   (if symex-editing-mode
       key-seq
-    (cond ((symex-repeat--noop) mantra--null)
-          ((symex--initiating-key-p key-seq) key-seq)
+    (cond ((symex--initiating-key-p key-seq) key-seq)
+          ((symex-repeat--noop) mantra--null)
           ((null symex--change-series) key-seq)
           ((symex--insertion-key-sequence-p key-seq) key-seq)
           ((null (cdr symex--change-series))
