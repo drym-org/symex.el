@@ -226,7 +226,8 @@ the command taking effect."
          (symex-parse-insertion change))
         ((symex-deletion-p change)
          (symex-parse-deletion change))
-        (t nil)))
+        ;; TODO: what is an example of this?
+        (t mantra--null)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  Specification of the (mantra) repeat parser for Symex  ;;;
