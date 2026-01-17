@@ -272,8 +272,9 @@ loop."
   "Is ENTRY a number?
 
 It is expected to be a mantra seq."
-  (or (not (vectorp entry))
-      (not (symex--key-number-p entry))))
+  (and (vectorp entry)
+       (= 1 (length entry))
+       (symex--key-number-p (aref entry 0))))
 
 (defun symex-repeat-parser-stop (_key-seq state)
   "Whether to stop (accept) parsing.
@@ -284,7 +285,7 @@ metadata used in parsing, but isn't what's actually parsed."
   (symex--clear-change-series)
   (let* ((last-entry (car state))) ; note state is in reverse order
     (let ((accept (and symex-editing-mode
-                       (symex--seq-number-p last-entry))))
+                       (not (symex--seq-number-p last-entry)))))
       (when accept
         (symex-clear-parsing-context))
       accept)))
