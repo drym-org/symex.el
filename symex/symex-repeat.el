@@ -121,6 +121,11 @@
     "W")
   "Key sequences in Symex (Lithium) mode that are repeatable.")
 
+(defvar symex-minibuffer-keys
+  (symex--kbd-macro-list
+    "S")
+  "Key sequences in Symex (Lithium) mode that enter the minibuffer.")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;  Parsing context  ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -284,12 +289,14 @@ metadata used in parsing, but isn't what's actually parsed."
         (symex-clear-parsing-context))
       accept)))
 
-(defun symex-repeat-parser-abort (_key-seq _state)
+(defun symex-repeat-parser-abort (key-seq _state)
   "Abort parsing.
 
 KEY-SEQ is the currently entered key sequence."
-  (let ((abort (or (not (eq symex--initial-buffer
-                            (current-buffer)))
+  (let ((abort (or (and (not (eq symex--initial-buffer
+                                 (current-buffer)))
+                        (not (member key-seq
+                                     symex-minibuffer-keys)))
                    (> symex-repeat--recorded-length
                       symex-repeat--max-recording-length))))
     (when abort
@@ -361,7 +368,8 @@ This function assumes:
         (1+ symex-repeat--recorded-length))
   (if symex-editing-mode
       key-seq
-    (cond ((symex--initiating-key-p key-seq) key-seq)
+    (cond ((minibufferp) key-seq)
+          ((symex--initiating-key-p key-seq) key-seq)
           ((symex-repeat--noop) mantra--null)
           ((null symex--change-series) key-seq)
           ((symex--insertion-key-sequence-p key-seq) key-seq)
