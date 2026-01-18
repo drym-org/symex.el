@@ -48,9 +48,9 @@ You’ll never know. The legendary Squirrel is said to possess startling agility
 
 @cindex pronouncing Symex
 
-Symex (pronounced @emph{sim-ex}) is an intuitive modal way to edit code, built on top of an expressive domain-specific language (DSL) for tree-oriented operations.
+Symex (pronounced @emph{sim-ex}) is an intuitive modal way to edit code.
 
-This design allows it to offer a large array of useful features with short and memorable (and of course, customizable) keybindings, allowing you to edit code fluently. It also gives you the ability to define your own structural operations using the same DSL that Symex implements many of its features in.
+It's built on top of an expressive domain-specific language (DSL) for tree-oriented operations. This design allows it to offer a large array of useful features with short and memorable (and of course, customizable) keybindings, allowing you to edit code fluently. It also gives you the ability to define your own structural operations using the same DSL that Symex implements many of its features in.
 
 In addition, ``symex'' is also just a more versatile term for talking about the ``S-expressions'' or ``symbolic expressions'' that form the syntax of Lisp code. Symex was originally designed to be a Lisp editor, but you can now use it with any language via @url{https://tree-sitter.github.io/tree-sitter/, Treesitter}, included in Emacs 29+.
 
