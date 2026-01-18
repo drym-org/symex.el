@@ -53,6 +53,6 @@ checkdoc:
 	cd .elci && emacs --batch --quick --load checkdoc.el
 
 build-docs:
-	cd symex/doc && texi2any --html --output symex_html symex.texi && mkdir -p symex_html/figures && cp figures/* symex_html/figures/
+	cd symex/doc && texi2any --html --css-ref=https://www.gnu.org/software/emacs/manual.css --output symex_html symex.texi && mkdir -p symex_html/figures && cp figures/* symex_html/figures/
 
 .PHONY: help setup-ci clean bootstrap install byte-compile native-compile lint checkdoc build-docs
