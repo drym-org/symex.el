@@ -205,6 +205,8 @@ This section covers installing Symex and setting it up, and information about su
 
 Symex is distributed as a collection of small, composable packages, hosted directly at the source repository. This allows you maximum flexibility to install just the functionality you actually need, without getting anything extra. But it also means that you must explicitly list the Symex packages you are interested in. Each of the Symex packages is described below, along with sample installation config using Straight.el (if you are using another package manager, @xref{Instructions for Other Package Managers}).
 
+Note that the config below includes inline package recipes which tell Straight.el where to find these packages and how to build them, but if you are using @ref{Elacarte}, you do @emph{not} need to include these inline recipes.
+
 @enumerate
 
 @item @code{symex-core}. This includes a DSL for structural operations, which is the core functionality of Symex, and is required for all users of Symex.
@@ -219,6 +221,8 @@ Symex is distributed as a collection of small, composable packages, hosted direc
 @end lisp
 
 This core package provides the structural editing engine, supporting both Lisp (via @code{paredit}) and other languages (via Treesitter). This is a lean package with few dependencies, so that, in addition to use by end users, it's also appropriate as a library dependency for third party packages to gain Symex features.
+
+Note that if you are using @ref{Elacarte}, you do @emph{not} need to declare this package in your config as it will be implicitly installed as a dependency.
 
 @item @code{symex}. The main user-facing package, required for all end users. It provides the modal UI that makes Symex features easy to use.
 
@@ -473,6 +477,56 @@ With the package recipes added, you should now be able to install the packages u
   :config
   (symex-rigpa-mode 1))
 @end lisp
+
+@node Elacarte
+@subsection Elacarte
+
+@cindex Elacarte, Installing with
+
+@uref{https://github.com/countvajhula/elacarte, Elacarte} enables you to discover authoritative package recipes without reliance on centralized package archives. These recipes are maintained in a local recipe repository that is maintained as part of your Emacs configuration. In this respect, it is similar to @ref{Quelpa}. It differs in that Quelpa is tightly coupled with Package.el and specific package archives such as MELPA, whereas Elacarte uses Straight.el and supports any package archive or, especially, even no package archive.
+
+Once Elacarte reaches an initial stable version, it is intended to be the @strong{recommended} way of installing Symex (in combination with your package manager of choice).
+
+It is currently a proof-of-concept, but you can already use it today if you'd like to be an early adopter (which would be valuable and appreciated!).
+
+To do this, assuming you already have Elacarte installed (see the instructions in its README):
+
+@enumerate
+@item Run @code{M-x elacarte-discover-recipes-by-url RET https://github.com/drym-org/symex.el RET}.
+
+Or, if you prefer, evaluate this expression using @code{C-x C-e}:
+
+@lisp
+(elacarte-discover-recipes-by-url "https://github.com/drym-org/symex.el")
+@end lisp
+
+@item Declare the packages you want to use in your config, as usual (@xref{Installing Symex} for descriptions of the Symex packages). For example:
+
+@lisp
+(use-package symex
+  :config
+  (symex-mode 1)
+  (global-set-key (kbd "s-;") #'symex-mode-interface))  ; or whatever keybinding you like
+  ;; and any other customizations you like
+
+(use-package symex-ide
+  :after (symex)
+  :config
+  (symex-ide-mode 1))
+
+(use-package symex-evil
+  :after (symex evil)
+  :config
+  (symex-evil-mode 1))
+
+(use-package symex-rigpa
+  :after (symex rigpa symex-evil)
+  :config
+  (symex-rigpa-mode 1))
+@end lisp
+
+@item That's it!
+@end enumerate
 
 @node Symex and Evil
 @section Symex and Evil
