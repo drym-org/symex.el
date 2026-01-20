@@ -47,6 +47,8 @@ Next: <a href="Instructions-for-Other-Package-Managers.html" accesskey="n" rel="
 
 <p>Symex is distributed as a collection of small, composable packages, hosted directly at the source repository. This allows you maximum flexibility to install just the functionality you actually need, without getting anything extra. But it also means that you must explicitly list the Symex packages you are interested in. Each of the Symex packages is described below, along with sample installation config using Straight.el (if you are using another package manager, See <a class="xref" href="Instructions-for-Other-Package-Managers.html">Instructions for Other Package Managers</a>).
 </p>
+<p>Note that the config below includes inline package recipes which tell Straight.el where to find these packages and how to build them, but if you are using <a class="ref" href="Elacarte.html">Elacarte</a>, you do <em class="emph">not</em> need to include these inline recipes.
+</p>
 <ol class="enumerate">
 <li> <code class="code">symex-core</code>. This includes a DSL for structural operations, which is the core functionality of Symex, and is required for all users of Symex.
 
@@ -60,6 +62,8 @@ Next: <a href="Instructions-for-Other-Package-Managers.html" accesskey="n" rel="
 </pre></div>
 
 <p>This core package provides the structural editing engine, supporting both Lisp (via <code class="code">paredit</code>) and other languages (via Treesitter). This is a lean package with few dependencies, so that, in addition to use by end users, it&rsquo;s also appropriate as a library dependency for third party packages to gain Symex features.
+</p>
+<p>Note that if you are using <a class="ref" href="Elacarte.html">Elacarte</a>, you do <em class="emph">not</em> need to declare this package in your config as it will be implicitly installed as a dependency.
 </p>
 </li><li> <code class="code">symex</code>. The main user-facing package, required for all end users. It provides the modal UI that makes Symex features easy to use.
 
