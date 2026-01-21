@@ -487,7 +487,7 @@ With the package recipes added, you should now be able to install the packages u
 
 Once Elacarte reaches an initial stable version, it is intended to be the @strong{recommended} way of installing Symex (in combination with your package manager of choice).
 
-It is currently a proof-of-concept, but you can already use it today if you'd like to be an early adopter (which would be valuable and appreciated!).
+It is currently a proof-of-concept, but you can already use it today if you'd like to be an early adopter (Your feedback would be valuable and appreciated!).
 
 To do this, assuming you already have Elacarte installed (see the instructions in its README):
 
