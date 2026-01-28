@@ -146,16 +146,17 @@ BODY - the actual implementation of the command."
 (defun symex--delete (count)
   "Delete COUNT symexes."
   (when (> count 0)
-    ;; when deleting multiple expressions, we typically want to
-    ;; treat them as a single deletion
-    (let ((start (point))
-          (end (symex--get-end-point count t t)))
-      (kill-region start end)
-      ;; trim trailing whitespace at the end
-      ;; otherwise, paste will include that
-      (let ((result (symex--kill-ring-pop)))
-        (symex--kill-ring-push (string-trim-right result)))
-      (symex--reset-after-delete))))
+    (let ((last-command nil))  ; see note in `symex-yank'
+      ;; when deleting multiple expressions, we typically want to
+      ;; treat them as a single deletion
+      (let ((start (point))
+            (end (symex--get-end-point count t t)))
+        (kill-region start end)
+        ;; trim trailing whitespace at the end
+        ;; otherwise, paste will include that
+        (let ((result (symex--kill-ring-pop)))
+          (symex--kill-ring-push (string-trim-right result)))
+        (symex--reset-after-delete)))))
 
 (symex-define-command symex-delete (count)
   "Delete COUNT symexes."
