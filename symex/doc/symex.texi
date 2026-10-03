@@ -2216,12 +2216,71 @@ There are many ways to contribute to Symex, and all contributions are welcome.
 @node Bugs or Features
 @section Bugs or Features
 
-@cindex Reporting bugs
-@cindex Suggesting features
+Please don't hesitate to create an issue to report bugs or request features. We want to hear from you! The sections below include additional information that you may find useful.
 
-Please create an issue to report bugs or request features. We want to hear from you!
+@node Reporting Bugs
+@subsection Reporting Bugs
 
-If you'd like to take matters into your own hands and submit a PR, that's fantastic! You're still welcome to start the process with an issue to solicit input from other Symex contributors and users, so that your PR can be informed by these perspectives. But if you feel you already have a good idea of what you're going for, then by all means, jump straight to the PR, and feel free to reach out for help.
+While it isn't necessary, it is useful, in creating an issue describing your bug, if you could include reproduction steps that use a minimal Emacs configuration and a minimal example demonstrating the bug. Here's how you can do that:
+
+@enumerate
+
+@item Create a file called @code{example-init.el}.
+
+It should contain just the bare minimum needed to load Symex and any other packages essential to your bug scenario. For example:
+
+@lisp
+;; -*- lexical-binding: t; -*-
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(use-package symex-core
+  :straight
+  (symex-core
+   :host github
+   :repo "drym-org/symex.el"
+   :files ("symex-core/symex*.el")))
+
+(use-package symex
+  :after (symex-core)
+  :straight
+  (symex
+   :host github
+   :repo "drym-org/symex.el"
+   :files ("symex/symex*.el" "symex/doc/*.texi" "symex/doc/figures"))
+  :config
+  (symex-mode 1)
+  (global-set-key (kbd "s-;") #'symex-mode-interface))
+@end lisp
+
+@item At the command line, run @code{emacs -Q --load example-init.el}.
+
+@item Create a test file using this minimal Emacs that demonstrates your bug.
+
+@item Include both the config and the test file in your bug report.
+
+@end enumerate
+
+@node Suggesting Features
+@subsection Suggesting Features
+
+Feature requests are welcome --- just create an issue describing the functionality you seek.
+
+If you'd like to take matters into your own hands and submit a PR, that's even better! You're still welcome to start the process with an issue to solicit input from other Symex contributors and users, so that your PR can be informed by these perspectives. But if you feel you already have a good idea of what you're going for, then by all means, jump straight to the PR, and feel free to reach out for help.
 
 @node Contributing Money
 @section Contributing Money
