@@ -483,11 +483,11 @@ With the package recipes added, you should now be able to install the packages u
 
 @cindex Elacarte, Installing with
 
-@uref{https://github.com/countvajhula/elacarte, Elacarte} enables you to discover authoritative package recipes without reliance on centralized package archives. These recipes are maintained in a local recipe repository that is maintained as part of your Emacs configuration. In this respect, it is similar to @ref{Quelpa}. It differs in that Quelpa is tightly coupled with Package.el and specific package archives such as MELPA, whereas Elacarte uses Straight.el and supports any package archive or, especially, even no package archive.
+@uref{https://github.com/countvajhula/elacarte, Elacarte} enables you to discover authoritative package recipes without reliance on centralized package archives. These recipes are maintained in a local recipe repository that is maintained as part of your Emacs configuration. In this respect, it is similar to @ref{Quelpa}. It differs in that Quelpa is tightly coupled with Package.el and specific package archives such as MELPA, whereas Elacarte uses Straight.el and supports any package source, whether package archives, source repositories, or even local paths on your filesystem.
 
 Once Elacarte reaches an initial stable version, it is intended to be the @strong{recommended} way of installing Symex (in combination with your package manager of choice).
 
-It is currently a proof-of-concept, but you can already use it today if you'd like to be an early adopter (Your feedback would be valuable and appreciated!).
+It is currently a proof-of-concept, but you can already use it today if you'd like to be an early adopter (Your feedback is valuable and appreciated!).
 
 To do this, assuming you already have Elacarte installed (see the instructions in its README):
 
