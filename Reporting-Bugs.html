@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This is the documentation for the Symex package for Emacs.
+
+This work is not owned by anyone. Please see the https://github.com/drym-org/foundation/blob/main/DECLARATION-OF-NON-OWNERSHIP.md (Declaration of Non-Ownership). -->
+<title>Reporting Bugs (Symex)</title>
+
+<meta name="description" content="Reporting Bugs (Symex)">
+<meta name="keywords" content="Reporting Bugs (Symex)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="texi2any">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="Concept-Index.html" rel="index" title="Concept Index">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Bugs-or-Features.html" rel="up" title="Bugs or Features">
+<link href="Suggesting-Features.html" rel="next" title="Suggesting Features">
+<style type="text/css">
+<!--
+a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
+div.example {margin-left: 3.2em}
+span:hover a.copiable-link {visibility: visible}
+-->
+</style>
+<link rel="stylesheet" type="text/css" href="https://www.gnu.org/software/emacs/manual.css">
+
+
+</head>
+
+<body lang="en">
+<div class="subsection-level-extent" id="Reporting-Bugs">
+<div class="nav-panel">
+<p>
+Next: <a href="Suggesting-Features.html" accesskey="n" rel="next">Suggesting Features</a>, Up: <a href="Bugs-or-Features.html" accesskey="u" rel="up">Bugs or Features</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="Concept-Index.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h4 class="subsection" id="Reporting-Bugs-1"><span>9.1.1 Reporting Bugs<a class="copiable-link" href="#Reporting-Bugs-1"> &para;</a></span></h4>
+
+<p>While it isn&rsquo;t necessary, it is useful, in creating an issue describing your bug, if you could include reproduction steps that use a minimal Emacs configuration and a minimal example demonstrating the bug. Here&rsquo;s how you can do that:
+</p>
+<ol class="enumerate">
+<li> Create a file called <code class="code">example-init.el</code>.
+
+<p>It should contain just the bare minimum needed to load Symex and any other packages essential to your bug scenario. For example:
+</p>
+<div class="example lisp">
+<pre class="lisp-preformatted">;; -*- lexical-binding: t; -*-
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        &quot;straight/repos/straight.el/bootstrap.el&quot;
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         &quot;https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el&quot;
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(use-package symex-core
+  :straight
+  (symex-core
+   :host github
+   :repo &quot;drym-org/symex.el&quot;
+   :files (&quot;symex-core/symex*.el&quot;)))
+
+(use-package symex
+  :after (symex-core)
+  :straight
+  (symex
+   :host github
+   :repo &quot;drym-org/symex.el&quot;
+   :files (&quot;symex/symex*.el&quot; &quot;symex/doc/*.texi&quot; &quot;symex/doc/figures&quot;))
+  :config
+  (symex-mode 1)
+  (global-set-key (kbd &quot;s-;&quot;) #'symex-mode-interface))
+</pre></div>
+
+</li><li> At the command line, run <code class="code">emacs -Q --load example-init.el</code>.
+
+</li><li> Create a test file using this minimal Emacs that demonstrates your bug.
+
+</li><li> Include both the config and the test file in your bug report.
+
+</li></ol>
+
+</div>
+
+
+
+</body>
+</html>
