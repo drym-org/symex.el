@@ -609,11 +609,11 @@ line."
   (cond ((symex--current-line-empty-p) ; ^<>$
          ;; only join up to the next symex if the context suggests
          ;; that a line break is not desired
-         (if (or (not (symex--next-line-empty-p))
-                 (symex--previous-line-empty-p))
+         (if (symex--previous-line-empty-p)
              (symex--join-to-next)
            ;; don't leave an empty line where the symex was
-           (symex--delete-whole-line)))
+           (when (symex--next-line-empty-p)
+             (symex--delete-whole-line))))
         ((or (save-excursion (symex-last-non-blank) ; (<>$
                              (symex-left-p)))
          (symex--join-to-next))
